@@ -20,13 +20,15 @@ const modal_feedback = ref(false);
                 class="flex-col sm:flex-row flex items-center justify-center gap-4 text-neutral-700 dark:text-white"
             >
                 <div class="flex items-center gap-4">
-                    <NuxtLink to="/releases">
-                        <AButton
-                            text="お知らせ"
-                            icon="lucide:megaphone"
-                            :icon-size="22"
-                        />
-                    </NuxtLink>
+                    <ATooltip text="準備中">
+                        <NuxtLink to="/releases">
+                            <AButton
+                                text="お知らせ"
+                                icon="lucide:megaphone"
+                                :icon-size="22"
+                            />
+                        </NuxtLink>
+                    </ATooltip>
 
                     <AButton
                         text="フィードバック"
@@ -58,30 +60,40 @@ const modal_feedback = ref(false);
                         <AButton icon="simple-icons:github" :icon-size="22" />
                     </NuxtLink>
 
-                    <NuxtLink
-                        to="https://liria.work"
-                        target="_blank"
-                        class="cursor-pointer flex gap-2 items-center justify-center rounded-full px-4 py-2 hover:bg-neutral-200 dark:hover:bg-neutral-700"
-                    >
-                        <LogoLiria color="#a3a3a3" :filled="true" />
-                        <span
-                            class="pr-0.5 pt-0.5 font-[Montserrat] font-semibold"
-                            >Liria</span
+                    <ATooltip text="準備中">
+                        <NuxtLink
+                            to="https://liria.work"
+                            target="_blank"
+                            class="cursor-pointer flex gap-2 items-center justify-center rounded-full px-4 py-2 hover:bg-neutral-200 dark:hover:bg-neutral-700"
                         >
-                    </NuxtLink>
+                            <LogoLiria color="#a3a3a3" :filled="true" />
+                            <span
+                                class="pr-0.5 pt-0.5 font-[Montserrat] font-semibold"
+                                >Liria</span
+                            >
+                        </NuxtLink>
+                    </ATooltip>
                 </div>
             </div>
             <div
                 class="items-center justify-center gap-4 flex text-neutral-700 dark:text-white"
             >
-                <UButton variant="link">Avatioについて</UButton>
+                <ATooltip text="準備中">
+                    <UButton disabled variant="link">Avatioについて</UButton>
+                </ATooltip>
                 <UButton to="/faq" variant="link">FAQ</UButton>
 
-                <UButton to="/terms" variant="link">利用規約</UButton>
+                <ATooltip text="準備中">
+                    <UButton disabled to="/terms" variant="link"
+                        >利用規約</UButton
+                    >
+                </ATooltip>
 
-                <UButton to="/privacy-policy" variant="link"
-                    >プライバシーポリシー</UButton
-                >
+                <ATooltip text="準備中">
+                    <UButton disabled to="/privacy-policy" variant="link">
+                        プライバシーポリシー
+                    </UButton>
+                </ATooltip>
             </div>
             <span class="text-neutral-500 text-sm">Copyright © 2024 Liria</span>
         </div>

@@ -115,29 +115,38 @@ onMounted(async () => {
     <div class="flex-col justify-start items-start gap-2 flex w-full px-3">
         <div
             v-show="!loading"
-            class="w-full flex flex-row items-center justify-between mb-4"
+            class="w-full flex items-center justify-between mb-4"
         >
-            <div class="items-center gap-7 flex flex-row">
-                <div class="text-black dark:text-white text-2xl font-bold">
+            <div
+                class="items-start md:items-center flex flex-col gap-3 md:flex-row md:gap-7"
+            >
+                <div
+                    class="text-black dark:text-white text-2xl font-bold whitespace-nowrap"
+                >
                     {{ setup?.name || "" }}
                 </div>
 
-                <div
-                    class="text-neutral-600 dark:text-neutral-400 text-sm pt-0.5"
-                >
-                    {{ items.length }} アイテム
-                </div>
+                <div class="flex items-center gap-7">
+                    <div
+                        class="text-neutral-600 dark:text-neutral-400 text-sm pt-0.5 whitespace-nowrap"
+                    >
+                        {{ items.length }} アイテム
+                    </div>
 
-                <p v-if="setup" class="text-sm text-neutral-400">
-                    {{
-                        new Date(setup.created_at).toLocaleString("ja-JP", {
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                        })
-                    }}
-                    に公開
-                </p>
+                    <p
+                        v-if="setup"
+                        class="text-sm text-neutral-400 whitespace-nowrap"
+                    >
+                        {{
+                            new Date(setup.created_at).toLocaleString("ja-JP", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                            })
+                        }}
+                        に公開
+                    </p>
+                </div>
             </div>
             <div class="flex items-center">
                 <div
@@ -444,7 +453,7 @@ onMounted(async () => {
                 >
                     <ItemBase v-for="i in outdated" :key="'outdated-' + i">
                         <template #main>
-                            <div class="h-20 flex items-center gap-3 pl-2">
+                            <div class="h-20 pl-6 gap-4 flex items-center">
                                 <Icon
                                     name="lucide:file-question"
                                     size="20"
