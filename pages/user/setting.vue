@@ -1,0 +1,314 @@
+<script lang="ts" setup>
+const client = await useSBClient();
+const user = useSupabaseUser();
+
+const storeMyAvatar = useMyAvatar();
+const { GetMyAvatar } = storeMyAvatar;
+const { myAvatar } = storeToRefs(storeMyAvatar);
+
+const loading = ref(true);
+const faild = ref(false);
+const avatar_loading = ref(false);
+
+const username = ref("");
+const bio = ref("");
+const links = ref<string[]>([]);
+
+const link_input = ref("");
+const link_adding = ref(false);
+
+const setting = { theme: ["system", "light", "dark"], language: ["ja"] };
+const selectTheme = ref(setting.theme[0]);
+const selectLanguage = ref(setting.language[0]);
+
+const AddLink = async () => {
+    if (link_input.value === "") return;
+    link_adding.value = true;
+    links.value.push(link_input.value);
+    link_input.value = "";
+    link_adding.value = false;
+};
+
+const PasteFromClipboard = async () => {
+    const text = await navigator.clipboard.readText();
+    link_input.value = text;
+};
+
+const ChangeAvatar = async () => {
+    const { open, onChange } = useFileDialog({
+        accept: "image/png, image/jpeg, image/tiff", // Set to accept only image files
+        multiple: false,
+    });
+
+    const faild = () => {
+        useAddToast(
+            "アバターの変更に失敗しました",
+            "画像の形式が非対応の可能性があります。"
+        );
+        avatar_loading.value = false;
+    };
+
+    open();
+    onChange(async (files) => {
+        if (!files || files.length === 0) throw new Error("No files selected");
+        const file = files[0];
+
+        avatar_loading.value = true;
+
+        const uploaded = await useUploadAvatar(file);
+
+        if (!uploaded) {
+            faild();
+            return;
+        }
+
+        const legacy = await client
+            .from("users")
+            .select("avatar")
+            .eq("id", user.value.id)
+            .single();
+
+        const { error } = await client
+            .from("users")
+            .update({ avatar: uploaded } as never)
+            .eq("id", user.value.id);
+
+        if (error) {
+            faild();
+            return;
+        }
+
+        if (legacy.data) {
+            await client.storage.from("images").remove([legacy.data.avatar]);
+        }
+
+        await GetMyAvatar();
+
+        useAddToast("アバターを変更しました");
+        avatar_loading.value = false;
+    });
+};
+
+onMounted(async () => {
+    const { data } = await client
+        .from("users")
+        .select("name, avatar, bio, links")
+        .eq("id", user.value.id)
+        .single();
+
+    if (!data) {
+        faild.value = true;
+        return;
+    }
+    username.value = data.name;
+    bio.value = data.bio;
+    links.value = data.links;
+
+    await GetMyAvatar();
+
+    loading.value = false;
+});
+</script>
+
+<template>
+    <div class="w-full flex flex-col px-2 gap-8">
+        <div class="w-full flex flex-col gap-5">
+            <div class="w-full flex items-center justify-between">
+                <div class="flex gap-6 items-center w-full">
+                    <UChip
+                        size="xl"
+                        position="top-right"
+                        inset
+                        :ui="{
+                            base: '-mx-1 rounded-none ring-0',
+                            background: '',
+                        }"
+                    >
+                        <div
+                            v-if="myAvatar"
+                            class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500 relative"
+                        >
+                            <UAvatar :src="myAvatar" alt="Avatar" size="3xl" />
+                            <button
+                                class="absolute inset-0 hover:bg-black/20 rounded-full"
+                                @click="ChangeAvatar"
+                            />
+                        </div>
+                        <div
+                            v-else
+                            class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500 relative"
+                        >
+                            <Icon
+                                name="lucide:user-round"
+                                size="36"
+                                class="text-neutral-600 dark:text-neutral-300"
+                            />
+                            <button
+                                class="absolute inset-0 hover:bg-black/20 rounded-full"
+                                @click="ChangeAvatar"
+                            />
+                        </div>
+                        <template #content>
+                            <Icon
+                                name="lucide:pen-line"
+                                size="18"
+                                class="text-neutral-200"
+                            />
+                        </template>
+                    </UChip>
+                    <div class="flex flex-col gap-0.5 w-full">
+                        <p class="font-medium text-sm text-neutral-400">
+                            ユーザー名
+                        </p>
+                        <div class="gap-2 flex items-center w-full">
+                            <div class="flex flex-col gap-0.5 w-full">
+                                <UInput
+                                    v-model="username"
+                                    placeholder="ユーザー名を入力"
+                                    size="xl"
+                                    :padded="false"
+                                    variant="none"
+                                    :ui="{
+                                        size: { xl: 'text-2xl font-bold' },
+                                        rounded: 'rounded-none',
+                                    }"
+                                    class="w-full"
+                                />
+                                <UDivider
+                                    :ui="{
+                                        border: {
+                                            base: 'border-neutral-300 dark:border-neutral-600',
+                                        },
+                                    }"
+                                />
+                            </div>
+                            <UButton
+                                label="保存"
+                                size="sm"
+                                variant="outline"
+                                :ui="{ rounded: 'rounded-xl' }"
+                                @click="useSaveUsername(username)"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col gap-6 pl-2">
+                <div
+                    class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-xl px-4 py-3"
+                >
+                    <p class="text-neutral-500 text-sm mt-[-2px] mb-2">bio</p>
+                    <UTextarea
+                        v-model="bio"
+                        autoresize
+                        placeholder="簡単な自己紹介をしてみましょう"
+                        variant="none"
+                        :padded="false"
+                    />
+                    <UDivider
+                        :ui="{
+                            border: {
+                                base: 'border-neutral-400 dark:border-neutral-500',
+                            },
+                        }"
+                    />
+                    <UButton
+                        block
+                        label="保存"
+                        size="sm"
+                        variant="outline"
+                        :ui="{ rounded: 'rounded-xl' }"
+                        class="mt-3"
+                        @click="useSaveBio(bio)"
+                    />
+                </div>
+
+                <div class="flex flex-col gap-2 items-start w-full">
+                    <ATitle title="リンク" icon="lucide:link" />
+                    <div class="flex gap-1 items-center w-full mt-1">
+                        <div
+                            class="w-full px-1 rounded-xl bg-neutral-300 dark:bg-neutral-900"
+                        >
+                            <UInput
+                                v-model="link_input"
+                                :disabled="link_adding"
+                                autocomplete="off"
+                                variant="none"
+                                size="sm"
+                                placeholder="リンクを入力"
+                                class="w-full"
+                                :ui="{
+                                    rounded: 'rounded-xl',
+                                    icon: { trailing: { pointer: '' } },
+                                }"
+                                @keyup.enter="AddLink()"
+                            >
+                                <template #trailing>
+                                    <UButton
+                                        v-show="!link_input"
+                                        color="gray"
+                                        variant="link"
+                                        icon="i-heroicons-clipboard"
+                                        :padded="false"
+                                        @click="PasteFromClipboard"
+                                    />
+                                    <UButton
+                                        v-show="link_input !== ''"
+                                        color="gray"
+                                        variant="link"
+                                        icon="i-heroicons-x-mark-20-solid"
+                                        :padded="false"
+                                        @click="link_input = ''"
+                                    />
+                                </template>
+                            </UInput>
+                        </div>
+                        <UButton
+                            :icon="
+                                !link_adding
+                                    ? 'i-heroicons-plus'
+                                    : 'i-svg-spinners-ring-resize'
+                            "
+                            :disabled="link_adding"
+                            label="追加"
+                            size="sm"
+                            :ui="{
+                                rounded: 'rounded-xl',
+                            }"
+                            class="pr-3 h-[32px]"
+                            @click="AddLink()"
+                        />
+                    </div>
+                    <div v-if="links" class="flex items-center gap-2">
+                        <AButton
+                            v-for="i in links"
+                            :text="i"
+                            class="text-neutral-500 dark:text-neutral-300"
+                        />
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2 items-start w-full mt-5">
+                    <ATitle title="ユーザー設定" icon="lucide:settings" />
+                    <div class="flex gap-1 items-center w-full mt-1">
+                        <Icon name="lucide:moon" size="16" />
+                        <p>テーマ</p>
+                        <USelectMenu
+                            v-model="selectTheme"
+                            :options="setting.theme"
+                        />
+                    </div>
+                    <div class="flex gap-1 items-center w-full mt-1">
+                        <Icon name="lucide:languages" size="16" />
+                        <p>言語</p>
+                        <USelectMenu
+                            v-model="selectLanguage"
+                            :options="setting.language"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
