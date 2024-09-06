@@ -35,7 +35,7 @@ const modal = tv({
         thumbnail: "rounded-lg",
         thumbnailFrame: "flex-shrink-0",
         infoFrame: "w-fit flex flex-col gap-3 items-start justify-center",
-        name: "w-fit text-black dark:text-white font-medium break-keep",
+        name: "w-fit text-black dark:text-white font-medium break-all",
     },
     variants: {
         size: {

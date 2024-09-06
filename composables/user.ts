@@ -89,3 +89,20 @@ export const useChangeAvatar = async () => {
         useAddToast("アバターを変更しました");
     });
 };
+
+export const useSaveLink = async (links: string[]) => {
+    const client = await useSBClient();
+    const user = useSupabaseUser();
+
+    const { error } = await client
+        .from("users")
+        .update({ links: links } as never)
+        .eq("id", user.value.id);
+
+    if (error) {
+        useAddToast("リンクの変更に失敗しました");
+        throw error;
+    }
+
+    useAddToast("リンクを変更しました");
+};

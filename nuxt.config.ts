@@ -44,8 +44,6 @@ export default defineNuxtConfig({
         "/": { prerender: true },
     },
 
-    css: ["~/public/markdown.css"],
-
     icon: {
         provider: "server",
         customCollections: [
@@ -65,10 +63,6 @@ export default defineNuxtConfig({
         public: {
             token: "",
         },
-    },
-
-    nitro: {
-        preset: "node-server",
     },
 });
 

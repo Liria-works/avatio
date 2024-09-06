@@ -462,13 +462,18 @@ onMounted(async () => {
 
                 <div class="w-full flex flex-col gap-2">
                     <ItemBase v-for="i in loading_items" :key="'loading-' + i">
-                        <template #thumbnail>
-                            <Icon name="svg-spinners:ring-resize" size="24" />
-                        </template>
                         <template #main>
-                            <span class="text-sm font-medium text-neutral-400">
-                                アイテムを読み込み中
-                            </span>
+                            <div class="h-20 pl-6 gap-4 flex items-center">
+                                <Icon
+                                    name="svg-spinners:ring-resize"
+                                    size="24"
+                                />
+                                <span
+                                    class="text-sm font-medium text-neutral-400"
+                                >
+                                    アイテムを読み込み中
+                                </span>
+                            </div>
                         </template>
                     </ItemBase>
                 </div>

@@ -10,28 +10,33 @@
         "postinstall": "nuxt prepare"
     },
     "devDependencies": {
-        "@formkit/auto-animate": "^0.8.2",
-        "@nuxt/devtools": "^1.4.1",
-        "@nuxt/eslint": "^0.5.5",
-        "@nuxt/fonts": "^0.7.2",
-        "@nuxt/image": "^1.8.0",
-        "@nuxt/scripts": "^0.8.3",
-        "@nuxt/ui": "^2.18.4",
-        "@nuxthub/core": "^0.7.9",
-        "@nuxtjs/ngrok": "^3.0.1",
-        "@nuxtjs/supabase": "^1.4.0",
-        "@pinia/nuxt": "^0.5.4",
-        "@vueuse/nuxt": "^11.0.3",
-        "nuxt": "^3.13.1",
-        "wrangler": "^3.74.0"
+        "@formkit/auto-animate": "0.8.2",
+        "@nuxt/devtools": "1.4.1",
+        "@nuxt/eslint": "0.5.5",
+        "@nuxt/fonts": "0.7.2",
+        "@nuxt/image": "1.8.0",
+        "@nuxt/scripts": "0.8.3",
+        "@nuxt/ui": "2.18.4",
+        "@nuxthub/core": "0.7.9",
+        "@nuxtjs/ngrok": "3.0.1",
+        "@nuxtjs/supabase": "1.4.0",
+        "@pinia/nuxt": "0.5.4",
+        "@types/sanitize-html": "2.13.0",
+        "@vueuse/nuxt": "11.0.3",
+        "nuxt": "3.13.1",
+        "wrangler": "3.74.0"
     },
     "dependencies": {
-        "budoux": "^0.6.2",
-        "date-fns": "^3.6.0",
-        "marked": "^14.1.1",
-        "pinia": "^2.2.2",
-        "radix-vue": "^1.9.5",
-        "tailwind-variants": "^0.2.1",
-        "zod": "^3.23.8"
+        "budoux": "0.6.2",
+        "date-fns": "3.6.0",
+        "marked": "14.1.1",
+        "pinia": "2.2.2",
+        "radix-vue": "1.9.5",
+        "sanitize-html": "2.13.0",
+        "tailwind-variants": "0.2.1",
+        "zod": "3.23.8"
+    },
+    "volta": {
+        "node": "22.8.0"
     }
 }

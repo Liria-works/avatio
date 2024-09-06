@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import sanitizeHtml from "sanitize-html";
 import { marked } from "marked";
 const route = useRoute();
 
 const content = ref();
 const main = ref();
 const error = ref<boolean>(false);
+
+const loading = ref(true);
 
 onMounted(async () => {
     const client = await useSBClient();
@@ -18,12 +21,14 @@ onMounted(async () => {
 
     content.value = data;
     main.value = marked.parse(content.value.content, { breaks: true });
+
+    loading.value = false;
 });
 </script>
 
 <template>
     <main class="flex flex-col gap-4">
-        <article v-if="!error" class="my-3 flex flex-col gap-10">
+        <article v-if="!error && !loading" class="my-3 flex flex-col gap-10">
             <div class="markdown flex flex-col gap-4">
                 <h1 class="text-4xl font-[900]">
                     {{ content?.title }}
@@ -39,10 +44,11 @@ onMounted(async () => {
                     }}
                 </span>
             </div>
-            <div v-html="main" class="markdown"></div>
+            <!-- eslint-disable vue/no-v-html -->
+            <div v-html="sanitizeHtml(main)" class="markdown"></div>
         </article>
 
-        <div v-else class="flex flex-col items-center gap-10 pt-10">
+        <div v-if="error" class="flex flex-col items-center gap-10 pt-10">
             <h2
                 class="flex text-9xl font-extrabold font-['Montserrat'] text-neutral-500 dark:text-neutral-400"
             >

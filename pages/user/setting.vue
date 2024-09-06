@@ -24,9 +24,17 @@ const selectLanguage = ref(setting.language[0]);
 const AddLink = async () => {
     if (link_input.value === "") return;
     link_adding.value = true;
+
     links.value.push(link_input.value);
+    await useSaveLink(links.value);
+
     link_input.value = "";
     link_adding.value = false;
+};
+
+const RemoveLink = async (link: string) => {
+    links.value = links.value.filter((i) => i !== link);
+    await useSaveLink(links.value);
 };
 
 const PasteFromClipboard = async () => {
@@ -280,16 +288,28 @@ onMounted(async () => {
                             @click="AddLink()"
                         />
                     </div>
-                    <div v-if="links" class="flex items-center gap-2">
-                        <AButton
+                    <div v-if="links" class="flex flex-wrap items-center gap-2">
+                        <div
                             v-for="i in links"
-                            :text="i"
-                            class="text-neutral-500 dark:text-neutral-300"
-                        />
+                            :key="'link-' + i"
+                            class="pl-5 pr-4 py-2 flex gap-3 items-center rounded-full bg-neutral-300 dark:bg-neutral-700"
+                        >
+                            <p class="dark:text-neutral-300">{{ i }}</p>
+                            <button
+                                class="flex flex-shrink-0"
+                                @click="RemoveLink(i)"
+                            >
+                                <Icon
+                                    name="lucide:x"
+                                    size="20"
+                                    class="text-neutral-500 dark:text-neutral-300 hover:text-red-500 hover:dark:text-red-400"
+                                />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-2 items-start w-full mt-5">
+                <div class="hidden flex flex-col gap-2 items-start w-full mt-5">
                     <ATitle title="ユーザー設定" icon="lucide:settings" />
                     <div class="flex gap-1 items-center w-full mt-1">
                         <Icon name="lucide:moon" size="16" />
