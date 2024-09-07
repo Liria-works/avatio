@@ -41,7 +41,7 @@ onMounted(async () => {
 
 const modal = tv({
     slots: {
-        thumbnail: "rounded-lg",
+        thumbnail: "rounded-lg object-cover",
         thumbnailFrame: "flex-shrink-0",
         infoFrame: "w-fit flex flex-col gap-3 items-start justify-center",
         name: "w-fit text-black dark:text-white font-medium break-keep",

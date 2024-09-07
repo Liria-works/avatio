@@ -4,7 +4,7 @@ const router = useRouter();
 const client = await useSBClient();
 const user = useSupabaseUser();
 
-const searchWord = ref<string | null>(null);
+const searchWord = ref<string>();
 const searchItem = ref<number | null>(null);
 const searchTag = ref<string[]>([]);
 
@@ -69,7 +69,7 @@ watch(
     () => route.query,
     async (newQuery) => {
         item.value = null;
-        searchWord.value = (newQuery.q as string) || null;
+        searchWord.value = newQuery.q as string;
         searchItem.value = Number(newQuery.item) || null;
         if (newQuery.tag === undefined) {
             searchTag.value = [];

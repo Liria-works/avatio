@@ -71,22 +71,22 @@ async function GetBoothItem(event: any, id: number) {
         .eq("id", id)
         .single();
 
-    const responseData = {
-        id: data.id,
-        name: data.name,
-        short: data.short,
-        thumbnail: data.thumbnail,
-        price: data.price,
-        category: data.category,
-        shop_id: data.shop_id.id,
-        shop: data.shop_id.name,
-        shop_thumbnail: data.shop_id.thumbnail,
-        shop_verified: data.shop_id.verified,
-        nsfw: data.nsfw,
-        outdated: data.outdated,
-    };
-
     if (data) {
+        const responseData = {
+            id: data.id,
+            name: data.name,
+            short: data.short,
+            thumbnail: data.thumbnail,
+            price: data.price,
+            category: data.category,
+            shop_id: data.shop_id.id,
+            shop: data.shop_id.name,
+            shop_thumbnail: data.shop_id.thumbnail,
+            shop_verified: data.shop_id.verified,
+            nsfw: data.nsfw,
+            outdated: data.outdated,
+        };
+
         exist = true;
         const timeDifference = startTime - new Date(data.updated_at).getTime();
 
@@ -146,19 +146,15 @@ async function GetBoothItem(event: any, id: number) {
             verified: data.shop_verified,
         };
 
-        // if (old) {
-        await client
-            .from("items")
-            .upsert(itemData as never)
-            .eq("id", id);
-
         await client
             .from("shops")
             .upsert(shopData as never)
             .eq("id", data.shop_id);
-        // } else {
-        //     await client.from("items").insert(itemData as never);
-        // }
+
+        await client
+            .from("items")
+            .upsert(itemData as never)
+            .eq("id", id);
 
         logDuration(startTime, "Booth", data.name);
 

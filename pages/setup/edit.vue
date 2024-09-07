@@ -274,15 +274,29 @@ onMounted(async () => {
 <template>
     <div class="flex-col justify-start items-start gap-8 flex w-full px-3">
         <div class="flex flex-row gap-10 items-center justify-between w-full">
-            <UInput
-                v-model="title"
-                placeholder="セットアップ名を入力"
-                size="xl"
-                :padded="false"
-                variant="none"
-                :ui="{ size: { xl: 'text-2xl font-bold' } }"
-                class="w-full"
-            />
+            <div class="w-full flex flex-col gap-2 pt-1">
+                <UInput
+                    v-model="title"
+                    placeholder="セットアップ名を入力"
+                    size="xl"
+                    :padded="false"
+                    variant="none"
+                    :ui="{ size: { xl: 'text-2xl font-bold' } }"
+                    class="w-full"
+                />
+                <UDivider
+                    :ui="{
+                        border: {
+                            base: `${
+                                title.length < 25
+                                    ? 'border-neutral-300 dark:border-neutral-600'
+                                    : 'border-red-400 dark:border-red-600'
+                            }`,
+                        },
+                    }"
+                    class="w-full"
+                />
+            </div>
             <div class="flex gap-2 items-center">
                 <UButton
                     v-if="!route.query.id"
@@ -345,7 +359,7 @@ onMounted(async () => {
                                 autocomplete="off"
                                 variant="none"
                                 size="sm"
-                                placeholder="BOOTH URLからアイテムを追加"
+                                placeholder="BOOTH URLからアバター・アイテムを追加"
                                 block
                                 :ui="{
                                     rounded: 'rounded-xl',
@@ -394,7 +408,7 @@ onMounted(async () => {
                         <UButton
                             block
                             icon="lucide:search"
-                            label="アイテムを検索"
+                            label="アバター・アイテムを検索"
                             variant="outline"
                             :ui="{
                                 rounded: 'rounded-xl',
@@ -641,17 +655,33 @@ onMounted(async () => {
                     <PopupUploadImage class="mt-[-16px]" />
                 </div>
                 <ACategory title="説明" icon="lucide:text">
-                    <div
-                        class="w-full p-3 rounded-lg border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
-                    >
-                        <UTextarea
-                            v-model="description"
-                            autoresize
-                            placeholder="説明を入力"
-                            :padded="false"
-                            variant="none"
-                            class="w-full"
-                        />
+                    <div class="w-full flex flex-col gap-1 items-end">
+                        <div
+                            :class="`w-full p-3 rounded-lg border border-1 bg-neutral-200 dark:bg-neutral-900 ${
+                                description.length < 141
+                                    ? 'border-neutral-400 dark:border-neutral-600'
+                                    : 'border-red-400 dark:border-red-600'
+                            }`"
+                        >
+                            <UTextarea
+                                v-model="description"
+                                autoresize
+                                placeholder="説明を入力"
+                                :padded="false"
+                                variant="none"
+                                class="w-full"
+                            />
+                        </div>
+
+                        <span
+                            :class="`text-sm pr-1 ${
+                                description.length < 141
+                                    ? 'text-neutral-500 dark:text-neutral-500'
+                                    : 'text-red-500 dark:text-red-400'
+                            }`"
+                        >
+                            {{ description.length }} / 140
+                        </span>
                     </div>
                 </ACategory>
 

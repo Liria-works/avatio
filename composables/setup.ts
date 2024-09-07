@@ -57,12 +57,15 @@ export const usePublishSetup = async (
     }
 
     for (const item of setup.items) {
-        const responseItems = await client.from("setup_items").insert({
-            setup_id: responseSetup.data.id,
-            item_id: item.id,
-            note: item.note,
-            unsupported: item.unsupported,
-        } as never);
+        const responseItems = await client
+            .from("setup_items")
+            .insert({
+                setup_id: responseSetup.data.id,
+                item_id: item.id,
+                note: item.note,
+                unsupported: item.unsupported,
+            } as never)
+            .maybeSingle();
 
         if (responseItems.error) {
             throw responseItems.error;
