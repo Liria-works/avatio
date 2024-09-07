@@ -134,14 +134,12 @@ onMounted(async () => {
                 >
                     <p class="text-neutral-500 text-sm mt-[-2px]">bio</p>
                     <p v-if="!bio" class="text-neutral-400">自己紹介が未設定</p>
-                    <div v-if="bio">
-                        <p
-                            v-for="(i, index) in bio.split('\n')"
-                            :key="'bio-line-' + index"
-                        >
-                            {{ i }}
-                        </p>
-                    </div>
+                    <p
+                        v-if="bio"
+                        class="text-relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]"
+                    >
+                        {{ useSentence(bio) }}
+                    </p>
                 </div>
             </div>
         </div>

@@ -25,7 +25,7 @@ export const useSaveBio = async (bio: string) => {
 
     const { error } = await client
         .from("users")
-        .update({ bio: bio } as never)
+        .update({ bio: useLineBreak(bio) } as never)
         .eq("id", user.value.id);
 
     if (error) {
