@@ -8,6 +8,7 @@ const modal_report = ref(false);
 const loading = ref(true);
 const faild = ref(false);
 
+const userId = ref<string>(route.params.id.toString());
 const username = ref("");
 const avatar = ref<string | null>(null);
 const bio = ref("");
@@ -75,7 +76,7 @@ onMounted(async () => {
                             <p class="text-2xl font-bold">
                                 {{ username }}
                             </p>
-                            <UserBadge :user="route.params.id" />
+                            <UserBadge :user="userId" />
                         </div>
                         <p class="text-sm text-neutral-500">
                             アカウント作成日 :
@@ -89,10 +90,7 @@ onMounted(async () => {
                         </p>
                     </div>
                 </div>
-                <NuxtLink
-                    v-if="user && user.id === route.params.id"
-                    to="/user/setting"
-                >
+                <NuxtLink v-if="user && user.id === userId" to="/user/setting">
                     <AButton
                         icon="lucide:pen-line"
                         :icon-size="19"
@@ -115,7 +113,7 @@ onMounted(async () => {
                     }"
                 >
                     <ModalReportUser
-                        :id="route.params.id"
+                        :id="userId"
                         @close="modal_report = false"
                     />
                 </UModal>
@@ -136,7 +134,14 @@ onMounted(async () => {
                 >
                     <p class="text-neutral-500 text-sm mt-[-2px]">bio</p>
                     <p v-if="!bio" class="text-neutral-400">自己紹介が未設定</p>
-                    <p v-if="bio">{{ bio }}</p>
+                    <div v-if="bio">
+                        <p
+                            v-for="(i, index) in bio.split('\n')"
+                            :key="'bio-line-' + index"
+                        >
+                            {{ i }}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

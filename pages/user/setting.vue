@@ -172,6 +172,7 @@ onMounted(async () => {
                             <div class="flex flex-col gap-0.5 w-full">
                                 <UInput
                                     v-model="username"
+                                    id="name"
                                     placeholder="ユーザー名を入力"
                                     size="xl"
                                     :padded="false"
@@ -189,6 +190,16 @@ onMounted(async () => {
                                         },
                                     }"
                                 />
+                                <p
+                                    v-if="
+                                        username.length === 0 ||
+                                        username.length > 17
+                                    "
+                                    class="text-sm mt-1 text-red-400"
+                                >
+                                    ユーザー名は 1 ～ 16
+                                    文字である必要があります
+                                </p>
                             </div>
                             <UButton
                                 label="保存"
@@ -204,9 +215,18 @@ onMounted(async () => {
 
             <div class="w-full flex flex-col gap-6 pl-2">
                 <div
-                    class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-xl px-4 py-3"
+                    class="w-full flex flex-col rounded-xl px-4 py-3 gap-2 bg-neutral-200 dark:bg-neutral-700"
                 >
-                    <p class="text-neutral-500 text-sm mt-[-2px] mb-2">bio</p>
+                    <div class="w-full flex items-center justify-between">
+                        <p class="text-neutral-500 text-sm">bio</p>
+                        <UButton
+                            label="保存"
+                            size="sm"
+                            variant="outline"
+                            :ui="{ rounded: 'rounded-xl' }"
+                            @click="useSaveBio(bio)"
+                        />
+                    </div>
                     <UTextarea
                         v-model="bio"
                         autoresize
@@ -217,19 +237,24 @@ onMounted(async () => {
                     <UDivider
                         :ui="{
                             border: {
-                                base: 'border-neutral-400 dark:border-neutral-500',
+                                base: `${
+                                    bio.length < 141
+                                        ? 'border-neutral-300 dark:border-neutral-600'
+                                        : 'border-red-400 dark:border-red-400'
+                                }`,
                             },
                         }"
+                        class="w-full"
                     />
-                    <UButton
-                        block
-                        label="保存"
-                        size="sm"
-                        variant="outline"
-                        :ui="{ rounded: 'rounded-xl' }"
-                        class="mt-3"
-                        @click="useSaveBio(bio)"
-                    />
+                    <span
+                        :class="`w-full text-right text-sm pr-1 ${
+                            bio.length < 141
+                                ? 'text-neutral-500 dark:text-neutral-500'
+                                : 'text-red-500 dark:text-red-400'
+                        }`"
+                    >
+                        {{ bio.length }} / 140
+                    </span>
                 </div>
 
                 <div class="flex flex-col gap-2 items-start w-full">
