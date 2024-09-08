@@ -3,8 +3,8 @@ export const useUploadAvatar = async (file: File) => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("res", "128");
-    formData.append("size", "80");
+    formData.append("res", "256");
+    formData.append("size", "100");
     formData.append("path", "avatar");
 
     try {
@@ -33,8 +33,8 @@ export const usePostImage = async (file: File) => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("res", "1024");
-    formData.append("size", "80");
+    formData.append("res", "1280");
+    formData.append("size", "200");
 
     try {
         const response: { data: PutImage; error: unknown } = await $fetch(
@@ -48,7 +48,8 @@ export const usePostImage = async (file: File) => {
             }
         );
         if (response.error) {
-            throw new Error(response.error.toString());
+            console.error(response.error);
+            throw new Error();
         }
         return response.data.path;
     } catch (error) {
@@ -69,12 +70,18 @@ export const useGetImage = async (path: string) => {
     const url = `/api/ServeBlobImage?path=${encodeURIComponent(path)}`;
 
     try {
-        const response: any = await $fetch(url, {
+        const response: string | null = await $fetch(url, {
             method: "GET",
             headers: {
                 Authorization: runtimeConfig.public.token,
             },
         });
+
+        if (!response) {
+            console.error("Failed to fetch item data");
+            return null;
+        }
+
         return response;
     } catch (error) {
         console.error("Failed to fetch item data:", error);

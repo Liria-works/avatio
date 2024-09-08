@@ -35,7 +35,6 @@ onMounted(async () => {
 
     if (props.image) {
         fetchImage.value = await useGetImage(props.image);
-        fetchImage.value = fetchImage.value.publicUrl;
     } else {
         fetchImage.value = null;
     }
@@ -92,8 +91,8 @@ onMounted(async () => {
                             class="text-sm text-neutral-500 dark:text-neutral-400 break-all line-clamp-1"
                         >
                             {{
-                                fetchAvatar?.short
-                                    ? fetchAvatar.short.ja
+                                fetchAvatar?.avatar_details
+                                    ? fetchAvatar.avatar_details.short_ja
                                     : fetchAvatar?.name
                             }}
                         </p>

@@ -14,8 +14,6 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, message: "No file provided" });
     }
 
-    // const query = getQuery(event);
-
     if (!size || !res) {
         throw createError({
             statusCode: 400,
@@ -25,21 +23,6 @@ export default defineEventHandler(async (event) => {
 
     try {
         const client = await serverSupabaseClient(event);
-
-        // formData.append("size", size);
-        // formData.append("res", res);
-
-        // const url =
-        //     "https://imbxeblwlopxrgexztsx.supabase.co/functions/v1/compress-image" +
-        //     `?size=${query.size}&res=${query.res}`;
-
-        // const result: any = await $fetch(url, {
-        //     method: "POST",
-        //     headers: {
-        //         Authorization: "Bearer " + process.env.SUPABASE_KEY,
-        //     },
-        //     body: formData,
-        // });
 
         const { data, error } = await client.functions.invoke(
             "compress-image",

@@ -66,19 +66,31 @@ async function GetBoothItem(event: any, id: number) {
     const { data }: any = await client
         .from("items")
         .select(
-            "id, name, short, thumbnail, price, category, shop_id(id, name, thumbnail, verified), nsfw, outdated, updated_at, created_at"
+            "id, name, thumbnail, price, category, shop_id(id, name, thumbnail, verified), nsfw, outdated, updated_at, created_at"
         )
         .eq("id", id)
         .single();
 
     if (data) {
+        let avatar_details = null;
+        if (data.category === 208) {
+            const { data } = await client
+                .from("avatar_details")
+                .select(
+                    "id, short_ja, short_en, short_kr, vrc_sample, vrc_world"
+                )
+                .eq("id", id)
+                .maybeSingle();
+            avatar_details = data;
+        }
+
         const responseData = {
             id: data.id,
             name: data.name,
-            short: data.short,
             thumbnail: data.thumbnail,
             price: data.price,
             category: data.category,
+            avatar_details: avatar_details,
             shop_id: data.shop_id.id,
             shop: data.shop_id.name,
             shop_thumbnail: data.shop_id.thumbnail,
@@ -218,10 +230,10 @@ function Response(status: number, message: string, data: any) {
             link: url_base + data.id,
             id: data.id,
             name: data.name,
-            short: data.short,
             thumbnail: data.thumbnail,
             price: data.price,
             category: data.category,
+            avatar_details: data.avatar_details,
             shop: data.shop,
             shopId: data.shop_id,
             shopThumbnail: data.shop_thumbnail,

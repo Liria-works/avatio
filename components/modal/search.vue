@@ -47,13 +47,15 @@ const handleInputChange = useDebounceFn(
         for (const i of searchResultsSetup.value) {
             if (i.image) {
                 i.image = await useGetImage(i.image);
-                i.image = i.image.publicUrl;
             }
             i.avatar = await useFetchBooth({ id: i.avatar, url: null });
-            i.avatar_short = i.avatar.short;
+            if (i.avatar.avatar_details) {
+                i.avatar_short = i.avatar.avatar_details.short_ja;
+            } else {
+                i.avatar_short = null;
+            }
             i.avatar = i.avatar.thumbnail;
         }
-        // console.log(searchResultsSetup.value);
 
         searchResultsAvatar.value = await client
             .rpc("search_items", {
@@ -126,7 +128,7 @@ watch(searchWord, (newValue) => {
                         @click="emit('close')"
                     >
                         <ItemTiny
-                            :label="i.short ? i.short.ja : i.name"
+                            :label="i.short ? i.short : i.name"
                             :thumbnail="i.thumbnail"
                             class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                         />
@@ -146,7 +148,7 @@ watch(searchWord, (newValue) => {
                         @click="emit('close')"
                     >
                         <ItemTiny
-                            :label="i.short ? i.short.ja : i.name"
+                            :label="i.short ? i.short : i.name"
                             :thumbnail="i.thumbnail"
                             class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                         />

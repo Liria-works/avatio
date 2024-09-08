@@ -55,8 +55,6 @@ onMounted(async () => {
 
     if (setup.value.image) {
         image.value = await useGetImage(setup.value.image);
-        image.value = image.value.publicUrl;
-        // image.value = URL.createObjectURL(imageData);
     }
 
     const res = await useFetchBooth({
@@ -121,7 +119,7 @@ onMounted(async () => {
                 class="items-start md:items-center flex flex-col gap-3 md:flex-row md:gap-7"
             >
                 <div
-                    class="text-black dark:text-white text-2xl font-bold whitespace-nowrap"
+                    class="text-black dark:text-white text-2xl font-bold line-clamp-2"
                 >
                     {{ setup?.name || "" }}
                 </div>
@@ -506,7 +504,7 @@ onMounted(async () => {
             <div
                 v-show="!loading"
                 v-if="setup"
-                class="w-96 flex-col justify-start items-start gap-8 inline-flex"
+                class="w-full sm:w-96 flex-col justify-start items-start gap-8 inline-flex"
             >
                 <div
                     v-if="setup?.description"

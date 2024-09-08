@@ -237,11 +237,13 @@ onBeforeRouteLeave(
 );
 
 const quickAvatars = ref<
-    { id: number; name: string; short: Languages; thumbnail: string }[] | null
+    | { id: number; name: string; short: string | null; thumbnail: string }[]
+    | null
 >(null);
 
 const quickAvatarsOwned = ref<
-    { id: number; name: string; short: Languages; thumbnail: string }[] | null
+    | { id: number; name: string; short: string | null; thumbnail: string }[]
+    | null
 >(null);
 
 onMounted(async () => {
@@ -298,29 +300,61 @@ onMounted(async () => {
                 />
             </div>
             <div class="flex gap-2 items-center">
-                <UButton
+                <UPopover
                     v-if="!route.query.id"
-                    :disabled="
-                        publishing ||
-                        !title ||
-                        !items.avatar ||
-                        !items.items.length
-                    "
-                    truncate
-                    size="lg"
-                    label="公開"
-                    :icon="
-                        !publishing
-                            ? 'i-heroicons-arrow-up-tray-16-solid'
-                            : 'i-svg-spinners-ring-resize'
-                    "
+                    mode="hover"
+                    :popper="{ placement: 'top' }"
                     :ui="{
-                        rounded: 'rounded-full',
-                        inline: 'pr-4',
-                        truncate: 'whitespace-nowrap',
+                        rounded: 'rounded-xl',
+                        ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
                     }"
-                    @click="PublishSetup"
-                />
+                    class="flex"
+                >
+                    <UButton
+                        :disabled="
+                            publishing ||
+                            !title ||
+                            !items.avatar ||
+                            !items.items.length
+                        "
+                        truncate
+                        size="lg"
+                        label="公開"
+                        :icon="
+                            !publishing
+                                ? 'i-heroicons-arrow-up-tray-16-solid'
+                                : 'i-svg-spinners-ring-resize'
+                        "
+                        :ui="{
+                            rounded: 'rounded-full',
+                            inline: 'pr-4',
+                            truncate: 'whitespace-nowrap',
+                        }"
+                        @click="PublishSetup"
+                    />
+
+                    <template #panel>
+                        <div
+                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-100"
+                        >
+                            <p v-if="!title">タイトルが入力されていません</p>
+                            <p v-if="!items.avatar">
+                                ベースアバターが登録されていません
+                            </p>
+                            <p v-if="!items.items.length">
+                                アイテムが登録されていません
+                            </p>
+
+                            <p
+                                v-if="
+                                    title && items.avatar && items.items.length
+                                "
+                            >
+                                セットアップを投稿
+                            </p>
+                        </div>
+                    </template>
+                </UPopover>
 
                 <UButton
                     v-else
@@ -338,6 +372,7 @@ onMounted(async () => {
                 />
 
                 <AButton
+                    tooltip="破棄"
                     icon="lucide:trash"
                     :icon-size="18"
                     class="size-10"
@@ -459,7 +494,7 @@ onMounted(async () => {
                                     @click="AddItem(i.id)"
                                 >
                                     <ItemTiny
-                                        :label="i.short ? i.short.ja : i.name"
+                                        :label="i.short ? i.short : i.name"
                                         :thumbnail="i.thumbnail"
                                         class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                                     />
@@ -484,7 +519,7 @@ onMounted(async () => {
                                     @click="AddItem(i.id)"
                                 >
                                     <ItemTiny
-                                        :label="i.short ? i.short.ja : i.name"
+                                        :label="i.short ? i.short : i.name"
                                         :thumbnail="i.thumbnail"
                                         class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                                     />

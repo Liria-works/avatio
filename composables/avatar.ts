@@ -1,7 +1,6 @@
-import type { Languages } from "./i18n";
-
 export const useGetOwnedAvatars = async (): Promise<
-    { id: number; name: string; short: Languages; thumbnail: string }[] | null
+    | { id: number; name: string; short: string | null; thumbnail: string }[]
+    | null
 > => {
     const client = await useSBClient();
     const user = useSupabaseUser();
@@ -32,7 +31,9 @@ export const useGetOwnedAvatars = async (): Promise<
             response.push({
                 id: result.id,
                 name: result.name,
-                short: result.short,
+                short: result.avatar_details
+                    ? result.avatar_details.short_ja
+                    : null,
                 thumbnail: result.thumbnail,
             });
         }
@@ -44,7 +45,8 @@ export const useGetOwnedAvatars = async (): Promise<
 };
 
 export const useGetPopularAvatars = async (): Promise<
-    { id: number; name: string; short: Languages; thumbnail: string }[] | null
+    | { id: number; name: string; short: string | null; thumbnail: string }[]
+    | null
 > => {
     const client = await useSBClient();
 
@@ -64,7 +66,9 @@ export const useGetPopularAvatars = async (): Promise<
             response.push({
                 id: result.id,
                 name: result.name,
-                short: result.short,
+                short: result.avatar_details
+                    ? result.avatar_details.short_ja
+                    : null,
                 thumbnail: result.thumbnail,
             });
         }

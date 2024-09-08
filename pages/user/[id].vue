@@ -120,17 +120,26 @@ onMounted(async () => {
             </div>
 
             <div class="w-full flex flex-col gap-3 pl-2">
-                <div v-if="links" class="flex items-center gap-2">
-                    <NuxtLink v-for="i in links" :to="i" target="_blank">
-                        <AButton
-                            :text="i"
-                            class="text-neutral-500 dark:text-neutral-300"
-                        />
+                <div v-if="links" class="flex flex-wrap items-center gap-2">
+                    <NuxtLink
+                        v-for="i in (links as string[])"
+                        :to="i"
+                        target="_blank"
+                        class="px-2.5 py-1.5 rounded-lg text-neutral-300 border border-1 border-neutral-600 dark:bg-neutral-750 hover:dark:bg-neutral-700"
+                    >
+                        <p class="text-sm font-medium">
+                            {{
+                                i
+                                    .replace("https://", "")
+                                    .replace("http://", "")
+                                    .replace("www.", "")
+                            }}
+                        </p>
                     </NuxtLink>
                 </div>
 
                 <div
-                    class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-xl px-4 py-3"
+                    class="w-full rounded-xl px-4 py-3 border border-1 border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
                 >
                     <p class="text-neutral-500 text-sm mt-[-2px]">bio</p>
                     <p v-if="!bio" class="text-neutral-400">自己紹介が未設定</p>
@@ -167,5 +176,12 @@ onMounted(async () => {
 
     <div v-else-if="faild" class="w-full flex flex-col items-center">
         <p class="text-neutral-400 mt-5">ユーザーデータの取得に失敗しました</p>
+    </div>
+
+    <div
+        v-else-if="loading"
+        class="w-full flex items-center justify-center pt-20"
+    >
+        <Icon name="svg-spinners:ring-resize" size="32" />
     </div>
 </template>

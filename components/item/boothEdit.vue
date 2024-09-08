@@ -131,7 +131,9 @@ const { thumbnail, thumbnailFrame, infoFrame, name } = modal({
                         />
                     </NuxtLink>
                 </div>
-                <div class="w-fit flex items-center gap-3 flex-shrink-0">
+                <div
+                    class="w-fit flex flex-col-reverse sm:flex-row items-end sm:items-center gap-3 flex-shrink-0"
+                >
                     <UCheckbox
                         v-if="itemData.category !== 208"
                         v-model="unsupported"

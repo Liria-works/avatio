@@ -1,5 +1,3 @@
-import type { Languages } from "./i18n";
-
 export const useFetchBooth = async ({
     id = null,
     url = null,
@@ -59,10 +57,16 @@ export const useFetchBooth = async ({
 export interface BoothItem {
     id: number;
     name: string;
-    short: Languages;
     thumbnail: string;
     price: string;
     category: number;
+    avatar_details: {
+        short_ja: string;
+        short_en: string;
+        short_kr: string;
+        vrc_sample: string;
+        vrc_world: string;
+    } | null;
     shop: string;
     shopId: string;
     shopThumbnail: string;

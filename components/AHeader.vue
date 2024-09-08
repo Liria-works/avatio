@@ -14,8 +14,10 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="flex flex-row items-center justify-between w-full">
-        <div class="flex items-center gap-4 flex-shrink-0">
+    <div class="flex items-start justify-between w-full">
+        <div
+            class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-shrink-0"
+        >
             <NuxtLink to="/">
                 <ClientOnly>
                     <NuxtImg
@@ -41,7 +43,7 @@ onMounted(async () => {
                 />
             </NuxtLink>
         </div>
-        <div class="items-center flex flex-row gap-12 inset">
+        <div class="flex items-center gap-12 inset">
             <div class="items-center gap-2 flex">
                 <div class="items-center gap-0.5 flex">
                     <AButton

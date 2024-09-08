@@ -119,8 +119,15 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="w-full flex flex-col px-2 gap-8">
-        <div class="w-full flex flex-col gap-5">
+    <div class="w-full px-2">
+        <div
+            v-if="loading"
+            class="w-full flex items-center justify-center pt-20"
+        >
+            <Icon name="svg-spinners:ring-resize" size="32" />
+        </div>
+
+        <div v-else class="w-full flex flex-col gap-5">
             <div class="w-full flex items-center justify-between">
                 <div class="flex gap-6 items-center w-full">
                     <UChip
@@ -215,7 +222,7 @@ onMounted(async () => {
 
             <div class="w-full flex flex-col gap-6 pl-2">
                 <div
-                    class="w-full flex flex-col rounded-xl px-4 py-3 gap-2 bg-neutral-200 dark:bg-neutral-700"
+                    class="w-full flex flex-col rounded-xl px-4 py-3 gap-2 border border-1 border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
                 >
                     <div class="w-full flex items-center justify-between">
                         <p class="text-neutral-500 text-sm">bio</p>

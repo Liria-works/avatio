@@ -34,7 +34,6 @@ onMounted(async () => {
 
     if (props.image) {
         fetchImage.value = await useGetImage(props.image);
-        fetchImage.value = fetchImage.value.publicUrl;
     } else {
         fetchImage.value = null;
     }
