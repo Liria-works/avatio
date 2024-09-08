@@ -125,7 +125,7 @@ onMounted(async () => {
                         v-for="i in (links as string[])"
                         :to="i"
                         target="_blank"
-                        class="px-2.5 py-1.5 rounded-lg text-neutral-300 border border-1 border-neutral-600 dark:bg-neutral-750 hover:dark:bg-neutral-700"
+                        class="px-2.5 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-750 hover:dark:bg-neutral-700"
                     >
                         <p class="text-sm font-medium">
                             {{
@@ -139,7 +139,7 @@ onMounted(async () => {
                 </div>
 
                 <div
-                    class="w-full rounded-xl px-4 py-3 border border-1 border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
+                    class="w-full rounded-xl px-4 py-3 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
                 >
                     <p class="text-neutral-500 text-sm mt-[-2px]">bio</p>
                     <p v-if="!bio" class="text-neutral-400">自己紹介が未設定</p>
