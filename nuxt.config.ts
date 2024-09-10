@@ -66,6 +66,10 @@ export default defineNuxtConfig({
             token: "",
         },
     },
+
+    nitro: {
+        preset: "vercel",
+    },
 });
 
 //
