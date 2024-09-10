@@ -19,7 +19,7 @@ export default defineNuxtConfig({
         "@nuxtjs/color-mode",
         "@nuxtjs/supabase",
         "@nuxtjs/ngrok",
-        "@nuxthub/core",
+        // "@nuxthub/core",
         "@nuxt/eslint",
         "@pinia/nuxt",
     ],
