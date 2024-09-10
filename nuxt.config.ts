@@ -3,8 +3,8 @@ export default defineNuxtConfig({
     // ssr: false,
 
     routeRules: {
-        "/": { prerender: true, swr: true },
-        "/setup": { prerender: true, swr: true },
+        "/": { swr: true },
+        "/setup": { swr: true },
     },
 
     devtools: {
