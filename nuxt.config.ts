@@ -2,6 +2,11 @@
 export default defineNuxtConfig({
     // ssr: false,
 
+    routeRules: {
+        "/": { prerender: true, swr: true },
+        "/setup": { prerender: true, swr: true },
+    },
+
     devtools: {
         enabled: true,
 
@@ -19,7 +24,6 @@ export default defineNuxtConfig({
         "@nuxtjs/color-mode",
         "@nuxtjs/supabase",
         "@nuxtjs/ngrok",
-        // "@nuxthub/core",
         "@nuxt/eslint",
         "@pinia/nuxt",
     ],
@@ -40,10 +44,6 @@ export default defineNuxtConfig({
             exclude: [],
             cookieRedirect: false,
         },
-    },
-
-    routeRules: {
-        "/": { prerender: true },
     },
 
     icon: {
