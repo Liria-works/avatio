@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { createClient } from "@vercel/edge-config";
 
+useSeoMeta({
+    title: "Avatio",
+    ogTitle: "Avatio",
+    description: "アバターセットアップ共有サービス",
+    ogDescription: "アバターセットアップ共有サービス",
+    ogImage: "https://example.com/image.png", // todo
+    twitterCard: "summary_large_image",
+});
+
 const modal_feedback = ref(false);
 
 let isMaintenance: boolean | undefined = false;

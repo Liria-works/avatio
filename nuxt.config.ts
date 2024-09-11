@@ -47,7 +47,6 @@ export default defineNuxtConfig({
     },
 
     icon: {
-        provider: "server",
         customCollections: [
             {
                 prefix: "avatio",
@@ -57,7 +56,6 @@ export default defineNuxtConfig({
     },
 
     ngrok: {
-        // module options
         authtoken: process.env.NGROK_AUTHTOKEN,
     },
 
