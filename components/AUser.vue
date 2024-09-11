@@ -18,7 +18,7 @@ const userData = ref<{
 }>();
 
 onMounted(async () => {
-    const client = useSupabaseClient();
+    const client = await useSBClient();
 
     const { data } = await client
         .from("users")
