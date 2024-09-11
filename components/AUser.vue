@@ -39,9 +39,19 @@ onMounted(async () => {
     };
 
     if (data.avatar) {
-        userData.value.avatar = await client.storage
-            .from("images")
-            .getPublicUrl(data.avatar).data.publicUrl;
+        const userAvatar = useCookie(props.user);
+
+        if (userAvatar.value) {
+            userData.value.avatar = userAvatar.value;
+            return;
+        } else {
+            console.log("Avatar not found in cookie");
+            userData.value.avatar = await client.storage
+                .from("images")
+                .getPublicUrl(data.avatar).data.publicUrl;
+
+            userAvatar.value = userData.value.avatar;
+        }
     }
 });
 </script>
