@@ -65,26 +65,14 @@ export interface PutImage {
 }
 
 export const useGetImage = async (path: string) => {
-    const runtimeConfig = useRuntimeConfig();
+    const client = await useSBClient();
+    const { data, error } = await client.storage
+        .from("images")
+        .getPublicUrl(path);
 
-    const url = `/api/ServeBlobImage?path=${encodeURIComponent(path)}`;
-
-    try {
-        const response: string | null = await $fetch(url, {
-            method: "GET",
-            headers: {
-                Authorization: runtimeConfig.public.token,
-            },
-        });
-
-        if (!response) {
-            console.error("Failed to fetch item data");
-            return null;
-        }
-
-        return response;
-    } catch (error) {
-        console.error("Failed to fetch item data:", error);
+    if (error) {
+        console.error("Failed to get image:", error);
         return null;
     }
+    return data.publicUrl;
 };
