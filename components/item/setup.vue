@@ -46,6 +46,7 @@ onMounted(async () => {
 <template>
     <ItemBase>
         <template #hero>
+            <div v-if="props.image && !fetchImage" class="h-[190px]"></div>
             <div
                 v-if="fetchImage && !noHero"
                 class="p-1.5 h-[190px] overflow-clip"
