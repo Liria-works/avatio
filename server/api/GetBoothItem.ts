@@ -2,49 +2,17 @@
 import authMiddleware from "./Auth";
 
 import { serverSupabaseClient } from "#supabase/server";
+import { createClient } from "@vercel/edge-config";
 
 const url_base = "https://booth.pm/ja/items/";
 
-const allowed_category_id = [
-    // 3Dモデル
-    208, // 3Dキャラクター
-    209, // 3D衣装
-    217, // 3D装飾品
-    210, // 3D小道具
-    214, // 3Dテクスチャ
-    215, // 3Dツール・システム
-    216, // 3Dモーション・アニメーション
-    211, // 3D環境・ワールド
-    212, // VRoid
-    127, // 3Dモデル（その他）
-    // 素材データ
-    125, // イラスト素材
-    213, // イラスト3D素材
-    126, // 背景画像
-    128, // フォント・書体
-    129, // アイコン
-    22, //ロゴ
-    123, //BGM素材
-    124, //効果音
-    134, // 素材（その他）
-];
-
 export default defineEventHandler(async (event) => {
     // console.log(getQuery(event));
-    const id: string | object | undefined = extractId(getQuery(event));
+    const query = getQuery(event);
+    const id = Number(query.id);
 
-    if (typeof id === "string") {
+    if (typeof id === "number") {
         return GetBoothItem(event, Number(id));
-    } else if (typeof id === "object") {
-        const itemList: { [key: number]: any } = {};
-
-        for (const key in id as any) {
-            itemList[Number(id[key])] = await GetBoothItem(
-                event,
-                Number(id[key])
-            );
-        }
-        return { status: 200, body: itemList };
     } else {
         return {
             status: 400,
@@ -54,65 +22,11 @@ export default defineEventHandler(async (event) => {
 });
 
 async function GetBoothItem(event: any, id: number) {
-    // トークンの無いリクエストは弾く
-    await authMiddleware(event);
+    await authMiddleware(event); // トークンの無いリクエストは弾く
 
     const startTime = Date.now(); // 処理開始時刻を記録
 
-    let exist = false;
-    // let old = false;
-
     const client = await serverSupabaseClient(event);
-    const { data }: any = await client
-        .from("items")
-        .select(
-            "id, name, thumbnail, price, category, shop_id(id, name, thumbnail, verified), nsfw, outdated, updated_at, created_at"
-        )
-        .eq("id", id)
-        .single();
-
-    if (data) {
-        let avatar_details = null;
-        if (data.category === 208) {
-            const { data } = await client
-                .from("avatar_details")
-                .select(
-                    "id, short_ja, short_en, short_kr, vrc_sample, vrc_world"
-                )
-                .eq("id", id)
-                .maybeSingle();
-            avatar_details = data;
-        }
-
-        const responseData = {
-            id: data.id,
-            name: data.name,
-            thumbnail: data.thumbnail,
-            price: data.price,
-            category: data.category,
-            avatar_details: avatar_details,
-            shop_id: data.shop_id.id,
-            shop: data.shop_id.name,
-            shop_thumbnail: data.shop_id.thumbnail,
-            shop_verified: data.shop_id.verified,
-            nsfw: data.nsfw,
-            outdated: data.outdated,
-        };
-
-        exist = true;
-        const timeDifference = startTime - new Date(data.updated_at).getTime();
-
-        // 時間の差分が1日を超えている場合、処理継続する
-        if (timeDifference < 24 * 60 * 60 * 1000) {
-            if (data.outdated) {
-                return Response(200, "Item is outdated", { outdated: true });
-            }
-            logDuration(startTime, "Database", data.name);
-            return Response(200, "Data found in database", responseData);
-        }
-        // old = true;
-        console.log("Data is old, fetching from Booth");
-    }
 
     try {
         // データ取得
@@ -121,23 +35,63 @@ async function GetBoothItem(event: any, id: number) {
             { body: { id: id } }
         );
 
-        if (error) {
-            if (exist) {
-                await client
-                    .from("items")
-                    .update({ outdated: true } as never)
-                    .eq("id", id);
-                return Response(200, "Item is outdated", { outdated: true });
-            }
-
-            throw error;
-        }
+        if (error) throw error;
 
         // カテゴリIDをチェック
-        if (!isAllowedCategory(data.category, data.tags)) {
+
+        // 3Dモデル
+        //      208 // 3Dキャラクター
+        //      209 // 3D衣装
+        //      217 // 3D装飾品
+        //      210 // 3D小道具
+        //      214 // 3Dテクスチャ
+        //      215 // 3Dツール・システム
+        //      216 // 3Dモーション・アニメーション
+        //      211 // 3D環境・ワールド
+        //      212 // VRoid
+        //      127 // 3Dモデル（その他）
+        // 素材データ
+        //      125 // イラスト素材
+        //      213 // イラスト3D素材
+        //      126 // 背景画像
+        //      128 // フォント・書体
+        //      129 // アイコン
+        //      22  //ロゴ
+        //      123 //BGM素材
+        //      124 //効果音
+        //      134 // 素材（その他）
+
+        const runtimeConfig = useRuntimeConfig();
+        const edgeConfig = createClient(runtimeConfig.public.edgeConfig);
+
+        try {
+            const allowed_category_id: number[] | undefined =
+                await edgeConfig.get("allowed_category_id");
+
+            if (!allowed_category_id) {
+                return {
+                    status: 500,
+                    body: { error: "Failed to get allowed tag data." },
+                };
+            }
+
+            if (!allowed_category_id.includes(Number(data.category))) {
+                if (
+                    !data.tags
+                        .map((tag: { name: string }) => tag.name)
+                        .includes("VRChat")
+                ) {
+                    return {
+                        status: 400,
+                        body: { error: "Invalid category ID" },
+                    };
+                }
+            }
+        } catch (e) {
+            console.log(e);
             return {
-                status: 400,
-                body: { error: "Invalid category ID" },
+                status: 500,
+                body: { error: "Failed to get allowed tag data." },
             };
         }
 
@@ -178,42 +132,6 @@ async function GetBoothItem(event: any, id: number) {
             body: { error: "Failed to fetch data" },
         };
     }
-}
-
-function extractId(query: any): string | undefined {
-    if (query.id) {
-        return query.id;
-    }
-    if (query.url) {
-        try {
-            const url_parse = new URL(query.url.toString());
-            const pathSegments = url_parse.pathname
-                .split("/")
-                .filter((segment) => segment);
-            const itemsIndex = pathSegments.indexOf("items");
-
-            return itemsIndex !== -1 && itemsIndex + 1 < pathSegments.length
-                ? pathSegments[itemsIndex + 1]
-                : undefined;
-        } catch (error) {
-            console.log(error);
-            return undefined;
-        }
-    }
-    return undefined;
-}
-
-function isAllowedCategory(categoryId: number, tags: any): boolean {
-    if (allowed_category_id.includes(categoryId)) {
-        return true;
-    } else {
-        for (const tag of tags) {
-            if (tag === "VRChat") {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 function logDuration(startTime: number, source: string, itemName: string) {
