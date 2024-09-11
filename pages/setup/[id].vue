@@ -514,7 +514,9 @@ onMounted(async () => {
                     <div
                         class="self-stretch px-3 py-2 bg-neutral-50 dark:bg-neutral-750 border border-1 border-neutral-300 dark:border-neutral-600 rounded-lg items-center flex"
                     >
-                        <span class="text-black dark:text-white text-sm">
+                        <span
+                            class="text-sm/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-black dark:text-white"
+                        >
                             {{ setup.description || "" }}
                         </span>
                     </div>
