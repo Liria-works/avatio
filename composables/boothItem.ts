@@ -60,7 +60,8 @@ export const useFetchBooth = async ({
         // 時間の差分が1日を超えている場合、処理継続する
         if (timeDifference < 24 * 60 * 60 * 1000) {
             if (boothData.outdated) {
-                return { outdated: true };
+                res.outdated = true;
+                return res;
             }
             return res;
         }
