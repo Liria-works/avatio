@@ -18,7 +18,7 @@ const userData = ref<{
 }>();
 
 onMounted(async () => {
-    const client = useSupabaseClient();
+    const client = await useSBClient();
 
     const { data } = await client
         .from("users")
@@ -39,9 +39,18 @@ onMounted(async () => {
     };
 
     if (data.avatar) {
-        userData.value.avatar = await client.storage
-            .from("images")
-            .getPublicUrl(data.avatar).data.publicUrl;
+        const storedAvatar = sessionStorage.getItem(props.user);
+
+        if (storedAvatar) {
+            userData.value.avatar = storedAvatar;
+            return;
+        } else {
+            userData.value.avatar = await client.storage
+                .from("images")
+                .getPublicUrl(data.avatar).data.publicUrl;
+
+            sessionStorage.setItem(props.user, userData.value.avatar);
+        }
     }
 });
 </script>

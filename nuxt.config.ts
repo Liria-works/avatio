@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    ssr: false,
+    // ssr: false,
+
+    routeRules: {
+        "/": { swr: true },
+        "/setup": { swr: true },
+    },
 
     devtools: {
         enabled: true,
@@ -19,7 +24,6 @@ export default defineNuxtConfig({
         "@nuxtjs/color-mode",
         "@nuxtjs/supabase",
         "@nuxtjs/ngrok",
-        "@nuxthub/core",
         "@nuxt/eslint",
         "@pinia/nuxt",
     ],
@@ -42,12 +46,7 @@ export default defineNuxtConfig({
         },
     },
 
-    routeRules: {
-        "/": { prerender: true },
-    },
-
     icon: {
-        provider: "server",
         customCollections: [
             {
                 prefix: "avatio",
@@ -57,14 +56,18 @@ export default defineNuxtConfig({
     },
 
     ngrok: {
-        // module options
         authtoken: process.env.NGROK_AUTHTOKEN,
     },
 
     runtimeConfig: {
         public: {
             token: "",
+            edgeConfig: "",
         },
+    },
+
+    nitro: {
+        preset: "vercel",
     },
 });
 
