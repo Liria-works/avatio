@@ -65,12 +65,6 @@ export interface PutImage {
 }
 
 export const useGetImage = async (path: string) => {
-    const stored = sessionStorage.getItem(path);
-
-    if (stored) {
-        return stored;
-    }
-
     const client = await useSBClient();
     const { data, error } = await client.storage
         .from("images")
@@ -81,6 +75,5 @@ export const useGetImage = async (path: string) => {
         return null;
     }
 
-    sessionStorage.setItem(path, data.publicUrl);
     return data.publicUrl;
 };
