@@ -12,14 +12,25 @@ export const useBoothItems = defineStore("boothItems", () => {
 export const useSetupIndex = defineStore("setupIndex", () => {
     const user = useSupabaseUser();
 
-    const setupsIndex = ref<Setup[]>([]);
+    type SetupData = {
+        id: number;
+        name: string;
+        description: string;
+        author: { id: string; name: string; avatar: string };
+        avatar: { name: string; thumbnail: string };
+        image: string;
+        created_at: string;
+    };
+    const setupsIndex = ref<SetupData[]>([]);
 
     async function GetSetupIndex() {
         const client = await useSBClient();
         if (user.value) {
             const { data } = await client
                 .from("setups")
-                .select("id, created_at, name, author, avatar, image")
+                .select(
+                    "id, description, name, author(id, name, avatar), avatar(name, thumbnail), image, created_at"
+                )
                 .neq("author", user.value.id)
                 .order("created_at", { ascending: false })
                 .range(0, 20);
@@ -27,7 +38,9 @@ export const useSetupIndex = defineStore("setupIndex", () => {
         } else {
             const { data } = await client
                 .from("setups")
-                .select("id, created_at, name, author, avatar, image")
+                .select(
+                    "id, description, name, author(id, name, avatar), avatar(name, thumbnail), image, created_at"
+                )
                 .order("created_at", { ascending: false })
                 .range(0, 20);
             setupsIndex.value = data;

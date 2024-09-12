@@ -31,6 +31,7 @@
     },
     "dependencies": {
         "@vercel/edge-config": "^1.2.1",
+        "@yeger/vue-masonry-wall": "^5.0.15",
         "budoux": "0.6.2",
         "date-fns": "3.6.0",
         "marked": "14.1.1",

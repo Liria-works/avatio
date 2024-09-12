@@ -11,6 +11,19 @@ export interface Setup {
     created_at: string;
 }
 
+export interface SetupSimple {
+    id: number;
+    name: string;
+    description: string | null;
+    avatar_name: string;
+    avatar_thumbnail: string;
+    author_id: string;
+    author_name: string;
+    author_avatar: string;
+    created_at: string;
+    image: string | null;
+}
+
 export const usePublishSetup = async (
     setup: {
         name: string;
