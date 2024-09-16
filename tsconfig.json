@@ -1,8 +1,6 @@
 {
-    // https://nuxt.com/docs/guide/concepts/typescript
-    "extends": "./.nuxt/tsconfig.json",
-    "compilerOptions": {
-        "paths": { "@UI/*": ["./*"] },
-        "moduleResolution": "Node"
-    }
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "preserve"
+  }
 }

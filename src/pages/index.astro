@@ -1,0 +1,13 @@
+---
+import MainLayout from "../layouts/main.astro";
+
+import Banner from "../components/banner/home.vue";
+import Discovery from "../layouts/home/discovery.vue";
+---
+
+<MainLayout>
+	<div class="flex flex-col gap-10">
+		<Banner client:load />
+		<Discovery client:load />
+	</div>
+</MainLayout>

@@ -1,0 +1,117 @@
+---
+import { supabase } from "../../lib/supabase";
+import { Icon } from "astro-icon/components";
+
+import MainLayout from "../../layouts/main.astro";
+import Title from "../../components/title.astro";
+import Tooltip from "../../components/tooltip.vue";
+import Avatar from "../../components/avatar.vue";
+import BoothItem from "../../components/item/booth.vue";
+
+const { id } = Astro.params;
+
+console.log(`${Astro.url}/api/setup/detail?id=${id}`);
+
+const { data: details, error } = await supabase
+    .from("setups")
+    .select(
+        "id, created_at, updated_at, name, description, avatar(id, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), avatar_note, tags, author(id, name), image, setup_items(item_id, note, unsupported)",
+    )
+    .eq("id", Number(id))
+    .maybeSingle();
+---
+
+<MainLayout>
+    {
+        details && (
+            <div class="w-full flex flex-col xl:flex-row items-start gap-8">
+                <div class="w-full flex flex-col items-center gap-8">
+                    <img
+                        src={`https://imbxeblwlopxrgexztsx.supabase.co/storage/v1/object/public/images/${details.image}`}
+                        alt={details.name}
+                        class="rounded-xl w-full"
+                    />
+
+                    <div class="w-full text-left text-black dark:text-white text-2xl font-bold line-clamp-2">
+                        {details.name || ""}
+                    </div>
+
+                    {details.avatar && (
+                        <BoothItem
+                            client:load
+                            size="lg"
+                            note={details.avatar_note}
+                            id={details.avatar.id}
+                            name={details.avatar.name}
+                            thumbnail={details.avatar.thumbnail}
+                            shop={details.avatar.shop_id.name}
+                            shopId={details.avatar.shop_id.id}
+                            shopThumbnail={details.avatar.shop_id.thumbnail}
+                            shopVerified={details.avatar.shop_id.verified}
+                            price={details.avatar.price}
+                            nsfw={details.avatar.nsfw}
+                        />
+                    )}
+                </div>
+
+                <div class="w-full xl:w-96 flex flex-col items-start gap-6">
+                    <div class="flex flex-row xl:flex-col items-center xl:items-start gap-5 xl:gap-3">
+                        <div class="flex items-center gap-2">
+                            <Avatar client:load user={details.author.id} />
+                            <p>{details.author.name}</p>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm text-neutral-600 whitespace-nowrap">
+                                {new Date(details.created_at).toLocaleString(
+                                    "ja-JP",
+                                    {
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                    },
+                                )}
+                                に公開
+                            </p>
+
+                            <Tooltip
+                                client:load
+                                base-icon="lucide:pen"
+                                base-icon-size={16}
+                                text={`${new Date(details.updated_at).toLocaleString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" })} に編集`}
+                            />
+                        </div>
+                    </div>
+
+                    {details.description && (
+                        <div class="w-full gap-2 flex flex-col justify-start items-start">
+                            <Title label="説明" icon="lucide:text" />
+                            <div class="w-full rounded-lg flex items-center px-3 py-2 border border-1 border-neutral-300 dark:border-neutral-600">
+                                <p class="text-sm/relaxed break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100">
+                                    {details.description || ""}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {() => {
+                        if (details.tags && details.tags.length) {
+                            return (
+                                <div class="gap-2.5 flex flex-col">
+                                    <Title label="タグ" icon="lucide:tags" />
+                                    <div class="items-center gap-1.5 flex flex-row flex-wrap">
+                                        {details.tags.map((tag) => (
+                                            <button class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 hover:bg-neutral-300 text-neutral-900 dark:text-neutral-400">
+                                                {tag}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            );
+                        }
+                    }}
+                </div>
+            </div>
+        )
+    }
+</MainLayout>

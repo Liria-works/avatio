@@ -1,0 +1,41 @@
+---
+import { Image } from "astro:assets";
+import LogoAvatioLight from "../../public/logo_2_light.svg";
+
+import Button from "../components/button.vue";
+---
+
+<div class="flex items-center justify-between">
+    <a href="/">
+        <Image src={LogoAvatioLight} alt="Avatio" width="160" />
+    </a>
+    <div class="flex items-center gap-2">
+        <Button
+            client:load
+            tooltip="検索"
+            icon="lucide:search"
+            outline={false}
+            padding="p-2"
+            colorBg="hover:bg-neutral-300"
+        />
+        <Button
+            client:load
+            tooltip="テーマ"
+            icon="lucide:moon"
+            outline={false}
+            padding="p-2"
+            colorBg="hover:bg-neutral-300"
+        />
+        <div class="pl-2">
+            <Button
+                client:load
+                label="ログイン"
+                outline={false}
+                padding="px-4 py-2"
+                rounded="rounded-lg"
+                color-bg="bg-neutral-500 hover:bg-neutral-600"
+                color-text="text-neutral-100"
+            />
+        </div>
+    </div>
+</div>
