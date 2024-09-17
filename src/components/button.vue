@@ -41,33 +41,19 @@ const props = withDefaults(
 </script>
 
 <template>
-    <Tooltip :text="props.tooltip">
-        <button
-			v-if="props.to.length"
-            :class="`w-fit flex gap-2 items-center justify-center ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
-            <Icon
-				v-if="props.icon.length"
-				:icon="props.icon"
-				:width="props.iconSize"
-				:height="props.iconSize"
-                :class="`${props.colorIcon}`"
-			/>
-            <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
-        </button>
-
-		<a
-			v-else
-			:href="props.to"
-			:target="props.newTab ? '_blank' : '_self'"
+	<Tooltip :text="props.tooltip">
+		<button v-if="!props.to.length"
 			:class="`w-fit flex gap-2 items-center justify-center ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
-			<Icon
-				v-if="props.icon.length"
-				:icon="props.icon"
-				:width="props.iconSize"
-				:height="props.iconSize"
-				:class="`${props.colorIcon}`"
-			/>
-            <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
+			<Icon v-if="props.icon.length" :icon="props.icon" :width="props.iconSize" :height="props.iconSize"
+				:class="`${props.colorIcon}`" />
+			<p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
+		</button>
+
+		<a v-else :href="props.to" :target="props.newTab ? '_blank' : '_self'"
+			:class="`w-fit flex gap-2 items-center justify-center ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
+			<Icon v-if="props.icon.length" :icon="props.icon" :width="props.iconSize" :height="props.iconSize"
+				:class="`${props.colorIcon}`" />
+			<p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
 		</a>
-    </Tooltip>
+	</Tooltip>
 </template>
