@@ -7,18 +7,89 @@ import Title from "../../components/title.astro";
 import Tooltip from "../../components/tooltip.vue";
 import Avatar from "../../components/avatar.vue";
 import BoothItem from "../../components/item/booth.vue";
+import { sentence } from "../../lib/text";
 
 const { id } = Astro.params;
 
 console.log(`${Astro.url}/api/setup/detail?id=${id}`);
 
-const { data: details, error } = await supabase
+const { data, error } = await supabase
     .from("setups")
     .select(
-        "id, created_at, updated_at, name, description, avatar(id, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), avatar_note, tags, author(id, name), image, setup_items(item_id, note, unsupported)",
+        "id, created_at, updated_at, name, description, avatar(id, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), avatar_note, tags, author(id, name), image, setup_items(item_id(id, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)",
     )
     .eq("id", Number(id))
     .maybeSingle();
+
+interface Setup {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    description: string;
+    avatar: {
+        id: number;
+        outdated: boolean;
+        name: string;
+        thumbnail: string;
+        price: string;
+        shop_id: {
+            id: string;
+            name: string;
+            thumbnail: string;
+            verified: boolean;
+        };
+        nsfw: boolean;
+    };
+    avatar_note: string;
+    tags: string[];
+    author: {
+        id: string;
+        name: string;
+    };
+    image: string;
+    setup_items: {
+        item_id: {
+            id: number;
+            outdated: boolean;
+            category: number;
+            name: string;
+            thumbnail: string;
+            price: string;
+            shop_id: {
+                id: string;
+                name: string;
+                thumbnail: string;
+                verified: boolean;
+            };
+            nsfw: boolean;
+        };
+        note: string;
+        unsupported: boolean;
+    }[];
+}
+
+const details: Setup | null = data as unknown as Setup; // Supabaseの型生成にバグがあるのでキャストしています
+
+const categorizedItems: { [key: string]: typeof details.setup_items } = {};
+
+if (details?.setup_items) {
+    for (const item of details.setup_items) {
+        let category: string;
+        if (item.item_id.category === 209) {
+            category = "cloth";
+        } else if (item.item_id.category === 217) {
+            category = "accessory";
+        } else {
+            category = "other";
+        }
+
+        if (!categorizedItems[category]) {
+            categorizedItems[category] = [];
+        }
+        categorizedItems[category].push(item);
+    }
+}
 ---
 
 <MainLayout>
@@ -26,19 +97,21 @@ const { data: details, error } = await supabase
         details && (
             <div class="w-full flex flex-col xl:flex-row items-start gap-8">
                 <div class="w-full flex flex-col items-center gap-8">
-                    <img
-                        src={`https://imbxeblwlopxrgexztsx.supabase.co/storage/v1/object/public/images/${details.image}`}
-                        alt={details.name}
-                        class="rounded-xl w-full"
-                    />
+                    {details.image && (
+                        <img
+                            src={`https://imbxeblwlopxrgexztsx.supabase.co/storage/v1/object/public/images/${details.image}`}
+                            alt={details.name}
+                            class="rounded-xl w-full"
+                        />
+                    )}
 
-                    <div class="w-full text-left text-black dark:text-white text-2xl font-bold line-clamp-2">
-                        {details.name || ""}
+                    <div class="w-full text-left text-2xl font-bold line-clamp-2 break-keep [overflow-wrap:anywhere;] text-black dark:text-white">
+                        {sentence(details.name) || ""}
                     </div>
 
                     {details.avatar && (
                         <BoothItem
-                            client:load
+                            client:visible
                             size="lg"
                             note={details.avatar_note}
                             id={details.avatar.id}
@@ -52,6 +125,90 @@ const { data: details, error } = await supabase
                             nsfw={details.avatar.nsfw}
                         />
                     )}
+
+                    {() => {
+                        if (Object.keys(categorizedItems).length) {
+                            const sortedKeys = Object.keys(
+                                categorizedItems,
+                            ).sort((a, b) => {
+                                const order = ["cloth", "accessory", "other"];
+                                return order.indexOf(a) - order.indexOf(b);
+                            });
+
+                            return (
+                                <div class="w-full flex flex-col gap-8">
+                                    {sortedKeys.map((category) => (
+                                        <div class="w-full flex flex-col gap-2">
+                                            {() => {
+                                                if (category === "cloth") {
+                                                    return (
+                                                        <Title
+                                                            label="衣装"
+                                                            icon="lucide:shirt"
+                                                        />
+                                                    );
+                                                } else if (
+                                                    category === "accessory"
+                                                ) {
+                                                    return (
+                                                        <Title
+                                                            label="アクセサリー"
+                                                            icon="lucide:star"
+                                                        />
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <Title
+                                                            label="その他"
+                                                            icon="lucide:package"
+                                                        />
+                                                    );
+                                                }
+                                            }}
+
+                                            {categorizedItems[category].map(
+                                                (item) => (
+                                                    <BoothItem
+                                                        client:visible
+                                                        note={item.note}
+                                                        unsupported={
+                                                            item.unsupported
+                                                        }
+                                                        id={item.item_id.id}
+                                                        name={item.item_id.name}
+                                                        thumbnail={
+                                                            item.item_id
+                                                                .thumbnail
+                                                        }
+                                                        shop={
+                                                            item.item_id.shop_id
+                                                                .name
+                                                        }
+                                                        shopId={
+                                                            item.item_id.shop_id
+                                                                .id
+                                                        }
+                                                        shopThumbnail={
+                                                            item.item_id.shop_id
+                                                                .thumbnail
+                                                        }
+                                                        shopVerified={
+                                                            item.item_id.shop_id
+                                                                .verified
+                                                        }
+                                                        price={
+                                                            item.item_id.price
+                                                        }
+                                                        nsfw={item.item_id.nsfw}
+                                                    />
+                                                ),
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        }
+                    }}
                 </div>
 
                 <div class="w-full xl:w-96 flex flex-col items-start gap-6">
@@ -74,12 +231,18 @@ const { data: details, error } = await supabase
                                 に公開
                             </p>
 
-                            <Tooltip
-                                client:load
-                                base-icon="lucide:pen"
-                                base-icon-size={16}
-                                text={`${new Date(details.updated_at).toLocaleString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" })} に編集`}
-                            />
+                            {() => {
+                                if (details.updated_at !== details.created_at) {
+                                    return (
+                                        <Tooltip
+                                            client:load
+                                            base-icon="lucide:pen"
+                                            base-icon-size={16}
+                                            text={`${new Date(details.updated_at).toLocaleString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" })} に編集`}
+                                        />
+                                    );
+                                }
+                            }}
                         </div>
                     </div>
 
@@ -87,8 +250,8 @@ const { data: details, error } = await supabase
                         <div class="w-full gap-2 flex flex-col justify-start items-start">
                             <Title label="説明" icon="lucide:text" />
                             <div class="w-full rounded-lg flex items-center px-3 py-2 border border-1 border-neutral-300 dark:border-neutral-600">
-                                <p class="text-sm/relaxed break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100">
-                                    {details.description || ""}
+                                <p class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100">
+                                    {sentence(details.description) || ""}
                                 </p>
                             </div>
                         </div>

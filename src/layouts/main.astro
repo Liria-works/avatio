@@ -3,6 +3,7 @@ import { AstroFont } from "astro-font";
 import { SEO } from "astro-seo";
 
 import Header from "./header.astro";
+import Footer from "./footer.astro";
 ---
 
 <html lang="en">
@@ -55,6 +56,7 @@ import Header from "./header.astro";
         <div class="w-full max-w-[1300px] flex flex-col mx-auto gap-8 pt-4">
             <Header />
             <slot />
+            <Footer />
         </div>
     </body>
 </html>

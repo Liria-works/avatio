@@ -1,0 +1,116 @@
+---
+import Button from "../components/button.vue";
+---
+
+<footer class="flex flex-col gap-10">
+    <div class="flex flex-col w-full gap-3 pb-10 items-center">
+        <div
+            class="flex-col sm:flex-row flex items-center justify-center gap-4 text-neutral-700 dark:text-white"
+        >
+            <div class="flex items-center gap-4">
+                <Button
+                    client:visible
+                    tooltip="準備中"
+                    label="お知らせ"
+                    icon="lucide:megaphone"
+                    outline={false}
+                    padding="p-2"
+                    colorBg="hover:bg-neutral-300"
+                />
+
+                <Button
+                    client:visible
+                    label="フィードバック"
+                    icon="lucide:lightbulb"
+                    outline={false}
+                    padding="p-2"
+                    colorBg="hover:bg-neutral-300"
+                />
+            </div>
+
+            <div class="flex items-center gap-4">
+                <Button
+                    client:visible
+                    to="https://x.com/liria_work"
+                    newTab
+                    icon="simple-icons:x"
+                    outline={false}
+                    padding="p-2"
+                    colorBg="hover:bg-neutral-300"
+                />
+
+                <Button
+                    client:visible
+                    to="https://github.com/Liria-works/avatio"
+                    newTab
+                    icon="simple-icons:github"
+                    outline={false}
+                    padding="p-2"
+                    colorBg="hover:bg-neutral-300"
+                />
+
+                <Button
+                    client:visible
+                    to="https://liria.work"
+                    label="Liria"
+                    icon="lucide:lightbulb"
+                    outline={false}
+                    padding="p-2"
+                    colorBg="hover:bg-neutral-300"
+                />
+            </div>
+        </div>
+        <div
+            class="items-center justify-center gap-4 flex text-neutral-700 dark:text-white"
+        >
+            <Button
+                client:visible
+                tooltip="準備中"
+                label="Avatioについて"
+                outline={false}
+                padding="p-2"
+                padding="p-1"
+                text="text-xs font-semibold"
+                colorText="text-neutral-500 hover:text-neutral-400"
+                colorBg=""
+            />
+
+            <Button
+                client:visible
+                to="/faq"
+                label="FAQ"
+                outline={false}
+                padding="p-2"
+                padding="p-1"
+                text="text-xs font-semibold"
+                colorText="text-neutral-500 hover:text-neutral-400"
+                colorBg=""
+            />
+
+            <Button
+                client:visible
+                tooltip="準備中"
+                label="利用規約"
+                outline={false}
+                padding="p-2"
+                padding="p-1"
+                text="text-xs font-semibold"
+                colorText="text-neutral-500 hover:text-neutral-400"
+                colorBg=""
+            />
+
+            <Button
+                client:visible
+                tooltip="準備中"
+                label="プライバシーポリシー"
+                outline={false}
+                padding="p-1"
+                text="text-xs font-semibold"
+                colorText="text-neutral-500 hover:text-neutral-400"
+                colorBg=""
+            />
+
+            <p class="text-neutral-500 text-xs">Copyright © 2024 Liria</p>
+        </div>
+    </div>
+</footer>
