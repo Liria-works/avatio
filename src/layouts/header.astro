@@ -6,23 +6,34 @@ import Button from "../components/button.vue";
 import Modal from "../components/modal.vue";
 ---
 
+<script>
+    import { searchOpen } from "../lib/modal";
+
+    const modalSearchElement = document.getElementById("modalSearch");
+    if (modalSearchElement) {
+        modalSearchElement.addEventListener("click", () =>
+            searchOpen.set(true),
+        );
+    }
+</script>
+
 <header class="flex flex-wrap gap-2 items-center justify-between py-4">
     <a href="/" class="flex-shrink-0 w-fit">
         <Image src={LogoAvatioLight} alt="Avatio" width="160" />
     </a>
+
     <div class="flex items-center gap-2">
-        <Modal client:load title="Search">
-            <Button
-                client:load
-                slot="trigger"
-                tooltip="検索"
-                icon="lucide:search"
-                outline={false}
-                padding="p-2"
-                colorBg="hover:bg-neutral-300"
-            />
-            <div slot="content"></div>
-        </Modal>
+        <Modal client:load title="検索" />
+
+        <Button
+            client:idle
+            id="modalSearch"
+            tooltip="検索"
+            icon="lucide:search"
+            outline={false}
+            padding="p-2"
+            colorBg="hover:bg-neutral-300"
+        />
 
         <Button
             client:load

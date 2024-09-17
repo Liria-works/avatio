@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useStore } from '@nanostores/vue'
+import { searchOpen } from '../lib/modal'
+
+const $searchOpen = useStore(searchOpen);
+
 import {
     TransitionRoot,
     TransitionChild,
@@ -12,22 +17,11 @@ const props = defineProps<{
     title: string
 }>()
 
-const isOpen = ref(false)
-
-function closeModal() {
-    isOpen.value = false
-}
-function openModal() {
-    isOpen.value = true
-}
 </script>
 
 <template>
-    <button @click="openModal()">
-        <slot name="trigger" />
-    </button>
-    <TransitionRoot :show="isOpen" as="template">
-        <Dialog as="div" :open="isOpen" @close="closeModal()" class="relative z-10">
+    <TransitionRoot :show="$searchOpen" as="template">
+        <Dialog as="div" :open="$searchOpen" @close="searchOpen.set(!$searchOpen)" class="relative z-10">
             <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
                 leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-black/25" />
@@ -42,7 +36,7 @@ function openModal() {
                             <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
                                 {{ props.title }}
                             </DialogTitle>
-                            <slot name="content" />
+                            <p>aaaaaaaaa</p>
                         </DialogPanel>
                     </TransitionChild>
                 </div>
