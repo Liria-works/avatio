@@ -13,10 +13,6 @@ import {
     DialogTitle,
 } from '@headlessui/vue'
 
-const props = defineProps<{
-    title: string
-}>()
-
 </script>
 
 <template>
@@ -34,7 +30,7 @@ const props = defineProps<{
                         leave-to="opacity-0 scale-95">
                         <DialogPanel class="w-full max-w-md rounded-2xl bg-white p-6 text-left">
                             <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
-                                {{ props.title }}
+                                aaaa
                             </DialogTitle>
                             <p>aaaaaaaaa</p>
                         </DialogPanel>

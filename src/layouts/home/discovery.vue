@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { supabase } from "../../lib/supabase";
 
-import Button from "../../components/button.vue";
 import Title from "../../components/title.vue";
 import ItemSetup from "../../components/item/setup.vue";
 
-const setups = ref([]);
+type Setup = {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    avatar: { name: string; thumbnail: string };
+    author: { id: string; name: string; avatar: string };
+    image: string;
+}
+
+const setups = ref<Setup[]>([]);
 const loading = ref(true);
 
 onMounted(() => {
@@ -14,10 +24,15 @@ onMounted(() => {
 });
 
 const get = async () => {
-    const response = await fetch("api/setup/discovery");
-    const json = await response.json();
+    const { data } = await supabase
+        .from("setups")
+        .select(
+            "id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)",
+        )
+        .range(0, 20)
+        .order("created_at", { ascending: false });
 
-    if (json.body) setups.value = json.body;
+    if (data) setups.value = data as unknown as Setup[];
 };
 </script>
 
@@ -32,7 +47,7 @@ const get = async () => {
                         :avatar_thumbnail="item.avatar.thumbnail" :author_id="item.author.id"
                         :author_name="item.author.name" :author_avatar="item.author.avatar"
                         :created-at="item.created_at" :image="item.image"
-                        class="hover:bg-neutral-200 dark:hover:bg-neutral-700" />
+                        class="hover:bg-neutral-200 dark:hover:bg-neutral-600" />
                 </a>
             </template>
         </MasonryWall>

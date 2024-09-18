@@ -6,6 +6,21 @@ import Header from "./header.astro";
 import Footer from "./footer.astro";
 ---
 
+<script is:inline>
+    if (typeof window.localStorage.getItem("theme") === "string") {
+        const currentTheme = window.localStorage.getItem("theme");
+        if (currentTheme === "dark") {
+            document.documentElement.classList.add("dark");
+        }
+    }
+    if (
+        typeof window.localStorage.getItem("theme") !== "string" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+        document.documentElement.classList.add("dark");
+    }
+</script>
+
 <html lang="en">
     <head>
         <SEO

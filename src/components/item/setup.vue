@@ -3,6 +3,7 @@ import Tooltip from "../tooltip.vue";
 import Avatar from "../avatar.vue";
 import ItemBase from "./base.vue";
 import { elapseDate } from "../../lib/date.ts";
+import { avatarName } from "../../lib/text.ts";
 
 const props = withDefaults(
     defineProps<{
@@ -57,7 +58,7 @@ const dateLocale = date.toLocaleString("ja-JP", {
                     </p>
                     <div class="flex justify-between items-center gap-2">
                         <p class="text-xs text-neutral-500 dark:text-neutral-400 break-all line-clamp-1">
-                            {{ props.avatar_name }}
+                            {{ avatarName(props.avatar_name) }}
                         </p>
                         <div class="flex items-center gap-2">
                             <Tooltip :text="dateLocale">

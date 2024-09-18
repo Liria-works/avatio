@@ -29,7 +29,7 @@ const props = withDefaults(
                     class="px-3 py-1.5 select-none text-xs tracking-wide font-medium rounded-md bg-neutral-800 dark:bg-neutral-200 text-neutral-100 dark:text-neutral-900"
                     :side-offset="5">
                     {{ props.text }}
-                    <TooltipArrow class="fill-neutral-800" :width="8" />
+                    <TooltipArrow class="fill-neutral-800 dark:fill-neutral-200" :width="8" />
                 </TooltipContent>
             </TooltipPortal>
         </TooltipRoot>

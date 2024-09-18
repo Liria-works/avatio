@@ -9,26 +9,26 @@ import Button from "../button.vue";
 import Tooltip from "../tooltip.vue";
 
 const props = withDefaults(
-	defineProps<{
-		size?: "md" | "lg";
-		note?: string | null;
-		unsupported?: boolean;
-		id: number;
-		name: string;
-		thumbnail: string;
-		shop: string;
-		shopId: string;
-		shopThumbnail: string;
-		shopVerified: boolean;
-		price: string;
-		nsfw: boolean;
-	}>(),
-	{
-		size: "md",
-		note: null,
-		unsupported: false,
-		nsfw: false,
-	},
+    defineProps<{
+        size?: "md" | "lg";
+        note?: string | null;
+        unsupported?: boolean;
+        id: number;
+        name: string;
+        thumbnail: string;
+        shop: string;
+        shopId: string;
+        shopThumbnail: string;
+        shopVerified: boolean;
+        price: string;
+        nsfw: boolean;
+    }>(),
+    {
+        size: "md",
+        note: null,
+        unsupported: false,
+        nsfw: false,
+    },
 );
 
 const booth_url = "https://booth.pm/ja/items/";
@@ -42,8 +42,10 @@ const modalAvatarSuggest = ref(false);
         <template #thumbnail>
             <div :class="`flex-shrink-0 ${props.size === 'lg' ? 'p-4' : 'p-1.5 pr-4'}`">
                 <div class="overflow-clip rounded-lg">
-                    <img :src="props.thumbnail" :alt="props.name"
-                        :class="`rounded-lg object-cover ${props.size === 'lg' ? 'size-32' : 'size-20'} ${props.nsfw ? 'blur-md' : ''}`" />
+                    <a :href="booth_url + props.id" target="_blank">
+                        <img :src="props.thumbnail" :alt="props.name"
+                            :class="`rounded-lg object-cover ${props.size === 'lg' ? 'size-32' : 'size-20'} ${props.nsfw ? 'blur-md' : ''}`" />
+                    </a>
                 </div>
             </div>
         </template>
@@ -73,7 +75,8 @@ const modalAvatarSuggest = ref(false);
 
                         <a :href="`https://${props.shopId}.booth.pm/`" target="_blank"
                             class="flex items-center gap-1.5 w-fit">
-                            <img :src="props.shopThumbnail" :alt="props.shop" class="size-5 rounded-md border border-1 border-neutral-300" />
+                            <img :src="props.shopThumbnail" :alt="props.shop"
+                                class="size-5 rounded-md border border-1 border-neutral-300" />
                             <span
                                 class="text-neutral-700 dark:text-neutral-300 text-xs font-semibold line-clamp-1 break-all">
                                 {{ props.shop }}
@@ -81,10 +84,6 @@ const modalAvatarSuggest = ref(false);
                             <Icon v-if="props.shopVerified" icon="lucide:check" size="16"
                                 class="flex-shrink-0 text-neutral-700 dark:text-neutral-300 size-3" />
                         </a>
-                    </div>
-
-                    <div v-if="props.size === 'lg'" class="flex items-center gap-1">
-                        <Button v-if="false" label="サンプルアバター" icon="lucide:user-round" />
                     </div>
                 </div>
                 <div class="w-fit flex flex-col lg:flex-row items-end lg:items-center gap-5 flex-shrink-0">
@@ -94,7 +93,6 @@ const modalAvatarSuggest = ref(false);
                     </Tooltip>
 
                     <div class="w-fit flex items-center gap-1 flex-shrink-0">
-                        <Button v-if="props.size === 'lg'" icon="lucide:send" tooltip="アバター詳細の提案" padding="p-2" />
                         <Button icon="lucide:search" tooltip="アイテムからセットアップを検索" padding="p-2" />
                     </div>
                 </div>
@@ -105,7 +103,8 @@ const modalAvatarSuggest = ref(false);
                 <div class="w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600">
                     <Icon icon="lucide:pen-line" :width="15" :height="15"
                         class="self-start flex-shrink-0 mt-[0.2rem] text-neutral-400 dark:text-neutral-400" />
-                    <span class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]">
+                    <span
+                        class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-neutral-800 dark:text-neutral-200">
                         {{ props.note }}
                     </span>
                 </div>

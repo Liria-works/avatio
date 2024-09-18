@@ -10,6 +10,22 @@ export const lineBreak = (text: string) => {
 	return text.replace(/(\r\n){3,}|\r{3,}|\n{3,}/, "\n\n");
 };
 
+export const avatarName = (text: string) => {
+	return text
+		.replace("オリジナル", "")
+		.replace("3Dモデル", "")
+		.replace("/", " ")
+		.replace("「", " ")
+		.replace("」", " ")
+		.replace("【", " ")
+		.replace("】", " ")
+		.replace("『", " ")
+		.replace("』", " ")
+		.replace("【", " ")
+		.replace("】", " ")
+		.replace("  ", " ");
+};
+
 export const writeClipboard = (text: string) => {
 	navigator.clipboard.writeText(text);
 };
