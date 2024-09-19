@@ -1,0 +1,96 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+
+import MainLayout from "../../layouts/main.astro";
+import LogoAvatioLight from "../../../public/logo_2_light.svg";
+import Button from "../../components/button.vue";
+
+const { cookies, redirect } = Astro;
+
+const accessToken = cookies.get("sb-access-token");
+const refreshToken = cookies.get("sb-refresh-token");
+
+if (accessToken && refreshToken) {
+    return redirect("/");
+}
+---
+
+<MainLayout>
+    <div class="size-full flex items-center justify-center">
+        <div class="w-full max-w-96 py-20 flex flex-col gap-4 items-center">
+            <Image
+                src={LogoAvatioLight}
+                alt="Avatio"
+                width="160"
+                class="mb-6 pr-1"
+            />
+
+            <form
+                action="/api/auth/signin"
+                method="post"
+                class="w-full flex flex-col gap-2"
+            >
+                <div class="flex items-center gap-2">
+                    <Icon
+                        name="lucide:mail"
+                        size={18}
+                        class="text-neutral-600"
+                    />
+                    <input
+                        id="email"
+                        name="email"
+                        placeholder="メールアドレス"
+                        class="grow p-2 text-sm bg-transparent focus:outline-neutral-500"
+                    />
+                </div>
+                <div class="flex items-center gap-2">
+                    <Icon
+                        name="lucide:key"
+                        size={18}
+                        class="text-neutral-600"
+                    />
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="パスワード"
+                        class="grow p-2 text-sm bg-transparent focus:outline-neutral-500"
+                    />
+                </div>
+
+                <p class="empty:hidden text-sm text-red-400">エラーテキスト</p>
+
+                <Button
+                    type="submit"
+                    label="メールアドレスでログイン"
+                    size="full"
+                />
+            </form>
+
+            <Button
+                client:load
+                label="パスワードを忘れた場合"
+                tooltip="準備中"
+                padding="p-0"
+                outline={false}
+            />
+
+            <div class="w-full flex items-center gap-2">
+                <div class="h-px w-full bg-neutral-400 dark:bg-neutral-500">
+                </div>
+                <p class="text-sm text-neutral-600 dark:text-neutral-300">OR</p>
+                <div class="h-px w-full bg-neutral-400 dark:bg-neutral-500">
+                </div>
+            </div>
+
+            <Button
+                client:load
+                label="Login with X"
+                icon="simple-icons:x"
+                tooltip="準備中"
+                size="w-full"
+            />
+        </div>
+    </div>
+</MainLayout>

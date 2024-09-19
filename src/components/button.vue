@@ -6,6 +6,7 @@ import Tooltip from "./tooltip.vue";
 const props = withDefaults(
     defineProps<{
         id?: string | undefined;
+        type?: "button" | "submit" | "reset";
         to?: string;
         newTab?: boolean;
         icon?: string;
@@ -16,6 +17,7 @@ const props = withDefaults(
         colorOutline?: string;
         colorText?: string;
         colorIcon?: string;
+        size?: string;
         padding?: string;
         rounded?: string;
         text?: string;
@@ -23,6 +25,7 @@ const props = withDefaults(
     }>(),
     {
         to: "",
+        type: "button",
         newTab: false,
         icon: "",
         iconSize: 18,
@@ -33,6 +36,7 @@ const props = withDefaults(
         colorOutline: "border-neutral-400 dark:border-neutral-600",
         colorText: "text-neutral-800 dark:text-neutral-200",
         colorIcon: "text-neutral-600 dark:text-neutral-300",
+        size: "w-fit",
         padding: "px-4 py-3",
         rounded: "rounded-lg",
         text: "text-sm font-semibold",
@@ -43,15 +47,15 @@ const props = withDefaults(
 
 <template>
     <Tooltip :text="props.tooltip">
-        <button v-if="!props.to.length" :id="props.id"
-            :class="`w-fit flex gap-2 items-center justify-center ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
+        <button v-if="!props.to.length" :id="props.id" :type="props.type"
+            :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
             <Icon v-if="props.icon.length" :icon="props.icon" :width="props.iconSize" :height="props.iconSize"
                 :class="`${props.colorIcon}`" />
             <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
         </button>
 
         <a v-else :href="props.to" :target="props.newTab ? '_blank' : '_self'"
-            :class="`w-fit flex gap-2 items-center justify-center ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
+            :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
             <Icon v-if="props.icon.length" :icon="props.icon" :width="props.iconSize" :height="props.iconSize"
                 :class="`${props.colorIcon}`" />
             <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>

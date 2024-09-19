@@ -11,9 +11,7 @@ export const supabase = await createClient(
 	import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
 );
 
-export async function checkSupabaseSession(cookies) {
-	let authorized = false;
-
+export async function supabaseSession(cookies) {
 	const accessToken = cookies.get("sb-access-token");
 	const refreshToken = cookies.get("sb-refresh-token");
 
@@ -31,13 +29,11 @@ export async function checkSupabaseSession(cookies) {
 				path: "/",
 			});
 
-			authorized = false;
+			return null;
 		}
 
 		if (data) {
-			authorized = true;
+			return data;
 		}
 	}
-
-	return authorized;
 }

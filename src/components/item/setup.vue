@@ -2,8 +2,8 @@
 import Tooltip from "../tooltip.vue";
 import Avatar from "../avatar.vue";
 import ItemBase from "./base.vue";
-import { elapseDate } from "../../lib/date.ts";
-import { avatarName } from "../../lib/text.ts";
+import { elapseDate } from "../../lib/date";
+import { avatarName } from "../../lib/text";
 
 const props = withDefaults(
     defineProps<{

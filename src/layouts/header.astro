@@ -1,13 +1,13 @@
 ---
 import { Image } from "astro:assets";
-import { supabase, checkSupabaseSession } from "../lib/supabase";
+import { supabase, supabaseSession } from "../lib/supabase";
 
 import LogoAvatioLight from "../../public/logo_2_light.svg";
 import LogoAvatioDark from "../../public/logo_2_dark.svg";
 import Button from "../components/button.vue";
 import ModalSearch from "../components/modal/search.vue";
 
-const authorized = await checkSupabaseSession(Astro.cookies);
+const user = await supabaseSession(Astro.cookies);
 ---
 
 <script>
@@ -84,16 +84,37 @@ const authorized = await checkSupabaseSession(Astro.cookies);
         />
 
         <div class="pl-2">
-            <Button
-                client:load
-                to="/auth/login"
-                label="ログイン"
-                outline={false}
-                padding="px-4 py-2"
-                rounded="rounded-lg"
-                color-bg="bg-neutral-500 hover:bg-neutral-600"
-                color-text="text-neutral-100"
-            />
+            {
+                () => {
+                    if (!user) {
+                        return (
+                            <Button
+                                client:load
+                                to="/auth/login"
+                                label="ログイン"
+                                outline={false}
+                                padding="px-4 py-2"
+                                rounded="rounded-lg"
+                                color-bg="bg-neutral-500 hover:bg-neutral-600"
+                                color-text="text-neutral-100"
+                            />
+                        );
+                    } else {
+                        return (
+                            <Button
+                                client:load
+                                to="/api/auth/signout"
+                                label="ログアウト"
+                                outline={false}
+                                padding="px-4 py-2"
+                                rounded="rounded-lg"
+                                color-bg="bg-neutral-500 hover:bg-neutral-600"
+                                color-text="text-neutral-100"
+                            />
+                        );
+                    }
+                }
+            }
         </div>
     </div>
 </header>
