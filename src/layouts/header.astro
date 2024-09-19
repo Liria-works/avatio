@@ -1,13 +1,12 @@
 ---
 import { Image } from "astro:assets";
-import { supabase, supabaseSession } from "../lib/supabase";
 
 import LogoAvatioLight from "../../public/logo_2_light.svg";
 import LogoAvatioDark from "../../public/logo_2_dark.svg";
 import Button from "../components/button.vue";
 import ModalSearch from "../components/modal/search.vue";
 
-const user = await supabaseSession(Astro.cookies);
+const user = null // todo:middlewareからログイン状態を取得
 ---
 
 <script>
