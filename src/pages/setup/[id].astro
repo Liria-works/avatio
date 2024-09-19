@@ -1,5 +1,6 @@
 ---
 import { supabase } from "../../lib/supabase";
+import { createClient } from "@vercel/edge-config";
 import { Icon } from "astro-icon/components";
 
 import MainLayout from "../../layouts/main.astro";
@@ -18,7 +19,7 @@ console.log(`${Astro.url}/api/setup/detail?id=${id}`);
 const { data } = await supabase
     .from("setups")
     .select(
-        "id, created_at, updated_at, name, description, avatar(id, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), avatar_note, tags, author(id, name), image, setup_items(item_id(id, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)",
+        "id, created_at, updated_at, name, description, avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), avatar_note, tags, author(id, name), image, setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)",
     )
     .eq("id", Number(id))
     .maybeSingle();
@@ -53,6 +54,7 @@ interface Setup {
     setup_items: {
         item_id: {
             id: number;
+            updated_at: string;
             outdated: boolean;
             category: number;
             name: string;
@@ -189,6 +191,8 @@ if (details?.setup_items) {
                             shopVerified={details.avatar.shop_id.verified}
                             price={details.avatar.price}
                             nsfw={details.avatar.nsfw}
+                            outdated={details.avatar.outdated}
+                            updated_at={details.updated_at}
                         />
                     )}
 
@@ -266,6 +270,14 @@ if (details?.setup_items) {
                                                             item.item_id.price
                                                         }
                                                         nsfw={item.item_id.nsfw}
+                                                        outdated={
+                                                            item.item_id
+                                                                .outdated
+                                                        }
+                                                        updated_at={
+                                                            item.item_id
+                                                                .updated_at
+                                                        }
                                                     />
                                                 ),
                                             )}
