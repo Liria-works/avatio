@@ -14,8 +14,6 @@ import { sentence } from "../../lib/text";
 
 const { id } = Astro.params;
 
-console.log(`${Astro.url}/api/setup/detail?id=${id}`);
-
 const { data } = await supabase
     .from("setups")
     .select(
@@ -32,6 +30,7 @@ interface Setup {
     description: string;
     avatar: {
         id: number;
+        updated_at: string;
         outdated: boolean;
         name: string;
         thumbnail: string;
@@ -119,7 +118,8 @@ if (details?.setup_items) {
                                 <div class="flex items-center gap-2">
                                     <Avatar
                                         client:load
-                                        user={details.author.id}
+                                        id={details.author.id}
+                                        name={details.author.name}
                                     />
                                     <p class="text-sm text-neutral-600 dark:text-neutral-300">
                                         {details.author.name}
@@ -192,7 +192,7 @@ if (details?.setup_items) {
                             price={details.avatar.price}
                             nsfw={details.avatar.nsfw}
                             outdated={details.avatar.outdated}
-                            updated_at={details.updated_at}
+                            updated_at={details.avatar.updated_at}
                         />
                     )}
 
@@ -317,6 +317,19 @@ if (details?.setup_items) {
                             );
                         }
                     }}
+
+                    <Button
+                        client:visible
+                        label="セットアップを報告"
+                        icon="lucide:flag"
+                        text="text-xs font-semibold"
+                        iconSize={16}
+                        padding="px-3 py-2 mt-2"
+                        outline={false}
+                        colorIcon="text-red-400"
+                        colorText="text-neutral-500 dark:text-neutral-400"
+                        colorBg="hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                    />
                 </div>
             </div>
         )

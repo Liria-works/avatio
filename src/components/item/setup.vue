@@ -66,7 +66,7 @@ const dateLocale = date.toLocaleString("ja-JP", {
                                     {{ elapseDate(date) }}
                                 </p>
                             </Tooltip>
-                            <Avatar :user="props.author_name" />
+                            <Avatar :id="props.author_id" :name="props.author_name" />
                         </div>
                     </div>
                 </div>

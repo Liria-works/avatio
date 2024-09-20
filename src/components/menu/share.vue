@@ -45,7 +45,7 @@ const props = withDefaults(
         <Menu as="div" class="relative inline-block text-left">
             <div>
                 <Tooltip :text="props.triggerTooltip">
-                    <MenuButton
+                    <MenuButton id="menu-button-share"
                         :class="`w-fit flex gap-2 items-center justify-center ${props.triggerText} ${props.triggerPadding} ${props.triggerRounded} ${props.triggerColorBg} ${props.triggerColorText} ${triggerOutline ? 'border border-1' : 'border-0'} ${props.triggerColorOutline}`">
                         <Icon v-if="props.triggerIcon.length" :icon="props.triggerIcon" :width="props.triggerIconSize"
                             :height="props.triggerIconSize" :class="`${props.triggerColorIcon}`" />

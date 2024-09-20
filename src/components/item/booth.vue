@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { supabase } from "../../lib/supabase";
 import { sentence } from "../../lib/text";
 
@@ -58,98 +58,120 @@ const item = ref<{
     outdated: props.outdated,
 });
 
-const timeDifference =
-    new Date().getTime() - new Date(props.updated_at).getTime();
-// 前回の更新から1日経過している場合、最新データを取得する
-if (timeDifference < 24 * 60 * 60 * 1000) {
-    const { data, error } = await supabase.functions.invoke(
-        "get-booth-item",
-        {
-            body: { id: props.id },
-        },
-    );
+onMounted(async () => {
+    const timeDifference =
+        new Date().getTime() - new Date(props.updated_at).getTime();
 
-    // データを取得するコード
-    // 取得したデータはitemに代入する
-    // HTML側ではpropsではなくitemを使うように
-}
+    // 前回の更新から1日経過している場合、最新データを取得する
+    if (timeDifference > 24 * 60 * 60 * 1000) {
+        const response = await fetch('/api/item/booth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: props.id }),
+        });
+
+        if (response.status === 200) {
+            const responseData = await response.json();
+
+            item.value.name = responseData.name;
+            item.value.thumbnail = responseData.thumbnail;
+            item.value.shop = responseData.shop;
+            item.value.shopId = responseData.shop_id;
+            item.value.shopThumbnail = responseData.shop_thumbnail;
+            item.value.shopVerified = responseData.shop_verified;
+            item.value.price = responseData.price;
+            item.value.nsfw = responseData.nsfw;
+            item.value.outdated = responseData.outdated;
+        }
+    }
+});
 </script>
 
 <template>
-    <span v-if="!outdated">
-        <ItemBase>
-            <template #thumbnail>
-                <div :class="`flex-shrink-0 ${props.size === 'lg' ? 'p-4' : 'p-1.5 pr-4'}`">
-                    <div class="overflow-clip rounded-lg">
-                        <a :href="booth_url + props.id" target="_blank">
-                            <img :src="props.thumbnail" :alt="props.name"
-                                :class="`rounded-lg object-cover ${props.size === 'lg' ? 'size-32' : 'size-20'} ${props.nsfw ? 'blur-md' : ''}`" />
+    <ItemBase v-if="!item.outdated">
+        <template #thumbnail>
+            <div flex-shrink-0 :class="`${props.size === 'lg' ? 'p-2 pr-4' : 'p-1.5 pr-4'}`">
+                <div overflow-clip rounded-lg>
+                    <a :href="booth_url + props.id" target="_blank">
+                        <img :src="item.thumbnail" :alt="item.name" rounded-lg object-cover
+                            :class="`${props.size === 'lg' ? 'size-32' : 'size-20'} ${item.nsfw ? 'blur-md' : ''}`" />
+                    </a>
+                </div>
+            </div>
+        </template>
+        <template #main>
+            <div w-full flex gap-5 pr-4 justify-between items-center>
+                <div w-fit flex flex-col gap-3 items-start justify-center
+                    :class="`${props.size === 'lg' ? 'h-32' : 'h-20'}`">
+                    <div w-fit flex items-center gap-2>
+                        <a :href="booth_url + props.id" target="_blank" w-fit gap-2>
+                            <p w-fit text-sm font-medium break-keep text="black dark:white"
+                                :class="`${props.size === 'lg' ? 'line-clamp-2' : 'line-clamp-1'}`">
+                                {{ sentence(item.name) }}
+                            </p>
+                        </a>
+
+                        <Tooltip v-if="item.nsfw" text="NSFW">
+                            <Icon icon="heroicons:heart-16-solid" size="18" text-pink-400 />
+                        </Tooltip>
+                    </div>
+
+                    <div flex items-center gap-3>
+
+                        <a :href="booth_url + props.id" target="_blank" text-sm font-semibold
+                            text="neutral-700 dark:neutral-300">
+                            {{ item.price }}
+                        </a>
+
+                        <a :href="`https://${item.shopId}.booth.pm/`" target="_blank" flex items-center gap-1.5 w-fit>
+                            <img :src="item.shopThumbnail" :alt="item.shop" size-5 rounded-md
+                                class="border border-1 border-neutral-300" />
+                            <span font-semibold line-clamp-1 break-all text="neutral-700 dark:neutral-300 xs">
+                                {{ item.shop }}
+                            </span>
+                            <Icon v-if="item.shopVerified" icon="lucide:check" size="16" flex-shrink-0 size-3
+                                text="neutral-700 dark:neutral-300" />
                         </a>
                     </div>
                 </div>
-            </template>
-            <template #main>
-                <div class="w-full flex gap-5 pr-4 justify-between items-center">
-                    <div
-                        :class="`w-fit flex flex-col gap-3 items-start justify-center ${props.size === 'lg' ? 'h-32' : 'h-20'}`">
-                        <div class="w-fit flex items-center gap-2">
-                            <a :href="booth_url + props.id" target="_blank" class="w-fit gap-2">
-                                <p
-                                    :class="`w-fit text-sm text-black dark:text-white font-medium break-keep ${props.size === 'lg' ? 'line-clamp-2' : 'line-clamp-1'}`">
-                                    {{ sentence(props.name) }}
-                                </p>
-                            </a>
+                <div w-fit gap-3 flex flex-shrink-0 items-center>
+                    <Tooltip v-if="props.unsupported" text="ベースアバターに非対応">
+                        <Icon icon="heroicons:paint-brush-20-solid" :width="18" :height="18"
+                            text="neutral-600 dark:neutral-200" />
+                    </Tooltip>
 
-                            <Tooltip v-if="props.nsfw" text="NSFW">
-                                <Icon icon="heroicons:heart-16-solid" size="18" class="text-pink-400" />
-                            </Tooltip>
-                        </div>
-
-                        <div class="flex items-center gap-3">
-
-                            <a :href="booth_url + props.id" target="_blank"
-                                class="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                                {{ props.price }}
-                            </a>
-
-                            <a :href="`https://${props.shopId}.booth.pm/`" target="_blank"
-                                class="flex items-center gap-1.5 w-fit">
-                                <img :src="props.shopThumbnail" :alt="props.shop"
-                                    class="size-5 rounded-md border border-1 border-neutral-300" />
-                                <span
-                                    class="text-neutral-700 dark:text-neutral-300 text-xs font-semibold line-clamp-1 break-all">
-                                    {{ props.shop }}
-                                </span>
-                                <Icon v-if="props.shopVerified" icon="lucide:check" size="16"
-                                    class="flex-shrink-0 text-neutral-700 dark:text-neutral-300 size-3" />
-                            </a>
-                        </div>
-                    </div>
-                    <div class="w-fit flex flex-col lg:flex-row items-end lg:items-center gap-5 flex-shrink-0">
-                        <Tooltip v-if="props.unsupported" text="ベースアバターに非対応">
-                            <Icon icon="heroicons:paint-brush-20-solid" :width="18" :height="18"
-                                class="text-neutral-600 dark:text-neutral-200" />
-                        </Tooltip>
-
-                        <div class="w-fit flex items-center gap-1 flex-shrink-0">
-                            <Button icon="lucide:search" tooltip="アイテムからセットアップを検索" padding="p-2" />
-                        </div>
+                    <div w-fit items-center gap-1 flex="row shrink-0">
+                        <Button icon="lucide:search" tooltip="アイテムからセットアップを検索" padding="p-2" />
                     </div>
                 </div>
-            </template>
-            <template #under>
-                <div v-if="props.note"
-                    :class="`w-full flex ${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-0.5 pb-2'}`">
-                    <div class="w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600">
-                        <Icon icon="lucide:pen-line" :width="15" :height="15"
-                            class="self-start flex-shrink-0 mt-[0.2rem] text-neutral-400 dark:text-neutral-400" />
-                        <span
-                            class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-neutral-800 dark:text-neutral-200">
-                            {{ props.note }}
-                        </span>
-                    </div>
+            </div>
+        </template>
+        <template #under>
+            <div v-if="props.note" w-full flex :class="`${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-0.5 pb-2'}`">
+                <div w-full px-3 py-2 gap-2 flex items-center rounded-lg bg="neutral-200 dark:neutral-600">
+                    <Icon icon="lucide:pen-line" :width="15" :height="15" self-start flex-shrink-0 mt-[0.2rem]
+                        text="neutral-400 dark:neutral-400" />
+                    <span break-keep whitespace-break-spaces text="neutral-800 dark:neutral-200"
+                        class="text-xs/relaxed [overflow-wrap:anywhere]">
+                        {{ props.note }}
+                    </span>
                 </div>
-            </template>
-        </ItemBase>
-    </span>
+            </div>
+        </template>
+    </ItemBase>
+
+    <ItemBase v-else>
+        <template #main>
+            <div h-22 flex items-center px-5 gap-4>
+                <Icon icon="lucide:file-question" size-5 text="neutral-700 dark:neutral-200" />
+                <div flex flex-col gap-1>
+                    <p text-sm font-semibold text="neutral-900 dark:neutral-100">アイテムの取得に失敗</p>
+                    <p text-xs font-medium text="neutral-600 dark:neutral-300">
+                        アイテムが非公開になっているか、削除されている可能性があります</p>
+                </div>
+            </div>
+        </template>
+    </ItemBase>
 </template>
