@@ -7,6 +7,7 @@ import {
     TagsInputItemDelete,
     TagsInputItemText,
     TagsInputRoot,
+    Separator,
 } from "radix-vue";
 
 import Button from "../../components/button.vue";
@@ -132,90 +133,90 @@ const handleData = (
     }
 };
 
-const { files, open, reset, onChange } = useFileDialog({
-    accept: "image/png, image/jpeg, image/tiff", // Set to accept only image files
-    multiple: false,
-});
+// const { files, open, reset, onChange } = useFileDialog({
+//     accept: "image/png, image/jpeg, image/tiff", // Set to accept only image files
+//     multiple: false,
+// });
 
 const imagePreview = ref<string | ArrayBuffer | null>(null);
 
-onChange((files) => {
-    if (files?.length) {
-        const file = files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            if (!e.target) return;
-            imagePreview.value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    } else {
-        imagePreview.value = null;
-    }
-});
+// onChange((files) => {
+//     if (files?.length) {
+//         const file = files[0];
+//         const reader = new FileReader();
+//         reader.onload = (e) => {
+//             if (!e.target) return;
+//             imagePreview.value = e.target.result;
+//         };
+//         reader.readAsDataURL(file);
+//     } else {
+//         imagePreview.value = null;
+//     }
+// });
 
-const PublishSetup = async () => {
-    publishing.value = true;
+// const PublishSetup = async () => {
+//     publishing.value = true;
 
-    if (!items.value.avatar) {
-        toast("ベースアバターが登録されていません。");
-        publishing.value = false;
-        return;
-    }
+//     if (!items.value.avatar) {
+//         toast("ベースアバターが登録されていません。");
+//         publishing.value = false;
+//         return;
+//     }
 
-    let image = null;
-    if (files.value && files.value.length > 0) {
-        image = files.value[0];
-    }
+//     let image = null;
+//     if (files.value && files.value.length > 0) {
+//         image = files.value[0];
+//     }
 
-    try {
-        const id = await usePublishSetup(
-            {
-                name: title.value,
-                description: description.value,
-                tags: tags.value,
-                avatar: items.value.avatar,
-                avatar_note: items.value.avatar_note,
-                items: items.value.items,
-            },
-            image
-        );
-        reset();
-        toast("セットアップを公開しました。");
-    } catch (error) {
-        console.error(error);
-        toast("セットアップの公開に失敗しました。");
-    } finally {
-        publishing.value = false;
-    }
-};
+//     try {
+//         const id = await usePublishSetup(
+//             {
+//                 name: title.value,
+//                 description: description.value,
+//                 tags: tags.value,
+//                 avatar: items.value.avatar,
+//                 avatar_note: items.value.avatar_note,
+//                 items: items.value.items,
+//             },
+//             image
+//         );
+//         reset();
+//         toast("セットアップを公開しました。");
+//     } catch (error) {
+//         console.error(error);
+//         toast("セットアップの公開に失敗しました。");
+//     } finally {
+//         publishing.value = false;
+//     }
+// };
 
-const UpdateSetup = async () => {
-    // const client = await useSupabaseClient();
+// const UpdateSetup = async () => {
+//     // const client = await useSupabaseClient();
 
-    const setup: {
-        name: string;
-        description: string;
-        tags: string[];
-        avatar: number | null;
-        avatar_note: string;
-    } = {
-        name: title.value,
-        description: lineBreak(description.value),
-        tags: tags.value,
-        avatar: items.value.avatar,
-        avatar_note: lineBreak(items.value.avatar_note),
-    };
+//     const setup: {
+//         name: string;
+//         description: string;
+//         tags: string[];
+//         avatar: number | null;
+//         avatar_note: string;
+//     } = {
+//         name: title.value,
+//         description: lineBreak(description.value),
+//         tags: tags.value,
+//         avatar: items.value.avatar,
+//         avatar_note: lineBreak(items.value.avatar_note),
+//     };
 
-    try {
-        await useUpdateSetup(props.id, setup, items.value);
+//     try {
+//         await useUpdateSetup(props.id, setup, items.value);
 
-        toast("セットアップを更新しました。");
-    } catch (error) {
-        console.error(error);
+//         toast("セットアップを更新しました。");
+//     } catch (error) {
+//         console.error(error);
 
-        toast("セットアップの更新に失敗しました。");
-    }
-};
+//         toast("セットアップの更新に失敗しました。");
+//     }
+// };
 
 const PasteFromClipboard = async () => {
     try {
@@ -319,19 +320,11 @@ onMounted(async () => {
                         <Button :icon="!adding
                             ? 'i-heroicons-plus'
                             : 'i-svg-spinners-ring-resize'
-                            " :disabled="adding" label="追加" size="sm" :ui="{
-                                rounded: 'rounded-xl',
-                            }" class="pr-3 h-[40px]" @click="AddItem()" />
+                            " :disabled="adding" label="追加" @click="AddItem()" />
                     </div>
 
                     <div class="w-full flex items-center gap-2">
-                        <Button block icon="lucide:search" label="アバター・アイテムを検索" variant="outline" :ui="{
-                            rounded: 'rounded-xl',
-                            variant: {
-                                outline:
-                                    'ring-neutral-400 dark:ring-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-750',
-                            },
-                        }" class="h-9" @click="modalSearchItem = true" />
+                        <Button icon="lucide:search" label="アバター・アイテムを検索" @click="modalSearchItem = true" />
                         <!-- <UModal v-model="modalSearchItem" :ui="{
                             background: 'bg-white dark:bg-neutral-100',
                             ring: 'ring-0',
@@ -343,7 +336,7 @@ onMounted(async () => {
                     </div>
                 </div>
 
-                <ACategory title="ベースアバター" icon="lucide:person-standing">
+                <!-- <ACategory title="ベースアバター" icon="lucide:person-standing">
                     <div v-if="!items.avatar"
                         class="w-full p-5 flex flex-col gap-5 rounded-lg bg-white dark:bg-neutral-700">
                         <div v-if="quickAvatarsOwned?.length" class="w-full flex flex-col gap-3">
@@ -371,7 +364,7 @@ onMounted(async () => {
                     <ItemBoothEdit v-if="items.avatar" :id="items.avatar" :key="'item-' + items.avatar" size="lg"
                         :avatar="true" @remove="items.avatar = null" @update:note="items.avatar_note = $event"
                         :note="items.avatar_note" />
-                </ACategory>
+                </ACategory> -->
 
                 <div v-if="!items.items.length" class="my-10 font-medium text-neutral-400">
                     アイテムが登録されていません
@@ -382,45 +375,47 @@ onMounted(async () => {
                     :unsupported="i.unsupported" />
             </div>
 
-            <div class="block md:hidden" />
+            <Separator />
 
             <div class="w-full md:w-96 flex-col justify-start items-start gap-8 flex">
 
-                <Category title="説明" icon="lucide:text">
-                    <div class="w-full flex flex-col gap-1 items-end">
-                        <div :class="`w-full p-3 rounded-lg border border-1 bg-neutral-200 dark:bg-neutral-900 ${description.length < 141
-                            ? 'border-neutral-400 dark:border-neutral-600'
-                            : 'border-red-400 dark:border-red-600'
-                            }`">
-                            <Textarea v-model="description" autoresize placeholder="説明を入力" :padded="false"
-                                variant="none" class="w-full" />
+                <div w-full flex flex-col gap-3>
+                    <Title label="説明" icon="lucide:text" />
+                    <div w-full flex flex-col gap-1 items-end>
+                        <div w-full p-3 rounded-lg bg="neutral-200 dark:neutral-900"
+                            :class="`border border-1 ${description.length < 141 ? 'border-neutral-400 dark:border-neutral-600' : 'border-red-400 dark:border-red-600'}`">
+                            <input v-model="description" placeholder="説明を入力" class="w-full" />
                         </div>
 
-                        <span :class="`text-sm pr-1 ${description.length < 141
+                        <span text-sm pr-1 :class="`${description.length < 141
                             ? 'text-neutral-500 dark:text-neutral-500'
                             : 'text-red-500 dark:text-red-400'
                             }`">
                             {{ description.length }} / 140
                         </span>
                     </div>
-                </Category>
+                </div>
 
-                <Category title="タグ" icon="lucide:tags">
-                    <TagsInputRoot v-model="tags"
-                        class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900">
-                        <TagsInputItem v-for="item in tags" :key="item" :value="item"
-                            class="dark:text-white text-black flex items-center justify-center gap-2 rounded-md p-1 border border-1 border-neutral-300 dark:border-neutral-600 bg-neutral-100 dark:bg-neutral-700">
-                            <TagsInputItemText class="text-sm pl-1.5" />
-                            <TagsInputItemDelete
-                                class="mr-0.5 rounded hover:bg-neutral-300 hover:dark:bg-neutral-700 flex items-center justify-center">
+                <div w-full flex flex-col gap-3>
+                    <Title label="タグ" icon="lucide:tags" />
+
+                    <TagsInputRoot v-model="tags" flex gap-2 items-center p-2 rounded-lg w-full flex-wrap
+                        bg="neutral-200 dark:neutral-900"
+                        class="border border-1 border-neutral-400 dark:border-neutral-600">
+                        <TagsInputItem v-for="item in tags" :key="item" :value="item" flex items-center justify-center
+                            gap-2 rounded-md p-1 text="dark:white black" bg="neutral-100 dark:neutral-700"
+                            class="border border-1 border-neutral-300 dark:border-neutral-600">
+                            <TagsInputItemText text-sm pl-1.5 />
+                            <TagsInputItemDelete mr-0.5 rounded flex items-center justify-center
+                                bg="hover:neutral-300 hover:dark:neutral-700">
                                 <Icon icon="lucide:x" />
                             </TagsInputItemDelete>
                         </TagsInputItem>
 
-                        <TagsInputInput placeholder="タグを入力"
-                            class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500" />
+                        <TagsInputInput placeholder="タグを入力" text-sm flex-1 px-1 bg-transparent focus:outline-none
+                            text="placeholder:neutral-400 dark:placeholder:neutral-500" />
                     </TagsInputRoot>
-                </Category>
+                </div>
             </div>
         </div>
     </div>
