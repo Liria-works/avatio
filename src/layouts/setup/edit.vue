@@ -9,10 +9,16 @@ import {
     TagsInputRoot,
     Separator,
 } from "radix-vue";
+import { useTextareaAutosize } from "@vueuse/core";
 
 import Button from "../../components/button.vue";
 import Title from "../../components/title.vue";
+import ItemBoothEdit from "../../components/item/boothEdit.vue";
+import ItemTiny from "../../components/item/tiny.vue";
+import ModalAddAvatar from "../../components/modal/addAvatar.vue";
 
+import type { Item } from "../../lib/item";
+import { addAvatarOpen } from "../../lib/modal";
 import { supabase } from "../../lib/supabase";
 import { lineBreak } from "../../lib/text";
 
@@ -25,21 +31,12 @@ const props = withDefaults(
     }
 );
 
-const modalSearchItem = ref(false);
-
-const input_url = ref<string>("");
-const adding = ref(false);
-const publishing = ref(false);
+const { textarea } = useTextareaAutosize()
 
 interface Items {
-    avatar: number | null;
+    avatar: Item | null;
     avatar_note: string;
-    items: {
-        id: number;
-        category: number;
-        note: string;
-        unsupported: boolean;
-    }[];
+    items: Item[];
 }
 
 const items = ref<Items>({
@@ -48,15 +45,30 @@ const items = ref<Items>({
     items: [],
 });
 
+const categorizedItems: { [key: string]: Item[] } = {};
+
 const title = ref<string>("");
 const description = ref<string>("");
 const tags = ref<string[]>([]);
 
+const input_url = ref<string>("https://booth.pm/ja/items/3087170");
+const adding = ref(false);
+const publishing = ref(false);
+
+const fetchingItem = ref<Item | null>(null);
+
 const ERROR_MESSAGES = {
-    EMPTY_URL: "URLを入力してください。",
+    URL_EMPTY: "URLを入力してください。",
+    URL_INVALID: "無効なURLです。",
     ADD_ITEM_FAILED: "エラーによりアイテムの追加に失敗しました。",
     MULTIPLE_AVATAR: "ベースアバターを複数登録することはできません。",
     MULTIPLE_ITEM: "アイテムは重複して追加できません。",
+    ITEM_IN_AVATAR: "アイテムはベースアバターとして登録されています。",
+    PUBLISH_FAILED: "セットアップの公開に失敗しました。",
+    UPDATE_FAILED: "セットアップの更新に失敗しました。",
+    NO_AVATAR: "ベースアバターが登録されていません。",
+    NO_ITEMS: "アイテムが登録されていません。",
+    NO_TITLE: "セットアップ名が入力されていません。",
 };
 
 const toast = (message: string, description = "") => {
@@ -65,80 +77,111 @@ const toast = (message: string, description = "") => {
 
 const AddItem = async (
     id: number | null = null,
-    url: string | null = null,
-    note = "",
-    unsupported = false
 ) => {
     adding.value = true;
 
-    if (id === null && !input_url.value) {
-        toast(ERROR_MESSAGES.EMPTY_URL);
+    if (id === null) {
+        toast(ERROR_MESSAGES.URL_EMPTY);
         adding.value = false;
         return;
     }
 
-    let data;
-    // if (id) {
-    //     data = await useFetchBooth({ id: id, url: null });
-    // } else {
-    //     data = await useFetchBooth({ id: null, url: input_url.value });
-    // }
+    if (
+        items.value.items.some(
+            (item: { id: number }) => item.id === id
+        )
+    ) {
+        toast(ERROR_MESSAGES.MULTIPLE_ITEM);
+        fetchingItem.value = null;
+        adding.value = false;
+        return;
+    }
 
-    await supabase.from("items")
+    if (items.value.avatar && items.value.avatar.id === id) {
+        toast(ERROR_MESSAGES.ITEM_IN_AVATAR);
+        fetchingItem.value = null;
+        adding.value = false;
+        return;
+    }
+
+    const { data: itemData, error: itemError } = await supabase.from("items")
         .select("id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw")
         .eq("id", id)
         .maybeSingle();
 
-    if (!data) {
+    if (!itemData) {
         toast(ERROR_MESSAGES.ADD_ITEM_FAILED);
+        fetchingItem.value = null;
         adding.value = false;
         return;
     }
 
-    handleData(data, note, unsupported);
-    adding.value = false;
+    fetchingItem.value = itemData as unknown as Item;
+
+    if (itemData.category === 208) {
+        addAvatarOpen.set(true);
+        adding.value = false;
+        return;
+    }
+
+    handleAddItem(itemData as unknown as Item);
 };
 
-const handleData = (
-    data: { category: number; id: number },
-    note = "",
-    unsupported = false
-) => {
-    if (data.category === 208) {
-        if (!items.value.avatar) {
-            items.value.avatar = data.id;
-            input_url.value = "";
-        } else {
-            toast(
-                "ベースアバターを複数登録することはできません。",
-                "ベースアバターを置き換えるオプションの実装"
-            );
-        }
-    } else {
-        if (
-            items.value.items.some(
-                (item: { id: number }) => item.id === data.id
-            )
-        ) {
-            toast(ERROR_MESSAGES.MULTIPLE_ITEM);
-        } else {
-            items.value.items.push({
-                id: data.id,
-                category: data.category,
-                note: note,
-                unsupported: unsupported,
-            });
-            input_url.value = "";
-        }
+const handleAddAvatar = (data: Item) => {
+    items.value.avatar = data;
+}
+
+const handleAddItem = (data: Item) => {
+    items.value.items.push({
+        id: data.id,
+        category: data.category,
+        note: "",
+        unsupported: false,
+        updated_at: data.updated_at,
+        name: data.name,
+        thumbnail: data.thumbnail,
+        price: data.price,
+        shop_id: data.shop_id,
+        nsfw: data.nsfw,
+    });
+
+    input_url.value = "";
+    adding.value = false;
+}
+
+const AddItemFromURL = async () => {
+    if (!input_url.value) {
+        toast(ERROR_MESSAGES.URL_EMPTY);
+        return;
     }
+
+    const url = new URL(input_url.value);
+
+    if (url.hostname.split(".").slice(-2)[1] !== 'pm' || url.hostname.split(".").slice(-2)[0] !== 'booth') {
+        toast(ERROR_MESSAGES.URL_INVALID);
+        return;
+    }
+
+    const id = url.pathname.split("/").slice(-1)[0];
+
+    if (!Number.isInteger(Number(id))) {
+        toast(ERROR_MESSAGES.URL_INVALID);
+        return;
+    }
+
+    AddItem(Number(id));
 };
+
+const RemoveItem = (id: number) => {
+    items.value.items = items.value.items.filter((item) => item.id !== id);
+}
 
 // const { files, open, reset, onChange } = useFileDialog({
 //     accept: "image/png, image/jpeg, image/tiff", // Set to accept only image files
 //     multiple: false,
 // });
 
-const imagePreview = ref<string | ArrayBuffer | null>(null);
+// const imagePreview = ref<string | ArrayBuffer | null>(null);
 
 // onChange((files) => {
 //     if (files?.length) {
@@ -281,51 +324,36 @@ onMounted(async () => {
             title.value = data.name;
             description.value = data.description;
             tags.value = data.tags;
-            items.value.avatar = data.avatar;
-            items.value.avatar_note = data.avatar_note;
-            for (const item of data.setup_items) {
-                AddItem(item.item_id, item.note, item.unsupported);
-            }
+            // todo: アバターとアイテムのデータを登録
         }
     }
 });
 </script>
 
 <template>
-    <div class="flex-col justify-start items-start gap-8 flex w-full px-3">
-        <div class="flex flex-row gap-10 items-center justify-between w-full">
-            <div class="w-full flex flex-col gap-2 pt-1">
-                <input v-model="title" placeholder="セットアップ名を入力" class="w-full" />
-                <div class="w-full" />
-            </div>
-            <div class="flex gap-2 items-center">
-                <Button label="公開"
-                    :icon="!publishing ? 'i-heroicons-arrow-up-tray-16-solid' : 'i-svg-spinners-ring-resize'"
-                    :@click="PublishSetup" />
+    <ModalAddAvatar :item="fetchingItem"
+        @add-as-avatar="if (fetchingItem) { handleAddAvatar(fetchingItem) }; addAvatarOpen.set(false)"
+        @add-as-item="if (fetchingItem) { handleAddItem(fetchingItem) }; addAvatarOpen.set(false)" />
 
-                <Button tooltip="破棄" icon="lucide:trash" :icon-size="18" />
+    <div w-full px-3 pt-4 gap-8 flex flex-col justify-start items-start>
+        <div w-full gap-6 flex items-center justify-between>
+            <div w-full gap-2 pt-1 flex flex-col>
+                <input v-model="title" placeholder="セットアップ名を入力" w-full bg-transparent outline-none font-semibold
+                    text="2xl neutral-900 dark:neutral-100 placeholder:neutral-400 placeholder:dark:neutral-600" />
+                <Separator decorative h-px w-full :bg="title.length < 25 ? 'neutral-500' : 'red-400'" />
+            </div>
+            <div flex gap-2 items-center>
+                <Button label="公開" :icon="!publishing ? 'lucide:upload' : 'svg-spinners:ring-resize'" />
+
+                <Button tooltip="破棄" icon="lucide:trash" :icon-size="18" padding="p-3" />
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row items-start gap-8 w-full">
-            <div class="flex-col items-center gap-8 flex w-full">
-                <div class="w-full flex flex-col items-center gap-4">
-                    <div class="flex gap-1 items-center w-full">
-                        <div
-                            class="w-full p-1 rounded-xl border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900">
-                            <input v-model="input_url" :disabled="adding" placeholder="BOOTH URLからアバター・アイテムを追加"
-                                @keyup.enter="AddItem()">
-                            </input>
-                        </div>
-                        <Button :icon="!adding
-                            ? 'i-heroicons-plus'
-                            : 'i-svg-spinners-ring-resize'
-                            " :disabled="adding" label="追加" @click="AddItem()" />
-                    </div>
-
-                    <div class="w-full flex items-center gap-2">
-                        <Button icon="lucide:search" label="アバター・アイテムを検索" @click="modalSearchItem = true" />
-                        <!-- <UModal v-model="modalSearchItem" :ui="{
+        <div w-full gap-8 flex flex-col lg:flex-row items-start>
+            <div w-full gap-8 flex flex-col items-center>
+                <div w-full gap-4 flex flex-col items-center>
+                    <Button icon="lucide:search" label="アバター・アイテムを検索" size="w-full" rounded="rounded-2xl" @click="" />
+                    <!-- <UModal v-model="modalSearchItem" :ui="{
                             background: 'bg-white dark:bg-neutral-100',
                             ring: 'ring-0',
                             rounded: 'rounded-xl',
@@ -333,12 +361,39 @@ onMounted(async () => {
                         }">
                             <ModalSearchItem @add="AddItem" @close="modalSearchItem = false" />
                         </UModal> -->
+
+                    <div w-full gap-1 flex items-center>
+
+                        <div w-full px-3 h-10 rounded-2xl flex bg="neutral-200 dark:neutral-900"
+                            class="border border-1 border-neutral-400 dark:border-neutral-500">
+                            <input v-model="input_url" :disabled="adding" placeholder="BOOTH URLからベースアバターを追加" w-full
+                                bg-transparent outline-none
+                                text="sm neutral-900 dark:neutral-100 placeholder:neutral-400 placeholder:dark:neutral-600"
+                                @keyup.enter="AddItemFromURL" />
+                        </div>
+
+                        <Button :icon="!adding
+                            ? 'lucide:plus'
+                            : 'svg-spinners:ring-resize'
+                            " :disabled="adding" label="追加" size="h-10" rounded="rounded-2xl"
+                            @click="AddItemFromURL" />
                     </div>
                 </div>
 
-                <!-- <ACategory title="ベースアバター" icon="lucide:person-standing">
-                    <div v-if="!items.avatar"
-                        class="w-full p-5 flex flex-col gap-5 rounded-lg bg-white dark:bg-neutral-700">
+                <div class="w-full gap-4 flex flex-col">
+                    <Title label="ベースアバター" icon="lucide:person-standing" />
+
+                    <ItemBoothEdit v-if="items.avatar" size="lg" :avatar="true" :id="items.avatar.id"
+                        :note="items.avatar.note" :unsupported="items.avatar.unsupported" :name="items.avatar.name"
+                        :thumbnail="items.avatar.thumbnail" :price="items.avatar.price"
+                        :shop="items.avatar.shop_id.name" :shopId="items.avatar.shop_id.id"
+                        :shopThumbnail="items.avatar.shop_id.thumbnail" :shopVerified="items.avatar.shop_id.verified"
+                        :nsfw="items.avatar.nsfw" :updated_at="items.avatar.updated_at"
+                        @update:note="items.avatar.note = $event"
+                        @update:unsupported="items.avatar.unsupported = $event" @remove="items.avatar = null" />
+
+                    <div v-if="!items.avatar" w-full p-5 flex flex-col gap-5 rounded-xl
+                        class="border border-1 border-neutral-400 dark:border-neutral-500">
                         <div v-if="quickAvatarsOwned?.length" class="w-full flex flex-col gap-3">
                             <Title label="あなたのセットアップから" icon="lucide:user-round" />
                             <div class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full">
@@ -349,42 +404,35 @@ onMounted(async () => {
                                 </button>
                             </div>
                         </div>
-                        <div v-if="quickAvatars" class="w-full flex flex-col gap-3">
-                            <Title label="人気のアバター" icon="lucide:sparkles" infomation="Avatioの投稿数から算出" />
-                            <div class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full">
-                                <button v-for="i in quickAvatars" :key="'suggest-avatar-' + i.id"
-                                    @click="AddItem(i.id)">
-                                    <ItemTiny :label="i.short ? i.short : i.name" :thumbnail="i.thumbnail"
-                                        class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700" />
-                                </button>
-                            </div>
-                        </div>
                     </div>
+                </div>
 
-                    <ItemBoothEdit v-if="items.avatar" :id="items.avatar" :key="'item-' + items.avatar" size="lg"
-                        :avatar="true" @remove="items.avatar = null" @update:note="items.avatar_note = $event"
-                        :note="items.avatar_note" />
-                </ACategory> -->
-
-                <div v-if="!items.items.length" class="my-10 font-medium text-neutral-400">
+                <div v-if="!items.items.length" my-10 font-medium text-neutral-400>
                     アイテムが登録されていません
                 </div>
 
-                <ItemBoothEdit v-for="i in items.items" :id="i.id" :key="'item-' + i.id" @remove=""
-                    @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
-                    :unsupported="i.unsupported" />
+                <div w-full flex flex-col gap-3>
+                    <ItemBoothEdit v-for="i in items.items" :id="i.id" :key="'item-' + i.id" :note="i.note"
+                        :unsupported="i.unsupported" :name="i.name" :thumbnail="i.thumbnail" :price="i.price"
+                        :shop="i.shop_id.name" :shopId="i.shop_id.id" :shopThumbnail="i.shop_id.thumbnail"
+                        :shopVerified="i.shop_id.verified" :nsfw="i.nsfw" :updated_at="i.updated_at"
+                        @update:note="i.note = $event" @update:unsupported="i.unsupported = $event"
+                        @remove="RemoveItem(i.id)" />
+                </div>
             </div>
 
             <Separator />
 
-            <div class="w-full md:w-96 flex-col justify-start items-start gap-8 flex">
+            <div w-full lg:w-96 gap-8 flex flex-col justify-start items-start>
 
                 <div w-full flex flex-col gap-3>
                     <Title label="説明" icon="lucide:text" />
                     <div w-full flex flex-col gap-1 items-end>
                         <div w-full p-3 rounded-lg bg="neutral-200 dark:neutral-900"
-                            :class="`border border-1 ${description.length < 141 ? 'border-neutral-400 dark:border-neutral-600' : 'border-red-400 dark:border-red-600'}`">
-                            <input v-model="description" placeholder="説明を入力" class="w-full" />
+                            :class="`border border-1 ${description.length < 141 ? 'border-neutral-400 dark:border-neutral-600' : 'border-red-400'}`">
+                            <textarea ref="textarea" v-model="description" placeholder="説明を入力" rows="3" resize-none
+                                w-full bg-transparent outline-none
+                                text="sm neutral-900 dark:neutral-100 placeholder:neutral-400 placeholder:dark:neutral-600" />
                         </div>
 
                         <span text-sm pr-1 :class="`${description.length < 141
@@ -403,9 +451,9 @@ onMounted(async () => {
                         bg="neutral-200 dark:neutral-900"
                         class="border border-1 border-neutral-400 dark:border-neutral-600">
                         <TagsInputItem v-for="item in tags" :key="item" :value="item" flex items-center justify-center
-                            gap-2 rounded-md p-1 text="dark:white black" bg="neutral-100 dark:neutral-700"
+                            gap-2 rounded-md p-1 text="neutral-900 dark:neutral-100" bg="neutral-100 dark:neutral-700"
                             class="border border-1 border-neutral-300 dark:border-neutral-600">
-                            <TagsInputItemText text-sm pl-1.5 />
+                            <TagsInputItemText pl-1.5 text="sm neutral-900 dark:neutral-100" />
                             <TagsInputItemDelete mr-0.5 rounded flex items-center justify-center
                                 bg="hover:neutral-300 hover:dark:neutral-700">
                                 <Icon icon="lucide:x" />
@@ -413,7 +461,7 @@ onMounted(async () => {
                         </TagsInputItem>
 
                         <TagsInputInput placeholder="タグを入力" text-sm flex-1 px-1 bg-transparent focus:outline-none
-                            text="placeholder:neutral-400 dark:placeholder:neutral-500" />
+                            text="neutral-900 dark:neutral-100 placeholder:neutral-400 placeholder:dark:neutral-600" />
                     </TagsInputRoot>
                 </div>
             </div>

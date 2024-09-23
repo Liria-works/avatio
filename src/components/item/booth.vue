@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { supabase } from "../../lib/supabase";
-import { sentence } from "../../lib/text";
-
 import { Icon } from "@iconify/vue";
+import { sentence } from "../../lib/text";
 
 import ItemBase from "../../components/item/base.vue";
 import Button from "../button.vue";

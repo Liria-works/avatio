@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { Icon } from "@iconify/vue";
+import { useShare } from '@vueuse/core'
 
 import Tooltip from '../tooltip.vue';
 
 import { writeClipboard } from '../../lib/text';
+
+const { share, isSupported } = useShare()
+
+function startShare() {
+    share({
+        title: 'Hello',
+        text: 'Hello my friend!',
+        url: location.href,
+    })
+}
 
 const props = withDefaults(
     defineProps<{
@@ -80,6 +91,17 @@ const props = withDefaults(
                             <Icon :active="active" icon="lucide:link" mr-2 h-5 w-5
                                 text="neutral-600 dark:neutral-300" />
                             リンクをコピー
+                        </button>
+                        </MenuItem>
+
+                        <MenuItem v-slot="{ active }">
+                        <button :class="[
+                            active ? 'bg-neutral-300 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100' : 'text-neutral-900 dark:text-neutral-100',
+                            'group flex w-full items-center rounded-lg px-2 py-2 text-sm',
+                        ]" @click="startShare()">
+                            <Icon :active="active" icon="lucide:share-2" mr-2 h-5 w-5
+                                text="neutral-600 dark:neutral-300" />
+                            その他
                         </button>
                         </MenuItem>
                     </div>

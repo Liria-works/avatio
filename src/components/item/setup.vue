@@ -37,7 +37,7 @@ const dateLocale = date.toLocaleString("ja-JP", {
             <div v-if="props.image && !noHero" class="px-1.5 pt-1.5 pb-0.5">
                 <div class="max-h-80 rounded-lg overflow-hidden">
                     <img :src="'https://imbxeblwlopxrgexztsx.supabase.co/storage/v1/object/public/images/' + props.image"
-                        class="size-full rounded-lg object-cover" />
+                        size-full rounded-lg object-cover select-none />
                 </div>
             </div>
         </template>
@@ -47,7 +47,7 @@ const dateLocale = date.toLocaleString("ja-JP", {
             </div>
 
             <div v-if="!props.image" class="py-1.5 pl-1.5 flex-shrink-0">
-                <img :src="props.avatar_thumbnail" :alt="props.name" class="h-14 rounded-lg overflow-clip" />
+                <img :src="props.avatar_thumbnail" :alt="props.name" h-14 rounded-lg overflow-clip select-none />
             </div>
         </template>
         <template #main>
