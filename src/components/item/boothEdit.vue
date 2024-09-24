@@ -75,8 +75,7 @@ watch(unsupported, (value) => {
                 <div w-fit flex flex-col gap-3 items-start justify-center :h="props.size === 'lg' ? '32' : '20'">
                     <div w-fit gap-2 flex items-center>
                         <a :href="booth_url + props.id" target="_blank" w-fit gap-2>
-                            <p w-fit text-sm font-medium break-keep text="black dark:white"
-                                :class="`${props.size === 'lg' ? 'line-clamp-2' : 'line-clamp-1'}`">
+                            <p w-fit text-sm font-medium break-before-all line-clamp-2 text="black dark:white">
                                 {{ sentence(props.name) }}
                             </p>
                         </a>
@@ -88,7 +87,7 @@ watch(unsupported, (value) => {
 
                     <div flex items-center gap-3>
 
-                        <a :href="booth_url + props.id" target="_blank" text-sm font-semibold
+                        <a :href="booth_url + props.id" target="_blank" text-sm font-semibold whitespace-nowrap
                             class="text-neutral-700 dark:text-neutral-300">
                             {{ props.price }}
                         </a>
@@ -117,7 +116,7 @@ watch(unsupported, (value) => {
                                 <Icon icon="lucide:check" self-center size-3 text="neutral-100 dark:neutral-800" />
                             </CheckboxIndicator>
                         </CheckboxRoot>
-                        <span text-xs text="neutral-700 dark:neutral-300" select-none>アバター非対応</span>
+                        <span text-xs text="neutral-700 dark:neutral-300" select-none whitespace-nowrap>アバター非対応</span>
                     </label>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useStore } from '@nanostores/vue';
-import { addAvatarOpen } from '../../lib/modal';
+import { addAvatarOpen } from '../../lib/store';
 import type { Item } from '../../lib/item';
 
 import ModalBase from './base.vue';

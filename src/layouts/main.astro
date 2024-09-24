@@ -4,6 +4,7 @@ import { SEO } from "astro-seo";
 
 import Header from "./header.astro";
 import Footer from "./footer.astro";
+import Toast from "../components/toast.vue";
 ---
 
 <script is:inline>
@@ -73,6 +74,7 @@ import Footer from "./footer.astro";
             ]}
         />
     </head>
+
     <body class="bg-[#f0f0f0] dark:bg-[#262626] px-6 md:px-20 lg:px-40">
         <div class="w-full max-w-[1300px] flex flex-col mx-auto">
             <Header />
@@ -80,4 +82,6 @@ import Footer from "./footer.astro";
             <Footer />
         </div>
     </body>
+
+    <Toast client:load />
 </html>

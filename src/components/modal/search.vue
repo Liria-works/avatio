@@ -2,7 +2,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 import { useStore } from '@nanostores/vue';
-import { searchOpen } from '../../lib/modal';
+import { searchOpen } from '../../lib/store';
 import { supabase } from '../../lib/supabase';
 import {
     TransitionRoot,

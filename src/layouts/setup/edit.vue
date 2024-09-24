@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { Icon } from "@iconify/vue";
 import {
     TagsInputInput,
@@ -18,9 +18,11 @@ import ItemTiny from "../../components/item/tiny.vue";
 import ModalAddAvatar from "../../components/modal/addAvatar.vue";
 
 import type { Item } from "../../lib/item";
-import { addAvatarOpen } from "../../lib/modal";
+import { categoryAttr } from "../../lib/item";
+import { addAvatarOpen } from "../../lib/store";
 import { supabase } from "../../lib/supabase";
 import { lineBreak } from "../../lib/text";
+import { addToast } from "../../lib/ui";
 
 const props = withDefaults(
     defineProps<{
@@ -45,7 +47,6 @@ const items = ref<Items>({
     items: [],
 });
 
-const categorizedItems: { [key: string]: Item[] } = {};
 
 const title = ref<string>("");
 const description = ref<string>("");
@@ -56,6 +57,7 @@ const adding = ref(false);
 const publishing = ref(false);
 
 const fetchingItem = ref<Item | null>(null);
+const categorizedItems = ref<{ [key: string]: Item[] }>({});
 
 const ERROR_MESSAGES = {
     URL_EMPTY: "URLを入力してください。",
@@ -71,17 +73,13 @@ const ERROR_MESSAGES = {
     NO_TITLE: "セットアップ名が入力されていません。",
 };
 
-const toast = (message: string, description = "") => {
-    console.log(message, description);
-};
-
 const AddItem = async (
     id: number | null = null,
 ) => {
     adding.value = true;
 
     if (id === null) {
-        toast(ERROR_MESSAGES.URL_EMPTY);
+        addToast({ description: ERROR_MESSAGES.URL_EMPTY });
         adding.value = false;
         return;
     }
@@ -91,14 +89,14 @@ const AddItem = async (
             (item: { id: number }) => item.id === id
         )
     ) {
-        toast(ERROR_MESSAGES.MULTIPLE_ITEM);
+        addToast({ description: ERROR_MESSAGES.MULTIPLE_ITEM });
         fetchingItem.value = null;
         adding.value = false;
         return;
     }
 
     if (items.value.avatar && items.value.avatar.id === id) {
-        toast(ERROR_MESSAGES.ITEM_IN_AVATAR);
+        addToast({ description: ERROR_MESSAGES.ITEM_IN_AVATAR });
         fetchingItem.value = null;
         adding.value = false;
         return;
@@ -110,7 +108,7 @@ const AddItem = async (
         .maybeSingle();
 
     if (!itemData) {
-        toast(ERROR_MESSAGES.ADD_ITEM_FAILED);
+        addToast({ description: ERROR_MESSAGES.ADD_ITEM_FAILED });
         fetchingItem.value = null;
         adding.value = false;
         return;
@@ -151,21 +149,21 @@ const handleAddItem = (data: Item) => {
 
 const AddItemFromURL = async () => {
     if (!input_url.value) {
-        toast(ERROR_MESSAGES.URL_EMPTY);
+        addToast({ description: ERROR_MESSAGES.URL_EMPTY });
         return;
     }
 
     const url = new URL(input_url.value);
 
     if (url.hostname.split(".").slice(-2)[1] !== 'pm' || url.hostname.split(".").slice(-2)[0] !== 'booth') {
-        toast(ERROR_MESSAGES.URL_INVALID);
+        addToast({ description: ERROR_MESSAGES.URL_INVALID });
         return;
     }
 
     const id = url.pathname.split("/").slice(-1)[0];
 
     if (!Number.isInteger(Number(id))) {
-        toast(ERROR_MESSAGES.URL_INVALID);
+        addToast({ description: ERROR_MESSAGES.URL_INVALID });
         return;
     }
 
@@ -328,6 +326,32 @@ onMounted(async () => {
         }
     }
 });
+
+watch(items.value,
+    () => {
+        categorizedItems.value = {};
+
+        if (items.value.items.length) {
+            for (const item of items.value.items) {
+                let category: string;
+                if (item.category === 209) {
+                    category = "cloth";
+                } else if (item.category === 217) {
+                    category = "accessory";
+                } else {
+                    category = "other";
+                }
+
+                if (!categorizedItems.value[category]) {
+                    categorizedItems.value[category] = [];
+                }
+                categorizedItems.value[category].push(item);
+            }
+        }
+
+        console.log(categorizedItems.value);
+    }
+);
 </script>
 
 <template>
@@ -407,17 +431,22 @@ onMounted(async () => {
                     </div>
                 </div>
 
-                <div v-if="!items.items.length" my-10 font-medium text-neutral-400>
+                <div v-if="!Object.keys(categorizedItems).length" my-10 font-medium text-neutral-400>
                     アイテムが登録されていません
                 </div>
 
-                <div w-full flex flex-col gap-3>
-                    <ItemBoothEdit v-for="i in items.items" :id="i.id" :key="'item-' + i.id" :note="i.note"
-                        :unsupported="i.unsupported" :name="i.name" :thumbnail="i.thumbnail" :price="i.price"
-                        :shop="i.shop_id.name" :shopId="i.shop_id.id" :shopThumbnail="i.shop_id.thumbnail"
-                        :shopVerified="i.shop_id.verified" :nsfw="i.nsfw" :updated_at="i.updated_at"
-                        @update:note="i.note = $event" @update:unsupported="i.unsupported = $event"
-                        @remove="RemoveItem(i.id)" />
+                <div v-if="Object.keys(categorizedItems).length" w-full flex flex-col gap-3>
+                    <div v-for="i in Object.keys(categorizedItems)" w-full flex flex-col gap-3>
+                        <Title :label="categoryAttr[i].label" :icon="categoryAttr[i].icon" />
+
+                        <ItemBoothEdit v-for="item in categorizedItems[i]" :id="item.id" :key="'item-' + item.id"
+                            :note="item.note" :unsupported="item.unsupported" :name="item.name"
+                            :thumbnail="item.thumbnail" :price="item.price" :shop="item.shop_id.name"
+                            :shopId="item.shop_id.id" :shopThumbnail="item.shop_id.thumbnail"
+                            :shopVerified="item.shop_id.verified" :nsfw="item.nsfw" :updated_at="item.updated_at"
+                            @update:note="item.note = $event" @update:unsupported="item.unsupported = $event"
+                            @remove="RemoveItem(item.id)" />
+                    </div>
                 </div>
             </div>
 
@@ -426,14 +455,8 @@ onMounted(async () => {
             <div w-full lg:w-96 gap-8 flex flex-col justify-start items-start>
 
                 <div w-full flex flex-col gap-3>
-                    <Title label="説明" icon="lucide:text" />
-                    <div w-full flex flex-col gap-1 items-end>
-                        <div w-full p-3 rounded-lg bg="neutral-200 dark:neutral-900"
-                            :class="`border border-1 ${description.length < 141 ? 'border-neutral-400 dark:border-neutral-600' : 'border-red-400'}`">
-                            <textarea ref="textarea" v-model="description" placeholder="説明を入力" rows="3" resize-none
-                                w-full bg-transparent outline-none
-                                text="sm neutral-900 dark:neutral-100 placeholder:neutral-400 placeholder:dark:neutral-600" />
-                        </div>
+                    <div w-full flex items-center justify-between>
+                        <Title label="説明" icon="lucide:text" />
 
                         <span text-sm pr-1 :class="`${description.length < 141
                             ? 'text-neutral-500 dark:text-neutral-500'
@@ -442,10 +465,25 @@ onMounted(async () => {
                             {{ description.length }} / 140
                         </span>
                     </div>
+                    <div w-full p-3 rounded-lg bg="neutral-200 dark:neutral-900"
+                        :class="`border border-1 ${description.length < 141 ? 'border-neutral-400 dark:border-neutral-600' : 'border-red-400'}`">
+                        <textarea ref="textarea" v-model="description" placeholder="説明を入力" rows="3" resize-none w-full
+                            bg-transparent outline-none
+                            text="sm neutral-900 dark:neutral-100 placeholder:neutral-400 placeholder:dark:neutral-600" />
+                    </div>
                 </div>
 
                 <div w-full flex flex-col gap-3>
-                    <Title label="タグ" icon="lucide:tags" />
+                    <div w-full flex items-center justify-between>
+                        <Title label="タグ" icon="lucide:tags" />
+
+                        <span text-sm pr-1 :class="`${tags.length < 11
+                            ? 'text-neutral-500 dark:text-neutral-500'
+                            : 'text-red-500 dark:text-red-400'
+                            }`">
+                            {{ tags.length }} / 10
+                        </span>
+                    </div>
 
                     <TagsInputRoot v-model="tags" flex gap-2 items-center p-2 rounded-lg w-full flex-wrap
                         bg="neutral-200 dark:neutral-900"

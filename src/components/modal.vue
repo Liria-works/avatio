@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useStore } from '@nanostores/vue'
-import { searchOpen } from '../lib/modal'
+import { searchOpen } from '../lib/store'
 
 const $searchOpen = useStore(searchOpen);
 
