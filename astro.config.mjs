@@ -8,6 +8,8 @@ import vue from "@astrojs/vue";
 
 import { presetAttributify, presetUno } from "unocss";
 
+import tailwind from "@astrojs/tailwind";
+
 // https://astro.build/config
 export default defineConfig({
 	output: "server",
@@ -18,6 +20,7 @@ export default defineConfig({
 		}),
 		icon(),
 		vue({ appEntrypoint: "/src/pages/_app" }),
+		tailwind({ applyBaseStyles: false }),
 	],
 	adapter: vercel(),
 });

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 
-import Tooltip from "./tooltip.vue";
-
 const props = withDefaults(
     defineProps<{
         disabled?: boolean;
@@ -58,20 +56,18 @@ const handleClick = () => {
 </script>
 
 <template>
-    <Tooltip :text="props.tooltip">
-        <button v-if="!props.to.length" :id="props.id" :type="props.type" :disabled="props.disabled"
-            :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`"
-            @click="handleClick">
-            <Icon v-if="props.icon.length" :icon="props.icon" :width="props.iconSize" :height="props.iconSize"
-                :class="`${props.colorIcon}`" />
-            <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
-        </button>
+    <button v-if="!props.to.length" :id="props.id" :type="props.type" :disabled="props.disabled"
+        :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`"
+        @click="handleClick">
+        <Icon v-if="props.icon.length" :icon="props.icon" :width="props.iconSize" :height="props.iconSize"
+            :class="`${props.colorIcon}`" />
+        <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
+    </button>
 
-        <a v-else :href="props.to" :target="props.newTab ? '_blank' : '_self'"
-            :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
-            <Icon v-if="props.icon.length" :icon="props.icon" :width="props.iconSize" :height="props.iconSize"
-                :class="`${props.colorIcon}`" />
-            <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
-        </a>
-    </Tooltip>
+    <a v-else :href="props.to" :target="props.newTab ? '_blank' : '_self'"
+        :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
+        <Icon v-if="props.icon.length" :icon="props.icon" :width="props.iconSize" :height="props.iconSize"
+            :class="`${props.colorIcon}`" />
+        <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
+    </a>
 </template>

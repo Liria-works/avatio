@@ -4,17 +4,27 @@ import { useDebounceFn } from '@vueuse/core';
 import { useStore } from '@nanostores/vue';
 import { searchOpen } from '../../lib/store';
 import { supabase } from '../../lib/supabase';
+// import {
+//     TransitionRoot,
+//     TransitionChild,
+//     Dialog,
+//     DialogPanel,
+//     DialogTitle,
+// } from '@headlessui/vue';
 import {
-    TransitionRoot,
-    TransitionChild,
     Dialog,
-    DialogPanel,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
     DialogTitle,
-} from '@headlessui/vue';
+    DialogTrigger,
+} from '../shadcn/ui/dialog'
 import { Icon } from '@iconify/vue';
 
 import Title from '../title.vue';
 import ItemTiny from '../item/tiny.vue';
+import Button from '../button.vue';
 
 const $searchOpen = useStore(searchOpen);
 
@@ -96,7 +106,23 @@ const close = () => {
 </script>
 
 <template>
-    <TransitionRoot :show="$searchOpen" as="template">
+    <Dialog>
+        <DialogTrigger as-child>
+            <Button tooltip="検索" icon="lucide:search" :outline="false" padding="p-2"
+                colorBg="hover:bg-neutral-300 hover:dark:bg-neutral-600" />
+        </DialogTrigger>
+        <DialogContent class="sm:max-w-[425px]">
+            <DialogHeader>
+                <DialogTitle>検索</DialogTitle>
+            </DialogHeader>
+            <p>a</p>
+            <DialogFooter>
+                <Button icon="lucide:search" :outline="false" padding="p-2"
+                    colorBg="hover:bg-neutral-300 hover:dark:bg-neutral-600" />
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
+    <!-- <TransitionRoot :show="$searchOpen" as="template">
         <Dialog as="div" :open="$searchOpen" @close="close()" class="relative z-10">
             <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
                 leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
@@ -245,5 +271,5 @@ const close = () => {
                 </div>
             </div>
         </Dialog>
-    </TransitionRoot>
+    </TransitionRoot> -->
 </template>

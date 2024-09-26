@@ -1,10 +1,10 @@
 ---
 import { AstroFont } from "astro-font";
 import { SEO } from "astro-seo";
+import Toaster from "../components/shadcn/ui/toast/Toaster.vue";
 
 import Header from "./header.astro";
 import Footer from "./footer.astro";
-import Toast from "../components/toast.vue";
 ---
 
 <script is:inline>
@@ -81,7 +81,5 @@ import Toast from "../components/toast.vue";
             <slot />
             <Footer />
         </div>
-    </body>
-
-    <Toast client:load />
+    </body><Toaster client:load />
 </html>

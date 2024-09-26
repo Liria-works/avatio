@@ -1,13 +1,12 @@
-import { toast } from "./store";
+import { useToast } from "../components/shadcn/ui/toast/use-toast";
+const { toast } = useToast();
 
 export const addToast = ({
 	title,
 	description,
-	duration,
-}: { title?: string; description: string; duration?: number }) => {
-	const list = toast.get();
-	list.push({ title: title, description: description, duration: duration });
-	toast.set(list);
-
-	console.log(toast.get());
+}: { title?: string; description: string }) => {
+	toast({
+		title: title,
+		description: description,
+	});
 };

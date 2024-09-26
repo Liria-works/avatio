@@ -1,14 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, useId } from "vue";
 import { Icon } from "@iconify/vue";
-import {
-    TagsInputInput,
-    TagsInputItem,
-    TagsInputItemDelete,
-    TagsInputItemText,
-    TagsInputRoot,
-    Separator,
-} from "radix-vue";
+import { TagsInputInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText, TagsInputRoot, Separator, } from "radix-vue";
 import { useTextareaAutosize } from "@vueuse/core";
 
 import Button from "../../components/button.vue";
@@ -24,6 +17,8 @@ import { supabase } from "../../lib/supabase";
 import { lineBreak } from "../../lib/text";
 import { addToast } from "../../lib/ui";
 
+const { textarea } = useTextareaAutosize()
+
 const props = withDefaults(
     defineProps<{
         id?: number;
@@ -32,8 +27,6 @@ const props = withDefaults(
         id: undefined,
     }
 );
-
-const { textarea } = useTextareaAutosize()
 
 interface Items {
     avatar: Item | null;
@@ -46,7 +39,6 @@ const items = ref<Items>({
     avatar_note: "",
     items: [],
 });
-
 
 const title = ref<string>("");
 const description = ref<string>("");
@@ -150,6 +142,11 @@ const handleAddItem = (data: Item) => {
 const AddItemFromURL = async () => {
     if (!input_url.value) {
         addToast({ description: ERROR_MESSAGES.URL_EMPTY });
+        return;
+    }
+
+    try { new URL(input_url.value); } catch (_) {
+        addToast({ description: ERROR_MESSAGES.URL_INVALID });
         return;
     }
 
