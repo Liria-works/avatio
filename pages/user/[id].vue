@@ -55,21 +55,10 @@ onMounted(async () => {
         <div class="w-full flex flex-col gap-3">
             <div class="w-full flex items-center justify-between">
                 <div class="flex gap-6 items-center">
-                    <UAvatar
-                        v-if="avatar"
-                        :src="avatar"
-                        alt="Avatar"
-                        size="3xl"
-                    />
-                    <div
-                        v-else
-                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500"
-                    >
-                        <Icon
-                            name="lucide:user-round"
-                            size="36"
-                            class="text-neutral-600 dark:text-neutral-300"
-                        />
+                    <UAvatar v-if="avatar" :src="avatar" alt="Avatar" size="3xl" />
+                    <div v-else
+                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500">
+                        <Icon name="lucide:user-round" size="36" class="text-neutral-600 dark:text-neutral-300" />
                     </div>
                     <div class="flex flex-col gap-1">
                         <div class="flex gap-3 items-center">
@@ -91,42 +80,22 @@ onMounted(async () => {
                     </div>
                 </div>
                 <NuxtLink v-if="user && user.id === userId" to="/user/setting">
-                    <AButton
-                        icon="lucide:pen-line"
-                        :icon-size="19"
-                        tooltip="プロフィールを編集"
-                    />
+                    <UiButton icon="lucide:pen-line" :icon-size="19" tooltip="プロフィールを編集" />
                 </NuxtLink>
-                <AButton
-                    v-else
-                    icon="lucide:flag"
-                    :icon-size="19"
-                    tooltip="ユーザーを報告"
-                    @click="modal_report = true"
-                />
-                <UModal
-                    v-model="modal_report"
-                    :ui="{
-                        background: 'bg-white dark:bg-neutral-100',
-                        ring: 'ring-0',
-                        rounded: 'rounded-xl',
-                    }"
-                >
-                    <ModalReportUser
-                        :id="userId"
-                        @close="modal_report = false"
-                    />
+                <UiButton v-else icon="lucide:flag" :icon-size="19" tooltip="ユーザーを報告" @click="modal_report = true" />
+                <UModal v-model="modal_report" :ui="{
+                    background: 'bg-white dark:bg-neutral-100',
+                    ring: 'ring-0',
+                    rounded: 'rounded-xl',
+                }">
+                    <ModalReportUser :id="userId" @close="modal_report = false" />
                 </UModal>
             </div>
 
             <div class="w-full flex flex-col gap-3 pl-2">
                 <div v-if="links" class="flex flex-wrap items-center gap-2">
-                    <NuxtLink
-                        v-for="i in (links as string[])"
-                        :to="i"
-                        target="_blank"
-                        class="px-2.5 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-750 hover:dark:bg-neutral-700"
-                    >
+                    <NuxtLink v-for="i in (links as string[])" :to="i" target="_blank"
+                        class="px-2.5 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-750 hover:dark:bg-neutral-700">
                         <p class="text-sm font-medium">
                             {{
                                 i
@@ -139,14 +108,10 @@ onMounted(async () => {
                 </div>
 
                 <div
-                    class="w-full rounded-xl px-4 py-3 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
-                >
+                    class="w-full rounded-xl px-4 py-3 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-750">
                     <p class="text-neutral-500 text-sm mt-[-2px]">bio</p>
                     <p v-if="!bio" class="text-neutral-400">自己紹介が未設定</p>
-                    <p
-                        v-if="bio"
-                        class="text-relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]"
-                    >
+                    <p v-if="bio" class="text-relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]">
                         {{ useSentence(bio) }}
                     </p>
                 </div>
@@ -156,20 +121,11 @@ onMounted(async () => {
         <div v-if="setups" class="w-full flex flex-col gap-5 pl-2">
             <ATitle title="セットアップ" icon="lucide:shirt" />
 
-            <NuxtLink
-                v-for="i in setups.data"
-                :key="'user-setup-' + i.id"
-                :to="{ name: 'setup-id', params: { id: i.id } }"
-            >
-                <ItemSetupDetail
-                    :name="i.name"
-                    :description="i.description"
-                    :avatar="i.avatar"
-                    :author="i.author"
-                    :created-at="i.created_at"
-                    :image="i.image"
-                    class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
-                />
+            <NuxtLink v-for="i in setups.data" :key="'user-setup-' + i.id"
+                :to="{ name: 'setup-id', params: { id: i.id } }">
+                <ItemSetupDetail :name="i.name" :description="i.description" :avatar="i.avatar" :author="i.author"
+                    :created-at="i.created_at" :image="i.image"
+                    class="hover:bg-neutral-200 dark:hover:bg-neutral-700" />
             </NuxtLink>
         </div>
     </div>
@@ -178,10 +134,7 @@ onMounted(async () => {
         <p class="text-neutral-400 mt-5">ユーザーデータの取得に失敗しました</p>
     </div>
 
-    <div
-        v-else-if="loading"
-        class="w-full flex items-center justify-center pt-20"
-    >
+    <div v-else-if="loading" class="w-full flex items-center justify-center pt-20">
         <Icon name="svg-spinners:ring-resize" size="32" />
     </div>
 </template>

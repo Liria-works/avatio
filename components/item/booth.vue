@@ -70,11 +70,7 @@ const { thumbnail, thumbnailFrame, infoFrame, name } = modal({
         <template #thumbnail>
             <div :class="thumbnailFrame()">
                 <div class="overflow-clip rounded-lg">
-                    <NuxtImg
-                        :src="props.thumbnail"
-                        :alt="props.name"
-                        :class="thumbnail()"
-                    />
+                    <NuxtImg :src="props.thumbnail" :alt="props.name" :class="thumbnail()" />
                 </div>
             </div>
         </template>
@@ -82,175 +78,88 @@ const { thumbnail, thumbnailFrame, infoFrame, name } = modal({
             <div class="w-full flex gap-5 pr-4 justify-between">
                 <div :class="infoFrame()">
                     <div class="w-fit flex items-center gap-2">
-                        <NuxtLink
-                            :to="booth_url + props.id"
-                            target="_blank"
-                            class="w-fit gap-2"
-                        >
+                        <NuxtLink :to="booth_url + props.id" target="_blank" class="w-fit gap-2">
                             <p :class="name()">
                                 {{ useSentence(props.name) }}
                             </p>
                         </NuxtLink>
 
-                        <ATooltip v-if="props.nsfw" text="NSFW">
-                            <Icon
-                                name="heroicons:heart-16-solid"
-                                size="18"
-                                class="text-pink-400"
-                            />
-                        </ATooltip>
+                        <UiTooltip v-if="props.nsfw" text="NSFW">
+                            <Icon name="heroicons:heart-16-solid" size="18" class="text-pink-400" />
+                        </UiTooltip>
                     </div>
 
-                    <NuxtLink
-                        :to="`https://${props.shopId}.booth.pm/`"
-                        target="_blank"
-                        class="flex items-center gap-1.5 w-fit"
-                    >
-                        <NuxtImg
-                            :src="props.shopThumbnail"
-                            :alt="props.shop"
-                            class="size-5 rounded-md"
-                        />
-                        <span
-                            class="text-neutral-700 dark:text-neutral-300 text-sm font-medium line-clamp-1 break-all"
-                        >
+                    <NuxtLink :to="`https://${props.shopId}.booth.pm/`" target="_blank"
+                        class="flex items-center gap-1.5 w-fit">
+                        <NuxtImg :src="props.shopThumbnail" :alt="props.shop" class="size-5 rounded-md" />
+                        <span class="text-neutral-700 dark:text-neutral-300 text-sm font-medium line-clamp-1 break-all">
                             {{ props.shop }}
                         </span>
-                        <Icon
-                            v-if="props.shopVerified"
-                            name="lucide:check"
-                            size="16"
-                            class="flex-shrink-0 text-neutral-700 dark:text-neutral-300 size-3"
-                        />
+                        <Icon v-if="props.shopVerified" name="lucide:check" size="16"
+                            class="flex-shrink-0 text-neutral-700 dark:text-neutral-300 size-3" />
                     </NuxtLink>
 
-                    <div
-                        v-if="props.size === 'lg'"
-                        class="flex items-center gap-1"
-                    >
-                        <UButton
-                            label="サンプルアバター"
-                            icon="lucide:user-round"
-                            variant="outline"
-                            size="xs"
-                            :ui="{
+                    <div v-if="props.size === 'lg'" class="flex items-center gap-1">
+                        <UButton label="サンプルアバター" icon="lucide:user-round" variant="outline" size="xs" :ui="{
+                            variant: {
+                                outline:
+                                    'ring-neutral-300 dark:ring-neutral-500 hover:bg-neutral-200 hover:dark:bg-neutral-600',
+                            },
+                        }" class="hidden" @click="modalSampleAvatar = true" />
+                        <ModalSampleAvatar :open="modalSampleAvatar" @update:open="modalSampleAvatar = $event" />
+
+                        <UiTooltip text="アバター詳細の提案">
+                            <UButton icon="lucide:send" variant="outline" size="xs" :ui="{
                                 variant: {
                                     outline:
                                         'ring-neutral-300 dark:ring-neutral-500 hover:bg-neutral-200 hover:dark:bg-neutral-600',
                                 },
-                            }"
-                            class="hidden"
-                            @click="modalSampleAvatar = true"
-                        />
-                        <ModalSampleAvatar
-                            :open="modalSampleAvatar"
-                            @update:open="modalSampleAvatar = $event"
-                        />
+                            }" @click="modalAvatarSuggest = true" />
+                        </UiTooltip>
+                        <ModalAvatarSuggest :open="modalAvatarSuggest" @update:open="modalAvatarSuggest = $event" />
 
-                        <ATooltip text="アバター詳細の提案">
-                            <UButton
-                                icon="lucide:send"
-                                variant="outline"
-                                size="xs"
-                                :ui="{
-                                    variant: {
-                                        outline:
-                                            'ring-neutral-300 dark:ring-neutral-500 hover:bg-neutral-200 hover:dark:bg-neutral-600',
-                                    },
-                                }"
-                                @click="modalAvatarSuggest = true"
-                            />
-                        </ATooltip>
-                        <ModalAvatarSuggest
-                            :open="modalAvatarSuggest"
-                            @update:open="modalAvatarSuggest = $event"
-                        />
-
-                        <ATooltip text="アイテムからセットアップを検索">
-                            <UButton
-                                :to="{
-                                    name: 'search',
-                                    query: { item: props.id },
-                                }"
-                                icon="lucide:search"
-                                :label="'セットアップ検索'"
-                                variant="outline"
-                                size="xs"
-                                :ui="{
-                                    variant: {
-                                        outline:
-                                            'ring-neutral-300 dark:ring-neutral-500 hover:bg-neutral-200 hover:dark:bg-neutral-600',
-                                    },
-                                }"
-                            />
-                        </ATooltip>
+                        <UiTooltip text="アイテムからセットアップを検索">
+                            <UButton :to="{
+                                name: 'search',
+                                query: { item: props.id },
+                            }" icon="lucide:search" :label="'セットアップ検索'" variant="outline" size="xs" :ui="{
+                                variant: {
+                                    outline:
+                                        'ring-neutral-300 dark:ring-neutral-500 hover:bg-neutral-200 hover:dark:bg-neutral-600',
+                                },
+                            }" />
+                        </UiTooltip>
                     </div>
                 </div>
                 <div class="w-fit flex items-center gap-3 flex-shrink-0">
-                    <ATooltip
-                        v-if="props.unsupported"
-                        text="ベースアバターに非対応"
-                    >
-                        <Icon
-                            name="heroicons:paint-brush-20-solid"
-                            size="18"
-                            class="text-neutral-200"
-                        />
-                    </ATooltip>
+                    <UiTooltip v-if="props.unsupported" text="ベースアバターに非対応">
+                        <Icon name="heroicons:paint-brush-20-solid" size="18" class="text-neutral-200" />
+                    </UiTooltip>
 
-                    <UButton
-                        :to="booth_url + props.id"
-                        target="_blank"
-                        :label="props.price"
-                        icon="lucide:external-link"
-                        trailing
-                        variant="link"
-                        :padded="false"
-                        :ui="{ icon: { size: { sm: 'size-4' } } }"
-                    />
+                    <UButton :to="booth_url + props.id" target="_blank" :label="props.price" icon="lucide:external-link"
+                        trailing variant="link" :padded="false" :ui="{ icon: { size: { sm: 'size-4' } } }" />
 
-                    <ATooltip
-                        v-if="props.size !== 'lg'"
-                        text="アイテムからセットアップを検索"
-                    >
-                        <UButton
-                            :to="{
-                                name: 'search',
-                                query: { item: props.id },
-                            }"
-                            icon="lucide:search"
-                            variant="outline"
-                            size="xs"
-                            :ui="{
-                                variant: {
-                                    outline:
-                                        'ring-neutral-300 dark:ring-neutral-500 hover:bg-neutral-200 hover:dark:bg-neutral-600',
-                                },
-                            }"
-                        />
-                    </ATooltip>
+                    <UiTooltip v-if="props.size !== 'lg'" text="アイテムからセットアップを検索">
+                        <UButton :to="{
+                            name: 'search',
+                            query: { item: props.id },
+                        }" icon="lucide:search" variant="outline" size="xs" :ui="{
+                            variant: {
+                                outline:
+                                    'ring-neutral-300 dark:ring-neutral-500 hover:bg-neutral-200 hover:dark:bg-neutral-600',
+                            },
+                        }" />
+                    </UiTooltip>
                 </div>
             </div>
         </template>
         <template #under>
-            <div
-                v-if="props.note"
-                class="w-full flex"
-                :class="`w-full flex ${
-                    props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-0.5 pb-2'
-                }`"
-            >
-                <div
-                    class="w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600"
-                >
-                    <Icon
-                        name="lucide:pen-line"
-                        size="14"
-                        class="self-start flex-shrink-0 mt-0.5 text-neutral-400 dark:text-neutral-400"
-                    />
-                    <span
-                        class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]"
-                    >
+            <div v-if="props.note" class="w-full flex" :class="`w-full flex ${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-0.5 pb-2'
+                }`">
+                <div class="w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600">
+                    <Icon name="lucide:pen-line" size="14"
+                        class="self-start flex-shrink-0 mt-0.5 text-neutral-400 dark:text-neutral-400" />
+                    <span class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]">
                         {{ props.note }}
                     </span>
                 </div>

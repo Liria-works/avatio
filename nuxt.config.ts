@@ -1,74 +1,67 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    // ssr: false,
+	ssr: false,
 
-    routeRules: {
-        "/": { swr: true },
-        "/setup": { swr: true },
-    },
+	routeRules: {
+		"/": { swr: true },
+		"/setup": { swr: true },
+	},
 
-    devtools: {
-        enabled: true,
+	devtools: {
+		enabled: true,
 
-        timeline: {
-            enabled: true,
-        },
-    },
-    modules: [
-        "@nuxt/ui",
-        "@vueuse/nuxt",
-        "@nuxt/image",
-        "@nuxt/fonts",
-        "@nuxt/scripts",
-        "@formkit/auto-animate",
-        "@nuxtjs/color-mode",
-        "@nuxtjs/supabase",
-        "@nuxtjs/ngrok",
-        "@nuxt/eslint",
-        "@pinia/nuxt",
-    ],
-    compatibilityDate: "2024-08-21",
+		timeline: {
+			enabled: true,
+		},
+	},
+	modules: [
+		"@nuxt/ui",
+		"@vueuse/nuxt",
+		"@nuxt/image",
+		"@nuxt/fonts",
+		"@nuxtjs/color-mode",
+		"@nuxtjs/supabase",
+		"@nuxt/eslint",
+		"@pinia/nuxt",
+	],
+	compatibilityDate: "2024-08-21",
 
-    components: [
-        {
-            path: "~/components",
-        },
-    ],
+	components: [
+		{
+			path: "~/components",
+		},
+	],
 
-    supabase: {
-        redirect: true,
-        redirectOptions: {
-            login: "/login",
-            callback: "/confirm",
-            include: ["/setup/edit"],
-            exclude: [],
-            cookieRedirect: false,
-        },
-    },
+	supabase: {
+		redirect: true,
+		redirectOptions: {
+			login: "/login",
+			callback: "/confirm",
+			include: ["/setup/edit"],
+			exclude: [],
+			cookieRedirect: false,
+		},
+	},
 
-    icon: {
-        customCollections: [
-            {
-                prefix: "avatio",
-                dir: "./public/icons/avatio",
-            },
-        ],
-    },
+	icon: {
+		customCollections: [
+			{
+				prefix: "avatio",
+				dir: "./public/icons/avatio",
+			},
+		],
+	},
 
-    ngrok: {
-        authtoken: process.env.NGROK_AUTHTOKEN,
-    },
+	runtimeConfig: {
+		public: {
+			token: "",
+			edgeConfig: "",
+		},
+	},
 
-    runtimeConfig: {
-        public: {
-            token: "",
-            edgeConfig: "",
-        },
-    },
-
-    nitro: {
-        preset: "vercel",
-    },
+	nitro: {
+		preset: "vercel",
+	},
 });
 
 //

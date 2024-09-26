@@ -277,66 +277,37 @@ onMounted(async () => {
     <div class="flex-col justify-start items-start gap-8 flex w-full px-3">
         <div class="flex flex-row gap-10 items-center justify-between w-full">
             <div class="w-full flex flex-col gap-2 pt-1">
-                <UInput
-                    v-model="title"
-                    placeholder="セットアップ名を入力"
-                    size="xl"
-                    :padded="false"
-                    variant="none"
-                    :ui="{ size: { xl: 'text-2xl font-bold' } }"
-                    class="w-full"
-                />
-                <UDivider
-                    :ui="{
-                        border: {
-                            base: `${
-                                title.length < 25
-                                    ? 'border-neutral-300 dark:border-neutral-600'
-                                    : 'border-red-400 dark:border-red-600'
+                <UInput v-model="title" placeholder="セットアップ名を入力" size="xl" :padded="false" variant="none"
+                    :ui="{ size: { xl: 'text-2xl font-bold' } }" class="w-full" />
+                <UDivider :ui="{
+                    border: {
+                        base: `${title.length < 25
+                                ? 'border-neutral-300 dark:border-neutral-600'
+                                : 'border-red-400 dark:border-red-600'
                             }`,
-                        },
-                    }"
-                    class="w-full"
-                />
+                    },
+                }" class="w-full" />
             </div>
             <div class="flex gap-2 items-center">
-                <UPopover
-                    v-if="!route.query.id"
-                    mode="hover"
-                    :popper="{ placement: 'top' }"
-                    :ui="{
-                        rounded: 'rounded-xl',
-                        ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                    }"
-                    class="flex"
-                >
-                    <UButton
-                        :disabled="
-                            publishing ||
-                            !title ||
-                            !items.avatar ||
-                            !items.items.length
-                        "
-                        truncate
-                        size="lg"
-                        label="公開"
-                        :icon="
-                            !publishing
+                <UPopover v-if="!route.query.id" mode="hover" :popper="{ placement: 'top' }" :ui="{
+                    rounded: 'rounded-xl',
+                    ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
+                }" class="flex">
+                    <UButton :disabled="publishing ||
+                        !title ||
+                        !items.avatar ||
+                        !items.items.length
+                        " truncate size="lg" label="公開" :icon="!publishing
                                 ? 'i-heroicons-arrow-up-tray-16-solid'
                                 : 'i-svg-spinners-ring-resize'
-                        "
-                        :ui="{
+                            " :ui="{
                             rounded: 'rounded-full',
                             inline: 'pr-4',
                             truncate: 'whitespace-nowrap',
-                        }"
-                        @click="PublishSetup"
-                    />
+                        }" @click="PublishSetup" />
 
                     <template #panel>
-                        <div
-                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-100"
-                        >
+                        <div class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-100">
                             <p v-if="!title">タイトルが入力されていません</p>
                             <p v-if="!items.avatar">
                                 ベースアバターが登録されていません
@@ -345,39 +316,23 @@ onMounted(async () => {
                                 アイテムが登録されていません
                             </p>
 
-                            <p
-                                v-if="
-                                    title && items.avatar && items.items.length
-                                "
-                            >
+                            <p v-if="
+                                title && items.avatar && items.items.length
+                            ">
                                 セットアップを投稿
                             </p>
                         </div>
                     </template>
                 </UPopover>
 
-                <UButton
-                    v-else
-                    :disabled="!title || !items.avatar || !items.items.length"
-                    truncate
-                    size="lg"
-                    label="更新"
-                    icon="i-heroicons-arrow-up-tray-16-solid"
-                    :ui="{
+                <UButton v-else :disabled="!title || !items.avatar || !items.items.length" truncate size="lg" label="更新"
+                    icon="i-heroicons-arrow-up-tray-16-solid" :ui="{
                         rounded: 'rounded-full',
                         inline: 'pr-4',
                         truncate: 'whitespace-nowrap',
-                    }"
-                    @click="UpdateSetup"
-                />
+                    }" @click="UpdateSetup" />
 
-                <AButton
-                    tooltip="破棄"
-                    icon="lucide:trash"
-                    :icon-size="18"
-                    class="size-10"
-                    @click="router.back()"
-                />
+                <UiButton tooltip="破棄" icon="lucide:trash" :icon-size="18" class="size-10" @click="router.back()" />
             </div>
         </div>
 
@@ -386,304 +341,155 @@ onMounted(async () => {
                 <div class="w-full flex flex-col items-center gap-4">
                     <div class="flex gap-1 items-center w-full">
                         <div
-                            class="w-full p-1 rounded-xl border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900"
-                        >
-                            <UInput
-                                v-model="input_url"
-                                :disabled="adding"
-                                autocomplete="off"
-                                variant="none"
-                                size="sm"
-                                placeholder="BOOTH URLからアバター・アイテムを追加"
-                                block
-                                :ui="{
+                            class="w-full p-1 rounded-xl border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900">
+                            <UInput v-model="input_url" :disabled="adding" autocomplete="off" variant="none" size="sm"
+                                placeholder="BOOTH URLからアバター・アイテムを追加" block :ui="{
                                     rounded: 'rounded-xl',
                                     icon: { trailing: { pointer: '' } },
-                                }"
-                                @keyup.enter="AddItem()"
-                            >
+                                }" @keyup.enter="AddItem()">
                                 <template #trailing>
-                                    <UButton
-                                        v-show="!input_url"
-                                        color="gray"
-                                        variant="link"
-                                        icon="i-heroicons-clipboard"
-                                        :padded="false"
-                                        @click="PasteFromClipboard"
-                                    />
-                                    <UButton
-                                        v-show="input_url !== ''"
-                                        color="gray"
-                                        variant="link"
-                                        icon="i-heroicons-x-mark-20-solid"
-                                        :padded="false"
-                                        @click="input_url = ''"
-                                    />
+                                    <UButton v-show="!input_url" color="gray" variant="link"
+                                        icon="i-heroicons-clipboard" :padded="false" @click="PasteFromClipboard" />
+                                    <UButton v-show="input_url !== ''" color="gray" variant="link"
+                                        icon="i-heroicons-x-mark-20-solid" :padded="false" @click="input_url = ''" />
                                 </template>
                             </UInput>
                         </div>
-                        <UButton
-                            :icon="
-                                !adding
-                                    ? 'i-heroicons-plus'
-                                    : 'i-svg-spinners-ring-resize'
-                            "
-                            :disabled="adding"
-                            label="追加"
-                            size="sm"
-                            :ui="{
+                        <UButton :icon="!adding
+                                ? 'i-heroicons-plus'
+                                : 'i-svg-spinners-ring-resize'
+                            " :disabled="adding" label="追加" size="sm" :ui="{
                                 rounded: 'rounded-xl',
-                            }"
-                            class="pr-3 h-[40px]"
-                            @click="AddItem()"
-                        />
+                            }" class="pr-3 h-[40px]" @click="AddItem()" />
                     </div>
 
                     <div class="w-full flex items-center gap-2">
-                        <UButton
-                            block
-                            icon="lucide:search"
-                            label="アバター・アイテムを検索"
-                            variant="outline"
-                            :ui="{
-                                rounded: 'rounded-xl',
-                                variant: {
-                                    outline:
-                                        'ring-neutral-400 dark:ring-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-750',
-                                },
-                            }"
-                            class="h-9"
-                            @click="modalSearchItem = true"
-                        />
-                        <UModal
-                            v-model="modalSearchItem"
-                            :ui="{
-                                background: 'bg-white dark:bg-neutral-100',
-                                ring: 'ring-0',
-                                rounded: 'rounded-xl',
-                                inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
-                            }"
-                        >
-                            <ModalSearchItem
-                                @add="AddItem"
-                                @close="modalSearchItem = false"
-                            />
+                        <UButton block icon="lucide:search" label="アバター・アイテムを検索" variant="outline" :ui="{
+                            rounded: 'rounded-xl',
+                            variant: {
+                                outline:
+                                    'ring-neutral-400 dark:ring-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-750',
+                            },
+                        }" class="h-9" @click="modalSearchItem = true" />
+                        <UModal v-model="modalSearchItem" :ui="{
+                            background: 'bg-white dark:bg-neutral-100',
+                            ring: 'ring-0',
+                            rounded: 'rounded-xl',
+                            inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
+                        }">
+                            <ModalSearchItem @add="AddItem" @close="modalSearchItem = false" />
                         </UModal>
                     </div>
                 </div>
 
                 <ACategory title="ベースアバター" icon="lucide:person-standing">
-                    <div
-                        v-if="!items.avatar"
-                        class="w-full p-5 flex flex-col gap-5 rounded-lg bg-white dark:bg-neutral-700"
-                    >
-                        <div
-                            v-if="quickAvatarsOwned?.length"
-                            class="w-full flex flex-col gap-3"
-                        >
-                            <ATitle
-                                title="あなたのセットアップから"
-                                icon="lucide:user-round"
-                            />
-                            <div
-                                class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full"
-                            >
-                                <button
-                                    v-for="i in quickAvatarsOwned"
-                                    :key="'suggest-avatar-' + i.id"
-                                    @click="AddItem(i.id)"
-                                >
-                                    <ItemTiny
-                                        :label="i.short ? i.short : i.name"
-                                        :thumbnail="i.thumbnail"
-                                        class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
-                                    />
+                    <div v-if="!items.avatar"
+                        class="w-full p-5 flex flex-col gap-5 rounded-lg bg-white dark:bg-neutral-700">
+                        <div v-if="quickAvatarsOwned?.length" class="w-full flex flex-col gap-3">
+                            <ATitle title="あなたのセットアップから" icon="lucide:user-round" />
+                            <div class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full">
+                                <button v-for="i in quickAvatarsOwned" :key="'suggest-avatar-' + i.id"
+                                    @click="AddItem(i.id)">
+                                    <ItemTiny :label="i.short ? i.short : i.name" :thumbnail="i.thumbnail"
+                                        class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700" />
                                 </button>
                             </div>
                         </div>
-                        <div
-                            v-if="quickAvatars"
-                            class="w-full flex flex-col gap-3"
-                        >
-                            <ATitle
-                                title="人気のアバター"
-                                icon="lucide:sparkles"
-                                infomation="Avatioの投稿数から算出"
-                            />
-                            <div
-                                class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full"
-                            >
-                                <button
-                                    v-for="i in quickAvatars"
-                                    :key="'suggest-avatar-' + i.id"
-                                    @click="AddItem(i.id)"
-                                >
-                                    <ItemTiny
-                                        :label="i.short ? i.short : i.name"
-                                        :thumbnail="i.thumbnail"
-                                        class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
-                                    />
+                        <div v-if="quickAvatars" class="w-full flex flex-col gap-3">
+                            <ATitle title="人気のアバター" icon="lucide:sparkles" infomation="Avatioの投稿数から算出" />
+                            <div class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full">
+                                <button v-for="i in quickAvatars" :key="'suggest-avatar-' + i.id"
+                                    @click="AddItem(i.id)">
+                                    <ItemTiny :label="i.short ? i.short : i.name" :thumbnail="i.thumbnail"
+                                        class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700" />
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <ItemBoothEdit
-                        v-if="items.avatar"
-                        :id="items.avatar"
-                        :key="'item-' + items.avatar"
-                        size="lg"
-                        :avatar="true"
-                        @remove="items.avatar = null"
-                        @update:note="items.avatar_note = $event"
-                        :note="items.avatar_note"
-                    />
+                    <ItemBoothEdit v-if="items.avatar" :id="items.avatar" :key="'item-' + items.avatar" size="lg"
+                        :avatar="true" @remove="items.avatar = null" @update:note="items.avatar_note = $event"
+                        :note="items.avatar_note" />
                 </ACategory>
 
-                <div
-                    v-if="!items.items.length"
-                    class="my-10 font-medium text-neutral-400"
-                >
+                <div v-if="!items.items.length" class="my-10 font-medium text-neutral-400">
                     アイテムが登録されていません
                 </div>
 
-                <ACategory
-                    v-if="
-                        items.items.filter((item) => item.category === 209)
-                            .length
-                    "
-                    title="衣装"
-                    icon="lucide:shirt"
-                >
-                    <ItemBoothEdit
-                        v-for="i in items.items.filter(
-                            (item) => item.category === 209
-                        )"
-                        :id="i.id"
-                        :key="'item-' + i.id"
-                        @remove="
+                <ACategory v-if="
+                    items.items.filter((item) => item.category === 209)
+                        .length
+                " title="衣装" icon="lucide:shirt">
+                    <ItemBoothEdit v-for="i in items.items.filter(
+                        (item) => item.category === 209
+                    )" :id="i.id" :key="'item-' + i.id" @remove="
                             items.items = items.items.filter(
                                 (item) => item.id !== i.id
                             )
-                        "
-                        @update:note="i.note = $event"
-                        @update:unsupported="i.unsupported = $event"
-                        :note="i.note"
-                        :unsupported="i.unsupported"
-                    />
+                            " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
+                        :unsupported="i.unsupported" />
                 </ACategory>
 
-                <ACategory
-                    v-if="
-                        items.items.filter((item) => item.category === 217)
-                            .length
-                    "
-                    title="アクセサリー"
-                    icon="lucide:star"
-                >
-                    <ItemBoothEdit
-                        v-for="i in items.items.filter(
-                            (item) => item.category === 217
-                        )"
-                        :id="i.id"
-                        :key="'item-' + i.id"
-                        @remove="
+                <ACategory v-if="
+                    items.items.filter((item) => item.category === 217)
+                        .length
+                " title="アクセサリー" icon="lucide:star">
+                    <ItemBoothEdit v-for="i in items.items.filter(
+                        (item) => item.category === 217
+                    )" :id="i.id" :key="'item-' + i.id" @remove="
                             items.items = items.items.filter(
                                 (item) => item.id !== i.id
                             )
-                        "
-                        @update:note="i.note = $event"
-                        @update:unsupported="i.unsupported = $event"
-                        :note="i.note"
-                        :unsupported="i.unsupported"
-                    />
+                            " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
+                        :unsupported="i.unsupported" />
                 </ACategory>
 
-                <ACategory
-                    v-if="
-                        items.items.filter(
-                            (item) =>
-                                item.category !== 209 &&
-                                item.category !== 217 &&
-                                item.category !== 208
-                        ).length
-                    "
-                    title="その他"
-                    icon="lucide:box"
-                >
-                    <ItemBoothEdit
-                        v-for="i in items.items.filter(
-                            (item) =>
-                                item.category !== 209 &&
-                                item.category !== 217 &&
-                                item.category !== 208
-                        )"
-                        :id="i.id"
-                        :key="'item-' + i.id"
-                        @remove="
+                <ACategory v-if="
+                    items.items.filter(
+                        (item) =>
+                            item.category !== 209 &&
+                            item.category !== 217 &&
+                            item.category !== 208
+                    ).length
+                " title="その他" icon="lucide:box">
+                    <ItemBoothEdit v-for="i in items.items.filter(
+                        (item) =>
+                            item.category !== 209 &&
+                            item.category !== 217 &&
+                            item.category !== 208
+                    )" :id="i.id" :key="'item-' + i.id" @remove="
                             items.items = items.items.filter(
                                 (item) => item.id !== i.id
                             )
-                        "
-                        @update:note="i.note = $event"
-                        @update:unsupported="i.unsupported = $event"
-                        :note="i.note"
-                        :unsupported="i.unsupported"
-                    />
+                            " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
+                        :unsupported="i.unsupported" />
                 </ACategory>
             </div>
 
-            <UDivider
-                :ui="{
-                    border: {
-                        base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
-                    },
-                }"
-                class="block md:hidden"
-            />
+            <UDivider :ui="{
+                border: {
+                    base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
+                },
+            }" class="block md:hidden" />
 
-            <div
-                class="w-full md:w-96 flex-col justify-start items-start gap-8 flex"
-            >
+            <div class="w-full md:w-96 flex-col justify-start items-start gap-8 flex">
                 <div v-if="!id" class="w-full flex flex-col gap-6 items-start">
-                    <button
-                        v-if="!imagePreview"
-                        @click="open()"
-                        class="h-40 flex flex-col items-center justify-center w-full rounded-xl hover:bg-neutral-200 dark:bg-black/10 dark:hover:bg-black/15 border-4 border-dashed border-neutral-300 dark:border-neutral-600"
-                    >
-                        <Icon
-                            name="lucide:plus"
-                            class="text-4xl text-neutral-400 dark:text-neutral-500"
-                        />
-                        <span
-                            class="font-medium text-neutral-400 dark:text-neutral-500"
-                            >画像を追加</span
-                        >
+                    <button v-if="!imagePreview" @click="open()"
+                        class="h-40 flex flex-col items-center justify-center w-full rounded-xl hover:bg-neutral-200 dark:bg-black/10 dark:hover:bg-black/15 border-4 border-dashed border-neutral-300 dark:border-neutral-600">
+                        <Icon name="lucide:plus" class="text-4xl text-neutral-400 dark:text-neutral-500" />
+                        <span class="font-medium text-neutral-400 dark:text-neutral-500">画像を追加</span>
                     </button>
-                    <div
-                        v-if="imagePreview"
-                        class="flex flex-col items-center gap-1 h-fit"
-                    >
+                    <div v-if="imagePreview" class="flex flex-col items-center gap-1 h-fit">
                         <div class="relative w-auto h-fit">
-                            <NuxtImg
-                                :src="imagePreview.toString()"
-                                alt="Image Preview"
-                                class="object-contain max-h-64 rounded-xl"
-                            />
-                            <button
-                                @click="reset()"
-                                class="size-8 absolute top-2 right-2 bg-black/30 hover:bg-black/50 rounded-full p-1 backdrop-blur-lg"
-                            >
-                                <Icon
-                                    name="lucide:x"
-                                    class="size-full bg-neutral-100"
-                                />
+                            <NuxtImg :src="imagePreview.toString()" alt="Image Preview"
+                                class="object-contain max-h-64 rounded-xl" />
+                            <button @click="reset()"
+                                class="size-8 absolute top-2 right-2 bg-black/30 hover:bg-black/50 rounded-full p-1 backdrop-blur-lg">
+                                <Icon name="lucide:x" class="size-full bg-neutral-100" />
                             </button>
                         </div>
-                        <div
-                            v-if="files"
-                            class="w-full line-clamp-1 break-all text-xs px-1 text-neutral-600 dark:text-neutral-400"
-                        >
+                        <div v-if="files"
+                            class="w-full line-clamp-1 break-all text-xs px-1 text-neutral-600 dark:text-neutral-400">
                             {{ files[0].name }}
                         </div>
                     </div>
@@ -691,58 +497,37 @@ onMounted(async () => {
                 </div>
                 <ACategory title="説明" icon="lucide:text">
                     <div class="w-full flex flex-col gap-1 items-end">
-                        <div
-                            :class="`w-full p-3 rounded-lg border border-1 bg-neutral-200 dark:bg-neutral-900 ${
-                                description.length < 141
-                                    ? 'border-neutral-400 dark:border-neutral-600'
-                                    : 'border-red-400 dark:border-red-600'
-                            }`"
-                        >
-                            <UTextarea
-                                v-model="description"
-                                autoresize
-                                placeholder="説明を入力"
-                                :padded="false"
-                                variant="none"
-                                class="w-full"
-                            />
+                        <div :class="`w-full p-3 rounded-lg border border-1 bg-neutral-200 dark:bg-neutral-900 ${description.length < 141
+                                ? 'border-neutral-400 dark:border-neutral-600'
+                                : 'border-red-400 dark:border-red-600'
+                            }`">
+                            <UTextarea v-model="description" autoresize placeholder="説明を入力" :padded="false"
+                                variant="none" class="w-full" />
                         </div>
 
-                        <span
-                            :class="`text-sm pr-1 ${
-                                description.length < 141
-                                    ? 'text-neutral-500 dark:text-neutral-500'
-                                    : 'text-red-500 dark:text-red-400'
-                            }`"
-                        >
+                        <span :class="`text-sm pr-1 ${description.length < 141
+                                ? 'text-neutral-500 dark:text-neutral-500'
+                                : 'text-red-500 dark:text-red-400'
+                            }`">
                             {{ description.length }} / 140
                         </span>
                     </div>
                 </ACategory>
 
                 <ACategory title="タグ" icon="lucide:tags">
-                    <TagsInputRoot
-                        v-model="tags"
-                        class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
-                    >
-                        <TagsInputItem
-                            v-for="item in tags"
-                            :key="item"
-                            :value="item"
-                            class="dark:text-white text-black flex items-center justify-center gap-2 rounded-md p-1 border border-1 border-neutral-300 dark:border-neutral-600 bg-neutral-100 dark:bg-neutral-700"
-                        >
+                    <TagsInputRoot v-model="tags"
+                        class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900">
+                        <TagsInputItem v-for="item in tags" :key="item" :value="item"
+                            class="dark:text-white text-black flex items-center justify-center gap-2 rounded-md p-1 border border-1 border-neutral-300 dark:border-neutral-600 bg-neutral-100 dark:bg-neutral-700">
                             <TagsInputItemText class="text-sm pl-1.5" />
                             <TagsInputItemDelete
-                                class="mr-0.5 rounded hover:bg-neutral-300 hover:dark:bg-neutral-700 flex items-center justify-center"
-                            >
+                                class="mr-0.5 rounded hover:bg-neutral-300 hover:dark:bg-neutral-700 flex items-center justify-center">
                                 <Icon name="lucide:x" />
                             </TagsInputItemDelete>
                         </TagsInputItem>
 
-                        <TagsInputInput
-                            placeholder="タグを入力"
-                            class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
-                        />
+                        <TagsInputInput placeholder="タグを入力"
+                            class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500" />
                     </TagsInputRoot>
                 </ACategory>
             </div>

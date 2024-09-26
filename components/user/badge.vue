@@ -19,24 +19,24 @@ onMounted(async () => {
 
 <template>
     <div class="flex gap-1.5 items-center mt-0.5">
-        <ATooltip v-if="badges?.developer" text="デベロッパー">
+        <UiTooltip v-if="badges?.developer" text="デベロッパー">
             <Icon name="lucide:code-xml" size="20" />
-        </ATooltip>
+        </UiTooltip>
 
-        <ATooltip v-if="badges?.contributor" text="コントリビューター">
+        <UiTooltip v-if="badges?.contributor" text="コントリビューター">
             <Icon name="lucide:handshake" size="17" />
-        </ATooltip>
+        </UiTooltip>
 
-        <ATooltip v-if="badges?.translator" text="翻訳者">
+        <UiTooltip v-if="badges?.translator" text="翻訳者">
             <Icon name="lucide:languages" size="19" />
-        </ATooltip>
+        </UiTooltip>
 
-        <ATooltip v-if="badges?.alpha_tester" text="アルファテスター">
+        <UiTooltip v-if="badges?.alpha_tester" text="アルファテスター">
             <Icon name="lucide:flask-conical" size="19" />
-        </ATooltip>
+        </UiTooltip>
 
-        <ATooltip v-if="badges?.shop_owner" text="ショップオーナー">
+        <UiTooltip v-if="badges?.shop_owner" text="ショップオーナー">
             <Icon name="lucide:store" size="19" />
-        </ATooltip>
+        </UiTooltip>
     </div>
 </template>

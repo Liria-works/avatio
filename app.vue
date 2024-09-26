@@ -27,31 +27,19 @@ try {
 
 <template>
     <div v-if="!isMaintenance" class="size-full">
-        <UContainer
-            class="flex flex-col gap-10"
-            :ui="{ padding: 'px-8 pt-6 sm:px-20 lg:px-20' }"
-        >
-            <AHeader />
+        <UContainer class="flex flex-col gap-10" :ui="{ padding: 'px-8 pt-6 sm:px-20 lg:px-20' }">
+            <UiHeader />
             <NuxtPage />
-            <AFooter />
+            <UiFooter />
         </UContainer>
-        <UButton
-            size="xl"
-            icon="lucide:lightbulb"
-            label="フィードバック"
-            :ui="{ rounded: 'rounded-full' }"
-            class="fixed bottom-6 right-6 pr-[18px]"
-            @click="modal_feedback = true"
-        />
-        <UModal
-            v-model="modal_feedback"
-            :ui="{
-                background: 'bg-white dark:bg-neutral-800',
-                ring: 'ring-0',
-                rounded: 'rounded-xl',
-                overlay: { background: 'backdrop-blur-sm' },
-            }"
-        >
+        <UButton size="xl" icon="lucide:lightbulb" label="フィードバック" :ui="{ rounded: 'rounded-full' }"
+            class="fixed bottom-6 right-6 pr-[18px]" @click="modal_feedback = true" />
+        <UModal v-model="modal_feedback" :ui="{
+            background: 'bg-white dark:bg-neutral-800',
+            ring: 'ring-0',
+            rounded: 'rounded-xl',
+            overlay: { background: 'backdrop-blur-sm' },
+        }">
             <ModalFeedback />
         </UModal>
         <UNotifications />
