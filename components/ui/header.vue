@@ -29,8 +29,9 @@ onMounted(async () => {
         <div class="flex items-center gap-12 inset">
             <div class="items-center gap-2 flex">
                 <div class="items-center gap-0.5 flex">
-                    <UiButton :icon-size="20" icon="i-heroicons-magnifying-glass-20-solid" tooltip="検索"
-                        @click="modalSearch = true" />
+                    <UiButton tooltip="検索" icon="lucide:search" :outline="false" padding="p-2.5"
+                        color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600" @click="modalSearch = true" />
+
                     <UModal v-model="modalSearch" :ui="{
                         background: 'bg-white dark:bg-neutral-100',
                         ring: 'ring-0',
@@ -39,11 +40,13 @@ onMounted(async () => {
                     }">
                         <ModalSearch @close="modalSearch = false" />
                     </UModal>
+
                     <ClientOnly>
                         <UiButton :icon-size="20" :icon="colorMode.value === 'light'
                             ? 'i-heroicons-sun-20-solid'
                             : 'i-heroicons-moon-20-solid'
-                            " tooltip="テーマ" @click="
+                            " tooltip="テーマ" :outline="false" padding="p-2.5"
+                            color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600" @click="
                                 colorMode.preference =
                                 colorMode.value === 'dark'
                                     ? 'light'
@@ -54,7 +57,7 @@ onMounted(async () => {
                         </template>
                     </ClientOnly>
 
-                    <UPopover :ui="{
+                    <!-- <UPopover :ui="{
                         rounded: 'rounded-xl',
                         ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
                     }" class="flex">
@@ -63,12 +66,13 @@ onMounted(async () => {
                         <template #panel>
                             <div class="p-8">多言語未対応</div>
                         </template>
-                    </UPopover>
+                    </UPopover> -->
                 </div>
 
                 <div class="flex">
                     <NuxtLink to="/login">
-                        <UiButton v-if="!user" icon="lucide:log-in" tooltip="ログイン" />
+                        <UiButton label="ログイン" :outline="false" padding="px-4 py-2" rounded="rounded-lg"
+                            color-bg="bg-neutral-500 hover:bg-neutral-600" color-text="text-neutral-100" />
                     </NuxtLink>
 
                     <NuxtLink v-if="user" :to="'/user/' + user.id" class="rounded-full flex items-center">

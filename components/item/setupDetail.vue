@@ -72,7 +72,7 @@ onMounted(async () => {
                                     {{ useDateElapsed(date) }}
                                 </p>
                             </UiTooltip>
-                            <AUser :user="props.author" size="sm" />
+                            <UiUser :user="props.author" size="sm" />
                         </div>
                     </div>
                 </div>

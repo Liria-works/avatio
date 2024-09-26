@@ -62,7 +62,7 @@ const SearchByTag = async () => {
     resultSetups.value = data;
 };
 
-onMounted(async () => {});
+onMounted(async () => { });
 
 // クエリパラメータの変更を監視
 watch(
@@ -96,64 +96,31 @@ watch(
 <template>
     <div class="w-full flex">
         <aside v-if="false" class="hidden w-80 sm:flex flex-col gap-1 px-2">
-            <ATitle title="検索オプション" icon="lucide:menu" />
+            <UiTitle title="検索オプション" icon="lucide:menu" />
         </aside>
         <div class="flex flex-col w-full gap-5">
             <div class="w-full flex flex-col gap-3">
-                <ATitle
-                    title="セットアップ検索"
-                    icon="lucide:search"
-                    size="lg"
-                />
-                <UInput
-                    v-model="searchWord"
-                    autofocus
-                    icon="i-heroicons-magnifying-glass-20-solid"
-                    size="lg"
-                    :trailing="false"
-                    placeholder="キーワード検索"
-                    :ui="{ rounded: 'rounded-xl' }"
-                    class="mt-1"
-                    @keyup.enter="router.push('/search?q=' + searchWord)"
-                />
+                <UiTitle title="セットアップ検索" icon="lucide:search" size="lg" />
+                <UInput v-model="searchWord" autofocus icon="i-heroicons-magnifying-glass-20-solid" size="lg"
+                    :trailing="false" placeholder="キーワード検索" :ui="{ rounded: 'rounded-xl' }" class="mt-1"
+                    @keyup.enter="router.push('/search?q=' + searchWord)" />
             </div>
 
-            <ItemBooth
-                v-if="item"
-                size="lg"
-                :id="item.id"
-                :name="item.name"
-                :thumbnail="item.thumbnail"
-                :shop="item.shop"
-                :shop-id="item.shopId"
-                :shop-thumbnail="item.shopThumbnail"
-                :shop-verified="item.shopVerified"
-                :price="item.price"
-                :nsfw="item.nsfw"
-            />
+            <ItemBooth v-if="item" size="lg" :id="item.id" :name="item.name" :thumbnail="item.thumbnail"
+                :shop="item.shop" :shop-id="item.shopId" :shop-thumbnail="item.shopThumbnail"
+                :shop-verified="item.shopVerified" :price="item.price" :nsfw="item.nsfw" />
 
-            <UDivider
-                :ui="{
-                    border: {
-                        base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
-                    },
-                }"
-            />
+            <UDivider :ui="{
+                border: {
+                    base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
+                },
+            }" />
 
             <div class="flex flex-col lg:grid lg:grid-cols-2 gap-5">
-                <NuxtLink
-                    v-for="i in resultSetups"
-                    :to="{ name: 'setup-id', params: { id: i.id } }"
-                    :class="[{ 'row-span-3': i.image }]"
-                >
-                    <ItemSetup
-                        :name="i.name"
-                        :avatar="i.avatar"
-                        :author="i.author"
-                        :created-at="i.created_at"
-                        :image="i.image"
-                        class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
-                    />
+                <NuxtLink v-for="i in resultSetups" :to="{ name: 'setup-id', params: { id: i.id } }"
+                    :class="[{ 'row-span-3': i.image }]">
+                    <ItemSetup :name="i.name" :avatar="i.avatar" :author="i.author" :created-at="i.created_at"
+                        :image="i.image" class="hover:bg-neutral-200 dark:hover:bg-neutral-700" />
                 </NuxtLink>
             </div>
         </div>

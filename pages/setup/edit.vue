@@ -49,8 +49,8 @@ const ERROR_MESSAGES = {
 
 const AddItem = async (
     id: number | null = null,
-    note: string = "",
-    unsupported: boolean = false
+    note = "",
+    unsupported = false
 ) => {
     adding.value = true;
 
@@ -79,8 +79,8 @@ const AddItem = async (
 
 const handleData = (
     data: { category: number; id: number },
-    note: string = "",
-    unsupported: boolean = false
+    note = "",
+    unsupported = false
 ) => {
     if (data.category === 208) {
         if (!items.value.avatar) {
@@ -161,7 +161,7 @@ const PublishSetup = async () => {
         reset();
         useAddToast("セットアップを公開しました。");
         skip_router_hook.value = true;
-        router.push("/setup/" + id);
+        router.push(`/setup/${id}`);
     } catch (error) {
         console.error(error);
         useAddToast("セットアップの公開に失敗しました。");
@@ -192,7 +192,7 @@ const UpdateSetup = async () => {
 
         useAddToast("セットアップを更新しました。");
         skip_router_hook.value = true;
-        router.push("/setup/" + id);
+        router.push(`/setup/${id}`);
     } catch (error) {
         console.error(error);
 
@@ -282,8 +282,8 @@ onMounted(async () => {
                 <UDivider :ui="{
                     border: {
                         base: `${title.length < 25
-                                ? 'border-neutral-300 dark:border-neutral-600'
-                                : 'border-red-400 dark:border-red-600'
+                            ? 'border-neutral-300 dark:border-neutral-600'
+                            : 'border-red-400 dark:border-red-600'
                             }`,
                     },
                 }" class="w-full" />
@@ -298,13 +298,13 @@ onMounted(async () => {
                         !items.avatar ||
                         !items.items.length
                         " truncate size="lg" label="公開" :icon="!publishing
-                                ? 'i-heroicons-arrow-up-tray-16-solid'
-                                : 'i-svg-spinners-ring-resize'
+                            ? 'i-heroicons-arrow-up-tray-16-solid'
+                            : 'i-svg-spinners-ring-resize'
                             " :ui="{
-                            rounded: 'rounded-full',
-                            inline: 'pr-4',
-                            truncate: 'whitespace-nowrap',
-                        }" @click="PublishSetup" />
+                                rounded: 'rounded-full',
+                                inline: 'pr-4',
+                                truncate: 'whitespace-nowrap',
+                            }" @click="PublishSetup" />
 
                     <template #panel>
                         <div class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-100">
@@ -356,8 +356,8 @@ onMounted(async () => {
                             </UInput>
                         </div>
                         <UButton :icon="!adding
-                                ? 'i-heroicons-plus'
-                                : 'i-svg-spinners-ring-resize'
+                            ? 'i-heroicons-plus'
+                            : 'i-svg-spinners-ring-resize'
                             " :disabled="adding" label="追加" size="sm" :ui="{
                                 rounded: 'rounded-xl',
                             }" class="pr-3 h-[40px]" @click="AddItem()" />
@@ -382,11 +382,11 @@ onMounted(async () => {
                     </div>
                 </div>
 
-                <ACategory title="ベースアバター" icon="lucide:person-standing">
+                <UiCategory title="ベースアバター" icon="lucide:person-standing">
                     <div v-if="!items.avatar"
                         class="w-full p-5 flex flex-col gap-5 rounded-lg bg-white dark:bg-neutral-700">
                         <div v-if="quickAvatarsOwned?.length" class="w-full flex flex-col gap-3">
-                            <ATitle title="あなたのセットアップから" icon="lucide:user-round" />
+                            <UiTitle title="あなたのセットアップから" icon="lucide:user-round" />
                             <div class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full">
                                 <button v-for="i in quickAvatarsOwned" :key="'suggest-avatar-' + i.id"
                                     @click="AddItem(i.id)">
@@ -396,7 +396,7 @@ onMounted(async () => {
                             </div>
                         </div>
                         <div v-if="quickAvatars" class="w-full flex flex-col gap-3">
-                            <ATitle title="人気のアバター" icon="lucide:sparkles" infomation="Avatioの投稿数から算出" />
+                            <UiTitle title="人気のアバター" icon="lucide:sparkles" infomation="Avatioの投稿数から算出" />
                             <div class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full">
                                 <button v-for="i in quickAvatars" :key="'suggest-avatar-' + i.id"
                                     @click="AddItem(i.id)">
@@ -410,41 +410,41 @@ onMounted(async () => {
                     <ItemBoothEdit v-if="items.avatar" :id="items.avatar" :key="'item-' + items.avatar" size="lg"
                         :avatar="true" @remove="items.avatar = null" @update:note="items.avatar_note = $event"
                         :note="items.avatar_note" />
-                </ACategory>
+                </UiCategory>
 
                 <div v-if="!items.items.length" class="my-10 font-medium text-neutral-400">
                     アイテムが登録されていません
                 </div>
 
-                <ACategory v-if="
+                <UiCategory v-if="
                     items.items.filter((item) => item.category === 209)
                         .length
                 " title="衣装" icon="lucide:shirt">
                     <ItemBoothEdit v-for="i in items.items.filter(
                         (item) => item.category === 209
                     )" :id="i.id" :key="'item-' + i.id" @remove="
-                            items.items = items.items.filter(
-                                (item) => item.id !== i.id
-                            )
-                            " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
+                        items.items = items.items.filter(
+                            (item) => item.id !== i.id
+                        )
+                        " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
                         :unsupported="i.unsupported" />
-                </ACategory>
+                </UiCategory>
 
-                <ACategory v-if="
+                <UiCategory v-if="
                     items.items.filter((item) => item.category === 217)
                         .length
                 " title="アクセサリー" icon="lucide:star">
                     <ItemBoothEdit v-for="i in items.items.filter(
                         (item) => item.category === 217
                     )" :id="i.id" :key="'item-' + i.id" @remove="
-                            items.items = items.items.filter(
-                                (item) => item.id !== i.id
-                            )
-                            " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
+                        items.items = items.items.filter(
+                            (item) => item.id !== i.id
+                        )
+                        " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
                         :unsupported="i.unsupported" />
-                </ACategory>
+                </UiCategory>
 
-                <ACategory v-if="
+                <UiCategory v-if="
                     items.items.filter(
                         (item) =>
                             item.category !== 209 &&
@@ -458,12 +458,12 @@ onMounted(async () => {
                             item.category !== 217 &&
                             item.category !== 208
                     )" :id="i.id" :key="'item-' + i.id" @remove="
-                            items.items = items.items.filter(
-                                (item) => item.id !== i.id
-                            )
-                            " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
+                        items.items = items.items.filter(
+                            (item) => item.id !== i.id
+                        )
+                        " @update:note="i.note = $event" @update:unsupported="i.unsupported = $event" :note="i.note"
                         :unsupported="i.unsupported" />
-                </ACategory>
+                </UiCategory>
             </div>
 
             <UDivider :ui="{
@@ -495,26 +495,26 @@ onMounted(async () => {
                     </div>
                     <PopupUploadImage class="mt-[-16px]" />
                 </div>
-                <ACategory title="説明" icon="lucide:text">
+                <UiCategory title="説明" icon="lucide:text">
                     <div class="w-full flex flex-col gap-1 items-end">
                         <div :class="`w-full p-3 rounded-lg border border-1 bg-neutral-200 dark:bg-neutral-900 ${description.length < 141
-                                ? 'border-neutral-400 dark:border-neutral-600'
-                                : 'border-red-400 dark:border-red-600'
+                            ? 'border-neutral-400 dark:border-neutral-600'
+                            : 'border-red-400 dark:border-red-600'
                             }`">
                             <UTextarea v-model="description" autoresize placeholder="説明を入力" :padded="false"
                                 variant="none" class="w-full" />
                         </div>
 
                         <span :class="`text-sm pr-1 ${description.length < 141
-                                ? 'text-neutral-500 dark:text-neutral-500'
-                                : 'text-red-500 dark:text-red-400'
+                            ? 'text-neutral-500 dark:text-neutral-500'
+                            : 'text-red-500 dark:text-red-400'
                             }`">
                             {{ description.length }} / 140
                         </span>
                     </div>
-                </ACategory>
+                </UiCategory>
 
-                <ACategory title="タグ" icon="lucide:tags">
+                <UiCategory title="タグ" icon="lucide:tags">
                     <TagsInputRoot v-model="tags"
                         class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900">
                         <TagsInputItem v-for="item in tags" :key="item" :value="item"
@@ -529,7 +529,7 @@ onMounted(async () => {
                         <TagsInputInput placeholder="タグを入力"
                             class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500" />
                     </TagsInputRoot>
-                </ACategory>
+                </UiCategory>
             </div>
         </div>
     </div>

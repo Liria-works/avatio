@@ -22,6 +22,7 @@
 		"@nuxtjs/supabase": "^1.4.0",
 		"@pinia/nuxt": "^0.5.4",
 		"@types/sanitize-html": "^2.13.0",
+		"@unocss/nuxt": "^0.62.4",
 		"@vueuse/nuxt": "^11.1.0",
 		"nuxt": "^3.13.2"
 	},

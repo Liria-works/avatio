@@ -23,6 +23,7 @@ export default defineNuxtConfig({
 		"@nuxtjs/supabase",
 		"@nuxt/eslint",
 		"@pinia/nuxt",
+		"@unocss/nuxt",
 	],
 	compatibilityDate: "2024-08-21",
 

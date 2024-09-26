@@ -119,7 +119,7 @@ onMounted(async () => {
         </div>
 
         <div v-if="setups" class="w-full flex flex-col gap-5 pl-2">
-            <ATitle title="セットアップ" icon="lucide:shirt" />
+            <UiTitle title="セットアップ" icon="lucide:shirt" />
 
             <NuxtLink v-for="i in setups.data" :key="'user-setup-' + i.id"
                 :to="{ name: 'setup-id', params: { id: i.id } }">

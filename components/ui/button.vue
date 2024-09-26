@@ -36,7 +36,7 @@ const props = withDefaults(
         size: "w-fit",
         padding: "px-4 py-3",
         rounded: "rounded-lg",
-        text: "text-sm font-semibold",
+        text: "text-md font-semibold",
         tooltip: "",
     },
 );
@@ -53,18 +53,18 @@ const handleClick = () => {
 </script>
 
 <template>
-    <button v-if="!props.to.length" :type="props.type" :disabled="props.disabled"
-        :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`"
-        @click="handleClick">
-        <Icon v-if="props.icon.length" :name="props.icon" :width="props.iconSize" :height="props.iconSize"
-            :class="`${props.colorIcon}`" />
-        <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
-    </button>
+    <UiTooltip :text="props.tooltip">
+        <button v-if="!props.to.length" :type="props.type" :disabled="props.disabled"
+            :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`"
+            @click="handleClick">
+            <Icon v-if="props.icon.length" :name="props.icon" :size="props.iconSize" :class="`${props.colorIcon}`" />
+            <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
+        </button>
 
-    <a v-else :href="props.to" :target="props.newTab ? '_blank' : '_self'"
-        :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
-        <Icon v-if="props.icon.length" :name="props.icon" :width="props.iconSize" :height="props.iconSize"
-            :class="`${props.colorIcon}`" />
-        <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
-    </a>
+        <a v-else :href="props.to" :target="props.newTab ? '_blank' : '_self'"
+            :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
+            <Icon v-if="props.icon.length" :name="props.icon" :size="props.iconSize" :class="`${props.colorIcon}`" />
+            <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
+        </a>
+    </UiTooltip>
 </template>
