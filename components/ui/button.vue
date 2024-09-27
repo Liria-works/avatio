@@ -3,7 +3,8 @@ const props = withDefaults(
     defineProps<{
         disabled?: boolean;
         type?: "button" | "submit" | "reset";
-        to?: string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, vue/require-default-prop
+        to?: any;
         newTab?: boolean;
         icon?: string;
         iconSize?: number;
@@ -21,7 +22,6 @@ const props = withDefaults(
     }>(),
     {
         disabled: false,
-        to: "",
         type: "button",
         newTab: false,
         icon: "",
@@ -42,29 +42,21 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['click']);
-
-const handleClick = () => {
-    if (props.to.length) {
-        window.open(props.to, props.newTab ? "_blank" : "_self");
-    } else {
-        emit('click');
-    }
-};
 </script>
 
 <template>
     <UiTooltip :text="props.tooltip">
-        <button v-if="!props.to.length" :type="props.type" :disabled="props.disabled"
+        <button v-if="!props.to" :type="props.type" :disabled="props.disabled"
             :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`"
-            @click="handleClick">
+            @click="emit('click')">
             <Icon v-if="props.icon.length" :name="props.icon" :size="props.iconSize" :class="`${props.colorIcon}`" />
             <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
         </button>
 
-        <a v-else :href="props.to" :target="props.newTab ? '_blank' : '_self'"
+        <NuxtLink v-else :to="props.to" :target="props.newTab ? '_blank' : '_self'"
             :class="`flex gap-2 items-center justify-center ${props.size} ${props.text} ${props.padding} ${props.rounded} ${props.colorBg} ${props.colorText} ${outline ? 'border border-1' : 'border-0'} ${props.colorOutline}`">
             <Icon v-if="props.icon.length" :name="props.icon" :size="props.iconSize" :class="`${props.colorIcon}`" />
             <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
-        </a>
+        </NuxtLink>
     </UiTooltip>
 </template>

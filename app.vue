@@ -27,7 +27,7 @@ try {
 
 <template>
     <div v-if="!isMaintenance" class="size-full">
-        <UContainer class="flex flex-col gap-10" :ui="{ padding: 'px-8 pt-6 sm:px-20 lg:px-20' }">
+        <UContainer class="flex flex-col gap-10" :ui="{ padding: 'pt-4 px-6 md:px-20 lg:px-40' }">
             <UiHeader />
             <NuxtPage />
             <UiFooter />
