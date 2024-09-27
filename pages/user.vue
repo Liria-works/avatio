@@ -5,25 +5,54 @@ const user = useSupabaseUser();
 
 <template>
     <div class="w-full flex flex-col sm:flex-row gap-10 sm:gap-5">
-        <aside v-if="user" v-show="user.id === route.params.id ||
-            route.path === '/user/bookmark' ||
-            route.path === '/user/setting'
-            " class="w-full sm:w-60 grid grid-cols-2 sm:flex sm:flex-col gap-1 px-2">
-            <NuxtLink :to="{ name: 'user-id', params: { id: user.id } }" class="w-full">
-                <UiButton text="ユーザー情報" icon="lucide:user-round" :icon-size="19" class="w-full" />
-            </NuxtLink>
-            <NuxtLink :to="{ name: 'user-bookmark' }" class="w-full">
-                <UiButton text="ブックマーク" icon="lucide:bookmark" :icon-size="19" class="w-full" />
-            </NuxtLink>
-            <UDivider :ui="{
-                border: {
-                    base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
-                },
-            }" class="hidden sm:block" />
-            <NuxtLink :to="{ name: 'user-setting' }" class="w-full">
-                <UiButton text="設定" icon="lucide:settings" :icon-size="19" class="w-full" />
-            </NuxtLink>
-            <UiButton text="ログアウト" icon="lucide:log-out" :icon-size="19" @click="useSignOut" />
+        <aside
+            v-if="user"
+            v-show="
+                user.id === route.params.id ||
+                route.path === '/user/bookmark' ||
+                route.path === '/user/setting'
+            "
+            class="w-full sm:w-60 grid grid-cols-2 sm:flex sm:flex-col gap-1 px-2"
+        >
+            <UiButton
+                :to="{ name: 'user-id', params: { id: user.id } }"
+                label="ユーザー情報"
+                icon="lucide:user-round"
+                :icon-size="19"
+                :outline="false"
+            />
+            <UiButton
+                :to="{ name: 'user-bookmark' }"
+                label="ブックマーク"
+                icon="lucide:bookmark"
+                :icon-size="19"
+                :outline="false"
+            />
+
+            <UDivider
+                :ui="{
+                    border: {
+                        base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
+                    },
+                }"
+                class="hidden sm:block"
+            />
+
+            <UiButton
+                :to="{ name: 'user-setting' }"
+                label="設定"
+                icon="lucide:settings"
+                :icon-size="19"
+                :outline="false"
+            />
+
+            <UiButton
+                label="ログアウト"
+                icon="lucide:log-out"
+                :icon-size="19"
+                :outline="false"
+                @click="useSignOut"
+            />
         </aside>
         <div class="w-full flex flex-col">
             <NuxtPage />

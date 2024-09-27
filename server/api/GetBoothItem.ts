@@ -2,7 +2,7 @@
 import authMiddleware from "./Auth";
 
 import { serverSupabaseClient } from "#supabase/server";
-import { createClient } from "@vercel/edge-config";
+// import { createClient } from "@vercel/edge-config";
 
 const url_base = "https://booth.pm/ja/items/";
 
@@ -35,6 +35,8 @@ async function GetBoothItem(event: any, id: number) {
             { body: { id: id } }
         );
 
+        console.log(error);
+
         if (error) throw error;
 
         // カテゴリIDをチェック
@@ -61,19 +63,24 @@ async function GetBoothItem(event: any, id: number) {
         //      124 //効果音
         //      134 // 素材（その他）
 
-        const runtimeConfig = useRuntimeConfig();
-        const edgeConfig = createClient(runtimeConfig.public.edgeConfig);
+        const allowed_category_id = [
+            208, 209, 217, 210, 214, 215, 216, 211, 212, 127, 125, 213, 126,
+            128, 129, 22, 123, 124, 134,
+        ];
+
+        // const runtimeConfig = useRuntimeConfig();
+        // const edgeConfig = createClient(runtimeConfig.public.edgeConfig);
 
         try {
-            const allowed_category_id: number[] | undefined =
-                await edgeConfig.get("allowed_category_id");
+            // const allowed_category_id: number[] | undefined =
+            //     await edgeConfig.get("allowed_category_id");
 
-            if (!allowed_category_id) {
-                return {
-                    status: 500,
-                    body: { error: "Failed to get allowed tag data." },
-                };
-            }
+            // if (!allowed_category_id) {
+            //     return {
+            //         status: 500,
+            //         body: { error: "Failed to get allowed tag data." },
+            //     };
+            // }
 
             if (!allowed_category_id.includes(Number(data.category))) {
                 if (
@@ -95,6 +102,13 @@ async function GetBoothItem(event: any, id: number) {
             };
         }
 
+        const shopData = {
+            id: data.shop_id,
+            name: data.shop,
+            thumbnail: data.shop_thumbnail,
+            verified: data.shop_verified,
+        };
+
         const itemData = {
             id: data.id,
             name: data.name,
@@ -103,13 +117,6 @@ async function GetBoothItem(event: any, id: number) {
             category: data.category,
             shop_id: data.shop_id,
             nsfw: data.nsfw,
-        };
-
-        const shopData = {
-            id: data.shop_id,
-            name: data.shop,
-            thumbnail: data.shop_thumbnail,
-            verified: data.shop_verified,
         };
 
         await client
@@ -152,10 +159,12 @@ function Response(status: number, message: string, data: any) {
             price: data.price,
             category: data.category,
             avatar_details: data.avatar_details,
-            shop: data.shop,
-            shopId: data.shop_id,
-            shopThumbnail: data.shop_thumbnail,
-            shopVerified: data.shop_verified,
+            shop_id: {
+                id: data.shop_id,
+                name: data.shop,
+                thumbnail: data.shop_thumbnail,
+                verified: data.shop_verified,
+            },
             nsfw: data.nsfw,
             outdated: data.outdated,
         },

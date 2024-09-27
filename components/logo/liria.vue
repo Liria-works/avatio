@@ -4,6 +4,7 @@
         :width="props.size"
         :height="props.size"
         :viewBox="props.viewBox"
+        :fill="props.color"
         :class="props.addClass"
         :stroke-width="'0'"
     >
@@ -36,12 +37,4 @@ const props = withDefaults(
 );
 </script>
 
-<style>
-svg {
-    fill: #484848;
-}
-
-.dark svg {
-    fill: #f0f0f0;
-}
-</style>
+<style></style>

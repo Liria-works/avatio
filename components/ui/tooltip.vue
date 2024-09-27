@@ -12,6 +12,7 @@ const props = withDefaults(
 <template>
     <UTooltip
         :text="props.text"
+        :prevent="!props.text.length"
         :popper="{ placement: 'top' }"
         :ui="{
             ring: 'ring-1 ring-gray-300 dark:ring-gray-600',

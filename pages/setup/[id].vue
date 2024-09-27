@@ -8,7 +8,7 @@ const modal_login = ref(false);
 const modal_report = ref(false);
 const modal_delete = ref(false);
 
-const id = Number(route.params.id)
+const id = Number(route.params.id);
 const setup = ref<Setup | null>(null);
 const bookmark = ref(false);
 
@@ -46,8 +46,7 @@ type Item = {
 };
 
 const categorizedItems: { [key: string]: Item[] } = {};
-const categoryAttr: { [key: string]: { label: string; icon: string } } =
-{
+const categoryAttr: { [key: string]: { label: string; icon: string } } = {
     cloth: { label: "衣装", icon: "lucide:shirt" },
     accessory: { label: "アクセサリー", icon: "lucide:star" },
     other: { label: "その他", icon: "lucide:package" },
@@ -61,7 +60,7 @@ onMounted(async () => {
     const { data } = await client
         .from("setups")
         .select(
-            "id, created_at, updated_at, name, description, avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), avatar_note, tags, author(id, name), image, setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)",
+            "id, created_at, updated_at, name, description, avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), avatar_note, tags, author(id, name), image, setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)"
         )
         .eq("id", Number(id))
         .maybeSingle();
@@ -100,200 +99,332 @@ onMounted(async () => {
 </script>
 
 <template>
-    <!-- <div class="flex-col justify-start items-start gap-2 flex w-full px-3">
-        <div class="w-full flex flex-col md:flex-row items-start gap-8">
-            <div class="flex flex-col items-center gap-8 w-full">
-                <NuxtImg v-if="image" :src="image" :alt="setup?.name" :placeholder="[50, 25]"
-                    class="rounded-xl w-auto max-h-[700px]" />
-
-                <UiCategory v-if="outdated" title="不明なアイテム" icon="lucide:file-question">
-                    <ItemBase v-for="i in outdated" :key="'outdated-' + i">
-                        <template #main>
-                                    <div class="h-20 pl-6 gap-4 flex items-center">
-                                        <Icon name="lucide:file-question" size="20" class="text-neutral-400" />
-                                        <span class="text-sm font-medium text-neutral-400">
-                                            取得に失敗したアイテム
-                                        </span>
-                                    </div>
-                                </template>
-</ItemBase>
-</UiCategory>
-</div>
-</div>
-</div> -->
-    <div v-if="setup" class="w-full flex flex-col xl:flex-row items-start gap-8">
+    <div
+        v-if="setup"
+        class="w-full flex flex-col xl:flex-row items-start gap-8"
+    >
         <div class="w-full flex flex-col items-center gap-8">
-            <NuxtImg v-if="setup.image" src='' :alt="setup.name" class="rounded-xl w-full" />
+            <NuxtImg
+                v-if="setup.image"
+                src=""
+                :alt="setup.name"
+                class="rounded-xl w-full"
+            />
 
             <div class="w-full flex flex-col gap-3">
                 <div
-                    class="w-full text-left text-2xl font-bold line-clamp-2 break-keep [overflow-wrap:anywhere;] text-black dark:text-white">
+                    class="w-full text-left text-2xl font-bold line-clamp-2 break-keep [overflow-wrap:anywhere;] text-black dark:text-white"
+                >
                     {{ useSentence(setup.name) || "" }}
                 </div>
 
                 <div class="w-full flex items-center">
                     <div class="grow flex items-center gap-5">
                         <div class="flex items-center gap-2">
-                            <Avatar :id="setup.author.id" :name="setup.author.name" />
-                            <p class="text-sm text-neutral-600 dark:text-neutral-300">
-                                {{ setup.author.name }}
-                            </p>
+                            <UiUser
+                                :user="setup.author.id"
+                                :name="setup.author.name"
+                            />
                         </div>
 
                         <div class="flex items-center gap-2">
-                            <p class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-nowrap">
-                                {{ new Date(
-                                    setup.created_at,
-                                ).toLocaleString("ja-JP", {
-                                    year: "numeric",
-                                    month: "2-digit",
-                                    day: "2-digit",
-                                }) }}
+                            <p
+                                class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-nowrap"
+                            >
+                                {{
+                                    new Date(setup.created_at).toLocaleString(
+                                        "ja-JP",
+                                        {
+                                            year: "numeric",
+                                            month: "2-digit",
+                                            day: "2-digit",
+                                        }
+                                    )
+                                }}
                                 に公開
                             </p>
 
-                            <UiTooltip v-if="setup.updated_at !== setup.created_at" :text="new Date(setup.updated_at).toLocaleString('ja-JP', {
-                                year: 'numeric',
-                                month: '2-digit', day: '2-digit'
-                            }) + 'に編集'">
-                                <Icon name="lucide:pen" size="14" class="text-neutral-500 dark:text-neutral-500" />
+                            <UiTooltip
+                                v-if="setup.updated_at !== setup.created_at"
+                                :text="
+                                    new Date(setup.updated_at).toLocaleString(
+                                        'ja-JP',
+                                        {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
+                                        }
+                                    ) + 'に編集'
+                                "
+                            >
+                                <Icon
+                                    name="lucide:pen"
+                                    size="14"
+                                    class="text-neutral-500 dark:text-neutral-500"
+                                />
                             </UiTooltip>
-
                         </div>
                     </div>
 
                     <div class="flex items-center gap-1">
-                        <UiButton :tooltip="bookmark ? 'ブックマークから削除' : 'ブックマーク'"
-                            :icon="bookmark ? 'lucide:bookmark-x' : 'lucide:bookmark'" padding="p-2.5"
-                            color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600" @click="toggleBookmark" />
+                        <UiButton
+                            :tooltip="
+                                bookmark
+                                    ? 'ブックマークから削除'
+                                    : 'ブックマーク'
+                            "
+                            :icon="
+                                bookmark
+                                    ? 'lucide:bookmark-x'
+                                    : 'lucide:bookmark'
+                            "
+                            padding="p-2.5"
+                            color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            @click="toggleBookmark"
+                        />
 
-                        <UPopover :ui="{
-                            rounded: 'rounded-xl',
-                            ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                        }" class="flex">
-                            <UiButton icon="lucide:share-2" :icon-size="18" tooltip="シェア" padding="p-2.5"
-                                color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600" />
+                        <UPopover
+                            :ui="{
+                                rounded: 'rounded-xl',
+                                ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
+                            }"
+                            class="flex"
+                        >
+                            <UiButton
+                                icon="lucide:share-2"
+                                :icon-size="18"
+                                tooltip="シェア"
+                                padding="p-2.5"
+                                color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            />
 
                             <template #panel="{ close }">
-                                <div class="flex flex-col gap-2 text-sm p-2 min-w-48">
-                                    <UiButton icon="lucide:link" :icon-size="18" text="URLをコピー" @click="
-                                        useWriteClipboard(currentUrl.value);
-                                    close();
-                                    " />
+                                <div
+                                    class="flex flex-col gap-2 text-sm p-2 min-w-48"
+                                >
+                                    <UiButton
+                                        icon="lucide:link"
+                                        :icon-size="18"
+                                        text="URLをコピー"
+                                        @click="
+                                            useWriteClipboard(currentUrl.value);
+                                            close();
+                                        "
+                                    />
                                 </div>
                             </template>
                         </UPopover>
                     </div>
 
-                    <div v-if="user?.id === setup.author" class="flex items-center gap-0.5">
+                    <div
+                        v-if="user?.id === setup.author"
+                        class="flex items-center gap-0.5"
+                    >
                         <NuxtLink :to="'/setup/edit?id=' + setup?.id">
-                            <UiButton icon="lucide:pen-line" :icon-size="19" tooltip="編集" />
+                            <UiButton
+                                icon="lucide:pen-line"
+                                :icon-size="19"
+                                tooltip="編集"
+                            />
                         </NuxtLink>
 
-                        <UiButton tooltip="削除" icon="lucide:trash" :icon-size="17"
-                            class="text-red-400 dark:text-red-300" @click="modal_delete = true" />
+                        <UiButton
+                            tooltip="削除"
+                            icon="lucide:trash"
+                            :icon-size="17"
+                            class="text-red-400 dark:text-red-300"
+                            @click="modal_delete = true"
+                        />
                     </div>
                 </div>
             </div>
 
-            <ItemBooth v-if="setup.avatar" size="lg" :note="setup.avatar_note" :id="setup.avatar.id"
-                :name="setup.avatar.name" :thumbnail="setup.avatar.thumbnail" :shop="setup.avatar.shop_id.name"
-                :shop-id="setup.avatar.shop_id.id" :shop-thumbnail="setup.avatar.shop_id.thumbnail"
-                :shop-verified="setup.avatar.shop_id.verified" :price="setup.avatar.price" :nsfw="setup.avatar.nsfw"
-                :outdated="setup.avatar.outdated" :updated-at="setup.avatar.updated_at" />
+            <ItemBooth
+                v-if="setup.avatar"
+                size="lg"
+                :note="setup.avatar_note"
+                :id="setup.avatar.id"
+                :name="setup.avatar.name"
+                :thumbnail="setup.avatar.thumbnail"
+                :shop="setup.avatar.shop_id.name"
+                :shop-id="setup.avatar.shop_id.id"
+                :shop-thumbnail="setup.avatar.shop_id.thumbnail"
+                :shop-verified="setup.avatar.shop_id.verified"
+                :price="setup.avatar.price"
+                :nsfw="setup.avatar.nsfw"
+                :outdated="setup.avatar.outdated"
+                :updated-at="setup.avatar.updated_at"
+            />
 
-            <div v-if="Object.keys(categorizedItems).length" class="w-full flex flex-col gap-3">
-                <div v-for="i in Object.keys(categorizedItems)" :key="useId()" class="w-full flex flex-col gap-3">
-                    <UiTitle :label="categoryAttr[i].label" :icon="categoryAttr[i].icon" />
+            <div
+                v-if="Object.keys(categorizedItems).length"
+                class="w-full flex flex-col gap-3"
+            >
+                <div
+                    v-for="i in Object.keys(categorizedItems)"
+                    :key="useId()"
+                    class="w-full flex flex-col gap-3"
+                >
+                    <UiTitle
+                        :label="categoryAttr[i].label"
+                        :icon="categoryAttr[i].icon"
+                    />
 
-                    <ItemBooth v-for="item in categorizedItems[i]" :id="item.item_id.id"
-                        :key="'item-' + item.item_id.id" :note="item.note" :unsupported="item.unsupported"
-                        :name="item.item_id.name" :thumbnail="item.item_id.thumbnail" :price="item.item_id.price"
-                        :shop="item.item_id.shop_id.name" :shop-id="item.item_id.shop_id.id"
-                        :shop-thumbnail="item.item_id.shop_id.thumbnail" :shop-verified="item.item_id.shop_id.verified"
-                        :nsfw="item.item_id.nsfw" :updated-at="item.item_id.updated_at"
-                        :outdated="item.item_id.outdated" />
+                    <ItemBooth
+                        v-for="item in categorizedItems[i]"
+                        :id="item.item_id.id"
+                        :key="'item-' + item.item_id.id"
+                        :note="item.note"
+                        :unsupported="item.unsupported"
+                        :name="item.item_id.name"
+                        :thumbnail="item.item_id.thumbnail"
+                        :price="item.item_id.price"
+                        :shop="item.item_id.shop_id.name"
+                        :shop-id="item.item_id.shop_id.id"
+                        :shop-thumbnail="item.item_id.shop_id.thumbnail"
+                        :shop-verified="item.item_id.shop_id.verified"
+                        :nsfw="item.item_id.nsfw"
+                        :updated-at="item.item_id.updated_at"
+                        :outdated="item.item_id.outdated"
+                    />
                 </div>
             </div>
         </div>
 
-        <div class="w-full xl:w-96 flex flex-col items-start gap-6">
-            <div v-if="setup.description" class="w-full gap-2 flex flex-col justify-start items-start">
+        <div class="w-full xl:w-96 xl:pt-12 flex flex-col items-start gap-6">
+            <div
+                v-if="setup.description"
+                class="w-full gap-2 flex flex-col justify-start items-start"
+            >
                 <Title label="説明" icon="lucide:text" />
                 <div
-                    class="w-full rounded-lg flex items-center px-3 py-2 border border-1 border-neutral-300 dark:border-neutral-600">
+                    class="w-full rounded-lg flex items-center px-3 py-2 border border-1 border-neutral-300 dark:border-neutral-600"
+                >
                     <p
-                        class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100">
+                        class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100"
+                    >
                         {{ useSentence(setup.description) || "" }}
                     </p>
                 </div>
             </div>
 
-            <div v-if="setup.tags && setup.tags.length" class="gap-2.5 flex flex-col">
+            <div
+                v-if="setup.tags && setup.tags.length"
+                class="gap-2.5 flex flex-col"
+            >
                 <Title label="タグ" icon="lucide:tags" />
                 <div class="items-center gap-1.5 flex flex-row flex-wrap">
-                    <button v-for="tag in setup.tags" :key="useId()"
-                        class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200">
+                    <button
+                        v-for="tag in setup.tags"
+                        :key="useId()"
+                        class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
+                    >
                         {{ tag }}
                     </button>
                 </div>
             </div>
 
-            <UiButton label="セットアップを報告" icon="lucide:flag" text="text-xs font-semibold" :icon-size="16"
-                padding="px-3 py-2 mt-2" :outline="false" color-icon="text-red-400"
+            <UiButton
+                label="セットアップを報告"
+                icon="lucide:flag"
+                text="text-xs font-semibold"
+                :icon-size="16"
+                padding="px-3 py-2 mt-2"
+                :outline="false"
+                color-icon="text-red-400"
                 color-text="text-neutral-500 dark:text-neutral-400"
                 color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-700"
-                @click="if (user) { modal_report = true; } else { modal_login = true; }" />
+                @click="
+                    if (user) {
+                        modal_report = true;
+                    } else {
+                        modal_login = true;
+                    }
+                "
+            />
         </div>
 
-        <UModal v-model="modal_login" :ui="{
-            background: 'bg-white dark:bg-neutral-100',
-            ring: 'ring-0',
-            rounded: 'rounded-xl',
-        }">
-            <UiLogin :redirect="`/setup/${route.params.id}`" @success="
-                modal_login = false;
-            (async () => {
-                if (!setup) return;
-                bookmark = await useCheckBookmark(setup.id);
-            })();
-            " />
+        <UModal
+            v-model="modal_login"
+            :ui="{
+                background: 'bg-white dark:bg-neutral-100',
+                ring: 'ring-0',
+                rounded: 'rounded-xl',
+            }"
+        >
+            <UiLogin
+                :redirect="`/setup/${route.params.id}`"
+                @success="
+                    modal_login = false;
+                    (async () => {
+                        if (!setup) return;
+                        bookmark = await useCheckBookmark(setup.id);
+                    })();
+                "
+            />
         </UModal>
 
-        <UModal v-model="modal_report" :ui="{
-            background: 'bg-white dark:bg-neutral-100',
-            ring: 'ring-0',
-            rounded: 'rounded-xl',
-        }">
-            <ModalReportSetup :id="Number(setup?.id)" @close="modal_report = false" />
+        <UModal
+            v-model="modal_report"
+            :ui="{
+                background: 'bg-white dark:bg-neutral-100',
+                ring: 'ring-0',
+                rounded: 'rounded-xl',
+            }"
+        >
+            <ModalReportSetup
+                :id="Number(setup?.id)"
+                @close="modal_report = false"
+            />
         </UModal>
 
-        <UModal v-model="modal_delete" :ui="{
-            background: 'bg-white dark:bg-neutral-700',
-            ring: 'ring-0',
-            rounded: 'rounded-xl',
-        }">
-            <UCard :ui="{
-                ring: '',
-                divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-            }">
+        <UModal
+            v-model="modal_delete"
+            :ui="{
+                background: 'bg-white dark:bg-neutral-700',
+                ring: 'ring-0',
+                rounded: 'rounded-xl',
+            }"
+        >
+            <UCard
+                :ui="{
+                    ring: '',
+                    divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+                }"
+            >
                 <template #header>
-                    <div class="w-full pr-2 flex flex-row gap-2 items-center justify-center">
-                        <Icon name="lucide:trash" size="20" class="text-neutral-600 dark:text-neutral-400" />
-                        <span class="text-black dark:text-neutral-100 font-medium">
+                    <div
+                        class="w-full pr-2 flex flex-row gap-2 items-center justify-center"
+                    >
+                        <Icon
+                            name="lucide:trash"
+                            size="20"
+                            class="text-neutral-600 dark:text-neutral-400"
+                        />
+                        <span
+                            class="text-black dark:text-neutral-100 font-medium"
+                        >
                             セットアップ削除
                         </span>
                     </div>
                 </template>
 
-                <span class="w-full text-md font-normal text-neutral-800 dark:text-neutral-100 text-center">
+                <span
+                    class="w-full text-md font-normal text-neutral-800 dark:text-neutral-100 text-center"
+                >
                     セットアップを削除します。<br />この操作は取り消せません。よろしいですか？
                 </span>
 
                 <template #footer>
-                    <UButton v-if="setup" label="削除" variant="outline" block size="lg" color="red" @click="
-                        useDeleteSetup(setup.id, setup.image)
-                        " />
+                    <UButton
+                        v-if="setup"
+                        label="削除"
+                        variant="outline"
+                        block
+                        size="lg"
+                        color="red"
+                        @click="useDeleteSetup(setup.id, setup.image)"
+                    />
                 </template>
             </UCard>
         </UModal>
