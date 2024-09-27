@@ -88,9 +88,9 @@ onUnmounted(() => {
 
             <div class="w-full h-20 flex gap-4 overflow-x-auto no-scrollbar scroll-container">
                 <NuxtLink v-for="i in mySetups" :to="{ name: 'setup-id', params: { id: i.id } }" class="min-w-64">
-                    <ItemSetup no-hero :name="i.name" :avatar_name="i.avatar.name"
-                        :avatar_thumbnail="i.avatar.thumbnail" :author_id="i.author.id" :author_name="i.author.name"
-                        :author_avatar="i.author.avatar" :created-at="i.created_at" :image="i.image"
+                    <ItemSetup no-hero :name="i.name" :avatar-name="i.avatar.name"
+                        :avatar-thumbnail="i.avatar.thumbnail" :author-id="i.author.id" :author-name="i.author.name"
+                        :author-avatar="i.author.avatar" :created-at="i.created_at" :image="i.image"
                         class="hover:bg-neutral-200 dark:hover:bg-neutral-700" />
                 </NuxtLink>
             </div>
@@ -108,9 +108,9 @@ onUnmounted(() => {
                 :max-columns="3">
                 <template #default="{ item }">
                     <NuxtLink :to="{ name: 'setup-id', params: { id: item.id } }">
-                        <ItemSetup :name="item.name" :avatar_name="item.avatar.name"
-                            :avatar_thumbnail="item.avatar.thumbnail" :author_id="item.author.id"
-                            :author_name="item.author.name" :author_avatar="item.author.avatar"
+                        <ItemSetup :name="item.name" :avatar-name="item.avatar.name"
+                            :avatar-thumbnail="item.avatar.thumbnail" :author-id="item.author.id"
+                            :author-name="item.author.name" :author-avatar="item.author.avatar"
                             :created-at="item.created_at" :image="item.image"
                             class="hover:bg-neutral-200 dark:hover:bg-neutral-700" />
                     </NuxtLink>

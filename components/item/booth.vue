@@ -85,8 +85,8 @@ onMounted(async () => {
             <div flex-shrink-0 :class="`${props.size === 'lg' ? 'p-2 pr-4' : 'p-1.5 pr-4'}`">
                 <NuxtLink :to="booth_url + props.id" target="_blank">
                     <NuxtImg preload :src="item.thumbnail" :alt="item.name" format="webp" quality="70"
-                        :width="props.size === 'lg' ? 128 : 80" :height="props.size === 'lg' ? 128 : 80" fit="cover"
-                        rounded-lg object-cover
+                        :sizes="props.size === 'lg' ? '128px' : '80px'" :width="props.size === 'lg' ? 128 : 80"
+                        :height="props.size === 'lg' ? 128 : 80" fit="cover" rounded-lg object-cover
                         :class="`${props.size === 'lg' ? 'size-32' : 'size-20'} ${item.nsfw ? 'blur-md' : ''}`" />
                 </NuxtLink>
             </div>

@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	ssr: false,
+	// ssr: false,
 
 	routeRules: {
 		"/": { swr: true },
@@ -42,6 +42,13 @@ export default defineNuxtConfig({
 			exclude: [],
 			cookieRedirect: false,
 		},
+	},
+
+	image: {
+		domains: [
+			"booth.pximg.net",
+			import.meta.env.SUPABASE_URL.replace("https://", ""),
+		],
 	},
 
 	icon: {
