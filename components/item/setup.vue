@@ -56,21 +56,20 @@ onMounted(async () => {
 <template>
     <ItemBase>
         <template #hero>
-            <div v-if="fetchImage && !noHero" px-1.5 pt-1.5 pb-0.5>
-                <div max-h-80 rounded-lg overflow-hidden>
-                    <NuxtImg :src="fetchImage" format="webp" sizes="200px" size-full rounded-lg object-cover />
-                </div>
+            <div v-if="fetchImage && !noHero" class="px-1.5 pt-1.5 pb-0.5">
+                <NuxtImg :src="fetchImage" fit="cover" format="webp" quality="85" sizes="200px" class="size-full max-h-80
+                    rounded-lg" />
             </div>
         </template>
         <template #thumbnail>
-            <div v-if="fetchImage && noHero" py-1.5 pl-1.5 flex-shrink-0 max-w-20>
-                <NuxtImg :src="fetchImage" :alt="props.name" format="webp" sizes="80px" h-14 rounded-lg overflow-clip
-                    object-cover />
+            <div v-if="fetchImage && noHero" class="py-1.5 pl-1.5 flex-shrink-0 max-w-20">
+                <NuxtImg :src="fetchImage" :alt="props.name" fit="cover" format="webp" quality="80" sizes="80px" class="h-14
+                    rounded-lg overflow-clip" />
             </div>
 
             <div v-if="!fetchImage" class="py-1.5 pl-1.5 flex-shrink-0">
-                <NuxtImg :src="props.avatarThumbnail" :alt="props.name" format="webp" sizes="56px" h-14 rounded-lg
-                    overflow-clip />
+                <NuxtImg :src="props.avatarThumbnail" :alt="props.name" fit="cover" format="webp" quality="80"
+                    sizes="56px" class="h-14 rounded-lg overflow-clip" />
             </div>
         </template>
         <template #main>

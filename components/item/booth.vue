@@ -21,7 +21,7 @@ const props = withDefaults(
         note: null,
         unsupported: false,
         nsfw: false,
-    },
+    }
 );
 
 const booth_url = "https://booth.pm/ja/items/";
@@ -61,10 +61,8 @@ onMounted(async () => {
         //     },
         //     body: JSON.stringify({ id: props.id }),
         // });
-
         // if (response.status === 200) {
         //     const responseData = await response.json();
-
         //     item.value.name = responseData.name;
         //     item.value.thumbnail = responseData.thumbnail;
         //     item.value.shop = responseData.shop;
@@ -82,71 +80,127 @@ onMounted(async () => {
 <template>
     <ItemBase v-if="!item.outdated">
         <template #thumbnail>
-            <div flex-shrink-0 :class="`${props.size === 'lg' ? 'p-2 pr-4' : 'p-1.5 pr-4'}`">
+            <div
+                :class="`flex-shrink-0 ${props.size === 'lg' ? 'p-2 pr-4' : 'p-1.5 pr-4'}`"
+            >
                 <NuxtLink :to="booth_url + props.id" target="_blank">
-                    <NuxtImg preload :src="item.thumbnail" :alt="item.name" format="webp" quality="70"
-                        :sizes="props.size === 'lg' ? '128px' : '80px'" :width="props.size === 'lg' ? 128 : 80"
-                        :height="props.size === 'lg' ? 128 : 80" fit="cover" rounded-lg object-cover
-                        :class="`${props.size === 'lg' ? 'size-32' : 'size-20'} ${item.nsfw ? 'blur-md' : ''}`" />
+                    <NuxtImg
+                        preload
+                        :src="item.thumbnail"
+                        :alt="item.name"
+                        format="webp"
+                        quality="70"
+                        :sizes="props.size === 'lg' ? '128px' : '80px'"
+                        :width="props.size === 'lg' ? 128 : 80"
+                        :height="props.size === 'lg' ? 128 : 80"
+                        fit="cover"
+                        :class="`${props.size === 'lg' ? 'size-32' : 'size-20'} ${item.nsfw ? 'blur-md' : ''} rounded-lg object-cover`"
+                    />
                 </NuxtLink>
             </div>
         </template>
 
         <template #main>
-            <div w-full flex gap-5 pr-4 justify-between items-center>
-                <div w-fit flex flex-col gap-3 items-start justify-center
-                    :class="`${props.size === 'lg' ? 'h-32' : 'h-20'}`">
-                    <div w-fit flex items-center gap-2>
-                        <NuxtLink :to="booth_url + props.id" target="_blank" w-fit gap-2>
-                            <p w-fit font-medium break-keep text="black dark:white"
-                                :line-clamp="props.size === 'lg' ? 2 : 1">
+            <div class="w-full flex gap-5 pr-4 justify-between items-center">
+                <div
+                    :class="`w-fit flex flex-col gap-3 items-start justify-center ${props.size === 'lg' ? 'h-32' : 'h-20'}`"
+                >
+                    <div class="w-fit flex items-center gap-2">
+                        <NuxtLink
+                            :to="booth_url + props.id"
+                            target="_blank"
+                            class="w-fit gap-2"
+                        >
+                            <p
+                                :class="`w-fit font-medium break-keep text-black dark:text-white ${props.size === 'lg' ? 'line-clamp-2' : 'line-clamp-1'}`"
+                            >
                                 {{ useSentence(item.name) }}
                             </p>
                         </NuxtLink>
 
                         <UiTooltip v-if="item.nsfw" text="NSFW">
-                            <Icon name="heroicons:heart-16-solid" :size="18" text-pink-400 />
+                            <Icon
+                                name="heroicons:heart-16-solid"
+                                :size="18"
+                                class="text-pink-400"
+                            />
                         </UiTooltip>
                     </div>
 
-                    <div flex items-center gap-3>
-
-                        <NuxtLink :to="booth_url + props.id" target="_blank" text-sm font-semibold
-                            class="text-neutral-700 dark:text-neutral-300">
+                    <div class="flex items-center gap-3">
+                        <NuxtLink
+                            :to="booth_url + props.id"
+                            target="_blank"
+                            class="text-sm font-semibold text-neutral-700 dark:text-neutral-300"
+                        >
                             {{ item.price }}
                         </NuxtLink>
 
-                        <NuxtLink :to="`https://${item.shopId}.booth.pm/`" target="_blank" flex items-center gap-1.5
-                            w-fit>
-                            <NuxtImg :src="item.shopThumbnail" :alt="item.shop" size-5 rounded-md
-                                border="~ 1 neutral-300" />
-                            <span font-semibold line-clamp-1 break-all text="neutral-700 dark:neutral-300 xs">
+                        <NuxtLink
+                            :to="`https://${item.shopId}.booth.pm/`"
+                            target="_blank"
+                            class="flex items-center gap-1.5 w-fit"
+                        >
+                            <NuxtImg
+                                :src="item.shopThumbnail"
+                                :alt="item.shop"
+                                class="size-5 rounded-md border border-1 border-neutral-300"
+                            />
+                            <span
+                                class="font-semibold line-clamp-1 break-all text-neutral-700 dark:text-neutral-300 text-xs"
+                            >
                                 {{ item.shop }}
                             </span>
-                            <Icon v-if="item.shopVerified" name="lucide:check" :size="16" flex-shrink-0 size-3
-                                text="neutral-700 dark:neutral-300" />
+                            <Icon
+                                v-if="item.shopVerified"
+                                name="lucide:check"
+                                :size="16"
+                                class="flex-shrink-0 size-3 text-neutral-700 dark:text-neutral-300"
+                            />
                         </NuxtLink>
                     </div>
                 </div>
-                <div w-fit gap-3 flex flex-shrink-0 items-center>
-                    <UiTooltip v-if="props.unsupported" text="ベースアバターに非対応">
-                        <Icon name="heroicons:paint-brush-20-solid" :size="18" text="neutral-600 dark:neutral-200" />
+                <div class="w-fit gap-3 flex flex-shrink-0 items-center">
+                    <UiTooltip
+                        v-if="props.unsupported"
+                        text="ベースアバターに非対応"
+                    >
+                        <Icon
+                            name="heroicons:paint-brush-20-solid"
+                            :size="18"
+                            class="text-neutral-600 dark:text-neutral-200"
+                        />
                     </UiTooltip>
 
-                    <div w-fit items-center gap-1 flex="~ row shrink-0">
-                        <UiButton :to="{ name: 'search', query: { item: props.id }, }" icon="lucide:search"
-                            tooltip="アイテムからセットアップを検索" padding="p-2" />
+                    <div
+                        class="w-fit items-center gap-1 flex flex-row flex-shrink-0"
+                    >
+                        <UiButton
+                            :to="{ name: 'search', query: { item: props.id } }"
+                            icon="lucide:search"
+                            tooltip="アイテムからセットアップを検索"
+                            padding="p-2"
+                        />
                     </div>
                 </div>
             </div>
         </template>
         <template #under>
-            <div v-if="props.note" w-full flex :class="`${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-0.5 pb-2'}`">
-                <div w-full px-3 py-2 gap-2 flex items-center rounded-lg bg="neutral-200 dark:neutral-600">
-                    <Icon name="lucide:pen-line" :size="15" flex-shrink-0 text="neutral-400 dark:neutral-400"
-                        class="mt-[0.2rem]" />
-                    <p break-keep whitespace-break-spaces text="neutral-800 dark:neutral-200"
-                        class="text-xs/relaxed [overflow-wrap:anywhere]">
+            <div
+                v-if="props.note"
+                :class="`w-full flex ${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-0.5 pb-2'}`"
+            >
+                <div
+                    class="w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600"
+                >
+                    <Icon
+                        name="lucide:pen-line"
+                        :size="15"
+                        class="flex-shrink-0 mt-[0.2rem] text-neutral-400 dark:text-neutral-400"
+                    />
+                    <p
+                        class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-neutral-800 dark:text-neutral-200"
+                    >
                         {{ props.note }}
                     </p>
                 </div>
@@ -156,12 +210,22 @@ onMounted(async () => {
 
     <ItemBase v-else>
         <template #main>
-            <div h-22 flex items-center px-5 gap-4>
-                <Icon name="lucide:file-question" size-5 text="neutral-700 dark:neutral-200" />
-                <div flex flex-col gap-1>
-                    <p text-sm font-semibold text="neutral-900 dark:neutral-100">アイテムの取得に失敗</p>
-                    <p text-xs font-medium text="neutral-600 dark:neutral-300">
-                        アイテムが非公開になっているか、削除されている可能性があります</p>
+            <div class="h-22 flex items-center px-5 gap-4">
+                <Icon
+                    name="lucide:file-question"
+                    class="size-5 text-neutral-700 dark:text-neutral-200"
+                />
+                <div class="flex flex-col gap-1">
+                    <p
+                        class="text-sm font-semibold text-neutral-900 dark:text-neutral-100"
+                    >
+                        アイテムの取得に失敗
+                    </p>
+                    <p
+                        class="text-xs font-medium text-neutral-600 dark:text-neutral-300"
+                    >
+                        アイテムが非公開になっているか、削除されている可能性があります
+                    </p>
                 </div>
             </div>
         </template>

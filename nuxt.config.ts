@@ -1,75 +1,74 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	// ssr: false,
+    // ssr: false,
 
-	routeRules: {
-		"/": { swr: true },
-		"/setup": { swr: true },
-	},
+    routeRules: {
+        "/": { swr: true },
+        "/setup": { swr: true },
+    },
 
-	devtools: {
-		enabled: true,
+    devtools: {
+        enabled: true,
 
-		timeline: {
-			enabled: true,
-		},
-	},
-	modules: [
-		"@nuxt/ui",
-		"@vueuse/nuxt",
-		"@nuxt/image",
-		"@nuxt/fonts",
-		"@nuxtjs/color-mode",
-		"@nuxtjs/supabase",
-		"@nuxt/eslint",
-		"@pinia/nuxt",
-		"@unocss/nuxt",
-	],
-	compatibilityDate: "2024-08-21",
+        timeline: {
+            enabled: true,
+        },
+    },
+    modules: [
+        "@nuxt/ui",
+        "@vueuse/nuxt",
+        "@nuxt/image",
+        "@nuxt/fonts",
+        "@nuxtjs/color-mode",
+        "@nuxtjs/supabase",
+        "@nuxt/eslint",
+        "@pinia/nuxt",
+    ],
+    compatibilityDate: "2024-08-21",
 
-	components: [
-		{
-			path: "~/components",
-		},
-	],
+    components: [
+        {
+            path: "~/components",
+        },
+    ],
 
-	supabase: {
-		redirect: true,
-		redirectOptions: {
-			login: "/login",
-			callback: "/confirm",
-			include: ["/setup/edit"],
-			exclude: [],
-			cookieRedirect: false,
-		},
-	},
+    supabase: {
+        redirect: true,
+        redirectOptions: {
+            login: "/login",
+            callback: "/confirm",
+            include: ["/setup/edit"],
+            exclude: [],
+            cookieRedirect: false,
+        },
+    },
 
-	image: {
-		domains: [
-			"booth.pximg.net",
-			import.meta.env.SUPABASE_URL.replace("https://", ""),
-		],
-	},
+    image: {
+        domains: [
+            "booth.pximg.net",
+            import.meta.env.SUPABASE_URL.replace("https://", ""),
+        ],
+    },
 
-	icon: {
-		customCollections: [
-			{
-				prefix: "avatio",
-				dir: "./public/icons/avatio",
-			},
-		],
-	},
+    icon: {
+        customCollections: [
+            {
+                prefix: "avatio",
+                dir: "./public/icons/avatio",
+            },
+        ],
+    },
 
-	runtimeConfig: {
-		public: {
-			token: "",
-			edgeConfig: "",
-		},
-	},
+    runtimeConfig: {
+        public: {
+            token: "",
+            edgeConfig: "",
+        },
+    },
 
-	nitro: {
-		preset: "vercel",
-	},
+    nitro: {
+        preset: "vercel",
+    },
 });
 
 //
