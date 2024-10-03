@@ -168,6 +168,7 @@ onMounted(async () => {
 
                     <div class="flex items-center gap-1">
                         <UiButton
+                            v-if="user?.id !== setup.author.id"
                             :tooltip="
                                 bookmark
                                     ? 'ブックマークから削除'
@@ -181,6 +182,17 @@ onMounted(async () => {
                             padding="p-2.5"
                             color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             @click="toggleBookmark"
+                        />
+
+                        <UiButton
+                            v-if="user?.id === setup.author.id"
+                            tooltip="削除"
+                            icon="lucide:trash"
+                            :icon-size="18"
+                            padding="p-2.5"
+                            color-icon="text-red-400 dark:text-red-300"
+                            color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            @click="modal_delete = true"
                         />
 
                         <UPopover
@@ -214,27 +226,6 @@ onMounted(async () => {
                                 </div>
                             </template>
                         </UPopover>
-                    </div>
-
-                    <div
-                        v-if="user?.id === setup.author"
-                        class="flex items-center gap-0.5"
-                    >
-                        <NuxtLink :to="'/setup/edit?id=' + setup?.id">
-                            <UiButton
-                                icon="lucide:pen-line"
-                                :icon-size="19"
-                                tooltip="編集"
-                            />
-                        </NuxtLink>
-
-                        <UiButton
-                            tooltip="削除"
-                            icon="lucide:trash"
-                            :icon-size="17"
-                            class="text-red-400 dark:text-red-300"
-                            @click="modal_delete = true"
-                        />
                     </div>
                 </div>
             </div>

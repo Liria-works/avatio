@@ -45,7 +45,7 @@ export default defineNuxtConfig({
 
     image: {
         domains: [
-            "booth.pximg.net",
+            // "booth.pximg.net",
             import.meta.env.SUPABASE_URL.replace("https://", ""),
         ],
     },

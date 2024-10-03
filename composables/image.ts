@@ -65,15 +65,16 @@ export interface PutImage {
 }
 
 export const useGetImage = async (path: string) => {
-    const client = await useSBClient();
-    const { data, error } = await client.storage
-        .from("images")
-        .getPublicUrl(path);
+    // const client = await useSBClient();
+    // const { data, error } = await client.storage
+    //     .from("images")
+    //     .getPublicUrl(path);
 
-    if (error) {
-        console.error("Failed to get image:", error);
-        return null;
-    }
+    // if (error) {
+    //     console.error("Failed to get image:", error);
+    //     return null;
+    // }
 
-    return data.publicUrl;
+    // return data.publicUrl;
+    return `https://imbxeblwlopxrgexztsx.supabase.co/storage/v1/object/public/images/${path}`;
 };

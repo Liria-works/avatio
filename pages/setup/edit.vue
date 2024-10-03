@@ -7,13 +7,11 @@ import {
     TagsInputRoot,
 } from "radix-vue";
 
-const route = useRoute();
 const router = useRouter();
 const skip_router_hook = ref(false);
 
 const modalSearchItem = ref(false);
 
-const id = route.query.id;
 const input_url = ref<string>("");
 const adding = ref(false);
 const publishing = ref(false);
@@ -219,36 +217,6 @@ const PublishSetup = async () => {
     }
 };
 
-const UpdateSetup = async () => {
-    // const client = await useSupabaseClient();
-
-    const setup: {
-        name: string;
-        description: string;
-        tags: string[];
-        avatar: number | null;
-        avatar_note: string;
-    } = {
-        name: title.value,
-        description: useLineBreak(description.value),
-        tags: tags.value,
-        avatar: items.value.avatar.id,
-        avatar_note: useLineBreak(items.value.avatar_note),
-    };
-
-    try {
-        await useUpdateSetup(Number(id), setup, items.value);
-
-        useAddToast("セットアップを更新しました。");
-        skip_router_hook.value = true;
-        router.push(`/setup/${id}`);
-    } catch (error) {
-        console.error(error);
-
-        useAddToast("セットアップの更新に失敗しました。");
-    }
-};
-
 const PasteFromClipboard = async () => {
     try {
         const text = await navigator.clipboard.readText();
@@ -367,7 +335,6 @@ watch(items.value, () => {
             </div>
             <div class="flex gap-2 items-center">
                 <UPopover
-                    v-if="!route.query.id"
                     mode="hover"
                     :popper="{ placement: 'top' }"
                     :ui="{
@@ -423,21 +390,6 @@ watch(items.value, () => {
                         </div>
                     </template>
                 </UPopover>
-
-                <UButton
-                    v-else
-                    :disabled="!title || !items.avatar || !items.items.length"
-                    truncate
-                    size="lg"
-                    label="更新"
-                    icon="i-heroicons-arrow-up-tray-16-solid"
-                    :ui="{
-                        rounded: 'rounded-full',
-                        inline: 'pr-4',
-                        truncate: 'whitespace-nowrap',
-                    }"
-                    @click="UpdateSetup"
-                />
 
                 <UiButton
                     tooltip="破棄"
@@ -652,7 +604,7 @@ watch(items.value, () => {
             <div
                 class="w-full md:w-96 flex-col justify-start items-start gap-8 flex"
             >
-                <div v-if="!id" class="w-full flex flex-col gap-6 items-start">
+                <div class="w-full flex flex-col gap-3 items-start">
                     <button
                         v-if="!imagePreview"
                         @click="open()"
@@ -679,7 +631,7 @@ watch(items.value, () => {
                             />
                             <button
                                 @click="reset()"
-                                class="size-8 absolute top-2 right-2 bg-black/30 hover:bg-black/50 rounded-full p-1 backdrop-blur-lg"
+                                class="size-8 absolute top-2 right-2 bg-black/30 hover:bg-black/70 rounded-full p-1 backdrop-blur-lg"
                             >
                                 <Icon
                                     name="lucide:x"
@@ -694,7 +646,7 @@ watch(items.value, () => {
                             {{ files[0].name }}
                         </div>
                     </div>
-                    <PopupUploadImage class="mt-[-16px]" />
+                    <PopupUploadImage />
                 </div>
                 <UiCategory title="説明" icon="lucide:text">
                     <div class="w-full flex flex-col gap-1 items-end">

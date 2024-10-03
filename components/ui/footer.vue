@@ -15,7 +15,9 @@ const modal_feedback = ref(false);
                 :filled="true"
             />
         </UDivider>
-        <div class="flex flex-wrap w-full gap-6 pb-10 items-center">
+        <div
+            class="flex flex-wrap w-full gap-6 pb-10 items-center justify-center"
+        >
             <div
                 class="flex-col sm:flex-row flex items-center justify-center gap-4 text-neutral-700 dark:text-white"
             >
