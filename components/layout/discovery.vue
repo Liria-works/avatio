@@ -55,11 +55,11 @@ const get = async () => {
         <MasonryWall
             v-if="setups"
             :items="setups"
-            :column-width="250"
+            :column-width="200"
             :gap="20"
             :ssr-columns="3"
             :min-columns="2"
-            :max-columns="4"
+            :max-columns="3"
         >
             <template #default="{ item }">
                 <a :href="`/setup/${item.id}`">
