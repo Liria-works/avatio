@@ -13,3 +13,19 @@ export const useLineBreak = (text: string) => {
 export const useWriteClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
 };
+
+export const useAvatarName = (text: string) => {
+    return text
+        .replace("オリジナル", "")
+        .replace("3Dモデル", "")
+        .replace("/", " ")
+        .replace("「", " ")
+        .replace("」", " ")
+        .replace("【", " ")
+        .replace("】", " ")
+        .replace("『", " ")
+        .replace("』", " ")
+        .replace("【", " ")
+        .replace("】", " ")
+        .replace("  ", " ");
+};

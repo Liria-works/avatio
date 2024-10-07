@@ -7,6 +7,7 @@ import {
     TagsInputRoot,
 } from "radix-vue";
 
+const client = await useSBClient();
 const router = useRouter();
 const skip_router_hook = ref(false);
 
@@ -38,6 +39,7 @@ const categoryAttr: { [key: string]: { label: string; icon: string } } = {
 const title = ref<string>("");
 const description = ref<string>("");
 const tags = ref<string[]>([]);
+const tagsSuggestion = ref<string[]>([]);
 
 const ERROR_MESSAGES = {
     EMPTY_URL: "URLを入力してください。",
@@ -258,6 +260,43 @@ const quickAvatarsOwned = ref<
     | null
 >(null);
 
+const AddTag = (tag: string) => {
+    if (!tags.value.includes(tag)) {
+        tags.value.push(tag);
+    }
+    const input = document.getElementById("tagInput") as HTMLInputElement;
+    if (input) {
+        input.value = "";
+    }
+    input.focus();
+};
+
+const tagSuggest = useDebounceFn(
+    async (value) => {
+        const input = document.getElementById("tagInput") as HTMLInputElement;
+
+        if (input?.value.length) {
+            const suggest = await client.rpc("search_tags", {
+                keywords: input?.value,
+                exclude: tags.value,
+            });
+
+            if (suggest.error) {
+                tagsSuggestion.value = [];
+                return;
+            }
+
+            tagsSuggestion.value = suggest.data.map(
+                (i: { tag: string }) => i.tag
+            );
+        } else {
+            tagsSuggestion.value = [];
+        }
+    },
+    700,
+    { maxWait: 1600 }
+); // 700～1600ms デバウンス
+
 onMounted(async () => {
     // quickAvatarsOwned.value = await useGetOwnedAvatars();
     // const client = await useSBClient();
@@ -302,8 +341,10 @@ watch(items.value, () => {
             categorizedItems.value[category].push(item);
         }
     }
+});
 
-    console.log(categorizedItems.value);
+watch(tags.value, () => {
+    tagsSuggestion.value = [];
 });
 </script>
 
@@ -401,7 +442,7 @@ watch(items.value, () => {
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row items-start gap-8 w-full">
+        <div class="flex flex-col lg:flex-row items-start gap-8 w-full">
             <div class="flex-col items-center gap-8 flex w-full">
                 <div class="w-full flex flex-col items-center gap-4">
                     <div class="flex gap-1 items-center w-full">
@@ -598,11 +639,11 @@ watch(items.value, () => {
                         base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
                     },
                 }"
-                class="block md:hidden"
+                class="block lg:hidden"
             />
 
             <div
-                class="w-full md:w-96 flex-col justify-start items-start gap-8 flex"
+                class="w-full lg:w-96 flex-col justify-start items-start gap-8 flex"
             >
                 <div class="w-full flex flex-col gap-3 items-start">
                     <button
@@ -680,29 +721,46 @@ watch(items.value, () => {
                 </UiCategory>
 
                 <UiCategory title="タグ" icon="lucide:tags">
-                    <TagsInputRoot
-                        v-model="tags"
-                        class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
-                    >
-                        <TagsInputItem
-                            v-for="item in tags"
-                            :key="item"
-                            :value="item"
-                            class="dark:text-white text-black flex items-center justify-center gap-2 rounded-md p-1 border border-1 border-neutral-300 dark:border-neutral-600 bg-neutral-100 dark:bg-neutral-700"
+                    <div class="w-full flex flex-col gap-1">
+                        <TagsInputRoot
+                            v-model="tags"
+                            class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
                         >
-                            <TagsInputItemText class="text-sm pl-1.5" />
-                            <TagsInputItemDelete
-                                class="mr-0.5 rounded hover:bg-neutral-300 hover:dark:bg-neutral-700 flex items-center justify-center"
+                            <TagsInputItem
+                                v-for="item in tags"
+                                :key="item"
+                                :value="item"
+                                class="dark:text-white text-black flex items-center justify-center gap-1.5 rounded-full px-1 py-1 border border-1 border-neutral-300 dark:border-neutral-600"
                             >
-                                <Icon name="lucide:x" />
-                            </TagsInputItemDelete>
-                        </TagsInputItem>
+                                <TagsInputItemText class="text-sm pl-2" />
+                                <TagsInputItemDelete
+                                    class="p-1 rounded-full hover:bg-neutral-300 hover:dark:bg-neutral-700 flex items-center justify-center"
+                                >
+                                    <Icon name="lucide:x" />
+                                </TagsInputItemDelete>
+                            </TagsInputItem>
 
-                        <TagsInputInput
-                            placeholder="タグを入力"
-                            class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
-                        />
-                    </TagsInputRoot>
+                            <TagsInputInput
+                                id="tagInput"
+                                placeholder="タグを入力"
+                                class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
+                                @input="tagSuggest"
+                            />
+                        </TagsInputRoot>
+                        <div
+                            v-if="tagsSuggestion.length"
+                            class="w-full flex flex-wrap gap-1 rounded-lg p-2 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
+                        >
+                            <button
+                                v-for="(i, index) in tagsSuggestion"
+                                :key="'tagSuggest-' + index"
+                                class="gap-1.5 rounded-full px-3 py-1 text-sm border border-1 border-neutral-300 dark:border-neutral-600"
+                                @click="AddTag(i)"
+                            >
+                                {{ i }}
+                            </button>
+                        </div>
+                    </div>
                 </UiCategory>
             </div>
         </div>

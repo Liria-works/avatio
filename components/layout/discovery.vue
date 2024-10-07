@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const user = useSupabaseUser();
 const client = await useSBClient();
 
 type Setup = {
@@ -20,8 +21,6 @@ onMounted(() => {
 });
 
 const get = async () => {
-    const user = useSupabaseUser();
-
     setups.value = [];
 
     let query = client
@@ -62,7 +61,7 @@ const get = async () => {
             :max-columns="3"
         >
             <template #default="{ item }">
-                <a :href="`/setup/${item.id}`">
+                <NuxtLink :href="`/setup/${item.id}`">
                     <ItemSetup
                         :name="item.name"
                         :avatar-name="item.avatar.name"
@@ -74,7 +73,7 @@ const get = async () => {
                         :image="item.image"
                         class="hover:bg-neutral-200 dark:hover:bg-neutral-600"
                     />
-                </a>
+                </NuxtLink>
             </template>
         </MasonryWall>
 

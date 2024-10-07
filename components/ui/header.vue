@@ -104,18 +104,6 @@ onMounted(async () => {
                 </div>
 
                 <div class="flex">
-                    <NuxtLink to="/login">
-                        <UiButton
-                            v-if="!user"
-                            label="ログイン"
-                            :outline="false"
-                            padding="px-4 py-2"
-                            rounded="rounded-lg"
-                            color-bg="bg-neutral-500 hover:bg-neutral-600"
-                            color-text="text-neutral-100"
-                        />
-                    </NuxtLink>
-
                     <NuxtLink
                         v-if="user"
                         :to="'/user/' + user.id"
@@ -137,6 +125,17 @@ onMounted(async () => {
                                 class="text-neutral-600 dark:text-neutral-300"
                             />
                         </div>
+                    </NuxtLink>
+
+                    <NuxtLink v-else to="/login">
+                        <UiButton
+                            label="ログイン"
+                            :outline="false"
+                            padding="px-4 py-2"
+                            rounded="rounded-lg"
+                            color-bg="bg-neutral-500 hover:bg-neutral-600"
+                            color-text="text-neutral-100"
+                        />
                     </NuxtLink>
                 </div>
             </div>

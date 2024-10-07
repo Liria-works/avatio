@@ -40,7 +40,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div v-show="user && mySetups.length" class="w-full flex flex-col gap-4">
+    <div
+        v-if="user"
+        v-show="mySetups.length"
+        class="w-full flex flex-col gap-4"
+    >
         <div class="w-full flex items-start justify-between">
             <UiTitle
                 label="あなたのセットアップ"

@@ -57,15 +57,28 @@ onMounted(async () => {
         throw new Error("Invalid id");
     }
 
+    const select = [
+        "id",
+        "created_at",
+        "updated_at",
+        "name",
+        "description",
+        "avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw)",
+        "avatar_note",
+        "author(id, name)",
+        "image",
+        "setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)",
+        "setup_tags(tag)",
+    ];
+
     const { data } = await client
         .from("setups")
-        .select(
-            "id, created_at, updated_at, name, description, avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), avatar_note, tags, author(id, name), image, setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)"
-        )
+        .select(select.join(", "))
         .eq("id", Number(id))
         .maybeSingle();
 
     setup.value = data as unknown as Setup; // Supabaseの型生成にバグがあるのでキャストしています
+    // console.log(setup.value);
 
     if (!setup.value) {
         throw new Error("Invalid setup data");
@@ -300,17 +313,17 @@ onMounted(async () => {
             </div>
 
             <div
-                v-if="setup.tags && setup.tags.length"
+                v-if="setup.setup_tags && setup.setup_tags.length"
                 class="gap-2.5 flex flex-col"
             >
                 <Title label="タグ" icon="lucide:tags" />
                 <div class="items-center gap-1.5 flex flex-row flex-wrap">
                     <button
-                        v-for="tag in setup.tags"
+                        v-for="tag in setup.setup_tags"
                         :key="useId()"
                         class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
                     >
-                        {{ tag }}
+                        {{ tag.tag }}
                     </button>
                 </div>
             </div>
