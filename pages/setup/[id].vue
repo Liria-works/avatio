@@ -135,7 +135,7 @@ onMounted(async () => {
                     <div class="grow flex items-center gap-5">
                         <div class="flex items-center gap-2">
                             <UiUser
-                                :user="setup.author.id"
+                                :id="setup.author.id"
                                 :name="setup.author.name"
                             />
                         </div>

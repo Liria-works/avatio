@@ -139,14 +139,6 @@ watch(
                     v-for="i in resultSetups"
                     :to="{ name: 'setup-id', params: { id: i.id } }"
                 >
-                    <!-- <ItemSetup
-                        :name="i.name"
-                        :avatar="i.avatar"
-                        :author="i.author"
-                        :created-at="i.created_at"
-                        :image="i.image"
-                        class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
-                    /> -->
                     <ItemSetupDetail
                         :name="i.name"
                         :description="i.description"

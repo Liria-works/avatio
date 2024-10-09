@@ -51,19 +51,11 @@ onUnmounted(() => {
                 icon="lucide:user-round"
                 class="pt-2"
             />
-            <UButton
+            <UiButton
                 to="/setup/edit"
                 icon="i-heroicons-plus"
-                size="xl"
-                color="primary"
-                variant="solid"
                 label="セットアップを投稿"
-                :trailing="false"
-                :ui="{
-                    rounded: 'rounded-full',
-                    font: 'whitespace-nowrap',
-                }"
-                class="pr-6 pl-5"
+                ui="pr-6 pl-5 rounded-full whitespace-nowrap"
             />
         </div>
 
@@ -91,21 +83,12 @@ onUnmounted(() => {
         </div>
     </div>
 
-    <UButton
+    <UiButton
         v-if="user && !mySetups.length"
         to="/setup/edit"
         icon="i-heroicons-plus"
-        size="xl"
-        color="primary"
-        variant="solid"
         label="セットアップを投稿"
-        :trailing="false"
-        :ui="{
-            rounded: 'rounded-full',
-            font: 'whitespace-nowrap',
-        }"
-        block
-        class="pr-4"
+        ui="pr-4 rounded-full whitespace-nowrap"
     />
 </template>
 

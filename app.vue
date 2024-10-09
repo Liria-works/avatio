@@ -58,6 +58,7 @@ const modal_feedback = ref(false);
 <style>
 body {
     background-color: #f0f0f0;
+    font-family: "Murecho";
 }
 
 .dark body {

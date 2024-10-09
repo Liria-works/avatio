@@ -36,8 +36,8 @@ const buttonClass = twMerge(
     props.disabled ? "cursor-not-allowed" : "cursor-pointer",
     props.icon.length ? "p-3" : "px-4 py-3",
     "w-fit rounded-lg flex gap-2 items-center justify-center",
-    "bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-900",
-    "text-sm font-semibold",
+    "bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600",
+    "text-sm font-semibold align-middle leading-none",
     "text-neutral-800 dark:text-neutral-200",
     // props.outline ? "border border-1" : "border-0",
     "outline outline-1 outline-neutral-400 dark:outline-neutral-600",
@@ -66,7 +66,9 @@ const iconClass = twMerge(
                 :size="props.iconSize"
                 :class="iconClass"
             />
-            <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
+            <p class="empty:hidden whitespace-nowrap leading-none">
+                {{ props.label }}
+            </p>
         </button>
 
         <NuxtLink
@@ -82,7 +84,9 @@ const iconClass = twMerge(
                 :size="props.iconSize"
                 :class="iconClass"
             />
-            <p class="empty:hidden whitespace-nowrap">{{ props.label }}</p>
+            <p class="empty:hidden whitespace-nowrap leading-none">
+                {{ props.label }}
+            </p>
         </NuxtLink>
     </UiTooltip>
 </template>

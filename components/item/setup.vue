@@ -95,20 +95,20 @@ onMounted(async () => {
             </div>
         </template>
         <template #main>
-            <div class="w-full h-16 flex justify-between">
+            <div class="w-full pt-1 flex justify-between">
                 <div
-                    class="w-full flex flex-col justify-center gap-0.5 py-2 pr-2 pl-3"
+                    class="w-full flex flex-col justify-center gap-1 py-2 pr-2 pl-3"
                 >
                     <p
-                        class="text-md font-medium text-neutral-700 dark:text-neutral-200 break-all line-clamp-1"
+                        class="text-sm font-medium text-neutral-700 dark:text-neutral-200 break-all line-clamp-1 leading-none"
                     >
                         {{ props.name }}
                     </p>
                     <div class="flex justify-between items-center gap-2">
                         <p
-                            class="text-sm text-neutral-500 dark:text-neutral-400 break-all line-clamp-1"
+                            class="text-xs text-neutral-500 dark:text-neutral-400 break-all line-clamp-1 leading-none"
                         >
-                            {{ props.avatarName }}
+                            {{ useAvatarName(props.avatarName) }}
                         </p>
                         <div class="flex items-center gap-2">
                             <UiTooltip :text="dateLocale">

@@ -106,7 +106,7 @@ onMounted(async () => {
                     <NuxtLink
                         v-if="user"
                         :to="`/user/${user?.id}`"
-                        class="rounded-full flex items-center outline outline-4 outline-transparent hover:outline-neutral-750 transition-all ease-in-out duration-100"
+                        class="rounded-full flex items-center outline outline-4 outline-transparent hover:outline-neutral-600 transition-all ease-in-out duration-100"
                     >
                         <UAvatar
                             v-if="myAvatar"
@@ -129,7 +129,7 @@ onMounted(async () => {
                     <NuxtLink v-else to="/login">
                         <UiButton
                             label="ログイン"
-                            ui="outline-0 px-4 py-2 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
+                            ui="outline-0 px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
                         />
                     </NuxtLink>
                 </div>

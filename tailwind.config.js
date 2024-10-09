@@ -2,7 +2,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                custom: ["Montserrat"],
+                custom: ["Murecho", "Montserrat"],
             },
             colors: {
                 neutral: {

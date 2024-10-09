@@ -19,9 +19,12 @@ const setups = ref();
 onMounted(async () => {
     const { data } = await client
         .from("users")
-        .select("name, avatar, bio, links, created_at")
+        .select(
+            "name, avatar, bio, links, created_at, setups(id, name, description, avatar(id, name, thumbnail), author(id, name, avatar), image, created_at)"
+        )
         .eq("id", userId.value)
         .single();
+    console.log(data);
 
     if (!data) {
         faild.value = true;
@@ -40,11 +43,13 @@ onMounted(async () => {
         avatar.value = null;
     }
 
-    setups.value = await client
-        .from("setups")
-        .select("id, name, description, author, avatar, image, created_at")
-        .eq("author", userId.value)
-        .range(0, 20);
+    // setups.value = await client
+    //     .from("setups")
+    //     .select("id, name, description, author, avatar, image, created_at")
+    //     .eq("author", userId.value)
+    //     .range(0, 20);
+
+    setups.value = data.setups;
 
     loading.value = false;
 });
@@ -139,13 +144,13 @@ onMounted(async () => {
                 </div>
 
                 <div
-                    class="w-full rounded-xl px-4 py-3 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
+                    class="w-full rounded-xl px-4 py-3 gap-1 flex flex-col border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
                 >
                     <p class="text-neutral-500 text-sm mt-[-2px]">bio</p>
                     <p v-if="!bio" class="text-neutral-400">自己紹介が未設定</p>
                     <p
                         v-if="bio"
-                        class="text-relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]"
+                        class="text-sm text-relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]"
                     >
                         {{ useSentence(bio) }}
                     </p>
@@ -157,15 +162,18 @@ onMounted(async () => {
             <UiTitle label="セットアップ" icon="lucide:shirt" />
 
             <NuxtLink
-                v-for="i in setups.data"
+                v-for="i in setups"
                 :key="'user-setup-' + i.id"
                 :to="{ name: 'setup-id', params: { id: i.id } }"
             >
                 <ItemSetupDetail
                     :name="i.name"
                     :description="i.description"
-                    :avatar="i.avatar"
-                    :author="i.author"
+                    :avatar-name="i.avatar.name"
+                    :avatar-thumbnail="i.avatar.thumbnail"
+                    :author-id="i.author.id"
+                    :author-name="i.author.name"
+                    :author-avatar="i.author.avatar"
                     :created-at="i.created_at"
                     :image="i.image"
                     class="hover:bg-neutral-200 dark:hover:bg-neutral-700"

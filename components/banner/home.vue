@@ -17,7 +17,7 @@
                     </p>
                 </div>
                 <UiButton
-                    to="/auth/login"
+                    to="/login"
                     icon="lucide:sparkles"
                     label="今すぐログイン"
                 />
