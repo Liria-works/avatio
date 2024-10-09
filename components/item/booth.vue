@@ -179,7 +179,7 @@ onMounted(async () => {
                             :to="{ name: 'search', query: { item: props.id } }"
                             icon="lucide:search"
                             tooltip="アイテムからセットアップを検索"
-                            padding="p-2"
+                            ui="p-2"
                         />
                     </div>
                 </div>

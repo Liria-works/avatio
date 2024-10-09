@@ -45,9 +45,7 @@ const get = async () => {
             <UiTitle label="みんなのセットアップ" icon="lucide:sparkles" />
             <UiButton
                 icon="lucide:rotate-ccw"
-                :outline="false"
-                padding="p-2"
-                color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                 @click="get"
             />
         </div>

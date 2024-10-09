@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { User } from "@supabase/supabase-js";
+
 const colorMode = useColorMode();
-const user = useSupabaseUser();
+const user = ref<User | null>(null);
 
 const storeMyAvatar = useMyAvatar();
 const { GetMyAvatar } = storeMyAvatar;
@@ -9,6 +11,7 @@ const { myAvatar } = storeToRefs(storeMyAvatar);
 const modalSearch = ref(false);
 
 onMounted(async () => {
+    user.value = useSupabaseUser();
     await GetMyAvatar();
 });
 </script>
@@ -49,9 +52,7 @@ onMounted(async () => {
                     <UiButton
                         tooltip="検索"
                         icon="lucide:search"
-                        :outline="false"
-                        padding="p-2.5"
-                        color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                        ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                         @click="modalSearch = true"
                     />
 
@@ -76,9 +77,7 @@ onMounted(async () => {
                                     : 'i-heroicons-moon-20-solid'
                             "
                             tooltip="テーマ"
-                            :outline="false"
-                            padding="p-2.5"
-                            color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             @click="
                                 colorMode.preference =
                                     colorMode.value === 'dark'
@@ -103,11 +102,11 @@ onMounted(async () => {
                     </UPopover> -->
                 </div>
 
-                <div class="flex">
+                <div class="flex items-center">
                     <NuxtLink
                         v-if="user"
                         :to="'/user/' + user.id"
-                        class="rounded-full flex items-center"
+                        class="rounded-full flex items-center outline outline-4 outline-transparent hover:outline-neutral-750 transition-all ease-in-out duration-100"
                     >
                         <UAvatar
                             v-if="myAvatar"
@@ -130,11 +129,7 @@ onMounted(async () => {
                     <NuxtLink v-else to="/login">
                         <UiButton
                             label="ログイン"
-                            :outline="false"
-                            padding="px-4 py-2"
-                            rounded="rounded-lg"
-                            color-bg="bg-neutral-500 hover:bg-neutral-600"
-                            color-text="text-neutral-100"
+                            ui="outline-0 px-4 py-2 rounded-lg text-neutral-100 bg-neutral-500 hover:bg-neutral-600"
                         />
                     </NuxtLink>
                 </div>

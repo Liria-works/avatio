@@ -40,6 +40,7 @@ const title = ref<string>("");
 const description = ref<string>("");
 const tags = ref<string[]>([]);
 const tagsSuggestion = ref<string[]>([]);
+const tagsSuggestionLoading = ref(false);
 
 const ERROR_MESSAGES = {
     EMPTY_URL: "URLを入力してください。",
@@ -271,8 +272,20 @@ const AddTag = (tag: string) => {
     input.focus();
 };
 
+const handleTagSuggest = () => {
+    const input = document.getElementById("tagInput") as HTMLInputElement;
+
+    tagsSuggestion.value = [];
+    if (input?.value.length) {
+        tagsSuggestionLoading.value = true;
+    } else {
+        tagsSuggestionLoading.value = false;
+    }
+    tagSuggest();
+};
+
 const tagSuggest = useDebounceFn(
-    async (value) => {
+    async () => {
         const input = document.getElementById("tagInput") as HTMLInputElement;
 
         if (input?.value.length) {
@@ -283,14 +296,18 @@ const tagSuggest = useDebounceFn(
 
             if (suggest.error) {
                 tagsSuggestion.value = [];
+                tagsSuggestionLoading.value = false;
                 return;
             }
 
             tagsSuggestion.value = suggest.data.map(
                 (i: { tag: string }) => i.tag
             );
+
+            tagsSuggestionLoading.value = false;
         } else {
             tagsSuggestion.value = [];
+            tagsSuggestionLoading.value = false;
         }
     },
     700,
@@ -409,7 +426,7 @@ watch(tags.value, () => {
 
                     <template #panel>
                         <div
-                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-100"
+                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-900 dark:text-neutral-100"
                         >
                             <p v-if="!title">
                                 {{ ERROR_MESSAGES.NO_TITLE }}
@@ -436,7 +453,7 @@ watch(tags.value, () => {
                     tooltip="破棄"
                     icon="lucide:trash"
                     :icon-size="18"
-                    class="size-10"
+                    ui="outline-0"
                     @click="router.back()"
                 />
             </div>
@@ -447,7 +464,7 @@ watch(tags.value, () => {
                 <div class="w-full flex flex-col items-center gap-4">
                     <div class="flex gap-1 items-center w-full">
                         <div
-                            class="w-full p-1 rounded-xl border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900"
+                            class="w-full p-1 rounded-lg border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900"
                         >
                             <UInput
                                 v-model="input_url"
@@ -458,7 +475,7 @@ watch(tags.value, () => {
                                 placeholder="BOOTH URLからアバター・アイテムを追加"
                                 block
                                 :ui="{
-                                    rounded: 'rounded-xl',
+                                    rounded: 'rounded-lg',
                                     icon: { trailing: { pointer: '' } },
                                 }"
                                 @keyup.enter="AddItemFromURL"
@@ -483,54 +500,25 @@ watch(tags.value, () => {
                                 </template>
                             </UInput>
                         </div>
-                        <UButton
+                        <UiButton
+                            :disabled="adding"
                             :icon="
                                 !adding
                                     ? 'i-heroicons-plus'
                                     : 'i-svg-spinners-ring-resize'
                             "
-                            :disabled="adding"
                             label="追加"
-                            size="sm"
-                            :ui="{
-                                rounded: 'rounded-xl',
-                            }"
-                            class="pr-3 h-[40px]"
+                            ui="pr-3 h-[40px]"
                             @click="AddItemFromURL"
                         />
                     </div>
-
-                    <div class="w-full flex items-center gap-2">
-                        <UButton
-                            block
-                            icon="lucide:search"
-                            label="アバター・アイテムを検索"
-                            variant="outline"
-                            :ui="{
-                                rounded: 'rounded-xl',
-                                variant: {
-                                    outline:
-                                        'ring-neutral-400 dark:ring-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-750',
-                                },
-                            }"
-                            class="h-9"
-                            @click="modalSearchItem = true"
-                        />
-                        <UModal
-                            v-model="modalSearchItem"
-                            :ui="{
-                                background: 'bg-white dark:bg-neutral-100',
-                                ring: 'ring-0',
-                                rounded: 'rounded-xl',
-                                inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
-                            }"
-                        >
-                            <ModalSearchItem
-                                @add="AddItem"
-                                @close="modalSearchItem = false"
-                            />
-                        </UModal>
-                    </div>
+                    <UiButton
+                        icon="lucide:search"
+                        label="アバター・アイテムを検索"
+                        ui="h-9 w-full"
+                        class="w-full"
+                        @click="modalSearchItem = true"
+                    />
                 </div>
 
                 <UiCategory
@@ -589,9 +577,7 @@ watch(tags.value, () => {
 
                 <div
                     v-if="!Object.keys(categorizedItems).length"
-                    my-10
-                    font-medium
-                    text-neutral-400
+                    class="my-10 font-medium text-neutral-400"
                 >
                     アイテムが登録されていません
                 </div>
@@ -687,7 +673,7 @@ watch(tags.value, () => {
                             {{ files[0].name }}
                         </div>
                     </div>
-                    <PopupUploadImage />
+                    <PopupUploadImage class="w-fit" />
                 </div>
                 <UiCategory title="説明" icon="lucide:text">
                     <div class="w-full flex flex-col gap-1 items-end">
@@ -744,17 +730,24 @@ watch(tags.value, () => {
                                 id="tagInput"
                                 placeholder="タグを入力"
                                 class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
-                                @input="tagSuggest"
+                                @input="handleTagSuggest"
                             />
                         </TagsInputRoot>
                         <div
-                            v-if="tagsSuggestion.length"
+                            v-if="
+                                tagsSuggestion.length || tagsSuggestionLoading
+                            "
                             class="w-full flex flex-wrap gap-1 rounded-lg p-2 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
                         >
+                            <Icon
+                                v-show="tagsSuggestionLoading"
+                                name="svg-spinners:ring-resize"
+                                class="m-1.5 flex-shrink-0"
+                            />
                             <button
                                 v-for="(i, index) in tagsSuggestion"
                                 :key="'tagSuggest-' + index"
-                                class="gap-1.5 rounded-full px-3 py-1 text-sm border border-1 border-neutral-300 dark:border-neutral-600"
+                                class="gap-1.5 rounded-full px-3 py-1 text-sm border border-1 border-neutral-400 dark:border-neutral-600 hover:bg-neutral-300 hover:dark:bg-neutral-600 transition ease-in-out duration-100"
                                 @click="AddTag(i)"
                             >
                                 {{ i }}
@@ -764,5 +757,17 @@ watch(tags.value, () => {
                 </UiCategory>
             </div>
         </div>
+
+        <UModal
+            v-model="modalSearchItem"
+            :ui="{
+                background: 'bg-white dark:bg-neutral-100',
+                ring: 'ring-0',
+                rounded: 'rounded-xl',
+                inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
+            }"
+        >
+            <ModalSearchItem @add="AddItem" @close="modalSearchItem = false" />
+        </UModal>
     </div>
 </template>

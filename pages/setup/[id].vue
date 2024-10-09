@@ -192,8 +192,8 @@ onMounted(async () => {
                                     ? 'lucide:bookmark-x'
                                     : 'lucide:bookmark'
                             "
-                            padding="p-2.5"
-                            color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            padding=""
+                            ui="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             @click="toggleBookmark"
                         />
 
@@ -202,9 +202,8 @@ onMounted(async () => {
                             tooltip="削除"
                             icon="lucide:trash"
                             :icon-size="18"
-                            padding="p-2.5"
-                            color-icon="text-red-400 dark:text-red-300"
-                            color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            ui="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            ui-icon="text-red-400 dark:text-red-300"
                             @click="modal_delete = true"
                         />
 
@@ -219,8 +218,7 @@ onMounted(async () => {
                                 icon="lucide:share-2"
                                 :icon-size="18"
                                 tooltip="シェア"
-                                padding="p-2.5"
-                                color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                                ui="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             />
 
                             <template #panel="{ close }">
@@ -331,13 +329,10 @@ onMounted(async () => {
             <UiButton
                 label="セットアップを報告"
                 icon="lucide:flag"
-                text="text-xs font-semibold"
                 :icon-size="16"
-                padding="px-3 py-2 mt-2"
                 :outline="false"
-                color-icon="text-red-400"
-                color-text="text-neutral-500 dark:text-neutral-400"
-                color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                ui="px-3 py-2 mt-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                ui-icon="text-red-400 dark:text-red-400"
                 @click="
                     if (user) {
                         modal_report = true;

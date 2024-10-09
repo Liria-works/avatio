@@ -1,6 +1,9 @@
 <script setup lang="ts">
 const colorMode = useColorMode();
 const modal_feedback = ref(false);
+
+const buttonLink =
+    "outline-0 p-1 text-xs font-semibold text-neutral-400 hover:text-neutral-500 dark:text-neutral-400 hover:dark:text-neutral-500 hover:bg-transparent hover:dark:bg-transparent";
 </script>
 
 <template>
@@ -26,18 +29,14 @@ const modal_feedback = ref(false);
                         to="https://x.com/liria_work"
                         new-tab
                         icon="simple-icons:x"
-                        :outline="false"
-                        padding="p-2"
-                        color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                     />
 
                     <UiButton
                         to="https://github.com/Liria-works/avatio"
                         new-tab
                         icon="simple-icons:github"
-                        :outline="false"
-                        padding="p-2"
-                        color-bg="hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                     />
 
                     <NuxtLink
@@ -58,20 +57,12 @@ const modal_feedback = ref(false);
                     <UiButton
                         to="/releases"
                         label="お知らせ"
-                        :outline="false"
-                        padding="p-1"
-                        text="text-xs font-semibold"
-                        color-text="text-neutral-400 hover:text-neutral-500"
-                        color-bg=""
+                        :ui="buttonLink"
                     />
 
                     <UiButton
                         label="フィードバック"
-                        :outline="false"
-                        padding="p-1"
-                        text="text-xs font-semibold"
-                        color-text="text-neutral-400 hover:text-neutral-500"
-                        color-bg=""
+                        :ui="buttonLink"
                         @click="modal_feedback = true"
                     />
                 </div>
@@ -80,45 +71,28 @@ const modal_feedback = ref(false);
                 class="items-center justify-center gap-4 flex text-neutral-700 dark:text-white"
             >
                 <UiButton
+                    disabled
                     tooltip="準備中"
                     label="Avatioについて"
-                    :outline="false"
-                    padding="p-1"
-                    text="text-xs font-semibold"
-                    color-text="text-neutral-400 hover:text-neutral-500"
-                    color-bg=""
+                    :ui="buttonLink"
                 />
 
-                <UiButton
-                    to="/faq"
-                    label="FAQ"
-                    :outline="false"
-                    padding="p-1"
-                    text="text-xs font-semibold"
-                    color-text="text-neutral-400 hover:text-neutral-500"
-                    color-bg=""
-                />
+                <UiButton to="/faq" label="FAQ" :ui="buttonLink" />
 
                 <UiButton
+                    disabled
                     to="/terms"
                     tooltip="準備中"
                     label="利用規約"
-                    :outline="false"
-                    padding="p-1"
-                    text="text-xs font-semibold"
-                    color-text="text-neutral-400 hover:text-neutral-500"
-                    color-bg=""
+                    :ui="buttonLink"
                 />
 
                 <UiButton
+                    disabled
                     to="/privacy-policy"
                     tooltip="準備中"
                     label="プライバシーポリシー"
-                    :outline="false"
-                    padding="p-1"
-                    text="text-xs font-semibold"
-                    color-text="text-neutral-400 hover:text-neutral-500"
-                    color-bg=""
+                    :ui="buttonLink"
                 />
             </div>
             <p class="text-neutral-500 text-sm">Copyright © 2024 Liria</p>

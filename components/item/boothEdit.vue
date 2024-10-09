@@ -123,7 +123,7 @@ watch(unsupported, (value) => {
                         icon="lucide:trash"
                         :icon-size="16"
                         tooltip="アイテム削除"
-                        padding="p-3"
+                        ui="p-3"
                         @click="$emit('remove')"
                     />
 
