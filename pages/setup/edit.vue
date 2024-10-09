@@ -211,7 +211,7 @@ const PublishSetup = async () => {
         reset();
         useAddToast("セットアップを公開しました。");
         skip_router_hook.value = true;
-        router.push(`/setup/${id}`);
+        navigateTo(`/setup/${id}`);
     } catch (error) {
         console.error(error);
         useAddToast("セットアップの公開に失敗しました。");

@@ -129,7 +129,7 @@ onMounted(async () => {
                     <NuxtLink v-else to="/login">
                         <UiButton
                             label="ログイン"
-                            ui="outline-0 px-4 py-2 rounded-lg text-neutral-100 bg-neutral-500 hover:bg-neutral-600"
+                            ui="outline-0 px-4 py-2 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
                         />
                     </NuxtLink>
                 </div>

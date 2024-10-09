@@ -56,15 +56,14 @@ export const useSignupVaridate = () => {
 
 export const useSignOut = async () => {
     const supabase = useSupabaseClient();
-    const router = useRouter();
 
     await supabase.auth.signOut();
 
-    const storeSetupIndex = useSetupIndex();
-    const { GetSetupIndex } = storeSetupIndex;
-    await GetSetupIndex();
-    router.push("/");
-    useAddToast("ログアウトしました。");
+    // const storeSetupIndex = useSetupIndex();
+    // const { GetSetupIndex } = storeSetupIndex;
+    // await GetSetupIndex();
+    navigateTo("/", { external: true });
+    // useAddToast("ログアウトしました。");
 };
 
 export const useLogin = async (email: string, password: string) => {
@@ -75,10 +74,10 @@ export const useLogin = async (email: string, password: string) => {
     });
     if (error) throw error;
 
-    useAddToast("ログインしました。");
-    const storeSetupIndex = useSetupIndex();
-    const { GetSetupIndex } = storeSetupIndex;
-    await GetSetupIndex();
+    // useAddToast("ログインしました。");
+    // const storeSetupIndex = useSetupIndex();
+    // const { GetSetupIndex } = storeSetupIndex;
+    // await GetSetupIndex();
 };
 
 export const useSignUp = async (email: string, password: string) => {
