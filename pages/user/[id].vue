@@ -12,9 +12,25 @@ const userId = ref<string>(route.params.id.toString());
 const username = ref("");
 const avatar = ref<string | null>(null);
 const bio = ref("");
-const links = ref([]);
 const created_at = ref("");
 const setups = ref();
+
+const links = ref<string[]>([]);
+const linksShort = ref<{ [key: string]: string }[]>([]);
+
+const linkIcons: { [key: string]: string } = {
+    "x.com": "simple-icons:x",
+    "youtube.com": "simple-icons:youtube",
+    "twitch.tv": "simple-icons:twitch",
+    "discordapp.com": "simple-icons:discord",
+    "discord.com": "simple-icons:discord",
+    "instagram.com": "simple-icons:instagram",
+    "github.com": "simple-icons:github",
+    "steamcommunity.com": "simple-icons:steam",
+    "pixiv.net": "simple-icons:pixiv",
+    "artstation.com": "simple-icons:artstation",
+    "booth.pm": "lucide:store", // boothのアイコンをローカルアイコンパックとして登録する
+};
 
 onMounted(async () => {
     const { data } = await client
@@ -32,8 +48,29 @@ onMounted(async () => {
     }
     username.value = data.name;
     bio.value = data.bio;
-    links.value = data.links;
     created_at.value = data.created_at;
+    links.value = data.links;
+
+    linksShort.value = links.value.map((i) => {
+        for (const key in linkIcons) {
+            if (new URL(i).hostname.includes(key)) {
+                return {
+                    [i
+                        .replace("https://www.", "")
+                        .replace("http://www.", "")
+                        .replace("https://", "")
+                        .replace("http://", "")]: linkIcons[key],
+                };
+            }
+        }
+        return {
+            [i
+                .replace("https://www.", "")
+                .replace("http://www.", "")
+                .replace("https://", "")
+                .replace("http://", "")]: "",
+        };
+    });
 
     if (data.avatar) {
         avatar.value = await client.storage
@@ -42,12 +79,6 @@ onMounted(async () => {
     } else {
         avatar.value = null;
     }
-
-    // setups.value = await client
-    //     .from("setups")
-    //     .select("id, name, description, author, avatar, image, created_at")
-    //     .eq("author", userId.value)
-    //     .range(0, 20);
 
     setups.value = data.setups;
 
@@ -126,21 +157,36 @@ onMounted(async () => {
 
             <div class="w-full flex flex-col gap-3 pl-2">
                 <div v-if="links" class="flex flex-wrap items-center gap-2">
-                    <NuxtLink
-                        v-for="i in links as string[]"
-                        :to="i"
-                        target="_blank"
-                        class="px-2.5 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-750 hover:dark:bg-neutral-700"
+                    <UiTooltip
+                        v-for="(i, index) in links"
+                        :text="
+                            Object.values(linksShort[index])[0].length
+                                ? Object.keys(linksShort[index])[0]
+                                : ''
+                        "
                     >
-                        <p class="text-sm font-medium">
-                            {{
-                                i
-                                    .replace("https://", "")
-                                    .replace("http://", "")
-                                    .replace("www.", "")
-                            }}
-                        </p>
-                    </NuxtLink>
+                        <NuxtLink
+                            :to="i"
+                            target="_blank"
+                            class="min-h-[38px] p-2 rounded-lg flex items-center justify-center text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        >
+                            <Icon
+                                v-if="
+                                    Object.values(linksShort[index])[0].length
+                                "
+                                :name="Object.values(linksShort[index])[0]"
+                                size="20"
+                                class="text-neutral-600 dark:text-neutral-300"
+                            />
+
+                            <p
+                                v-else
+                                class="px-1 text-sm font-medium leading-none"
+                            >
+                                {{ Object.keys(linksShort[index])[0] }}
+                            </p>
+                        </NuxtLink>
+                    </UiTooltip>
                 </div>
 
                 <div
