@@ -3,7 +3,7 @@ import type { User } from "@supabase/supabase-js";
 const user = ref<User | null>(null);
 
 onMounted(() => {
-    user.value = useSupabaseUser();
+    user.value = useSupabaseUser().value;
 });
 </script>
 

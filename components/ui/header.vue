@@ -11,7 +11,7 @@ const { myAvatar } = storeToRefs(storeMyAvatar);
 const modalSearch = ref(false);
 
 onMounted(async () => {
-    user.value = useSupabaseUser();
+    user.value = useSupabaseUser().value;
     await GetMyAvatar();
 });
 </script>
@@ -105,7 +105,7 @@ onMounted(async () => {
                 <div class="flex items-center">
                     <NuxtLink
                         v-if="user"
-                        :to="'/user/' + user.id"
+                        :to="`/user/${user?.id}`"
                         class="rounded-full flex items-center outline outline-4 outline-transparent hover:outline-neutral-750 transition-all ease-in-out duration-100"
                     >
                         <UAvatar
