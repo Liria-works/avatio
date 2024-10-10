@@ -129,7 +129,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             token: "",
-            edgeConfig: "",
+            r2Domain: "",
         },
     },
 

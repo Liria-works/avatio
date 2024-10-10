@@ -65,5 +65,7 @@ export interface PutImage {
 }
 
 export const useGetImage = (path: string) => {
-    return `https://images.avatio.me/${path}`;
+    const runtimeConfig = useRuntimeConfig();
+    console.log(runtimeConfig);
+    return `${runtimeConfig.public.r2Domain}/${path}`;
 };
