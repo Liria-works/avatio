@@ -83,13 +83,18 @@ onUnmounted(() => {
         </div>
     </div>
 
-    <UiButton
+    <div
         v-if="user && !mySetups.length"
-        to="/setup/edit"
-        icon="i-heroicons-plus"
-        label="セットアップを投稿"
-        ui="pr-4 rounded-full whitespace-nowrap"
-    />
+        class="w-full py-5 gap-4 flex flex-col items-center"
+    >
+        <p>最初のセットアップを作成してみましょう</p>
+        <UiButton
+            to="/setup/edit"
+            icon="i-heroicons-plus"
+            label="セットアップを投稿"
+            ui="pr-4 rounded-full whitespace-nowrap"
+        />
+    </div>
 </template>
 
 <style scoped>

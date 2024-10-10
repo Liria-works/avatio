@@ -11,18 +11,16 @@ const props = withDefaults(
         size: "md",
     }
 );
+console.log(useGetImage(props.avatar));
 </script>
 
 <template>
-    <div
-        v-if="size === 'md'"
-        class="flex flex-row items-center justify-between pt-1 w-full"
-    >
+    <div v-if="size === 'md'" class="flex items-center justify-between">
         <NuxtLink
             :to="{ name: 'user-id', params: { id: props.id } }"
             class="flex flex-row gap-3 items-center"
         >
-            <UAvatar :src="props.avatar" alt="Avatar" />
+            <UAvatar :src="useGetImage(props.avatar)" :alt="props.name" />
             <p class="text-black dark:text-white pb-0.5 text-left font-normal">
                 {{ props.name }}
             </p>
@@ -37,7 +35,7 @@ const props = withDefaults(
             <UAvatar
                 v-if="props.avatar.length"
                 size="xs"
-                :src="props.avatar"
+                :src="useGetImage(props.avatar)"
                 :alt="props.name"
             />
             <div

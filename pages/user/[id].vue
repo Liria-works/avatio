@@ -40,7 +40,6 @@ interface User {
 
 const userId = ref<string>(route.params.id.toString());
 const userData = ref<User | null>(null);
-const avatar = ref<string | null>(null);
 
 const linksShort = ref<{ [key: string]: string }[]>([]);
 
@@ -104,14 +103,6 @@ onMounted(async () => {
         };
     });
 
-    if (userData.value.avatar) {
-        avatar.value = await client.storage
-            .from("images")
-            .getPublicUrl(userData.value.avatar).data.publicUrl;
-    } else {
-        avatar.value = null;
-    }
-
     loading.value = false;
 });
 </script>
@@ -122,8 +113,8 @@ onMounted(async () => {
             <div class="w-full flex items-center justify-between">
                 <div class="flex gap-6 items-center">
                     <UAvatar
-                        v-if="avatar"
-                        :src="avatar"
+                        v-if="userData.avatar"
+                        :src="useGetImage(userData.avatar)"
                         alt="Avatar"
                         size="3xl"
                     />
@@ -143,6 +134,7 @@ onMounted(async () => {
                                 {{ userData.name }}
                             </p>
                             <UserBadge
+                                v-if="userData.badges"
                                 :developer="userData.badges.developer"
                                 :contributor="userData.badges.contributor"
                                 :translator="userData.badges.translator"

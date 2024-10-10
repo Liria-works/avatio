@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { useShare } from "@vueuse/core";
+
 const user = useSupabaseUser();
 const route = useRoute();
 const client = await useSBClient();
-const currentUrl = ref();
+const currentUrl = ref<string>("");
 
 const modal_login = ref(false);
 const modal_report = ref(false);
@@ -23,6 +25,8 @@ const toggleBookmark = async () => {
     }
     bookmark.value = await useCheckBookmark(setup.value.id);
 };
+
+const { share, isSupported } = useShare();
 
 type Item = {
     item_id: {
@@ -65,7 +69,7 @@ onMounted(async () => {
         "description",
         "avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw)",
         "avatar_note",
-        "author(id, name)",
+        "author(id, name, avatar)",
         "image",
         "setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)",
         "setup_tags(tag)",
@@ -78,7 +82,6 @@ onMounted(async () => {
         .maybeSingle();
 
     setup.value = data as unknown as Setup; // Supabaseの型生成にバグがあるのでキャストしています
-    // console.log(setup.value);
 
     if (!setup.value) {
         throw new Error("Invalid setup data");
@@ -104,18 +107,15 @@ onMounted(async () => {
 
     bookmark.value = await useCheckBookmark(setup.value.id);
 
-    currentUrl.value = computed(() => {
-        const { protocol, host } = window.location;
-        return `${protocol}//${host}${route.fullPath}`;
-    });
+    currentUrl.value = `${window.location.protocol}//${window.location.host}${route.fullPath}`;
 
-    useSeoSetup(
-        currentUrl.value,
-        setup.value.name,
-        setup.value.description,
-        setup.value.image,
-        setup.value.author.avatar
-    );
+    useSeoSetup({
+        url: currentUrl.value,
+        title: setup.value.name,
+        description: setup.value.description,
+        image: setup.value.image,
+        userAvatar: setup.value.author.avatar,
+    });
 });
 </script>
 
@@ -141,16 +141,15 @@ onMounted(async () => {
 
                 <div class="w-full flex items-center">
                     <div class="grow flex items-center gap-5">
-                        <div class="flex items-center gap-2">
-                            <UiUser
-                                :id="setup.author.id"
-                                :name="setup.author.name"
-                            />
-                        </div>
+                        <UiUser
+                            :id="setup.author.id"
+                            :name="setup.author.name"
+                            :avatar="setup.author.avatar"
+                        />
 
                         <div class="flex items-center gap-2">
                             <p
-                                class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-nowrap"
+                                class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-nowrap leading-none"
                             >
                                 {{
                                     new Date(setup.created_at).toLocaleString(
@@ -231,15 +230,43 @@ onMounted(async () => {
 
                             <template #panel="{ close }">
                                 <div
-                                    class="flex flex-col gap-2 text-sm p-2 min-w-48"
+                                    class="flex flex-col gap-0.5 text-sm p-2 min-w-48"
                                 >
+                                    <UiButton
+                                        :to="`http://x.com/intent/tweet?text=${encodeURIComponent(setup.name + ' | ' + setup.author.name)}&url=${currentUrl}&hashtags=avatio`"
+                                        new-tab
+                                        icon="simple-icons:x"
+                                        :icon-size="18"
+                                        label="ポスト"
+                                        ui="w-full outline-0"
+                                        class="w-full"
+                                    />
                                     <UiButton
                                         icon="lucide:link"
                                         :icon-size="18"
-                                        text="URLをコピー"
+                                        label="URLをコピー"
+                                        ui="w-full outline-0"
+                                        class="w-full"
                                         @click="
-                                            useWriteClipboard(currentUrl.value);
+                                            useWriteClipboard(currentUrl);
                                             close();
+                                        "
+                                    />
+                                    <UiButton
+                                        v-if="isSupported"
+                                        icon="lucide:share-2"
+                                        :icon-size="18"
+                                        label="その他"
+                                        ui="w-full outline-0"
+                                        class="w-full"
+                                        @click="
+                                            share({
+                                                title: setup.name,
+                                                text: setup.description
+                                                    ? setup.description
+                                                    : '',
+                                                url: currentUrl,
+                                            })
                                         "
                                     />
                                 </div>

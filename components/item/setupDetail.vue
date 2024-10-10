@@ -47,7 +47,11 @@ onMounted(async () => {
         <template #thumbnail>
             <div class="p-2 flex-shrink-0">
                 <NuxtImg
-                    :src="props.image ? props.image : props.avatarThumbnail"
+                    :src="
+                        props.image
+                            ? useGetImage(props.image)
+                            : props.avatarThumbnail
+                    "
                     :alt="props.name"
                     class="h-28 w-28 md:w-auto object-cover rounded-lg overflow-clip"
                 />

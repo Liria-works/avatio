@@ -19,15 +19,7 @@ useHead({
             href: "/favicon.ico",
         },
     ],
-    meta: [
-        { name: "lang", content: "ja" },
-        { name: "og:url", content: "https://avatio.me" },
-        { name: "og:title", content: "Avatio" },
-        { name: "og:image", content: "" }, // todo!
-        { name: "twitter:title", content: "Avatio" },
-        { name: "twitter:image", content: "" }, // todo!
-        { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: [{ name: "lang", content: "ja" }],
 });
 
 const modal_feedback = ref(false);

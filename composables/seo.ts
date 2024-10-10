@@ -1,13 +1,20 @@
-export const useSeoSetup = async (
-    url: string,
-    title: string,
-    description: string | null,
-    image: string,
-    userAvatar?: string
-) => {
+export const useSeoSetup = async ({
+    url,
+    title,
+    description,
+    image,
+    userAvatar,
+}: {
+    url: string;
+    title: string;
+    description: string | null;
+    image?: string;
+    userAvatar?: string;
+}) => {
     const meta: (
         | { hid: string; property: string; content: string }
         | { hid: string; name: string; content: string }
+        | { name: string; content: string }
     )[] = [
         {
             hid: "og:url",
@@ -20,20 +27,9 @@ export const useSeoSetup = async (
             content: title,
         },
         {
-            hid: "og:image",
-            property: "og:image",
-            content: await useGetImage(image),
-        },
-        {
             hid: "twitter:title",
             property: "twitter:title",
             content: title,
-        },
-
-        {
-            hid: "twitter:image",
-            property: "twitter:image",
-            content: await useGetImage(image),
         },
     ];
 
@@ -55,6 +51,32 @@ export const useSeoSetup = async (
                 content: description ? description : "",
             }
         );
+    }
+
+    if (image) {
+        meta.push({
+            hid: "og:image",
+            property: "og:image",
+            content: await useGetImage(image),
+        });
+        meta.push({
+            hid: "twitter:image",
+            property: "twitter:image",
+            content: await useGetImage(image),
+        });
+        meta.push({ name: "twitter:card", content: "summary_large_image" });
+    } else {
+        meta.push({
+            hid: "og:image",
+            property: "og:image",
+            content: "/ogp.png",
+        });
+        meta.push({
+            hid: "twitter:image",
+            property: "twitter:image",
+            content: "/ogp.png",
+        });
+        meta.push({ name: "twitter:card", content: "summary" });
     }
 
     if (userAvatar) {

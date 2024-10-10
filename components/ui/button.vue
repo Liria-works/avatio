@@ -75,6 +75,7 @@ const iconClass = twMerge(
             v-else
             :to="props.to"
             :target="props.newTab ? '_blank' : '_self'"
+            no-rel
             :disabled="props.disabled"
             :class="buttonClass"
         >
