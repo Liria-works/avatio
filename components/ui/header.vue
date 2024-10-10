@@ -11,8 +11,7 @@ const { myAvatar } = storeToRefs(storeMyAvatar);
 const modalSearch = ref(false);
 
 onMounted(async () => {
-    const tmpUser = useSupabaseUser();
-    if (tmpUser.value) user.value = tmpUser.value;
+    user.value = useSupabaseUser().value;
     await GetMyAvatar();
 });
 </script>
