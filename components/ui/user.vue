@@ -11,50 +11,6 @@ const props = withDefaults(
         size: "md",
     }
 );
-// const userData = ref<{
-//     name: string;
-//     avatar: string;
-//     bio: string;
-//     links: string[];
-//     create_at: string;
-// }>();
-
-// onMounted(async () => {
-// const client = await useSBClient();
-
-// const { data } = await client
-//     .from("users")
-//     .select("name, avatar, bio, links, created_at")
-//     .eq("id", props.user)
-//     .single();
-
-// if (!data) {
-//     return;
-// }
-
-// userData.value = {
-//     name: data.name,
-//     avatar: data.avatar,
-//     bio: data.bio,
-//     links: data.links,
-//     create_at: data.created_at,
-// };
-
-// if (data.avatar) {
-//     const storedAvatar = sessionStorage.getItem(props.user);
-
-//     if (storedAvatar) {
-//         userData.value.avatar = storedAvatar;
-//         return;
-//     } else {
-//         userData.value.avatar = await client.storage
-//             .from("images")
-//             .getPublicUrl(data.avatar).data.publicUrl;
-
-//         sessionStorage.setItem(props.user, userData.value.avatar);
-//     }
-// }
-// });
 </script>
 
 <template>
