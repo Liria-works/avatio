@@ -110,18 +110,18 @@ export default defineNuxtConfig({
             },
         ],
 
-        clientBundle: {
-            icons: [
-                "lucide:search",
-                "lucide:settings",
-                "lucide:plus",
-                "lucide:x",
-                "lucide:check",
-                "svg-spinners:ring-resize",
-            ],
-            scan: true,
-            includeCustomCollections: true,
-        },
+        // clientBundle: {
+        //     icons: [
+        //         "lucide:search",
+        //         "lucide:settings",
+        //         "lucide:plus",
+        //         "lucide:x",
+        //         "lucide:check",
+        //         "svg-spinners:ring-resize",
+        //     ],
+        //     scan: true,
+        //     includeCustomCollections: true,
+        // },
     },
 
     runtimeConfig: {
