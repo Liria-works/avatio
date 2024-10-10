@@ -108,6 +108,14 @@ onMounted(async () => {
         const { protocol, host } = window.location;
         return `${protocol}//${host}${route.fullPath}`;
     });
+
+    useSeoSetup(
+        currentUrl.value,
+        setup.value.name,
+        setup.value.description,
+        setup.value.image,
+        setup.value.author.avatar
+    );
 });
 </script>
 
@@ -119,7 +127,7 @@ onMounted(async () => {
         <div class="w-full flex flex-col items-center gap-8">
             <NuxtImg
                 v-if="setup.image"
-                src=""
+                :src="useGetImage(setup.image)"
                 :alt="setup.name"
                 class="rounded-xl w-full"
             />

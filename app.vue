@@ -1,13 +1,33 @@
 <script setup lang="ts">
 // import { createClient } from "@vercel/edge-config";
 
-useSeoMeta({
+// useSeoMeta({
+//     title: "Avatio",
+//     ogTitle: "Avatio",
+//     description: "アバターセットアップ共有サービス",
+//     ogDescription: "アバターセットアップ共有サービス",
+//     ogImage: "https://example.com/image.png", // todo
+//     twitterCard: "summary_large_image",
+// });
+
+useHead({
     title: "Avatio",
-    ogTitle: "Avatio",
-    description: "アバターセットアップ共有サービス",
-    ogDescription: "アバターセットアップ共有サービス",
-    ogImage: "https://example.com/image.png", // todo
-    twitterCard: "summary_large_image",
+    link: [
+        {
+            rel: "icon",
+            type: "image/png",
+            href: "/favicon.ico",
+        },
+    ],
+    meta: [
+        { name: "lang", content: "ja" },
+        { name: "og:url", content: "https://avatio.me" },
+        { name: "og:title", content: "Avatio" },
+        { name: "og:image", content: "" }, // todo!
+        { name: "twitter:title", content: "Avatio" },
+        { name: "twitter:image", content: "" }, // todo!
+        { name: "twitter:card", content: "summary_large_image" },
+    ],
 });
 
 const modal_feedback = ref(false);

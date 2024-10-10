@@ -1,14 +1,14 @@
 export const useFetchBooth = async (id: number): Promise<Item | null> => {
-    const storeBoothItems = useBoothItems();
-    const { AddItem } = storeBoothItems;
-    const { boothItems } = storeToRefs(storeBoothItems);
+    // const storeBoothItems = useBoothItems();
+    // const { AddItem } = storeBoothItems;
+    // const { boothItems } = storeToRefs(storeBoothItems);
 
     if (!id) return null;
 
-    if (boothItems.value[id]) {
-        // console.log("Returning cached item", id);
-        return boothItems.value[id];
-    }
+    // if (boothItems.value[id]) {
+    //     // console.log("Returning cached item", id);
+    //     return boothItems.value[id];
+    // }
 
     const client = await useSBClient();
     const { data: itemData } = await client
@@ -25,7 +25,7 @@ export const useFetchBooth = async (id: number): Promise<Item | null> => {
 
         // 時間の差分が1日を超えている場合、処理継続する
         if (timeDifference < 24 * 60 * 60 * 1000) {
-            return itemData;
+            return itemData as unknown as Item;
         }
         console.log("Data is old, fetching from Booth");
     }
@@ -49,7 +49,7 @@ export const useFetchBooth = async (id: number): Promise<Item | null> => {
         return null;
     }
 
-    AddItem(response.body.id, response.body);
+    // AddItem(response.body.id, response.body);
 
     return response.body;
 };

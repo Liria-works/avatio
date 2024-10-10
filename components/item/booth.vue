@@ -24,6 +24,9 @@ const props = withDefaults(
     }
 );
 
+const loading = ref(true);
+const outdated = ref(props.outdated);
+
 const booth_url = "https://booth.pm/ja/items/";
 
 const item = ref<{
@@ -52,51 +55,80 @@ onMounted(async () => {
     const timeDifference =
         new Date().getTime() - new Date(props.updatedAt).getTime();
 
-    // 前回の更新から1日経過している場合、最新データを取得する
+    // 時間の差分が1日を超えている場合、処理継続する
     if (timeDifference > 24 * 60 * 60 * 1000) {
-        // const response = await fetch('/api/item/booth', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({ id: props.id }),
-        // });
-        // if (response.status === 200) {
-        //     const responseData = await response.json();
-        //     item.value.name = responseData.name;
-        //     item.value.thumbnail = responseData.thumbnail;
-        //     item.value.shop = responseData.shop;
-        //     item.value.shopId = responseData.shop_id;
-        //     item.value.shopThumbnail = responseData.shop_thumbnail;
-        //     item.value.shopVerified = responseData.shop_verified;
-        //     item.value.price = responseData.price;
-        //     item.value.nsfw = responseData.nsfw;
-        //     item.value.outdated = responseData.outdated;
-        // }
+        const apiUrl = `/api/GetBoothItem?id=${encodeURIComponent(props.id)}`;
+
+        const runtimeConfig = useRuntimeConfig();
+
+        const response: {
+            status: number;
+            body: Item;
+        } = await $fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                Authorization: runtimeConfig.public.token,
+            },
+        });
+
+        if (response.status !== 200 || response.body.outdated) {
+            outdated.value = true;
+        } else {
+            item.value = {
+                name: response.body.name,
+                thumbnail: response.body.thumbnail,
+                price: response.body.price,
+                shop: response.body.shop_id.name,
+                shopId: response.body.shop_id.id,
+                shopThumbnail: response.body.shop_id.thumbnail,
+                shopVerified: response.body.shop_id.verified,
+                nsfw: response.body.nsfw,
+                outdated: response.body.outdated,
+            };
+        }
     }
+
+    loading.value = false;
 });
 </script>
 
 <template>
-    <ItemBase v-if="!item.outdated">
+    <ItemBase v-if="loading">
+        <template #main>
+            <div
+                :class="`flex items-center px-6 ${props.size === 'lg' ? 'h-32' : 'h-20'}`"
+            >
+                <Icon name="svg-spinners:ring-resize" size="24" />
+            </div>
+        </template>
+    </ItemBase>
+
+    <ItemBase v-else-if="!outdated">
         <template #thumbnail>
             <div
                 :class="`flex-shrink-0 ${props.size === 'lg' ? 'p-2 pr-4' : 'p-1.5 pr-4'}`"
             >
-                <NuxtLink :to="booth_url + props.id" target="_blank">
-                    <NuxtImg
-                        preload
-                        :src="item.thumbnail"
-                        :alt="item.name"
-                        format="webp"
-                        quality="70"
-                        :sizes="props.size === 'lg' ? '128px' : '80px'"
-                        :width="props.size === 'lg' ? 128 : 80"
-                        :height="props.size === 'lg' ? 128 : 80"
-                        fit="cover"
-                        :class="`${props.size === 'lg' ? 'size-32' : 'size-20'} ${item.nsfw ? 'blur-md' : ''} rounded-lg object-cover`"
-                    />
-                </NuxtLink>
+                <div
+                    :class="[
+                        'rounded-lg object-cover select-none overflow-hidden',
+                        props.size === 'lg' ? 'size-32' : 'size-20',
+                    ]"
+                >
+                    <NuxtLink :to="booth_url + props.id" target="_blank">
+                        <NuxtImg
+                            preload
+                            :src="item.thumbnail"
+                            :alt="item.name"
+                            format="webp"
+                            quality="70"
+                            :sizes="props.size === 'lg' ? '128px' : '80px'"
+                            :width="props.size === 'lg' ? 128 : 80"
+                            :height="props.size === 'lg' ? 128 : 80"
+                            fit="cover"
+                            :class="item.nsfw ? 'blur-md' : ''"
+                        />
+                    </NuxtLink>
+                </div>
             </div>
         </template>
 
@@ -210,19 +242,19 @@ onMounted(async () => {
 
     <ItemBase v-else>
         <template #main>
-            <div class="h-22 flex items-center px-5 gap-4">
+            <div class="h-20 flex items-center px-5 gap-4">
                 <Icon
                     name="lucide:file-question"
                     class="size-5 text-neutral-700 dark:text-neutral-200"
                 />
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-3 pb-0.5">
                     <p
-                        class="text-sm font-semibold text-neutral-900 dark:text-neutral-100"
+                        class="text-sm font-semibold leading-none text-neutral-900 dark:text-neutral-100"
                     >
                         アイテムの取得に失敗
                     </p>
                     <p
-                        class="text-xs font-medium text-neutral-600 dark:text-neutral-300"
+                        class="text-xs font-medium leading-none text-neutral-600 dark:text-neutral-300"
                     >
                         アイテムが非公開になっているか、削除されている可能性があります
                     </p>

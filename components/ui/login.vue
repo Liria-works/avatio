@@ -101,12 +101,13 @@ const handleSignUp = async () => {
                 <UFormGroup
                     name="email"
                     :error="
-                        loginErrorMessages &&
-                        loginErrorMessages.flatten().fieldErrors.email
-                            ?.length &&
-                        loginErrorMessages
-                            .flatten()
-                            .fieldErrors.email?.toString()
+                        (loginErrorMessages &&
+                            loginErrorMessages.flatten().fieldErrors.email
+                                ?.length &&
+                            loginErrorMessages
+                                .flatten()
+                                .fieldErrors.email?.toString()) ||
+                        undefined
                     "
                 >
                     <UInput
@@ -121,12 +122,13 @@ const handleSignUp = async () => {
                 <UFormGroup
                     name="password"
                     :error="
-                        loginErrorMessages &&
-                        loginErrorMessages.flatten().fieldErrors.password
-                            ?.length &&
-                        loginErrorMessages
-                            .flatten()
-                            .fieldErrors.password?.toString()
+                        (loginErrorMessages &&
+                            loginErrorMessages.flatten().fieldErrors.password
+                                ?.length &&
+                            loginErrorMessages
+                                .flatten()
+                                .fieldErrors.password?.toString()) ||
+                        undefined
                     "
                 >
                     <UInput
@@ -158,21 +160,19 @@ const handleSignUp = async () => {
 
             <UDivider label="OR" />
 
-            <UiTooltip text="準備中" class="w-96">
-                <UButton
-                    block
-                    disabled
-                    variant="outline"
-                    icon="simple-icons:x"
-                    :ui="{
-                        rounded: 'rounded-xl',
-                        ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                    }"
-                    class="h-10"
-                >
-                    Login with X
-                </UButton>
-            </UiTooltip>
+            <UButton
+                block
+                variant="outline"
+                icon="simple-icons:x"
+                :ui="{
+                    rounded: 'rounded-xl',
+                    ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
+                }"
+                class="h-10"
+                @click="useLoginWithTwitter"
+            >
+                Login with X
+            </UButton>
         </div>
 
         <div v-if="!mode_login" class="flex flex-col gap-4 items-center">
@@ -186,12 +186,13 @@ const handleSignUp = async () => {
                 <UFormGroup
                     name="email"
                     :error="
-                        signupErrorMessages &&
-                        signupErrorMessages.flatten().fieldErrors.email
-                            ?.length &&
-                        signupErrorMessages
-                            .flatten()
-                            .fieldErrors.email?.toString()
+                        (signupErrorMessages &&
+                            signupErrorMessages.flatten().fieldErrors.email
+                                ?.length &&
+                            signupErrorMessages
+                                .flatten()
+                                .fieldErrors.email?.toString()) ||
+                        undefined
                     "
                 >
                     <UInput
@@ -206,12 +207,13 @@ const handleSignUp = async () => {
                 <UFormGroup
                     name="password"
                     :error="
-                        signupErrorMessages &&
-                        signupErrorMessages.flatten().fieldErrors.password
-                            ?.length &&
-                        signupErrorMessages
-                            .flatten()
-                            .fieldErrors.password?.toString()
+                        (signupErrorMessages &&
+                            signupErrorMessages.flatten().fieldErrors.password
+                                ?.length &&
+                            signupErrorMessages
+                                .flatten()
+                                .fieldErrors.password?.toString()) ||
+                        undefined
                     "
                 >
                     <UInput
@@ -273,21 +275,19 @@ const handleSignUp = async () => {
 
             <UDivider label="OR" />
 
-            <UiTooltip text="準備中" class="w-96">
-                <UButton
-                    block
-                    disabled
-                    variant="outline"
-                    icon="simple-icons:x"
-                    :ui="{
-                        rounded: 'rounded-xl',
-                        ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                    }"
-                    class="h-10"
-                >
-                    Sign up with X
-                </UButton>
-            </UiTooltip>
+            <UButton
+                block
+                variant="outline"
+                icon="simple-icons:x"
+                :ui="{
+                    rounded: 'rounded-xl',
+                    ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
+                }"
+                class="h-10"
+                @click="useLoginWithTwitter"
+            >
+                Sign up with X
+            </UButton>
         </div>
 
         <template #footer>

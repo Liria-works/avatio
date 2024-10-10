@@ -35,7 +35,7 @@ async function GetBoothItem(event: any, id: number) {
             { body: { id: id } }
         );
 
-        console.log(error);
+        if (error) console.log(error);
 
         if (error) throw error;
 
@@ -83,11 +83,7 @@ async function GetBoothItem(event: any, id: number) {
             // }
 
             if (!allowed_category_id.includes(Number(data.category))) {
-                if (
-                    !data.tags
-                        .map((tag: { name: string }) => tag.name)
-                        .includes("VRChat")
-                ) {
+                if (!data.tags.map((tag: string) => tag).includes("VRChat")) {
                     return {
                         status: 400,
                         body: { error: "Invalid category ID" },

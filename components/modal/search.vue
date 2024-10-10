@@ -189,7 +189,7 @@ watch(searchWord, (newValue) => {
             v-if="loading && !searchWord.length"
             class="w-full h-80 flex items-center justify-center"
         >
-            <Icon name="i-svg-spinners-ring-resize" />
+            <Icon name="svg-spinners:ring-resize" />
         </div>
 
         <div

@@ -45,12 +45,17 @@ watch(unsupported, (value) => {
             <div
                 :class="`flex-shrink-0 ${props.size === 'lg' ? 'p-4' : 'p-1.5 pr-4'}`"
             >
-                <div class="overflow-clip rounded-lg">
+                <div
+                    :class="[
+                        'rounded-lg object-cover select-none overflow-hidden',
+                        props.size === 'lg' ? 'size-32' : 'size-20',
+                    ]"
+                >
                     <NuxtLink :to="booth_url + props.id" target="_blank">
                         <NuxtImg
                             :src="props.thumbnail"
                             :alt="props.name"
-                            :class="`rounded-lg object-cover select-none ${props.size === 'lg' ? 'size-32' : 'size-20'} ${props.nsfw ? 'blur-md' : ''}`"
+                            :class="props.nsfw ? 'blur-md' : ''"
                         />
                     </NuxtLink>
                 </div>
@@ -83,7 +88,7 @@ watch(unsupported, (value) => {
                         </Tooltip>
                     </div>
 
-                    <div flex items-center gap-3>
+                    <div class="flex items-center gap-3">
                         <NuxtLink
                             :to="booth_url + props.id"
                             target="_blank"

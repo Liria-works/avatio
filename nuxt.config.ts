@@ -1,6 +1,54 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    // ssr: false,
+    app: {
+        head: {
+            htmlAttrs: {
+                lang: "ja",
+                prefix: "og: https://ogp.me/ns#",
+            },
+            title: "Avatio",
+            meta: [
+                { charset: "utf-8" },
+                {
+                    name: "viewport",
+                    content: "width=device-width, initial-scale=1",
+                },
+                {
+                    hid: "description",
+                    name: "description",
+                    content: "アバターセットアップ共有サービス",
+                },
+                {
+                    hid: "icon",
+                    name: "icon",
+                    content: "/favicon.ico",
+                },
+                {
+                    hid: "og:site_name",
+                    property: "og:site_name",
+                    content: "Avatio",
+                },
+                { hid: "og:type", property: "og:type", content: "website" },
+                {
+                    hid: "og:url",
+                    property: "og:url",
+                    content: "https://avatio.me",
+                },
+                {
+                    hid: "og:title",
+                    property: "og:title",
+                    content: "Avatio",
+                },
+                {
+                    hid: "og:description",
+                    property: "og:description",
+                    content: "アバターセットアップ共有サービス",
+                },
+                { hid: "og:image", property: "og:image", content: "" }, // todo!
+                { name: "twitter:card", content: "summary_large_image" },
+            ],
+        },
+    },
 
     routeRules: {
         "/": { swr: true },
@@ -45,7 +93,7 @@ export default defineNuxtConfig({
 
     image: {
         domains: [
-            // "booth.pximg.net",
+            // "booth.pximg.net", // 何故かたまに読み込まないので一旦off
             import.meta.env.SUPABASE_URL.replace("https://", ""),
         ],
     },
@@ -61,6 +109,19 @@ export default defineNuxtConfig({
                 dir: "./public/icons/avatio",
             },
         ],
+
+        clientBundle: {
+            icons: [
+                "lucide:search",
+                "lucide:settings",
+                "lucide:plus",
+                "lucide:x",
+                "lucide:check",
+                "svg-spinners:ring-resize",
+            ],
+            scan: true,
+            includeCustomCollections: true,
+        },
     },
 
     runtimeConfig: {
@@ -73,23 +134,6 @@ export default defineNuxtConfig({
     nitro: {
         preset: "vercel",
     },
-
-    // vite: {
-    //     resolve: {
-    //         alias: {
-    //             util: "rollup-plugin-node-polyfills/polyfills/util",
-    //             assert: "rollup-plugin-node-polyfills/polyfills/assert",
-    //             os: "rollup-plugin-node-polyfills/polyfills/os",
-    //             buffer: "rollup-plugin-node-polyfills/polyfills/buffer-es6",
-    //             process: "rollup-plugin-node-polyfills/polyfills/process-es6",
-    //             fs: "rollup-plugin-node-polyfills/polyfills/empty",
-    //             net: "rollup-plugin-node-polyfills/polyfills/empty",
-    //             perf_hooks: "rollup-plugin-node-polyfills/polyfills/empty",
-    //             path: "rollup-plugin-node-polyfills/polyfills/path",
-    //             child_process: "rollup-plugin-node-polyfills/polyfills/empty",
-    //         },
-    //     },
-    // },
 });
 
 //
