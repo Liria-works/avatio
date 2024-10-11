@@ -73,26 +73,26 @@ watch(unsupported, (value) => {
                             class="w-fit gap-2"
                         >
                             <p
-                                class="w-fit text-sm font-medium break-before-all line-clamp-2 text-black dark:text-white"
+                                class="w-fit text-sm font-medium leading-normal break-before-all line-clamp-2 text-black dark:text-white"
                             >
                                 {{ useSentence(props.name) }}
                             </p>
                         </NuxtLink>
 
-                        <Tooltip v-if="props.nsfw" text="NSFW">
+                        <UiTooltip v-if="props.nsfw" text="NSFW">
                             <Icon
                                 name="heroicons:heart-16-solid"
                                 size="18"
                                 class="text-pink-400"
                             />
-                        </Tooltip>
+                        </UiTooltip>
                     </div>
 
                     <div class="flex items-center gap-3">
                         <NuxtLink
                             :to="booth_url + props.id"
                             target="_blank"
-                            class="text-sm font-semibold whitespace-nowrap text-neutral-700 dark:text-neutral-300"
+                            class="text-sm font-semibold leading-none whitespace-nowrap text-neutral-700 dark:text-neutral-300"
                         >
                             {{ props.price }}
                         </NuxtLink>
@@ -108,7 +108,7 @@ watch(unsupported, (value) => {
                                 class="size-5 rounded-md select-none border border-1 border-neutral-300"
                             />
                             <span
-                                class="font-semibold line-clamp-1 break-all text-neutral-700 dark:text-neutral-300 xs"
+                                class="text-xs font-semibold leading-none line-clamp-1 break-all text-neutral-700 dark:text-neutral-300 xs"
                             >
                                 {{ props.shop }}
                             </span>
@@ -122,7 +122,7 @@ watch(unsupported, (value) => {
                     </div>
                 </div>
                 <div
-                    class="w-fit h-full pt-2 gap-2 flex flex-col items-end justify-between"
+                    class="flex-shrink-0 w-fit h-full pt-2 gap-4 flex flex-col items-end justify-between"
                 >
                     <UiButton
                         icon="lucide:trash"
@@ -135,6 +135,7 @@ watch(unsupported, (value) => {
                     <UCheckbox
                         v-model="unsupported"
                         name="unsupported"
+                        :ui="{ label: 'text-xs' }"
                         label="アバター非対応"
                     />
                 </div>
@@ -145,7 +146,13 @@ watch(unsupported, (value) => {
                 :class="`w-full flex flex-col items-end gap-2 ${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-1 pb-2'}`"
             >
                 <div
-                    class="w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600"
+                    :class="[
+                        'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600',
+                        {
+                            'border border-1 border-red-400 dark:border-red-400':
+                                note.length > 140,
+                        },
+                    ]"
                 >
                     <Icon
                         name="lucide:pen-line"
@@ -161,9 +168,16 @@ watch(unsupported, (value) => {
                         variant="none"
                         size="sm"
                         :rows="1"
+                        :ui="{ rounded: 'rounded-none' }"
                         class="w-full"
                     />
                 </div>
+                <p
+                    v-if="note.length > 140"
+                    class="text-sm text-red-400 dark:text-red-400"
+                >
+                    {{ note.length }} / 140
+                </p>
             </div>
         </template>
     </ItemBase>

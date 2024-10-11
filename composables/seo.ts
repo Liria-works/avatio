@@ -93,3 +93,38 @@ export const useSeoSetup = async ({
         meta: meta,
     });
 };
+
+export const useSeoEdit = async () => {
+    return useHead({
+        title: "セットアップ作成",
+        titleTemplate: "%s | Avatio",
+        meta: [
+            {
+                hid: "description",
+                name: "description",
+                content: "",
+            },
+            {
+                hid: "og:description",
+                property: "og:description",
+                content: "",
+            },
+            {
+                hid: "twitter:description",
+                property: "twitter:description",
+                content: "",
+            },
+            {
+                hid: "og:image",
+                property: "og:image",
+                content: "/ogp.png",
+            },
+            {
+                hid: "twitter:image",
+                property: "twitter:image",
+                content: "/ogp.png",
+            },
+            { name: "twitter:card", content: "summary" },
+        ],
+    });
+};

@@ -57,7 +57,7 @@ onMounted(async () => {
 
     // 時間の差分が1日を超えている場合、処理継続する
     if (timeDifference > 24 * 60 * 60 * 1000) {
-        const apiUrl = `/api/GetBoothItem?id=${encodeURIComponent(props.id)}`;
+        const apiUrl = `/api/item/booth?id=${encodeURIComponent(props.id)}`;
 
         const runtimeConfig = useRuntimeConfig();
 
@@ -124,7 +124,6 @@ onMounted(async () => {
                             :sizes="props.size === 'lg' ? '128px' : '80px'"
                             :width="props.size === 'lg' ? 128 : 80"
                             :height="props.size === 'lg' ? 128 : 80"
-                            fit="cover"
                             :class="item.nsfw ? 'blur-md' : ''"
                         />
                     </NuxtLink>

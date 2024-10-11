@@ -72,8 +72,8 @@ onMounted(async () => {
         .from("users")
         .select(query.join(", "))
         .eq("id", userId.value)
+        .order("created_at", { referencedTable: "setups", ascending: false })
         .maybeSingle();
-    console.log(data);
 
     if (!data) {
         loading.value = false;

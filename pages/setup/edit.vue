@@ -336,6 +336,8 @@ onMounted(async () => {
     //         }
     //     }
     // }
+
+    useSeoEdit();
 });
 
 watch(items.value, () => {

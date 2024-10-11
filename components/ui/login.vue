@@ -168,7 +168,7 @@ const handleSignUp = async () => {
                     rounded: 'rounded-xl',
                     ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
                 }"
-                class="h-10"
+                class="w-96 h-10"
                 @click="useLoginWithTwitter"
             >
                 Login with X

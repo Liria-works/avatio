@@ -200,14 +200,18 @@ export const useDeleteSetup = async (id: number, image: string) => {
     const client = await useSBClient();
     const router = useRouter();
 
-    const { error } = await client.from("setups").delete().eq("id", id);
+    const { error: errorDeleteSetup } = await client
+        .from("setups")
+        .delete()
+        .eq("id", id);
 
-    if (error) {
+    if (errorDeleteSetup) {
         useAddToast("セットアップの削除に失敗しました");
         return new Error("Faild to delete setup");
     }
 
-    await client.storage.from("images").remove([image]);
+    // await client.storage.from("images").remove([image]);
+    await useDeleteImage(image);
 
     useAddToast("セットアップを削除しました");
     router.push("/");

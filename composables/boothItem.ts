@@ -30,7 +30,7 @@ export const useFetchBooth = async (id: number): Promise<Item | null> => {
         console.log("Data is old, fetching from Booth");
     }
 
-    const apiUrl = `/api/GetBoothItem?id=${encodeURIComponent(id)}`;
+    const apiUrl = `/api/item/booth?id=${encodeURIComponent(id)}`;
 
     const runtimeConfig = useRuntimeConfig();
 

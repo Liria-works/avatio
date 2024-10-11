@@ -131,6 +131,9 @@ export default defineNuxtConfig({
             token: "",
             r2Domain: "",
         },
+        r2Endpoint: "",
+        r2AccessKey: "",
+        r2SecretKey: "",
     },
 
     nitro: {

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import authMiddleware from "./Auth";
+import authMiddleware from "../Auth";
 
 import { serverSupabaseClient } from "#supabase/server";
 // import { createClient } from "@vercel/edge-config";
@@ -63,24 +63,18 @@ async function GetBoothItem(event: any, id: number) {
         //      124 //効果音
         //      134 // 素材（その他）
 
-        const allowed_category_id = [
-            208, 209, 217, 210, 214, 215, 216, 211, 212, 127, 125, 213, 126,
-            128, 129, 22, 123, 124, 134,
-        ];
-
-        // const runtimeConfig = useRuntimeConfig();
-        // const edgeConfig = createClient(runtimeConfig.public.edgeConfig);
-
         try {
-            // const allowed_category_id: number[] | undefined =
-            //     await edgeConfig.get("allowed_category_id");
+            const config = await event.$fetch(
+                "/api/edgeConfig/allowed_category_id"
+            );
+            // const allowed_category_id: number[] | undefined = config.value;
+            if (config.status !== 200 || !config.value)
+                return {
+                    status: 400,
+                    body: { error: "Error in vercel edge config." },
+                };
 
-            // if (!allowed_category_id) {
-            //     return {
-            //         status: 500,
-            //         body: { error: "Failed to get allowed tag data." },
-            //     };
-            // }
+            const allowed_category_id: number[] = config.value;
 
             if (!allowed_category_id.includes(Number(data.category))) {
                 if (!data.tags.map((tag: string) => tag).includes("VRChat")) {
