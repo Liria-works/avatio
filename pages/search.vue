@@ -30,11 +30,12 @@ const SearchByWord = async () => {
 const SearchByItem = async () => {
     item.value = await useFetchBooth(searchItem.value);
 
-    const { data, error } = await client.rpc("search_setup_by_item", {
+    const { data, error } = await client.rpc("search_setups_by_item", {
         query_id: searchItem.value,
     });
 
     if (error) console.error(error);
+    console.log(data);
 
     resultSetups.value = data;
 };

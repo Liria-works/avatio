@@ -114,7 +114,11 @@ onMounted(async () => {
                         props.size === 'lg' ? 'size-32' : 'size-20',
                     ]"
                 >
-                    <NuxtLink :to="booth_url + props.id" target="_blank">
+                    <NuxtLink
+                        :to="booth_url + props.id"
+                        target="_blank"
+                        class="size-full flex items-center"
+                    >
                         <NuxtImg
                             preload
                             :src="item.thumbnail"
@@ -124,7 +128,7 @@ onMounted(async () => {
                             :sizes="props.size === 'lg' ? '128px' : '80px'"
                             :width="props.size === 'lg' ? 128 : 80"
                             :height="props.size === 'lg' ? 128 : 80"
-                            :class="item.nsfw ? 'blur-md' : ''"
+                            :class="['rounded-lg', item.nsfw ? 'blur-md' : '']"
                         />
                     </NuxtLink>
                 </div>
