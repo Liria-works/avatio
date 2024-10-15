@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
 
 export const useBoothItems = defineStore("boothItems", () => {
-    const boothItems = ref<{ [key: string]: BoothItem }>({});
+    const boothItems = ref<{ [key: string]: Item }>({});
 
-    function AddItem(id: number, item: BoothItem) {
+    function AddItem(id: number, item: Item) {
         boothItems.value[id] = item;
     }
     return { boothItems, AddItem };

@@ -48,7 +48,7 @@ const handleInputChange = useDebounceFn(
             if (i.image) {
                 i.image = await useGetImage(i.image);
             }
-            i.avatar = await useFetchBooth({ id: i.avatar, url: null });
+            i.avatar = await useFetchBooth(i.avatar);
             if (i.avatar.avatar_details) {
                 i.avatar_short = i.avatar.avatar_details.short_ja;
             } else {
@@ -114,8 +114,8 @@ watch(searchWord, (newValue) => {
             class="w-full flex flex-col items-center gap-6 p-3"
         >
             <div v-if="avatarsOwned" class="w-full flex flex-col gap-3">
-                <ATitle
-                    title="あなたのセットアップから"
+                <UiTitle
+                    label="あなたのセットアップから"
                     icon="lucide:user-round"
                 />
                 <div
@@ -137,7 +137,7 @@ watch(searchWord, (newValue) => {
             </div>
 
             <div v-if="avatars" class="w-full flex flex-col gap-3">
-                <ATitle title="人気のアバターから" icon="lucide:sparkles" />
+                <UiTitle label="人気のアバターから" icon="lucide:sparkles" />
                 <div
                     class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full"
                 >
@@ -157,7 +157,7 @@ watch(searchWord, (newValue) => {
             </div>
 
             <div v-if="tags" class="w-full flex flex-col gap-3">
-                <ATitle title="タグから" icon="lucide:tags" />
+                <UiTitle label="タグから" icon="lucide:tags" />
                 <div
                     class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full"
                 >
@@ -189,7 +189,7 @@ watch(searchWord, (newValue) => {
             v-if="loading && !searchWord.length"
             class="w-full h-80 flex items-center justify-center"
         >
-            <Icon name="i-svg-spinners-ring-resize" />
+            <Icon name="svg-spinners:ring-resize" />
         </div>
 
         <div
@@ -230,7 +230,7 @@ watch(searchWord, (newValue) => {
                     "
                     class="w-full flex flex-col gap-3"
                 >
-                    <ATitle title="セットアップ" icon="lucide:search" />
+                    <UiTitle label="セットアップ" icon="lucide:search" />
                     <div class="w-full flex flex-col gap-2 px-3">
                         <NuxtLink
                             v-for="i in searchResultsSetup"
@@ -272,7 +272,7 @@ watch(searchWord, (newValue) => {
                     "
                     class="w-full flex flex-col gap-3"
                 >
-                    <ATitle title="ベースアバター" icon="lucide:search" />
+                    <UiTitle label="ベースアバター" icon="lucide:search" />
                     <div class="w-full flex flex-col gap-2 px-3">
                         <button
                             v-for="i in searchResultsAvatar"

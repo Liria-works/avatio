@@ -1,8 +1,11 @@
 import { serverSupabaseClient } from "#supabase/server";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import authMiddleware from "./Auth";
 
 export default defineEventHandler(async (event) => {
     await authMiddleware(event);
+
+    const runtime = useRuntimeConfig();
 
     const formData = await readFormData(event);
     const file = formData.get("file") as File;
@@ -41,9 +44,9 @@ export default defineEventHandler(async (event) => {
 
         console.log(data);
         const compressed = await data.arrayBuffer();
-        const compressedBlob = new Blob([compressed], {
-            type: "image/jpeg",
-        });
+        // const compressedBlob = new Blob([compressed], {
+        //     type: "image/jpeg",
+        // });
 
         const unixTime = Math.floor(Date.now() / 1000);
         console.log("unixTime", unixTime);
@@ -56,12 +59,25 @@ export default defineEventHandler(async (event) => {
             ? `${path}/${base64UnixTime}.jpg`
             : `${base64UnixTime}.jpg`;
 
-        return await client.storage
-            .from("images")
-            .upload(fileName, compressedBlob, {
-                cacheControl: "3600",
-                upsert: false,
-            });
+        const S3 = new S3Client({
+            region: "auto",
+            endpoint: runtime.r2Endpoint,
+            credentials: {
+                accessKeyId: runtime.r2AccessKey,
+                secretAccessKey: runtime.r2SecretKey,
+            },
+        });
+
+        const put = new PutObjectCommand({
+            ACL: "public-read",
+            Body: compressed,
+            Bucket: "avatio",
+            Key: fileName,
+        });
+
+        const result = await S3.send(put);
+
+        return Response.json({ path: fileName, result: result });
     } catch (error) {
         console.error(error);
         throw createError({

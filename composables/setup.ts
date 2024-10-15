@@ -1,27 +1,62 @@
 export interface Setup {
     id: number;
-    name: string;
-    avatar: number;
-    avatar_note: string;
-    setup_items: { item_id: number; note: string; unsupported: boolean }[];
-    description: string;
-    tags: string[];
-    author: string;
-    image: string;
     created_at: string;
+    updated_at: string;
+    name: string;
+    description: string | null;
+    avatar: {
+        id: number;
+        updated_at: string;
+        outdated: boolean;
+        name: string;
+        thumbnail: string;
+        price: string;
+        shop_id: {
+            id: string;
+            name: string;
+            thumbnail: string;
+            verified: boolean;
+        };
+        nsfw: boolean;
+    };
+    avatar_note: string | null;
+    setup_tags: { tag: string }[];
+    author: {
+        id: string;
+        name: string;
+        avatar: string;
+    };
+    image: string;
+    setup_items: {
+        item_id: {
+            id: number;
+            updated_at: string;
+            outdated: boolean;
+            category: number;
+            name: string;
+            thumbnail: string;
+            price: string;
+            shop_id: {
+                id: string;
+                name: string;
+                thumbnail: string;
+                verified: boolean;
+            };
+            nsfw: boolean;
+        };
+        note: string;
+        unsupported: boolean;
+    }[];
 }
 
 export interface SetupSimple {
     id: number;
-    name: string;
-    description: string | null;
-    avatar_name: string;
-    avatar_thumbnail: string;
-    author_id: string;
-    author_name: string;
-    author_avatar: string;
     created_at: string;
-    image: string | null;
+    updated_at: string;
+    name: string;
+    avatar: { name: string; thumbnail: string };
+    author: { id: string; name: string; avatar: string };
+    image: string;
 }
 
 export const usePublishSetup = async (
@@ -82,6 +117,20 @@ export const usePublishSetup = async (
 
         if (responseItems.error) {
             throw responseItems.error;
+        }
+    }
+
+    for (const tag of setup.tags) {
+        const responseTags = await client
+            .from("setup_tags")
+            .insert({
+                setup_id: responseSetup.data.id,
+                tag: tag,
+            } as never)
+            .maybeSingle();
+
+        if (responseTags.error) {
+            throw responseTags.error;
         }
     }
 
@@ -151,14 +200,18 @@ export const useDeleteSetup = async (id: number, image: string) => {
     const client = await useSBClient();
     const router = useRouter();
 
-    const { error } = await client.from("setups").delete().eq("id", id);
+    const { error: errorDeleteSetup } = await client
+        .from("setups")
+        .delete()
+        .eq("id", id);
 
-    if (error) {
+    if (errorDeleteSetup) {
         useAddToast("セットアップの削除に失敗しました");
         return new Error("Faild to delete setup");
     }
 
-    await client.storage.from("images").remove([image]);
+    // await client.storage.from("images").remove([image]);
+    await useDeleteImage(image);
 
     useAddToast("セットアップを削除しました");
     router.push("/");

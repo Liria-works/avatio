@@ -7,27 +7,20 @@ import {
     TagsInputRoot,
 } from "radix-vue";
 
-const route = useRoute();
-const router = useRouter();
 const client = await useSBClient();
+const router = useRouter();
 const skip_router_hook = ref(false);
 
 const modalSearchItem = ref(false);
 
-const id = route.query.id;
 const input_url = ref<string>("");
 const adding = ref(false);
 const publishing = ref(false);
 
 interface Items {
-    avatar: number | null;
+    avatar: SetupItem | null;
     avatar_note: string;
-    items: {
-        id: number;
-        category: number;
-        note: string;
-        unsupported: boolean;
-    }[];
+    items: SetupItem[];
 }
 
 const items = ref<Items>({
@@ -36,36 +29,40 @@ const items = ref<Items>({
     items: [],
 });
 
+const categorizedItems = ref<{ [key: string]: SetupItem[] }>({});
+const categoryAttr: { [key: string]: { label: string; icon: string } } = {
+    cloth: { label: "衣装", icon: "lucide:shirt" },
+    accessory: { label: "アクセサリー", icon: "lucide:star" },
+    other: { label: "その他", icon: "lucide:package" },
+};
+
 const title = ref<string>("");
 const description = ref<string>("");
 const tags = ref<string[]>([]);
+const tagsSuggestion = ref<string[]>([]);
+const tagsSuggestionLoading = ref(false);
 
 const ERROR_MESSAGES = {
     EMPTY_URL: "URLを入力してください。",
+    INVALID_URL: "無効なURLです。",
     ADD_ITEM_FAILED: "エラーによりアイテムの追加に失敗しました。",
     MULTIPLE_AVATAR: "ベースアバターを複数登録することはできません。",
     MULTIPLE_ITEM: "アイテムは重複して追加できません。",
+    ITEM_IN_AVATAR: "アイテムはベースアバターとして登録されています。",
+    PUBLISH_FAILED: "セットアップの公開に失敗しました。",
+    UPDATE_FAILED: "セットアップの更新に失敗しました。",
+    NO_AVATAR: "ベースアバターが登録されていません。",
+    NO_ITEMS: "アイテムが登録されていません。",
+    NO_TITLE: "セットアップ名が入力されていません。",
 };
 
-const AddItem = async (
-    id: number | null = null,
-    note: string = "",
-    unsupported: boolean = false
-) => {
+const AddItem = async (id: number) => {
     adding.value = true;
 
-    if (id === null && !input_url.value) {
-        useAddToast(ERROR_MESSAGES.EMPTY_URL);
-        adding.value = false;
-        return;
-    }
+    const data = await useFetchBooth(id);
 
-    let data;
-    if (id) {
-        data = await useFetchBooth({ id: id, url: null });
-    } else {
-        data = await useFetchBooth({ id: null, url: input_url.value });
-    }
+    // outdated === true だった場合に、細かくエラーの理由を説明するほうが、
+    // ユーザーが何回も追加を試さなくてもよくなりそう
 
     if (!data) {
         useAddToast(ERROR_MESSAGES.ADD_ITEM_FAILED);
@@ -73,22 +70,30 @@ const AddItem = async (
         return;
     }
 
-    handleData(data, note, unsupported);
+    handleData(data);
     adding.value = false;
 };
 
-const handleData = (
-    data: { category: number; id: number },
-    note: string = "",
-    unsupported: boolean = false
-) => {
+const handleData = (data: Item) => {
     if (data.category === 208) {
         if (!items.value.avatar) {
-            items.value.avatar = data.id;
+            items.value.avatar = {
+                id: data.id,
+                category: data.category,
+                note: "",
+                unsupported: false,
+                updated_at: data.updated_at,
+                name: data.name,
+                thumbnail: data.thumbnail,
+                price: data.price,
+                shop_id: data.shop_id,
+                nsfw: data.nsfw,
+                outdated: data.outdated,
+            };
             input_url.value = "";
         } else {
             useAddToast(
-                "ベースアバターを複数登録することはできません。",
+                ERROR_MESSAGES.MULTIPLE_AVATAR,
                 "ベースアバターを置き換えるオプションの実装"
             );
         }
@@ -103,12 +108,57 @@ const handleData = (
             items.value.items.push({
                 id: data.id,
                 category: data.category,
-                note: note,
-                unsupported: unsupported,
+                note: "",
+                unsupported: false,
+                updated_at: data.updated_at,
+                name: data.name,
+                thumbnail: data.thumbnail,
+                price: data.price,
+                shop_id: data.shop_id,
+                nsfw: data.nsfw,
+                outdated: data.outdated,
             });
             input_url.value = "";
         }
     }
+};
+
+const AddItemFromURL = async () => {
+    if (!input_url.value) {
+        useAddToast(ERROR_MESSAGES.EMPTY_URL);
+        return;
+    }
+
+    try {
+        new URL(input_url.value);
+    } catch (e) {
+        console.error(e);
+        useAddToast(ERROR_MESSAGES.INVALID_URL);
+        return;
+    }
+
+    const url = new URL(input_url.value);
+
+    if (
+        url.hostname.split(".").slice(-2)[1] !== "pm" ||
+        url.hostname.split(".").slice(-2)[0] !== "booth"
+    ) {
+        useAddToast(ERROR_MESSAGES.INVALID_URL);
+        return;
+    }
+
+    const id = url.pathname.split("/").slice(-1)[0];
+
+    if (!Number.isInteger(Number(id))) {
+        useAddToast(ERROR_MESSAGES.INVALID_URL);
+        return;
+    }
+
+    AddItem(Number(id));
+};
+
+const RemoveItem = (id: number) => {
+    items.value.items = items.value.items.filter((item) => item.id !== id);
 };
 
 const { files, open, reset, onChange } = useFileDialog({
@@ -136,7 +186,7 @@ const PublishSetup = async () => {
     publishing.value = true;
 
     if (!items.value.avatar) {
-        useAddToast("ベースアバターが登録されていません。");
+        useAddToast(ERROR_MESSAGES.NO_AVATAR);
         publishing.value = false;
         return;
     }
@@ -152,7 +202,7 @@ const PublishSetup = async () => {
                 name: title.value,
                 description: description.value,
                 tags: tags.value,
-                avatar: items.value.avatar,
+                avatar: items.value.avatar.id,
                 avatar_note: items.value.avatar_note,
                 items: items.value.items,
             },
@@ -161,42 +211,12 @@ const PublishSetup = async () => {
         reset();
         useAddToast("セットアップを公開しました。");
         skip_router_hook.value = true;
-        router.push("/setup/" + id);
+        navigateTo(`/setup/${id}`);
     } catch (error) {
         console.error(error);
         useAddToast("セットアップの公開に失敗しました。");
     } finally {
         publishing.value = false;
-    }
-};
-
-const UpdateSetup = async () => {
-    // const client = await useSupabaseClient();
-
-    const setup: {
-        name: string;
-        description: string;
-        tags: string[];
-        avatar: number | null;
-        avatar_note: string;
-    } = {
-        name: title.value,
-        description: useLineBreak(description.value),
-        tags: tags.value,
-        avatar: items.value.avatar,
-        avatar_note: useLineBreak(items.value.avatar_note),
-    };
-
-    try {
-        await useUpdateSetup(Number(id), setup, items.value);
-
-        useAddToast("セットアップを更新しました。");
-        skip_router_hook.value = true;
-        router.push("/setup/" + id);
-    } catch (error) {
-        console.error(error);
-
-        useAddToast("セットアップの更新に失敗しました。");
     }
 };
 
@@ -236,40 +256,114 @@ onBeforeRouteLeave(
     }
 );
 
-const quickAvatars = ref<
-    | { id: number; name: string; short: string | null; thumbnail: string }[]
-    | null
->(null);
-
 const quickAvatarsOwned = ref<
     | { id: number; name: string; short: string | null; thumbnail: string }[]
     | null
 >(null);
 
-onMounted(async () => {
-    quickAvatars.value = await useGetPopularAvatars();
-    quickAvatarsOwned.value = await useGetOwnedAvatars();
+const AddTag = (tag: string) => {
+    if (!tags.value.includes(tag)) {
+        tags.value.push(tag);
+    }
+    const input = document.getElementById("tagInput") as HTMLInputElement;
+    if (input) {
+        input.value = "";
+    }
+    input.focus();
+};
 
-    if (id) {
-        const { data } = await client
-            .from("setups")
-            .select(
-                "id, created_at, name, description, avatar, avatar_note, tags, author, image, setup_items(item_id, note, unsupported)"
-            )
-            .eq("id", Number(id))
-            .single();
+const handleTagSuggest = () => {
+    const input = document.getElementById("tagInput") as HTMLInputElement;
 
-        if (data) {
-            title.value = data.name;
-            description.value = data.description;
-            tags.value = data.tags;
-            items.value.avatar = data.avatar;
-            items.value.avatar_note = data.avatar_note;
-            for (const item of data.setup_items) {
-                AddItem(item.item_id, item.note, item.unsupported);
+    tagsSuggestion.value = [];
+    if (input?.value.length) {
+        tagsSuggestionLoading.value = true;
+    } else {
+        tagsSuggestionLoading.value = false;
+    }
+    tagSuggest();
+};
+
+const tagSuggest = useDebounceFn(
+    async () => {
+        const input = document.getElementById("tagInput") as HTMLInputElement;
+
+        if (input?.value.length) {
+            const suggest = await client.rpc("search_tags", {
+                keywords: input?.value,
+                exclude: tags.value,
+            });
+
+            if (suggest.error) {
+                tagsSuggestion.value = [];
+                tagsSuggestionLoading.value = false;
+                return;
             }
+
+            tagsSuggestion.value = suggest.data.map(
+                (i: { tag: string }) => i.tag
+            );
+
+            tagsSuggestionLoading.value = false;
+        } else {
+            tagsSuggestion.value = [];
+            tagsSuggestionLoading.value = false;
+        }
+    },
+    700,
+    { maxWait: 1600 }
+); // 700～1600ms デバウンス
+
+onMounted(async () => {
+    // quickAvatarsOwned.value = await useGetOwnedAvatars();
+    // const client = await useSBClient();
+    // if (id) {
+    //     const { data } = await client
+    //         .from("setups")
+    //         .select(
+    //             "id, created_at, name, description, avatar, avatar_note, tags, author, image, setup_items(item_id, note, unsupported)"
+    //         )
+    //         .eq("id", Number(id))
+    //         .single();
+    //     if (data) {
+    //         title.value = data.name;
+    //         description.value = data.description;
+    //         tags.value = data.tags;
+    //         items.value.avatar = data.avatar;
+    //         items.value.avatar_note = data.avatar_note;
+    //         for (const item of data.setup_items) {
+    //             AddItem(item.item_id, item.note, item.unsupported);
+    //         }
+    //     }
+    // }
+
+    useSeoEdit();
+});
+
+watch(items.value, () => {
+    categorizedItems.value = {};
+
+    if (items.value.items.length) {
+        for (const item of items.value.items) {
+            let category: string;
+            if (item.category === 209) {
+                category = "cloth";
+            } else if (item.category === 217) {
+                category = "accessory";
+            } else {
+                category = "other";
+            }
+
+            if (!categorizedItems.value[category]) {
+                categorizedItems.value[category] = [];
+            }
+            categorizedItems.value[category].push(item);
         }
     }
+});
+
+watch(tags.value, () => {
+    tagsSuggestion.value = [];
 });
 </script>
 
@@ -301,7 +395,6 @@ onMounted(async () => {
             </div>
             <div class="flex gap-2 items-center">
                 <UPopover
-                    v-if="!route.query.id"
                     mode="hover"
                     :popper="{ placement: 'top' }"
                     :ui="{
@@ -335,14 +428,16 @@ onMounted(async () => {
 
                     <template #panel>
                         <div
-                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-100"
+                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-900 dark:text-neutral-100"
                         >
-                            <p v-if="!title">タイトルが入力されていません</p>
+                            <p v-if="!title">
+                                {{ ERROR_MESSAGES.NO_TITLE }}
+                            </p>
                             <p v-if="!items.avatar">
-                                ベースアバターが登録されていません
+                                {{ ERROR_MESSAGES.NO_AVATAR }}
                             </p>
                             <p v-if="!items.items.length">
-                                アイテムが登録されていません
+                                {{ ERROR_MESSAGES.NO_ITEMS }}
                             </p>
 
                             <p
@@ -356,37 +451,22 @@ onMounted(async () => {
                     </template>
                 </UPopover>
 
-                <UButton
-                    v-else
-                    :disabled="!title || !items.avatar || !items.items.length"
-                    truncate
-                    size="lg"
-                    label="更新"
-                    icon="i-heroicons-arrow-up-tray-16-solid"
-                    :ui="{
-                        rounded: 'rounded-full',
-                        inline: 'pr-4',
-                        truncate: 'whitespace-nowrap',
-                    }"
-                    @click="UpdateSetup"
-                />
-
-                <AButton
+                <UiButton
                     tooltip="破棄"
                     icon="lucide:trash"
                     :icon-size="18"
-                    class="size-10"
+                    ui="outline-0"
                     @click="router.back()"
                 />
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row items-start gap-8 w-full">
+        <div class="flex flex-col lg:flex-row items-start gap-8 w-full">
             <div class="flex-col items-center gap-8 flex w-full">
                 <div class="w-full flex flex-col items-center gap-4">
                     <div class="flex gap-1 items-center w-full">
                         <div
-                            class="w-full p-1 rounded-xl border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900"
+                            class="w-full p-1 rounded-lg border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900"
                         >
                             <UInput
                                 v-model="input_url"
@@ -397,10 +477,10 @@ onMounted(async () => {
                                 placeholder="BOOTH URLからアバター・アイテムを追加"
                                 block
                                 :ui="{
-                                    rounded: 'rounded-xl',
+                                    rounded: 'rounded-lg',
                                     icon: { trailing: { pointer: '' } },
                                 }"
-                                @keyup.enter="AddItem()"
+                                @keyup.enter="AddItemFromURL"
                             >
                                 <template #trailing>
                                     <UButton
@@ -422,57 +502,31 @@ onMounted(async () => {
                                 </template>
                             </UInput>
                         </div>
-                        <UButton
+                        <UiButton
+                            :disabled="adding"
                             :icon="
                                 !adding
                                     ? 'i-heroicons-plus'
                                     : 'i-svg-spinners-ring-resize'
                             "
-                            :disabled="adding"
                             label="追加"
-                            size="sm"
-                            :ui="{
-                                rounded: 'rounded-xl',
-                            }"
-                            class="pr-3 h-[40px]"
-                            @click="AddItem()"
+                            ui="pr-3 h-[40px]"
+                            @click="AddItemFromURL"
                         />
                     </div>
-
-                    <div class="w-full flex items-center gap-2">
-                        <UButton
-                            block
-                            icon="lucide:search"
-                            label="アバター・アイテムを検索"
-                            variant="outline"
-                            :ui="{
-                                rounded: 'rounded-xl',
-                                variant: {
-                                    outline:
-                                        'ring-neutral-400 dark:ring-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-750',
-                                },
-                            }"
-                            class="h-9"
-                            @click="modalSearchItem = true"
-                        />
-                        <UModal
-                            v-model="modalSearchItem"
-                            :ui="{
-                                background: 'bg-white dark:bg-neutral-100',
-                                ring: 'ring-0',
-                                rounded: 'rounded-xl',
-                                inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
-                            }"
-                        >
-                            <ModalSearchItem
-                                @add="AddItem"
-                                @close="modalSearchItem = false"
-                            />
-                        </UModal>
-                    </div>
+                    <UiButton
+                        icon="lucide:search"
+                        label="アバター・アイテムを検索"
+                        ui="h-9 w-full"
+                        class="w-full"
+                        @click="modalSearchItem = true"
+                    />
                 </div>
 
-                <ACategory title="ベースアバター" icon="lucide:person-standing">
+                <UiCategory
+                    title="ベースアバター"
+                    icon="lucide:person-standing"
+                >
                     <div
                         v-if="!items.avatar"
                         class="w-full p-5 flex flex-col gap-5 rounded-lg bg-white dark:bg-neutral-700"
@@ -481,8 +535,8 @@ onMounted(async () => {
                             v-if="quickAvatarsOwned?.length"
                             class="w-full flex flex-col gap-3"
                         >
-                            <ATitle
-                                title="あなたのセットアップから"
+                            <UiTitle
+                                label="あなたのセットアップから"
                                 icon="lucide:user-round"
                             />
                             <div
@@ -501,136 +555,70 @@ onMounted(async () => {
                                 </button>
                             </div>
                         </div>
-                        <div
-                            v-if="quickAvatars"
-                            class="w-full flex flex-col gap-3"
-                        >
-                            <ATitle
-                                title="人気のアバター"
-                                icon="lucide:sparkles"
-                                infomation="Avatioの投稿数から算出"
-                            />
-                            <div
-                                class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full"
-                            >
-                                <button
-                                    v-for="i in quickAvatars"
-                                    :key="'suggest-avatar-' + i.id"
-                                    @click="AddItem(i.id)"
-                                >
-                                    <ItemTiny
-                                        :label="i.short ? i.short : i.name"
-                                        :thumbnail="i.thumbnail"
-                                        class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
-                                    />
-                                </button>
-                            </div>
-                        </div>
                     </div>
 
                     <ItemBoothEdit
                         v-if="items.avatar"
-                        :id="items.avatar"
-                        :key="'item-' + items.avatar"
+                        :id="items.avatar.id"
+                        :key="'item-' + items.avatar.id"
                         size="lg"
-                        :avatar="true"
+                        :note="items.avatar_note"
+                        :name="items.avatar.name"
+                        :thumbnail="items.avatar.thumbnail"
+                        :price="items.avatar.price"
+                        :shop="items.avatar.shop_id.name"
+                        :shop-id="items.avatar.shop_id.id"
+                        :shop-thumbnail="items.avatar.shop_id.thumbnail"
+                        :shop-verified="items.avatar.shop_id.verified"
+                        :nsfw="items.avatar.nsfw"
+                        :updated-at="items.avatar.updated_at"
                         @remove="items.avatar = null"
                         @update:note="items.avatar_note = $event"
-                        :note="items.avatar_note"
                     />
-                </ACategory>
+                </UiCategory>
 
                 <div
-                    v-if="!items.items.length"
+                    v-if="!Object.keys(categorizedItems).length"
                     class="my-10 font-medium text-neutral-400"
                 >
                     アイテムが登録されていません
                 </div>
 
-                <ACategory
-                    v-if="
-                        items.items.filter((item) => item.category === 209)
-                            .length
-                    "
-                    title="衣装"
-                    icon="lucide:shirt"
+                <div
+                    v-if="Object.keys(categorizedItems).length"
+                    class="w-full flex flex-col gap-3"
                 >
-                    <ItemBoothEdit
-                        v-for="i in items.items.filter(
-                            (item) => item.category === 209
-                        )"
-                        :id="i.id"
-                        :key="'item-' + i.id"
-                        @remove="
-                            items.items = items.items.filter(
-                                (item) => item.id !== i.id
-                            )
-                        "
-                        @update:note="i.note = $event"
-                        @update:unsupported="i.unsupported = $event"
-                        :note="i.note"
-                        :unsupported="i.unsupported"
-                    />
-                </ACategory>
+                    <div
+                        v-for="i in Object.keys(categorizedItems)"
+                        :key="useId()"
+                        class="w-full flex flex-col gap-3"
+                    >
+                        <UiTitle
+                            :label="categoryAttr[i].label"
+                            :icon="categoryAttr[i].icon"
+                        />
 
-                <ACategory
-                    v-if="
-                        items.items.filter((item) => item.category === 217)
-                            .length
-                    "
-                    title="アクセサリー"
-                    icon="lucide:star"
-                >
-                    <ItemBoothEdit
-                        v-for="i in items.items.filter(
-                            (item) => item.category === 217
-                        )"
-                        :id="i.id"
-                        :key="'item-' + i.id"
-                        @remove="
-                            items.items = items.items.filter(
-                                (item) => item.id !== i.id
-                            )
-                        "
-                        @update:note="i.note = $event"
-                        @update:unsupported="i.unsupported = $event"
-                        :note="i.note"
-                        :unsupported="i.unsupported"
-                    />
-                </ACategory>
-
-                <ACategory
-                    v-if="
-                        items.items.filter(
-                            (item) =>
-                                item.category !== 209 &&
-                                item.category !== 217 &&
-                                item.category !== 208
-                        ).length
-                    "
-                    title="その他"
-                    icon="lucide:box"
-                >
-                    <ItemBoothEdit
-                        v-for="i in items.items.filter(
-                            (item) =>
-                                item.category !== 209 &&
-                                item.category !== 217 &&
-                                item.category !== 208
-                        )"
-                        :id="i.id"
-                        :key="'item-' + i.id"
-                        @remove="
-                            items.items = items.items.filter(
-                                (item) => item.id !== i.id
-                            )
-                        "
-                        @update:note="i.note = $event"
-                        @update:unsupported="i.unsupported = $event"
-                        :note="i.note"
-                        :unsupported="i.unsupported"
-                    />
-                </ACategory>
+                        <ItemBoothEdit
+                            v-for="item in categorizedItems[i]"
+                            :id="item.id"
+                            :key="'item-' + item.id"
+                            :note="item.note"
+                            :unsupported="item.unsupported"
+                            :name="item.name"
+                            :thumbnail="item.thumbnail"
+                            :price="item.price"
+                            :shop="item.shop_id.name"
+                            :shop-id="item.shop_id.id"
+                            :shop-thumbnail="item.shop_id.thumbnail"
+                            :shop-verified="item.shop_id.verified"
+                            :nsfw="item.nsfw"
+                            :updated-at="item.updated_at"
+                            @update:note="item.note = $event"
+                            @update:unsupported="item.unsupported = $event"
+                            @remove="RemoveItem(item.id)"
+                        />
+                    </div>
+                </div>
             </div>
 
             <UDivider
@@ -639,13 +627,13 @@ onMounted(async () => {
                         base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
                     },
                 }"
-                class="block md:hidden"
+                class="block lg:hidden"
             />
 
             <div
-                class="w-full md:w-96 flex-col justify-start items-start gap-8 flex"
+                class="w-full lg:w-96 flex-col justify-start items-start gap-8 flex"
             >
-                <div v-if="!id" class="w-full flex flex-col gap-6 items-start">
+                <div class="w-full flex flex-col gap-3 items-start">
                     <button
                         v-if="!imagePreview"
                         @click="open()"
@@ -672,7 +660,7 @@ onMounted(async () => {
                             />
                             <button
                                 @click="reset()"
-                                class="size-8 absolute top-2 right-2 bg-black/30 hover:bg-black/50 rounded-full p-1 backdrop-blur-lg"
+                                class="size-8 absolute top-2 right-2 bg-black/30 hover:bg-black/70 rounded-full p-1 backdrop-blur-lg"
                             >
                                 <Icon
                                     name="lucide:x"
@@ -687,9 +675,9 @@ onMounted(async () => {
                             {{ files[0].name }}
                         </div>
                     </div>
-                    <PopupUploadImage class="mt-[-16px]" />
+                    <PopupUploadImage class="w-fit" />
                 </div>
-                <ACategory title="説明" icon="lucide:text">
+                <UiCategory title="説明" icon="lucide:text">
                     <div class="w-full flex flex-col gap-1 items-end">
                         <div
                             :class="`w-full p-3 rounded-lg border border-1 bg-neutral-200 dark:bg-neutral-900 ${
@@ -718,34 +706,70 @@ onMounted(async () => {
                             {{ description.length }} / 140
                         </span>
                     </div>
-                </ACategory>
+                </UiCategory>
 
-                <ACategory title="タグ" icon="lucide:tags">
-                    <TagsInputRoot
-                        v-model="tags"
-                        class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
-                    >
-                        <TagsInputItem
-                            v-for="item in tags"
-                            :key="item"
-                            :value="item"
-                            class="dark:text-white text-black flex items-center justify-center gap-2 rounded-md p-1 border border-1 border-neutral-300 dark:border-neutral-600 bg-neutral-100 dark:bg-neutral-700"
+                <UiCategory title="タグ" icon="lucide:tags">
+                    <div class="w-full flex flex-col gap-1">
+                        <TagsInputRoot
+                            v-model="tags"
+                            class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
                         >
-                            <TagsInputItemText class="text-sm pl-1.5" />
-                            <TagsInputItemDelete
-                                class="mr-0.5 rounded hover:bg-neutral-300 hover:dark:bg-neutral-700 flex items-center justify-center"
+                            <TagsInputItem
+                                v-for="item in tags"
+                                :key="item"
+                                :value="item"
+                                class="dark:text-white text-black flex items-center justify-center gap-1.5 rounded-full px-1 py-1 border border-1 border-neutral-300 dark:border-neutral-600"
                             >
-                                <Icon name="lucide:x" />
-                            </TagsInputItemDelete>
-                        </TagsInputItem>
+                                <TagsInputItemText class="text-sm pl-2" />
+                                <TagsInputItemDelete
+                                    class="p-1 rounded-full hover:bg-neutral-300 hover:dark:bg-neutral-700 flex items-center justify-center"
+                                >
+                                    <Icon name="lucide:x" />
+                                </TagsInputItemDelete>
+                            </TagsInputItem>
 
-                        <TagsInputInput
-                            placeholder="タグを入力"
-                            class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
-                        />
-                    </TagsInputRoot>
-                </ACategory>
+                            <TagsInputInput
+                                id="tagInput"
+                                placeholder="タグを入力"
+                                class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-neutral-400 dark:placeholder:text-neutral-500"
+                                @input="handleTagSuggest"
+                            />
+                        </TagsInputRoot>
+                        <div
+                            v-if="
+                                tagsSuggestion.length || tagsSuggestionLoading
+                            "
+                            class="w-full flex flex-wrap gap-1 rounded-lg p-2 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-900"
+                        >
+                            <Icon
+                                v-show="tagsSuggestionLoading"
+                                name="svg-spinners:ring-resize"
+                                class="m-1.5 flex-shrink-0"
+                            />
+                            <button
+                                v-for="(i, index) in tagsSuggestion"
+                                :key="'tagSuggest-' + index"
+                                class="gap-1.5 rounded-full px-3 py-1 text-sm border border-1 border-neutral-400 dark:border-neutral-600 hover:bg-neutral-300 hover:dark:bg-neutral-600 transition ease-in-out duration-100"
+                                @click="AddTag(i)"
+                            >
+                                {{ i }}
+                            </button>
+                        </div>
+                    </div>
+                </UiCategory>
             </div>
         </div>
+
+        <UModal
+            v-model="modalSearchItem"
+            :ui="{
+                background: 'bg-white dark:bg-neutral-100',
+                ring: 'ring-0',
+                rounded: 'rounded-xl',
+                inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
+            }"
+        >
+            <ModalSearchItem @add="AddItem" @close="modalSearchItem = false" />
+        </UModal>
     </div>
 </template>

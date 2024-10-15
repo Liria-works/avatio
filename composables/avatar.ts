@@ -1,6 +1,5 @@
 export const useGetOwnedAvatars = async (): Promise<
-    | { id: number; name: string; short: string | null; thumbnail: string }[]
-    | null
+    { id: number; name: string; thumbnail: string }[] | null
 > => {
     const client = await useSBClient();
     const user = useSupabaseUser();
@@ -21,19 +20,13 @@ export const useGetOwnedAvatars = async (): Promise<
         owned = [...new Set(owned)];
 
         for (const i of owned) {
-            const result = await useFetchBooth({
-                id: Number(i),
-                url: null,
-            });
+            const result = await useFetchBooth(Number(i));
             if (!result) {
                 continue;
             }
             response.push({
                 id: result.id,
                 name: result.name,
-                short: result.avatar_details
-                    ? result.avatar_details.short_ja
-                    : null,
                 thumbnail: result.thumbnail,
             });
         }
@@ -45,8 +38,7 @@ export const useGetOwnedAvatars = async (): Promise<
 };
 
 export const useGetPopularAvatars = async (): Promise<
-    | { id: number; name: string; short: string | null; thumbnail: string }[]
-    | null
+    { id: number; name: string; thumbnail: string }[] | null
 > => {
     const client = await useSBClient();
 
@@ -56,19 +48,13 @@ export const useGetPopularAvatars = async (): Promise<
         const response = [];
 
         for (const key in data) {
-            const result = await useFetchBooth({
-                id: data[key].avatar,
-                url: null,
-            });
+            const result = await useFetchBooth(data[key].avatar);
             if (!result) {
                 continue;
             }
             response.push({
                 id: result.id,
                 name: result.name,
-                short: result.avatar_details
-                    ? result.avatar_details.short_ja
-                    : null,
                 thumbnail: result.thumbnail,
             });
         }

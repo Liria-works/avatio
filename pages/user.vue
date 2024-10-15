@@ -14,25 +14,23 @@ const user = useSupabaseUser();
             "
             class="w-full sm:w-60 grid grid-cols-2 sm:flex sm:flex-col gap-1 px-2"
         >
-            <NuxtLink
+            <UiButton
                 :to="{ name: 'user-id', params: { id: user.id } }"
+                label="ユーザー情報"
+                icon="lucide:user-round"
+                :icon-size="19"
+                ui="outline-0 w-full justify-start"
                 class="w-full"
-            >
-                <AButton
-                    text="ユーザー情報"
-                    icon="lucide:user-round"
-                    :icon-size="19"
-                    class="w-full"
-                />
-            </NuxtLink>
-            <NuxtLink :to="{ name: 'user-bookmark' }" class="w-full">
-                <AButton
-                    text="ブックマーク"
-                    icon="lucide:bookmark"
-                    :icon-size="19"
-                    class="w-full"
-                />
-            </NuxtLink>
+            />
+            <UiButton
+                :to="{ name: 'user-bookmark' }"
+                label="ブックマーク"
+                icon="lucide:bookmark"
+                :icon-size="19"
+                ui="outline-0 w-full justify-start"
+                class="w-full"
+            />
+
             <UDivider
                 :ui="{
                     border: {
@@ -41,18 +39,22 @@ const user = useSupabaseUser();
                 }"
                 class="hidden sm:block"
             />
-            <NuxtLink :to="{ name: 'user-setting' }" class="w-full">
-                <AButton
-                    text="設定"
-                    icon="lucide:settings"
-                    :icon-size="19"
-                    class="w-full"
-                />
-            </NuxtLink>
-            <AButton
-                text="ログアウト"
+
+            <UiButton
+                :to="{ name: 'user-setting' }"
+                label="設定"
+                icon="lucide:settings"
+                :icon-size="19"
+                ui="outline-0 w-full justify-start"
+                class="w-full"
+            />
+
+            <UiButton
+                label="ログアウト"
                 icon="lucide:log-out"
                 :icon-size="19"
+                ui="outline-0 w-full justify-start"
+                class="w-full"
                 @click="useSignOut"
             />
         </aside>

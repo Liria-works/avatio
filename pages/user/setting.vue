@@ -17,16 +17,31 @@ const links = ref<string[]>([]);
 const link_input = ref("");
 const link_adding = ref(false);
 
-const setting = { theme: ["system", "light", "dark"], language: ["ja"] };
-const selectTheme = ref(setting.theme[0]);
-const selectLanguage = ref(setting.language[0]);
-
 const AddLink = async () => {
     if (link_input.value === "") return;
-    link_adding.value = true;
 
+    if (links.value.length >= 8) {
+        useAddToast("リンクは最大 8 つまでです");
+        return;
+    }
+
+    try {
+        new URL(link_input.value);
+    } catch (e) {
+        useAddToast("URL が不正です");
+        console.error(e);
+        return;
+    }
+
+    link_adding.value = true;
     links.value.push(link_input.value);
-    await useSaveLink(links.value);
+
+    try {
+        await useSaveLink(links.value);
+    } catch (e) {
+        console.error(e);
+        links.value = links.value.filter((i) => i !== link_input.value);
+    }
 
     link_input.value = "";
     link_adding.value = false;
@@ -265,7 +280,15 @@ onMounted(async () => {
                 </div>
 
                 <div class="flex flex-col gap-2 items-start w-full">
-                    <ATitle title="リンク" icon="lucide:link" />
+                    <div class="flex gap-4 items-center">
+                        <UiTitle label="リンク" icon="lucide:link" />
+                        <p
+                            :class="`text-sm whitespace-nowrap text-neutral-700 dark:text-neutral-400 ${links.length === 8 ? 'text-red-400 dark:text-red-400' : ''}`"
+                        >
+                            {{ links.length }} / 8
+                        </p>
+                    </div>
+
                     <div class="flex gap-1 items-center w-full mt-1">
                         <div
                             class="w-full px-1 rounded-xl bg-neutral-300 dark:bg-neutral-900"
@@ -338,26 +361,6 @@ onMounted(async () => {
                                 />
                             </button>
                         </div>
-                    </div>
-                </div>
-
-                <div class="hidden flex flex-col gap-2 items-start w-full mt-5">
-                    <ATitle title="ユーザー設定" icon="lucide:settings" />
-                    <div class="flex gap-1 items-center w-full mt-1">
-                        <Icon name="lucide:moon" size="16" />
-                        <p>テーマ</p>
-                        <USelectMenu
-                            v-model="selectTheme"
-                            :options="setting.theme"
-                        />
-                    </div>
-                    <div class="flex gap-1 items-center w-full mt-1">
-                        <Icon name="lucide:languages" size="16" />
-                        <p>言語</p>
-                        <USelectMenu
-                            v-model="selectLanguage"
-                            :options="setting.language"
-                        />
                     </div>
                 </div>
             </div>

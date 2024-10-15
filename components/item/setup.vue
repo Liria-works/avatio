@@ -2,11 +2,11 @@
 const props = withDefaults(
     defineProps<{
         name: string;
-        avatar_name: string;
-        avatar_thumbnail: string;
-        author_id: string;
-        author_name: string;
-        author_avatar: string | null;
+        avatarName: string;
+        avatarThumbnail: string;
+        authorId: string;
+        authorName: string;
+        authorAvatar: string | null;
         createdAt: string;
         image: string | null;
         noHero?: boolean;
@@ -43,8 +43,8 @@ onMounted(async () => {
         fetchImage.value = null;
     }
 
-    if (props.author_avatar) {
-        fetchAuthorAvatar.value = await useGetImage(props.author_avatar);
+    if (props.authorAvatar) {
+        fetchAuthorAvatar.value = await useGetImage(props.authorAvatar);
     } else {
         fetchAuthorAvatar.value = null;
     }
@@ -57,12 +57,13 @@ onMounted(async () => {
     <ItemBase>
         <template #hero>
             <div v-if="fetchImage && !noHero" class="px-1.5 pt-1.5 pb-0.5">
-                <div class="max-h-80 rounded-lg overflow-hidden">
-                    <NuxtImg
-                        :src="fetchImage"
-                        class="size-full rounded-lg object-cover"
-                    />
-                </div>
+                <NuxtImg
+                    :src="fetchImage"
+                    format="webp"
+                    quality="85"
+                    sizes="300px"
+                    class="size-full max-h-80 rounded-lg object-cover"
+                />
             </div>
         </template>
         <template #thumbnail>
@@ -73,47 +74,55 @@ onMounted(async () => {
                 <NuxtImg
                     :src="fetchImage"
                     :alt="props.name"
-                    class="h-14 rounded-lg overflow-clip object-cover"
+                    fit="cover"
+                    format="webp"
+                    quality="80"
+                    sizes="80px"
+                    class="h-14 rounded-lg overflow-clip"
                 />
             </div>
 
             <div v-if="!fetchImage" class="py-1.5 pl-1.5 flex-shrink-0">
                 <NuxtImg
-                    :src="props.avatar_thumbnail"
+                    :src="props.avatarThumbnail"
                     :alt="props.name"
+                    fit="cover"
+                    format="webp"
+                    quality="80"
+                    sizes="56px"
                     class="h-14 rounded-lg overflow-clip"
                 />
             </div>
         </template>
         <template #main>
-            <div class="w-full h-16 flex justify-between">
+            <div class="w-full pt-1 flex justify-between">
                 <div
-                    class="w-full flex flex-col justify-center gap-0.5 py-2 pr-2 pl-3"
+                    class="w-full flex flex-col justify-center gap-1 py-2 pr-2 pl-3"
                 >
                     <p
-                        class="text-md font-medium text-neutral-700 dark:text-neutral-200 break-all line-clamp-1"
+                        class="text-sm font-medium text-neutral-700 dark:text-neutral-200 break-all line-clamp-1 leading-none"
                     >
                         {{ props.name }}
                     </p>
                     <div class="flex justify-between items-center gap-2">
                         <p
-                            class="text-sm text-neutral-500 dark:text-neutral-400 break-all line-clamp-1"
+                            class="text-xs text-neutral-500 dark:text-neutral-400 break-all line-clamp-1 leading-none"
                         >
-                            {{ props.avatar_name }}
+                            {{ useAvatarName(props.avatarName) }}
                         </p>
                         <div class="flex items-center gap-2">
-                            <ATooltip :text="dateLocale">
+                            <UiTooltip :text="dateLocale">
                                 <p
                                     class="text-xs text-neutral-600 dark:text-neutral-400 whitespace-nowrap"
                                 >
                                     {{ useDateElapsed(date) }}
                                 </p>
-                            </ATooltip>
-                            <ATooltip :text="props.author_name">
+                            </UiTooltip>
+                            <UiTooltip :text="props.authorName">
                                 <NuxtLink
                                     :to="{
                                         name: 'user-id',
-                                        params: { id: props.author_id },
+                                        params: { id: props.authorId },
                                     }"
                                     class="flex flex-row gap-2 items-center"
                                 >
@@ -121,7 +130,7 @@ onMounted(async () => {
                                         v-if="fetchAuthorAvatar"
                                         size="xs"
                                         :src="fetchAuthorAvatar"
-                                        :alt="props.author_name"
+                                        :alt="props.authorName"
                                     />
                                     <div
                                         v-else
@@ -134,7 +143,7 @@ onMounted(async () => {
                                         />
                                     </div>
                                 </NuxtLink>
-                            </ATooltip>
+                            </UiTooltip>
                         </div>
                     </div>
                 </div>

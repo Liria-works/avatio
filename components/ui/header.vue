@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { User } from "@supabase/supabase-js";
+
 const colorMode = useColorMode();
-const user = useSupabaseUser();
+const user = ref<User | null>(null);
 
 const storeMyAvatar = useMyAvatar();
 const { GetMyAvatar } = storeMyAvatar;
@@ -9,6 +11,7 @@ const { myAvatar } = storeToRefs(storeMyAvatar);
 const modalSearch = ref(false);
 
 onMounted(async () => {
+    user.value = useSupabaseUser().value;
     await GetMyAvatar();
 });
 </script>
@@ -46,12 +49,13 @@ onMounted(async () => {
         <div class="flex items-center gap-12 inset">
             <div class="items-center gap-2 flex">
                 <div class="items-center gap-0.5 flex">
-                    <AButton
-                        :icon-size="20"
-                        icon="i-heroicons-magnifying-glass-20-solid"
+                    <UiButton
+                        to="/search"
                         tooltip="検索"
-                        @click="modalSearch = true"
+                        icon="lucide:search"
+                        ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                     />
+
                     <UModal
                         v-model="modalSearch"
                         :ui="{
@@ -63,8 +67,9 @@ onMounted(async () => {
                     >
                         <ModalSearch @close="modalSearch = false" />
                     </UModal>
+
                     <ClientOnly>
-                        <AButton
+                        <UiButton
                             :icon-size="20"
                             :icon="
                                 colorMode.value === 'light'
@@ -72,6 +77,7 @@ onMounted(async () => {
                                     : 'i-heroicons-moon-20-solid'
                             "
                             tooltip="テーマ"
+                            ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             @click="
                                 colorMode.preference =
                                     colorMode.value === 'dark'
@@ -84,38 +90,23 @@ onMounted(async () => {
                         </template>
                     </ClientOnly>
 
-                    <UPopover
-                        :ui="{
-                            rounded: 'rounded-xl',
-                            ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                        }"
-                        class="flex"
-                    >
-                        <AButton
-                            :icon-size="20"
-                            icon="lucide:languages"
-                            tooltip="Languages"
-                        />
+                    <!-- <UPopover :ui="{
+                        rounded: 'rounded-xl',
+                        ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
+                    }" class="flex">
+                        <UiButton :icon-size="20" icon="lucide:languages" tooltip="Languages" />
 
                         <template #panel>
                             <div class="p-8">多言語未対応</div>
                         </template>
-                    </UPopover>
+                    </UPopover> -->
                 </div>
 
-                <div class="flex">
-                    <NuxtLink to="/login">
-                        <AButton
-                            v-if="!user"
-                            icon="lucide:log-in"
-                            tooltip="ログイン"
-                        />
-                    </NuxtLink>
-
+                <div class="flex items-center">
                     <NuxtLink
                         v-if="user"
-                        :to="'/user/' + user.id"
-                        class="rounded-full flex items-center"
+                        :to="`/user/${user?.id}`"
+                        class="rounded-full flex items-center outline outline-4 outline-transparent hover:outline-neutral-600 transition-all ease-in-out duration-100"
                     >
                         <UAvatar
                             v-if="myAvatar"
@@ -133,6 +124,13 @@ onMounted(async () => {
                                 class="text-neutral-600 dark:text-neutral-300"
                             />
                         </div>
+                    </NuxtLink>
+
+                    <NuxtLink v-else to="/login">
+                        <UiButton
+                            label="ログイン"
+                            ui="outline-0 px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
+                        />
                     </NuxtLink>
                 </div>
             </div>

@@ -55,16 +55,15 @@ export const useSignupVaridate = () => {
 };
 
 export const useSignOut = async () => {
-    const supabase = useSupabaseClient();
-    const router = useRouter();
+    const supabase = await useSBClient();
 
     await supabase.auth.signOut();
 
-    const storeSetupIndex = useSetupIndex();
-    const { GetSetupIndex } = storeSetupIndex;
-    await GetSetupIndex();
-    router.push("/");
-    useAddToast("ログアウトしました。");
+    // const storeSetupIndex = useSetupIndex();
+    // const { GetSetupIndex } = storeSetupIndex;
+    // await GetSetupIndex();
+    navigateTo("/", { external: true });
+    // useAddToast("ログアウトしました。");
 };
 
 export const useLogin = async (email: string, password: string) => {
@@ -75,15 +74,14 @@ export const useLogin = async (email: string, password: string) => {
     });
     if (error) throw error;
 
-    useAddToast("ログインしました。");
-    const storeSetupIndex = useSetupIndex();
-    const { GetSetupIndex } = storeSetupIndex;
-    await GetSetupIndex();
+    // useAddToast("ログインしました。");
+    // const storeSetupIndex = useSetupIndex();
+    // const { GetSetupIndex } = storeSetupIndex;
+    // await GetSetupIndex();
 };
 
 export const useSignUp = async (email: string, password: string) => {
-    const router = useRouter();
-    const supabase = useSupabaseClient();
+    const supabase = await useSBClient();
 
     const { error } = await supabase.auth.signUp({
         email: email,
@@ -91,7 +89,20 @@ export const useSignUp = async (email: string, password: string) => {
     });
     if (error) throw error;
 
-    router.push("/user/setting");
+    navigateTo("/user/setting");
 
     useAddToast("サインアップしました。");
+};
+
+export const useLoginWithTwitter = async () => {
+    const supabase = await useSBClient();
+
+    const { error } = await supabase.auth.signInWithOAuth({
+        provider: "twitter",
+    });
+
+    if (error) {
+        navigateTo("/login");
+        useAddToast("ログインに失敗しました。");
+    }
 };

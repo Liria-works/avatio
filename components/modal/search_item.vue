@@ -200,7 +200,7 @@ watch(filter.value, () => {
                     "
                     class="w-full flex flex-col gap-3"
                 >
-                    <ATitle title="ベースアバター" icon="lucide:search" />
+                    <UiTitle label="ベースアバター" icon="lucide:search" />
                     <div class="w-full flex flex-col gap-2 px-3">
                         <button
                             v-for="i in searchItems.filter(
@@ -240,7 +240,7 @@ watch(filter.value, () => {
                     "
                     class="w-full flex flex-col gap-3"
                 >
-                    <ATitle title="衣装" icon="lucide:search" />
+                    <UiTitle label="衣装" icon="lucide:search" />
                     <div class="w-full flex flex-col gap-2 px-3">
                         <button
                             v-for="i in searchItems.filter(
@@ -280,7 +280,7 @@ watch(filter.value, () => {
                     "
                     class="w-full flex flex-col gap-3"
                 >
-                    <ATitle title="アクセサリー" icon="lucide:search" />
+                    <UiTitle label="アクセサリー" icon="lucide:search" />
                     <div class="w-full flex flex-col gap-2 px-3">
                         <button
                             v-for="i in searchItems.filter(
@@ -320,7 +320,7 @@ watch(filter.value, () => {
                     "
                     class="w-full flex flex-col gap-3"
                 >
-                    <ATitle title="その他" icon="lucide:search" />
+                    <UiTitle label="その他" icon="lucide:search" />
                     <div class="w-full flex flex-col gap-2 px-3">
                         <button
                             v-for="i in searchItems.filter(

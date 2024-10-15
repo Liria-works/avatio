@@ -4,60 +4,117 @@ const client = await useSBClient();
 const user = useSupabaseUser();
 
 const modal_report = ref(false);
-
 const loading = ref(true);
-const faild = ref(false);
+
+interface User {
+    name: string;
+    avatar: string;
+    bio: string;
+    links: string[];
+    created_at: string;
+    setups: {
+        id: string;
+        name: string;
+        description: string;
+        avatar: {
+            id: string;
+            name: string;
+            thumbnail: string;
+        };
+        author: {
+            id: string;
+            name: string;
+            avatar: string;
+        };
+        image: string;
+        created_at: string;
+    }[];
+    badges: {
+        developer: boolean;
+        contributor: boolean;
+        translator: boolean;
+        alpha_tester: boolean;
+        shop_owner: boolean;
+    };
+}
 
 const userId = ref<string>(route.params.id.toString());
-const username = ref("");
-const avatar = ref<string | null>(null);
-const bio = ref("");
-const links = ref([]);
-const created_at = ref("");
-const setups = ref();
+const userData = ref<User | null>(null);
+
+const linksShort = ref<{ [key: string]: string }[]>([]);
+
+const linkIcons: { [key: string]: string } = {
+    "x.com": "simple-icons:x",
+    "youtube.com": "simple-icons:youtube",
+    "twitch.tv": "simple-icons:twitch",
+    "discordapp.com": "simple-icons:discord",
+    "discord.com": "simple-icons:discord",
+    "instagram.com": "simple-icons:instagram",
+    "github.com": "simple-icons:github",
+    "steamcommunity.com": "simple-icons:steam",
+    "pixiv.net": "simple-icons:pixiv",
+    "artstation.com": "simple-icons:artstation",
+    "booth.pm": "lucide:store", // boothのアイコンをローカルアイコンパックとして登録する
+};
 
 onMounted(async () => {
+    const query = [
+        "name",
+        "avatar",
+        "bio",
+        "links",
+        "created_at",
+        "setups(id, name, description, avatar(id, name, thumbnail), author(id, name, avatar), image, created_at)",
+        "badges(developer, contributor, translator, alpha_tester, shop_owner)",
+    ];
+
     const { data } = await client
         .from("users")
-        .select("name, avatar, bio, links, created_at")
-        .eq("id", route.params.id)
-        .single();
+        .select(query.join(", "))
+        .eq("id", userId.value)
+        .order("created_at", { referencedTable: "setups", ascending: false })
+        .maybeSingle();
 
     if (!data) {
-        faild.value = true;
+        loading.value = false;
         return;
     }
-    username.value = data.name;
-    bio.value = data.bio;
-    links.value = data.links;
-    created_at.value = data.created_at;
 
-    if (data.avatar) {
-        avatar.value = await client.storage
-            .from("images")
-            .getPublicUrl(data.avatar).data.publicUrl;
-    } else {
-        avatar.value = null;
-    }
+    userData.value = data as unknown as User;
 
-    setups.value = await client
-        .from("setups")
-        .select("id, name, description, author, avatar, image, created_at")
-        .eq("author", route.params.id)
-        .range(0, 20);
+    linksShort.value = userData.value.links.map((i) => {
+        for (const key in linkIcons) {
+            if (new URL(i).hostname.includes(key)) {
+                return {
+                    [i
+                        .replace("https://www.", "")
+                        .replace("http://www.", "")
+                        .replace("https://", "")
+                        .replace("http://", "")]: linkIcons[key],
+                };
+            }
+        }
+        return {
+            [i
+                .replace("https://www.", "")
+                .replace("http://www.", "")
+                .replace("https://", "")
+                .replace("http://", "")]: "",
+        };
+    });
 
     loading.value = false;
 });
 </script>
 
 <template>
-    <div v-if="!faild && !loading" class="w-full flex flex-col px-2 gap-10">
+    <div v-if="userData && !loading" class="w-full flex flex-col px-2 gap-10">
         <div class="w-full flex flex-col gap-3">
             <div class="w-full flex items-center justify-between">
                 <div class="flex gap-6 items-center">
                     <UAvatar
-                        v-if="avatar"
-                        :src="avatar"
+                        v-if="userData.avatar"
+                        :src="useGetImage(userData.avatar)"
                         alt="Avatar"
                         size="3xl"
                     />
@@ -74,30 +131,40 @@ onMounted(async () => {
                     <div class="flex flex-col gap-1">
                         <div class="flex gap-3 items-center">
                             <p class="text-2xl font-bold">
-                                {{ username }}
+                                {{ userData.name }}
                             </p>
-                            <UserBadge :user="userId" />
+                            <UserBadge
+                                v-if="userData.badges"
+                                :developer="userData.badges.developer"
+                                :contributor="userData.badges.contributor"
+                                :translator="userData.badges.translator"
+                                :alpha-tester="userData.badges.alpha_tester"
+                                :shop-owner="userData.badges.shop_owner"
+                            />
                         </div>
                         <p class="text-sm text-neutral-500">
                             アカウント作成日 :
                             {{
-                                new Date(created_at).toLocaleString("ja-JP", {
-                                    year: "numeric",
-                                    month: "2-digit",
-                                    day: "2-digit",
-                                })
+                                new Date(userData.created_at).toLocaleString(
+                                    "ja-JP",
+                                    {
+                                        year: "numeric",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                    }
+                                )
                             }}
                         </p>
                     </div>
                 </div>
                 <NuxtLink v-if="user && user.id === userId" to="/user/setting">
-                    <AButton
+                    <UiButton
                         icon="lucide:pen-line"
                         :icon-size="19"
                         tooltip="プロフィールを編集"
                     />
                 </NuxtLink>
-                <AButton
+                <UiButton
                     v-else
                     icon="lucide:flag"
                     :icon-size="19"
@@ -120,52 +187,75 @@ onMounted(async () => {
             </div>
 
             <div class="w-full flex flex-col gap-3 pl-2">
-                <div v-if="links" class="flex flex-wrap items-center gap-2">
-                    <NuxtLink
-                        v-for="i in (links as string[])"
-                        :to="i"
-                        target="_blank"
-                        class="px-2.5 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-750 hover:dark:bg-neutral-700"
+                <div
+                    v-if="userData.links"
+                    class="flex flex-wrap items-center gap-2"
+                >
+                    <UiTooltip
+                        v-for="(i, index) in userData.links"
+                        :text="
+                            Object.values(linksShort[index])[0].length
+                                ? Object.keys(linksShort[index])[0]
+                                : ''
+                        "
                     >
-                        <p class="text-sm font-medium">
-                            {{
-                                i
-                                    .replace("https://", "")
-                                    .replace("http://", "")
-                                    .replace("www.", "")
-                            }}
-                        </p>
-                    </NuxtLink>
+                        <NuxtLink
+                            :to="i"
+                            target="_blank"
+                            class="min-h-[38px] p-2 rounded-lg flex items-center justify-center text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        >
+                            <Icon
+                                v-if="
+                                    Object.values(linksShort[index])[0].length
+                                "
+                                :name="Object.values(linksShort[index])[0]"
+                                size="20"
+                                class="text-neutral-600 dark:text-neutral-300"
+                            />
+
+                            <p
+                                v-else
+                                class="px-1 text-sm font-medium leading-none"
+                            >
+                                {{ Object.keys(linksShort[index])[0] }}
+                            </p>
+                        </NuxtLink>
+                    </UiTooltip>
                 </div>
 
                 <div
-                    class="w-full rounded-xl px-4 py-3 border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
+                    class="w-full rounded-xl px-4 py-3 gap-1 flex flex-col border border-1 border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
                 >
                     <p class="text-neutral-500 text-sm mt-[-2px]">bio</p>
-                    <p v-if="!bio" class="text-neutral-400">自己紹介が未設定</p>
+                    <p v-if="!userData.bio" class="text-neutral-400">
+                        自己紹介が未設定
+                    </p>
                     <p
-                        v-if="bio"
-                        class="text-relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]"
+                        v-if="userData.bio"
+                        class="text-sm text-relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]"
                     >
-                        {{ useSentence(bio) }}
+                        {{ useSentence(userData.bio) }}
                     </p>
                 </div>
             </div>
         </div>
 
-        <div v-if="setups" class="w-full flex flex-col gap-5 pl-2">
-            <ATitle title="セットアップ" icon="lucide:shirt" />
+        <div v-if="userData.setups" class="w-full flex flex-col gap-5 pl-2">
+            <UiTitle label="セットアップ" icon="lucide:shirt" />
 
             <NuxtLink
-                v-for="i in setups.data"
+                v-for="i in userData.setups"
                 :key="'user-setup-' + i.id"
                 :to="{ name: 'setup-id', params: { id: i.id } }"
             >
                 <ItemSetupDetail
                     :name="i.name"
                     :description="i.description"
-                    :avatar="i.avatar"
-                    :author="i.author"
+                    :avatar-name="i.avatar.name"
+                    :avatar-thumbnail="i.avatar.thumbnail"
+                    :author-id="i.author.id"
+                    :author-name="i.author.name"
+                    :author-avatar="i.author.avatar"
                     :created-at="i.created_at"
                     :image="i.image"
                     class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
@@ -174,14 +264,14 @@ onMounted(async () => {
         </div>
     </div>
 
-    <div v-else-if="faild" class="w-full flex flex-col items-center">
-        <p class="text-neutral-400 mt-5">ユーザーデータの取得に失敗しました</p>
-    </div>
-
     <div
         v-else-if="loading"
         class="w-full flex items-center justify-center pt-20"
     >
         <Icon name="svg-spinners:ring-resize" size="32" />
+    </div>
+
+    <div v-else-if="!userData" class="w-full flex flex-col items-center">
+        <p class="text-neutral-400 mt-5">ユーザーデータの取得に失敗しました</p>
     </div>
 </template>

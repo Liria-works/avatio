@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import authMiddleware from "./Auth";
+import authMiddleware from "../Auth";
 
 import { serverSupabaseClient } from "#supabase/server";
-import { createClient } from "@vercel/edge-config";
+// import { createClient } from "@vercel/edge-config";
 
 const url_base = "https://booth.pm/ja/items/";
 
@@ -35,6 +35,8 @@ async function GetBoothItem(event: any, id: number) {
             { body: { id: id } }
         );
 
+        if (error) console.log(error);
+
         if (error) throw error;
 
         // カテゴリIDをチェック
@@ -61,26 +63,21 @@ async function GetBoothItem(event: any, id: number) {
         //      124 //効果音
         //      134 // 素材（その他）
 
-        const runtimeConfig = useRuntimeConfig();
-        const edgeConfig = createClient(runtimeConfig.public.edgeConfig);
-
         try {
-            const allowed_category_id: number[] | undefined =
-                await edgeConfig.get("allowed_category_id");
-
-            if (!allowed_category_id) {
+            const config = await event.$fetch(
+                "/api/edgeConfig/allowed_category_id"
+            );
+            // const allowed_category_id: number[] | undefined = config.value;
+            if (config.status !== 200 || !config.value)
                 return {
-                    status: 500,
-                    body: { error: "Failed to get allowed tag data." },
+                    status: 400,
+                    body: { error: "Error in vercel edge config." },
                 };
-            }
+
+            const allowed_category_id: number[] = config.value;
 
             if (!allowed_category_id.includes(Number(data.category))) {
-                if (
-                    !data.tags
-                        .map((tag: { name: string }) => tag.name)
-                        .includes("VRChat")
-                ) {
+                if (!data.tags.map((tag: string) => tag).includes("VRChat")) {
                     return {
                         status: 400,
                         body: { error: "Invalid category ID" },
@@ -95,6 +92,13 @@ async function GetBoothItem(event: any, id: number) {
             };
         }
 
+        const shopData = {
+            id: data.shop_id,
+            name: data.shop,
+            thumbnail: data.shop_thumbnail,
+            verified: data.shop_verified,
+        };
+
         const itemData = {
             id: data.id,
             name: data.name,
@@ -103,13 +107,6 @@ async function GetBoothItem(event: any, id: number) {
             category: data.category,
             shop_id: data.shop_id,
             nsfw: data.nsfw,
-        };
-
-        const shopData = {
-            id: data.shop_id,
-            name: data.shop,
-            thumbnail: data.shop_thumbnail,
-            verified: data.shop_verified,
         };
 
         await client
@@ -152,10 +149,12 @@ function Response(status: number, message: string, data: any) {
             price: data.price,
             category: data.category,
             avatar_details: data.avatar_details,
-            shop: data.shop,
-            shopId: data.shop_id,
-            shopThumbnail: data.shop_thumbnail,
-            shopVerified: data.shop_verified,
+            shop_id: {
+                id: data.shop_id,
+                name: data.shop,
+                thumbnail: data.shop_thumbnail,
+                verified: data.shop_verified,
+            },
             nsfw: data.nsfw,
             outdated: data.outdated,
         },
