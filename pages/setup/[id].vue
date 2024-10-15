@@ -355,6 +355,7 @@ onMounted(async () => {
                         v-for="tag in setup.setup_tags"
                         :key="useId()"
                         class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
+                        @click="navigateTo(`/search?tag=${tag.tag}`)"
                     >
                         {{ tag.tag }}
                     </button>

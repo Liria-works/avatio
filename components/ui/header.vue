@@ -50,10 +50,10 @@ onMounted(async () => {
             <div class="items-center gap-2 flex">
                 <div class="items-center gap-0.5 flex">
                     <UiButton
+                        to="/search"
                         tooltip="検索"
                         icon="lucide:search"
                         ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
-                        @click="modalSearch = true"
                     />
 
                     <UModal

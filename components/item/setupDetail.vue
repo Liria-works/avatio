@@ -96,7 +96,7 @@ onMounted(async () => {
                                 <UAvatar
                                     v-if="props.authorAvatar"
                                     size="xs"
-                                    :src="props.authorAvatar"
+                                    :src="useGetImage(props.authorAvatar)"
                                     :alt="props.authorName"
                                 />
                                 <div
