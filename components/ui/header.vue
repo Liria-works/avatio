@@ -21,7 +21,7 @@ onMounted(async () => {
         <div
             class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-shrink-0"
         >
-            <NuxtLink to="/">
+            <NuxtLink to="/" class="pt-1">
                 <ClientOnly>
                     <NuxtImg
                         v-if="colorMode.value === 'light'"
