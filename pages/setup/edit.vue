@@ -162,7 +162,7 @@ const RemoveItem = (id: number) => {
 };
 
 const { files, open, reset, onChange } = useFileDialog({
-    accept: "image/png, image/jpeg, image/tiff", // Set to accept only image files
+    accept: "image/png, image/jpeg, image/webp, image/avif, image/gif, image/svg, image/tiff",
     multiple: false,
 });
 

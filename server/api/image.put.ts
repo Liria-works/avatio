@@ -1,4 +1,4 @@
-import { serverSupabaseClient } from "#supabase/server";
+import sharp from "sharp";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import authMiddleware from "./Auth";
 
@@ -13,42 +13,42 @@ export default defineEventHandler(async (event) => {
     const res = formData.get("res") as string;
     const path = formData.get("path") as string;
 
-    if (!file || !file.size) {
+    if (!file || !file.size)
         throw createError({ statusCode: 400, message: "No file provided" });
-    }
 
-    if (!size || !res) {
+    if (!size || !res)
         throw createError({
             statusCode: 400,
             message: "Query parameter 'size' and 'res' are required",
         });
-    }
 
     try {
-        const client = await serverSupabaseClient(event);
+        const input = await file.arrayBuffer();
+        const image = sharp(input);
 
-        const { data, error } = await client.functions.invoke(
-            "compress-image",
-            {
-                body: formData as FormData,
-            }
-        );
-
-        if (error) {
-            console.error(error);
+        const maxRes = parseInt(res, 10);
+        if (isNaN(maxRes) || maxRes <= 0)
             throw createError({
                 statusCode: 400,
-                message: "Faild to compress image",
+                message: "Invalid size parameter",
             });
+
+        let resolution = maxRes;
+        let width = (await image.metadata()).width;
+        let height = (await image.metadata()).height;
+
+        if (width && height) {
+            if (Math.max(width, height) < maxRes) {
+                resolution = Math.max(width, height);
+            }
         }
 
-        console.log(data);
-        const compressed = await data.arrayBuffer();
-        // const compressedBlob = new Blob([compressed], {
-        //     type: "image/jpeg",
-        // });
+        const compressed = await image
+            .resize({ width: resolution, height: resolution, fit: "inside" })
+            .toFormat("jpeg")
+            .toBuffer();
 
-        const unixTime = Math.floor(Date.now() / 1000);
+        const unixTime = Math.floor(Date.now());
         console.log("unixTime", unixTime);
         let base64UnixTime = Buffer.from(unixTime.toString()).toString(
             "base64"
