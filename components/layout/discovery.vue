@@ -13,53 +13,40 @@ type Setup = {
 };
 
 const setups = ref<Setup[]>([]);
-const loading = ref(true);
 
-onMounted(() => {
-    get();
-    loading.value = false;
-});
+let query = client
+    .from('setups')
+    .select(
+        'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)'
+    );
+if (user.value) query = query.neq('author', user.value.id);
+query = query.range(0, 20).order('created_at', { ascending: false });
 
-const get = async () => {
-    setups.value = [];
+const { data } = await query;
 
-    let query = client
-        .from("setups")
-        .select(
-            "id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)"
-        );
-
-    if (user.value) query = query.neq("author", user.value.id);
-
-    query = query.range(0, 20).order("created_at", { ascending: false });
-
-    const { data } = await query;
-
-    if (data) setups.value = data as unknown as Setup[];
-};
+if (data) setups.value = data as unknown as Setup[];
 </script>
 
 <template>
-    <div v-show="!loading" class="flex flex-col items-start gap-4 w-full">
+    <div class="flex flex-col items-start gap-4 w-full">
         <div class="w-full flex gap-4 items-start justify-between">
             <UiTitle label="みんなのセットアップ" icon="lucide:sparkles" />
-            <UiButton
+            <!-- <UiButton
                 icon="lucide:rotate-ccw"
                 ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                 @click="get"
-            />
+            /> -->
         </div>
         <MasonryWall
             v-if="setups"
             :items="setups"
             :column-width="200"
             :gap="20"
-            :ssr-columns="3"
             :min-columns="2"
             :max-columns="3"
         >
             <template #default="{ item }">
-                <NuxtLink :href="`/setup/${item.id}`">
+                <NuxtLink :to="`/setup/${item.id}`">
                     <ItemSetup
                         :name="item.name"
                         :avatar-name="item.avatar.name"
@@ -69,6 +56,7 @@ const get = async () => {
                         :author-avatar="item.author.avatar"
                         :created-at="item.created_at"
                         :image="item.image"
+                        :image-size="{ width: 16, height: 9 }"
                         class="hover:bg-neutral-200 dark:hover:bg-neutral-600"
                     />
                 </NuxtLink>

@@ -9,56 +9,41 @@ const props = withDefaults(
         authorAvatar: string | null;
         createdAt: string;
         image: string | null;
+        imageSize?: { width: number; height: number } | null;
         noHero?: boolean;
     }>(),
     {
         image: null,
+        imageSize: null,
         noHero: false,
     }
 );
 
 const date = new Date(props.createdAt);
-const dateLocale = date.toLocaleString("ja-JP", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+const dateLocale = date.toLocaleString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
 });
 
 // const fetchAvatar = ref<BoothItem | null>();
-const fetchImage = ref();
-const fetchAuthorAvatar = ref();
-const loading = ref(true);
 
-onMounted(async () => {
-    // fetchAvatar.value = await useFetchBooth({ id: props.avatar, url: null });
-
-    // if (!fetchAvatar.value) {
-    //     console.log("avatar not found");
-    //     // TODO: アバターがリンク切れの場合のハンドリング
-    // }
-
-    if (props.image) {
-        fetchImage.value = await useGetImage(props.image);
-    } else {
-        fetchImage.value = null;
-    }
-
-    if (props.authorAvatar) {
-        fetchAuthorAvatar.value = await useGetImage(props.authorAvatar);
-    } else {
-        fetchAuthorAvatar.value = null;
-    }
-
-    loading.value = false;
-});
+// onMounted(async () => {
+// fetchAvatar.value = await useFetchBooth({ id: props.avatar, url: null });
+// if (!fetchAvatar.value) {
+//     console.log("avatar not found");
+//     // TODO: アバターがリンク切れの場合のハンドリング
+// }
+// });
 </script>
 
 <template>
     <ItemBase>
         <template #hero>
-            <div v-if="fetchImage && !noHero" class="px-1.5 pt-1.5 pb-0.5">
+            <div v-if="props.image && !noHero" class="px-1.5 pt-1.5 pb-0.5">
                 <NuxtImg
-                    :src="fetchImage"
+                    :src="useGetImage(props.image)"
+                    :placeholder="[16, 9]"
                     format="webp"
                     quality="85"
                     sizes="300px"
@@ -68,11 +53,11 @@ onMounted(async () => {
         </template>
         <template #thumbnail>
             <div
-                v-if="fetchImage && noHero"
+                v-if="props.image && noHero"
                 class="py-1.5 pl-1.5 flex-shrink-0 max-w-20"
             >
                 <NuxtImg
-                    :src="fetchImage"
+                    :src="useGetImage(props.image)"
                     :alt="props.name"
                     fit="cover"
                     format="webp"
@@ -82,7 +67,7 @@ onMounted(async () => {
                 />
             </div>
 
-            <div v-if="!fetchImage" class="py-1.5 pl-1.5 flex-shrink-0">
+            <div v-if="!props.image" class="py-1.5 pl-1.5 flex-shrink-0">
                 <NuxtImg
                     :src="props.avatarThumbnail"
                     :alt="props.name"
@@ -127,9 +112,9 @@ onMounted(async () => {
                                     class="flex flex-row gap-2 items-center"
                                 >
                                     <UAvatar
-                                        v-if="fetchAuthorAvatar"
+                                        v-if="props.authorAvatar"
                                         size="xs"
-                                        :src="fetchAuthorAvatar"
+                                        :src="useGetImage(props.authorAvatar)"
                                         :alt="props.authorName"
                                     />
                                     <div
