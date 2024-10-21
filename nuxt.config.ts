@@ -51,8 +51,11 @@ export default defineNuxtConfig({
     },
 
     routeRules: {
-        "/": { swr: true },
-        "/setup": { swr: true },
+        "/": { isr: true },
+        "/setup/**": { isr: true },
+        '/faq': { prerender: true },
+        '/terms': { prerender: true },
+        '/privacy-policy': { prerender: true },
     },
 
     devtools: {
@@ -70,7 +73,6 @@ export default defineNuxtConfig({
         "@nuxtjs/color-mode",
         "@nuxtjs/supabase",
         "@nuxt/eslint",
-        "@pinia/nuxt",
     ],
     compatibilityDate: "2024-08-21",
 

@@ -45,75 +45,16 @@ onMounted(async () => {
                 </span>
             </div>
             <!-- eslint-disable vue/no-v-html -->
-            <div v-html="sanitizeHtml(main)" class="markdown"></div>
+            <div v-html="sanitizeHtml(main)" class="prose prose-neutral dark:prose-invert"></div>
         </article>
 
         <div v-if="error" class="flex flex-col items-center gap-10 pt-10">
-            <h2
-                class="flex text-9xl font-extrabold font-['Montserrat'] text-neutral-500 dark:text-neutral-400"
-            >
+            <h2 class="flex text-9xl font-extrabold font-['Montserrat'] text-neutral-500 dark:text-neutral-400">
                 404
             </h2>
-            <div
-                class="text-xl font-bold text-neutral-500 dark:text-neutral-400"
-            >
+            <div class="text-xl font-bold text-neutral-500 dark:text-neutral-400">
                 ページが見つかりませんでした。
             </div>
         </div>
     </main>
 </template>
-
-<style>
-.markdown h1 {
-    font-family: "Noto Sans Japanese", sans-serif;
-}
-
-.markdown h2 {
-    font-size: 1.5em;
-    font-family: "Noto Sans Japanese", sans-serif;
-    font-weight: 600;
-    color: #333;
-    margin-top: 3rem;
-    margin-bottom: 1rem;
-}
-
-.dark .markdown h2 {
-    color: #eee;
-}
-
-.markdown h3 {
-    font-size: 1.17em;
-    margin: 0.83em 0;
-}
-
-.markdown p {
-    color: #383838;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    margin-left: 0.2em;
-}
-
-.dark .markdown p {
-    color: #cecece;
-}
-
-.markdown ul {
-    list-style-type: disc;
-    color: #383838;
-    margin-left: 2em;
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-.dark .markdown ul {
-    color: #cecece;
-}
-
-.markdown li {
-    color: #383838;
-}
-
-.dark .markdown li {
-    color: #cecece;
-}
-</style>

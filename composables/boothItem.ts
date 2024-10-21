@@ -1,14 +1,6 @@
 export const useFetchBooth = async (id: number): Promise<Item | null> => {
-    // const storeBoothItems = useBoothItems();
-    // const { AddItem } = storeBoothItems;
-    // const { boothItems } = storeToRefs(storeBoothItems);
 
     if (!id) return null;
-
-    // if (boothItems.value[id]) {
-    //     // console.log("Returning cached item", id);
-    //     return boothItems.value[id];
-    // }
 
     const client = await useSBClient();
     const { data: itemData } = await client
