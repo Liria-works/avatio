@@ -43,7 +43,6 @@ const dateLocale = date.toLocaleString('ja-JP', {
             <div v-if="props.image && !noHero" class="px-1.5 pt-1.5 pb-0.5">
                 <NuxtImg
                     :src="useGetImage(props.image)"
-                    :placeholder="[16, 9]"
                     format="webp"
                     quality="85"
                     sizes="300px"

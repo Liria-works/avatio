@@ -1,13 +1,13 @@
-import { loadDefaultJapaneseParser } from "budoux";
+import { loadDefaultJapaneseParser } from 'budoux';
 
 export const useSentence = (text: string) => {
     const parser = loadDefaultJapaneseParser();
-    return parser.parse(text).join("\u200b");
+    return parser.parse(text).join('\u200b');
     // return text.replace(/。/g, "。\u200b");
 };
 
 export const useLineBreak = (text: string) => {
-    return text.replace(/(\r\n){3,}|\r{3,}|\n{3,}/, "\n\n");
+    return text.replace(/(\r\n){3,}|\r{3,}|\n{3,}/, '\n\n');
 };
 
 export const useWriteClipboard = (text: string) => {
@@ -16,18 +16,18 @@ export const useWriteClipboard = (text: string) => {
 
 export const useAvatarName = (text: string) => {
     return text
-        .replace("オリジナル", "")
-        .replace("3Dモデル", "")
-        .replace("/", " ")
-        .replace("「", " ")
-        .replace("」", " ")
-        .replace("【", " ")
-        .replace("】", " ")
-        .replace("『", " ")
-        .replace("』", " ")
-        .replace("【", " ")
-        .replace("】", " ")
-        .replace("  ", " ");
+        .replace(/オリジナル/g, '')
+        .replace(/3Dモデル/g, '')
+        .replace(/\//g, ' ')
+        .replace(/「/g, ' ')
+        .replace(/」/g, ' ')
+        .replace(/【/g, ' ')
+        .replace(/】/g, ' ')
+        .replace(/『/g, ' ')
+        .replace(/』/g, ' ')
+        .replace(/【/g, ' ')
+        .replace(/】/g, ' ')
+        .replace(/ {2}/g, ' ');
 };
 
 export const useDateElapsed = (date: Date) => {

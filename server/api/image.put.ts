@@ -1,6 +1,6 @@
-import sharp from "sharp";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import authMiddleware from "./Auth";
+import sharp from 'sharp';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import authMiddleware from './Auth';
 
 export default defineEventHandler(async (event) => {
     await authMiddleware(event);
@@ -8,13 +8,13 @@ export default defineEventHandler(async (event) => {
     const runtime = useRuntimeConfig();
 
     const formData = await readFormData(event);
-    const file = formData.get("file") as File;
-    const size = formData.get("size") as string;
-    const res = formData.get("res") as string;
-    const path = formData.get("path") as string;
+    const file = formData.get('file') as File;
+    const size = formData.get('size') as string;
+    const res = formData.get('res') as string;
+    const path = formData.get('path') as string;
 
     if (!file || !file.size)
-        throw createError({ statusCode: 400, message: "No file provided" });
+        throw createError({ statusCode: 400, message: 'No file provided' });
 
     if (!size || !res)
         throw createError({
@@ -30,12 +30,12 @@ export default defineEventHandler(async (event) => {
         if (isNaN(maxRes) || maxRes <= 0)
             throw createError({
                 statusCode: 400,
-                message: "Invalid size parameter",
+                message: 'Invalid size parameter',
             });
 
         let resolution = maxRes;
-        let width = (await image.metadata()).width;
-        let height = (await image.metadata()).height;
+        const width = (await image.metadata()).width;
+        const height = (await image.metadata()).height;
 
         if (width && height) {
             if (Math.max(width, height) < maxRes) {
@@ -44,23 +44,23 @@ export default defineEventHandler(async (event) => {
         }
 
         const compressed = await image
-            .resize({ width: resolution, height: resolution, fit: "inside" })
-            .toFormat("jpeg")
+            .resize({ width: resolution, height: resolution, fit: 'inside' })
+            .toFormat('jpeg')
             .toBuffer();
 
         const unixTime = Math.floor(Date.now());
-        console.log("unixTime", unixTime);
+        console.log('unixTime', unixTime);
         let base64UnixTime = Buffer.from(unixTime.toString()).toString(
-            "base64"
+            'base64'
         );
-        base64UnixTime = base64UnixTime.replace(/[\\/:*?"<>|]/g, "");
+        base64UnixTime = base64UnixTime.replace(/[\\/:*?"<>|]/g, '');
 
         const fileName = path
             ? `${path}/${base64UnixTime}.jpg`
             : `${base64UnixTime}.jpg`;
 
         const S3 = new S3Client({
-            region: "auto",
+            region: 'auto',
             endpoint: runtime.r2Endpoint,
             credentials: {
                 accessKeyId: runtime.r2AccessKey,
@@ -69,9 +69,10 @@ export default defineEventHandler(async (event) => {
         });
 
         const put = new PutObjectCommand({
-            ACL: "public-read",
+            ACL: 'public-read',
             Body: compressed,
-            Bucket: "avatio",
+            ContentType: 'image/jpeg',
+            Bucket: 'avatio',
             Key: fileName,
         });
 
@@ -82,7 +83,7 @@ export default defineEventHandler(async (event) => {
         console.error(error);
         throw createError({
             statusCode: 400,
-            message: "Faild to upload image",
+            message: 'Faild to upload image',
         });
     }
 });

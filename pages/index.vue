@@ -14,20 +14,40 @@ type Setup = {
 };
 
 const setups = ref<Setup[]>([]);
+const page = ref(0);
+const loading = ref(false);
 
-let query = client
-    .from('setups')
-    .select(
-        'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)'
-    );
-if (user.value) query = query.neq('author', user.value.id);
-query = query.range(0, 20).order('created_at', { ascending: false });
+const get = async (num: number) => {
+    const setupsPerPage: number = 10;
 
-const { data } = await query;
+    loading.value = true;
 
-if (data) setups.value = data as unknown as Setup[];
+    let query = client
+        .from('setups')
+        .select(
+            'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)'
+        );
+    if (user.value) query = query.neq('author', user.value.id);
+    query = query
+        .range(num * setupsPerPage, num * setupsPerPage + (setupsPerPage - 1))
+        .order('created_at', { ascending: false });
 
-onMounted(() => {
+    const { data } = await query;
+
+    loading.value = false;
+
+    if (data) return data as unknown as Setup[];
+    return [];
+};
+
+const paginate = async () => {
+    setups.value = [...setups.value, ...(await get(page.value))];
+    page.value++;
+};
+
+paginate();
+
+onMounted(async () => {
     user.value = useSupabaseUser().value;
 });
 </script>
@@ -72,6 +92,16 @@ onMounted(() => {
                     </NuxtLink>
                 </template>
             </MasonryWall>
+
+            <div class="w-full flex flex-col items-center">
+                <UiButton
+                    :disabled="loading"
+                    label="さらに読み込む"
+                    :icon="loading ? 'svg-spinners:ring-resize' : ''"
+                    ui="h-10"
+                    @click="paginate()"
+                />
+            </div>
 
             <div
                 v-if="!setups"

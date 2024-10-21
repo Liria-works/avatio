@@ -15,6 +15,10 @@ const setup = ref<Setup | null>(null);
 const bookmark = ref(false);
 
 const toggleBookmark = async () => {
+    if (!user.value) {
+        return (modal_login.value = true);
+    }
+
     if (!setup.value) {
         return new Error('Invalid setup data');
     }
@@ -201,6 +205,11 @@ onMounted(async () => {
                             "
                             padding=""
                             ui="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            :ui-icon="
+                                bookmark
+                                    ? 'text-red-500 dark:text-red-400'
+                                    : 'text-neutral-600 dark:text-neutral-300'
+                            "
                             @click="toggleBookmark"
                         />
 

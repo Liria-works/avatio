@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { twMerge } from "tailwind-merge";
+import { twMerge } from 'tailwind-merge';
 
 const props = withDefaults(
     defineProps<{
         disabled?: boolean;
-        type?: "button" | "submit" | "reset";
+        type?: 'button' | 'submit' | 'reset';
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, vue/require-default-prop
         to?: any;
         newTab?: boolean;
@@ -18,37 +18,19 @@ const props = withDefaults(
     }>(),
     {
         disabled: false,
-        type: "button",
+        type: 'button',
         newTab: false,
-        icon: "",
+        icon: '',
         iconSize: 18,
-        label: "",
+        label: '',
         outline: true,
-        ui: "",
-        uiIcon: "",
-        tooltip: "",
+        ui: '',
+        uiIcon: '',
+        tooltip: '',
     }
 );
 
-const emit = defineEmits(["click"]);
-
-const buttonClass = twMerge(
-    props.disabled ? "cursor-not-allowed" : "cursor-pointer",
-    props.icon.length ? "p-3" : "px-4 py-3",
-    "w-fit rounded-lg flex gap-2 items-center justify-center",
-    "bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600",
-    "text-sm font-semibold align-middle leading-none",
-    "text-neutral-800 dark:text-neutral-200",
-    // props.outline ? "border border-1" : "border-0",
-    "outline outline-1 outline-neutral-400 dark:outline-neutral-600",
-    props.ui,
-    "transition duration-50 delay-0 ease-in-out"
-);
-
-const iconClass = twMerge(
-    "text-neutral-600 dark:text-neutral-300",
-    props.uiIcon
-);
+const emit = defineEmits(['click']);
 </script>
 
 <template>
@@ -57,14 +39,31 @@ const iconClass = twMerge(
             v-if="!props.to"
             :type="props.type"
             :disabled="props.disabled"
-            :class="buttonClass"
+            :class="
+                twMerge(
+                    props.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+                    props.icon.length ? 'p-3' : 'px-4 py-3',
+                    'w-fit rounded-lg flex gap-2 items-center justify-center',
+                    'bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600',
+                    'text-sm font-semibold align-middle leading-none',
+                    'text-neutral-800 dark:text-neutral-200',
+                    'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
+                    props.ui,
+                    'transition duration-50 delay-0 ease-in-out'
+                )
+            "
             @click="emit('click')"
         >
             <Icon
                 v-if="props.icon.length"
                 :name="props.icon"
                 :size="props.iconSize"
-                :class="iconClass"
+                :class="
+                    twMerge(
+                        'text-neutral-600 dark:text-neutral-300',
+                        props.uiIcon
+                    )
+                "
             />
             <p class="empty:hidden whitespace-nowrap leading-none">
                 {{ props.label }}
@@ -77,13 +76,30 @@ const iconClass = twMerge(
             :target="props.newTab ? '_blank' : '_self'"
             no-rel
             :disabled="props.disabled"
-            :class="buttonClass"
+            :class="
+                twMerge(
+                    props.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+                    props.icon.length ? 'p-3' : 'px-4 py-3',
+                    'w-fit rounded-lg flex gap-2 items-center justify-center',
+                    'bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600',
+                    'text-sm font-semibold align-middle leading-none',
+                    'text-neutral-800 dark:text-neutral-200',
+                    'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
+                    props.ui,
+                    'transition duration-50 delay-0 ease-in-out'
+                )
+            "
         >
             <Icon
                 v-if="props.icon.length"
                 :name="props.icon"
                 :size="props.iconSize"
-                :class="iconClass"
+                :class="
+                    twMerge(
+                        'text-neutral-600 dark:text-neutral-300',
+                        props.uiIcon
+                    )
+                "
             />
             <p class="empty:hidden whitespace-nowrap leading-none">
                 {{ props.label }}
