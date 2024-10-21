@@ -17,7 +17,7 @@ onMounted(async () => {
             .select("avatar")
             .eq("id", user.value.id)
             .maybeSingle();
-        if (data && data.avatar && data.avatar.length) avatar.value = data.avatar;
+        if (data && data.avatar && data.avatar.length) avatar.value = useGetImage(data.avatar);
     }
 });
 </script>

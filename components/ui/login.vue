@@ -4,42 +4,43 @@ const props = withDefaults(
         redirect?: string;
     }>(),
     {
-        redirect: "/",
+        redirect: '/',
     }
 );
 
-const emit = defineEmits(["success"]);
+const emit = defineEmits(['success']);
 
 const { loginValidate, loginErrorMessages } = useLoginVaridate();
 const { signupValidate, signupErrorMessages } = useSignupVaridate();
-const loginError = ref<string>("");
-const signupError = ref<string>("");
+const loginError = ref<string>('');
+const signupError = ref<string>('');
 
 const mode_login = ref(true);
 const loading = ref(false);
 
 const login = ref({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
 });
 
+const signUpAgree = ref(false);
 const signUp = ref({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
 });
 
 watch(login.value, () => {
     loginErrorMessages.value = null;
-    loginError.value = "";
+    loginError.value = '';
 });
 
 watch(signUp.value, () => {
     signupErrorMessages.value = null;
-    signupError.value = "";
+    signupError.value = '';
 });
 
 const handleLogin = async () => {
-    loginError.value = "";
+    loginError.value = '';
 
     loginValidate({
         email: login.value.email,
@@ -52,11 +53,11 @@ const handleLogin = async () => {
         try {
             loading.value = true;
             await useLogin(login.value.email, login.value.password);
-            emit("success");
+            emit('success');
             navigateTo(props.redirect, { external: true });
         } catch (error) {
             console.error(error);
-            loginError.value = "メールアドレスまたはパスワードが間違っています";
+            loginError.value = 'メールアドレスまたはパスワードが間違っています';
         } finally {
             loading.value = false;
         }
@@ -64,7 +65,7 @@ const handleLogin = async () => {
 };
 
 const handleSignUp = async () => {
-    signupError.value = "";
+    signupError.value = '';
 
     signupValidate({
         email: signUp.value.email,
@@ -77,7 +78,7 @@ const handleSignUp = async () => {
         try {
             loading.value = true;
             await useSignUp(signUp.value.email, signUp.value.password);
-            emit("success");
+            emit('success');
             navigateTo(props.redirect);
         } catch (error) {
             alert(error);
@@ -91,7 +92,23 @@ const handleSignUp = async () => {
 <template>
     <UCard>
         <div v-if="mode_login" class="flex flex-col gap-4 items-center">
-            <div class="font-bold text-2xl">ログイン</div>
+            <div class="font-bold text-2xl mb-4">ログイン</div>
+
+            <UButton
+                block
+                variant="outline"
+                icon="simple-icons:x"
+                :ui="{
+                    rounded: 'rounded-xl',
+                    ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
+                }"
+                class="w-96 h-10"
+                @click="useLoginWithTwitter"
+            >
+                X アカウントでログイン
+            </UButton>
+
+            <UDivider label="OR" />
 
             <UForm
                 :state="login"
@@ -154,11 +171,36 @@ const handleSignUp = async () => {
                     :ui="{ rounded: 'rounded-xl' }"
                     class="h-10"
                 >
-                    {{ loading ? "処理中" : "メールアドレスでログイン" }}
+                    {{ loading ? '処理中' : 'メールアドレスでログイン' }}
                 </UButton>
             </UForm>
+        </div>
 
-            <UDivider label="OR" />
+        <div v-if="!mode_login" class="flex flex-col gap-4 items-center">
+            <div class="font-bold text-2xl mb-4">サインアップ</div>
+
+            <UCheckbox v-model="signUpAgree" class="mb-4">
+                <template #label>
+                    <p>
+                        <NuxtLink
+                            to="/terms"
+                            target="_blank"
+                            class="underline hover:text-neutral-400 hover:dark:text-neutral-400"
+                        >
+                            利用規約
+                        </NuxtLink>
+                        ・
+                        <NuxtLink
+                            to="/privacy-policy"
+                            target="_blank"
+                            class="underline hover:text-neutral-400 hover:dark:text-neutral-400"
+                        >
+                            プライバシーポリシー
+                        </NuxtLink>
+                        に同意
+                    </p>
+                </template>
+            </UCheckbox>
 
             <UButton
                 block
@@ -168,15 +210,14 @@ const handleSignUp = async () => {
                     rounded: 'rounded-xl',
                     ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
                 }"
-                class="w-96 h-10"
+                class="h-10"
+                :disabled="!signUpAgree"
                 @click="useLoginWithTwitter"
             >
-                Login with X
+                X アカウントでサインアップ
             </UButton>
-        </div>
 
-        <div v-if="!mode_login" class="flex flex-col gap-4 items-center">
-            <div class="font-bold text-2xl">サインアップ</div>
+            <UDivider label="OR" />
 
             <UForm
                 :state="signUp"
@@ -264,30 +305,14 @@ const handleSignUp = async () => {
                 <UButton
                     block
                     type="submit"
-                    :disabled="loading"
+                    :disabled="loading || !signUpAgree"
                     variant="outline"
                     :ui="{ rounded: 'rounded-xl' }"
                     class="h-10"
                 >
-                    {{ loading ? "処理中" : "メールアドレスでサインアップ" }}
+                    {{ loading ? '処理中' : 'メールアドレスでサインアップ' }}
                 </UButton>
             </UForm>
-
-            <UDivider label="OR" />
-
-            <UButton
-                block
-                variant="outline"
-                icon="simple-icons:x"
-                :ui="{
-                    rounded: 'rounded-xl',
-                    ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                }"
-                class="h-10"
-                @click="useLoginWithTwitter"
-            >
-                Sign up with X
-            </UButton>
         </div>
 
         <template #footer>
@@ -303,7 +328,7 @@ const handleSignUp = async () => {
                     @click="mode_login = !mode_login"
                 >
                     {{
-                        mode_login ? "サインアップはこちら" : "ログインはこちら"
+                        mode_login ? 'サインアップはこちら' : 'ログインはこちら'
                     }}
                 </UButton>
             </div>

@@ -45,7 +45,7 @@ onMounted(async () => {
                 </span>
             </div>
             <!-- eslint-disable vue/no-v-html -->
-            <div v-html="sanitizeHtml(main)" class="prose prose-neutral dark:prose-invert"></div>
+            <div v-html="sanitizeHtml(main)" class="prose prose-neutral dark:prose-invert max-w-none"></div>
         </article>
 
         <div v-if="error" class="flex flex-col items-center gap-10 pt-10">
