@@ -53,17 +53,10 @@ export default defineNuxtConfig({
     routeRules: {
         '/': { isr: true },
         '/setup/**': { isr: true },
-        '/faq': { prerender: true },
-        '/terms': { prerender: true },
-        '/privacy-policy': { prerender: true },
     },
 
     nitro: {
         preset: 'vercel',
-        prerender: {
-            crawlLinks: true,
-            routes: ['/faq', '/terms', '/privacy-policy'],
-        },
     },
 
     devtools: {
