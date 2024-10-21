@@ -44,7 +44,7 @@ export default defineNuxtConfig({
                     property: 'og:description',
                     content: 'アバターセットアップ共有サービス',
                 },
-                { hid: 'og:image', property: 'og:image', content: '' }, // todo!
+                { hid: 'og:image', property: 'og:image', content: '/ogp.png' },
                 { name: 'twitter:card', content: 'summary_large_image' },
             ],
         },
@@ -61,6 +61,7 @@ export default defineNuxtConfig({
     nitro: {
         preset: 'vercel',
         prerender: {
+            crawlLinks: true,
             routes: ['/faq', '/terms', '/privacy-policy'],
         },
     },
