@@ -1,93 +1,135 @@
-export const useSaveUsername = async (username: string) => {
-    const client = await useSupabaseClient();
-    const user = useSupabaseUser();
+import { z, ZodError } from 'zod';
 
-    if (username === "") {
-        useAddToast("ユーザー名を入力してください");
-        return;
-    }
-    const { error } = await client
-        .from("users")
-        .update({ name: username } as never)
-        .eq("id", user.value.id);
+export const useLoginVaridate = () => {
+    const loginErrorMessages = ref<ZodError | null>(null);
+
+    const loginSchema = z.object({
+        email: z.string().email('有効なメールアドレスを入力してください'),
+        password: z.string().min(1, 'パスワードを入力してください'),
+    });
+
+    const loginValidate = (data: z.TypeOf<typeof loginSchema>) => {
+        try {
+            loginSchema.parse(data);
+            if (loginErrorMessages.value) {
+                loginErrorMessages.value = null;
+            }
+        } catch (e) {
+            if (e instanceof ZodError) {
+                loginErrorMessages.value = e;
+            }
+        }
+    };
+
+    return {
+        loginErrorMessages,
+        loginValidate,
+    };
+};
+
+export const useSignupVaridate = () => {
+    const signupErrorMessages = ref<ZodError | null>(null);
+
+    const signupSchema = z.object({
+        email: z.string().email('有効なメールアドレスを入力してください'),
+        password: z.string().min(1, 'パスワードを入力してください'),
+    });
+
+    const signupValidate = (data: z.TypeOf<typeof signupSchema>) => {
+        try {
+            signupSchema.parse(data);
+            if (signupErrorMessages.value) {
+                signupErrorMessages.value = null;
+            }
+        } catch (e) {
+            if (e instanceof ZodError) {
+                signupErrorMessages.value = e;
+            }
+        }
+    };
+
+    return {
+        signupErrorMessages,
+        signupValidate,
+    };
+};
+
+export const useSignOut = async () => {
+    const supabase = await useSBClient();
+    await supabase.auth.signOut();
+    navigateTo('/', { external: true });
+};
+
+export const useLogin = async (email: string, password: string) => {
+    const supabase = useSupabaseClient();
+    const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+    });
+    if (error) throw error;
+};
+
+export const useSignUp = async (email: string, password: string) => {
+    const supabase = await useSBClient();
+
+    const { error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+    });
+    if (error) throw error;
+
+    navigateTo('/user/setting');
+
+    useAddToast('サインアップしました。');
+};
+
+export const useLoginWithTwitter = async () => {
+    const supabase = await useSBClient();
+
+    const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'twitter',
+    });
 
     if (error) {
-        useAddToast("ユーザー名の変更に失敗しました");
+        navigateTo('/login');
+        useAddToast('ログインに失敗しました。');
+    }
+};
+
+export const useSaveUsername = async (username: string) => {
+    const client = await useSBClient();
+    const user = useSupabaseUser();
+
+    if (username === '') return useAddToast('ユーザー名を入力してください');
+
+    const { error } = await client
+        .from('users')
+        .update({ name: username } as never)
+        .eq('id', user.value.id);
+
+    if (error) {
+        useAddToast('ユーザー名の変更に失敗しました');
         throw error;
     }
 
-    useAddToast("ユーザー名を変更しました");
+    useAddToast('ユーザー名を変更しました');
 };
 
 export const useSaveBio = async (bio: string) => {
-    const client = await useSupabaseClient();
+    const client = await useSBClient();
     const user = useSupabaseUser();
 
     const { error } = await client
-        .from("users")
+        .from('users')
         .update({ bio: useLineBreak(bio) } as never)
-        .eq("id", user.value.id);
+        .eq('id', user.value.id);
 
     if (error) {
-        useAddToast("bioの変更に失敗しました");
+        useAddToast('bioの変更に失敗しました');
         throw error;
     }
 
-    useAddToast("bioを変更しました");
-};
-
-export const useChangeAvatar = async () => {
-    const client = await useSupabaseClient();
-    const user = useSupabaseUser();
-
-    const storeMyAvatar = useMyAvatar();
-    const { GetMyAvatar } = storeMyAvatar;
-
-    const { open, onChange } = useFileDialog({
-        accept: "image/png, image/jpeg, image/tiff", // Set to accept only image files
-        multiple: false,
-    });
-
-    const faild = () => {
-        useAddToast("アバターの変更に失敗しました");
-        throw new Error("Failed to change avatar");
-    };
-
-    open();
-    onChange(async (files) => {
-        if (!files || files.length === 0) throw new Error("No files selected");
-        const file = files[0];
-
-        const uploaded = await useUploadAvatar(file);
-
-        if (!uploaded) {
-            faild();
-            return;
-        }
-
-        const legacy = await client
-            .from("users")
-            .select("avatar")
-            .eq("id", user.value.id)
-            .single();
-
-        const { error } = await client
-            .from("users")
-            .update({ avatar: uploaded } as never)
-            .eq("id", user.value.id);
-
-        if (error) {
-            faild();
-            return;
-        }
-
-        if (legacy.data) {
-            await client.storage.from("images").remove([legacy.data.avatar]);
-        }
-
-        await GetMyAvatar();
-        useAddToast("アバターを変更しました");
-    });
+    useAddToast('bioを変更しました');
 };
 
 export const useSaveLink = async (links: string[]) => {
@@ -95,14 +137,14 @@ export const useSaveLink = async (links: string[]) => {
     const user = useSupabaseUser();
 
     const { error } = await client
-        .from("users")
+        .from('users')
         .update({ links: links } as never)
-        .eq("id", user.value.id);
+        .eq('id', user.value.id);
 
     if (error) {
-        useAddToast("リンクの変更に失敗しました");
+        useAddToast('リンクの変更に失敗しました');
         throw error;
     }
 
-    useAddToast("リンクを変更しました");
+    useAddToast('リンクを変更しました');
 };

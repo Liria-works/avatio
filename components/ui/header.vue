@@ -3,88 +3,64 @@ import type { User } from "@supabase/supabase-js";
 
 const colorMode = useColorMode();
 const user = ref<User | null>(null);
+const avatar = ref<string | null>(null);
 
-const storeMyAvatar = useMyAvatar();
-const { GetMyAvatar } = storeMyAvatar;
-const { myAvatar } = storeToRefs(storeMyAvatar);
-
-const modalSearch = ref(false);
+// const modalSearch = ref(false);
 
 onMounted(async () => {
     user.value = useSupabaseUser().value;
-    await GetMyAvatar();
+
+    if (user.value) {
+        const client = await useSBClient();
+        const { data } = await client
+            .from("users")
+            .select("avatar")
+            .eq("id", user.value.id)
+            .maybeSingle();
+        if (data && data.avatar && data.avatar.length) avatar.value = useGetImage(data.avatar);
+    }
 });
 </script>
 
 <template>
     <div class="flex items-start justify-between w-full">
-        <div
-            class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-shrink-0"
-        >
-            <NuxtLink to="/">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-shrink-0">
+            <NuxtLink to="/" class="pt-1">
                 <ClientOnly>
-                    <NuxtImg
-                        v-if="colorMode.value === 'light'"
-                        width="160"
-                        src="/logo_2_light.svg"
-                        alt="Avatio Logo"
-                    />
-                    <NuxtImg
-                        v-if="colorMode.value === 'dark'"
-                        width="160"
-                        src="/logo_2_dark.svg"
-                        alt="Avatio Logo"
-                    />
+                    <NuxtImg v-if="colorMode.value === 'light'" width="160" src="/logo_2_light.svg" alt="Avatio Logo" />
+                    <NuxtImg v-if="colorMode.value === 'dark'" width="160" src="/logo_2_dark.svg" alt="Avatio Logo" />
                 </ClientOnly>
             </NuxtLink>
             <NuxtLink to="/private_alpha" class="rounded-full">
-                <UBadge
-                    label="Private Alpha"
-                    size="sm"
-                    :ui="{ rounded: 'rounded-full' }"
-                    class="px-3"
-                />
+                <UBadge label="Private Alpha" size="sm" :ui="{ rounded: 'rounded-full' }"
+                    class="px-3 hover:bg-neutral-400 hover:dark:bg-neutral-500" />
             </NuxtLink>
         </div>
         <div class="flex items-center gap-12 inset">
             <div class="items-center gap-2 flex">
                 <div class="items-center gap-0.5 flex">
-                    <UiButton
-                        to="/search"
-                        tooltip="検索"
-                        icon="lucide:search"
-                        ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
-                    />
+                    <UiButton to="/search" tooltip="検索" icon="lucide:search"
+                        ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600" />
 
-                    <UModal
-                        v-model="modalSearch"
-                        :ui="{
-                            background: 'bg-white dark:bg-neutral-100',
-                            ring: 'ring-0',
-                            rounded: 'rounded-xl',
-                            inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
-                        }"
-                    >
+                    <!-- <UModal v-model="modalSearch" :ui="{
+                        background: 'bg-white dark:bg-neutral-100',
+                        ring: 'ring-0',
+                        rounded: 'rounded-xl',
+                        inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
+                    }">
                         <ModalSearch @close="modalSearch = false" />
-                    </UModal>
+                    </UModal> -->
 
                     <ClientOnly>
-                        <UiButton
-                            :icon-size="20"
-                            :icon="
-                                colorMode.value === 'light'
-                                    ? 'i-heroicons-sun-20-solid'
-                                    : 'i-heroicons-moon-20-solid'
-                            "
-                            tooltip="テーマ"
-                            ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
-                            @click="
+                        <UiButton :icon-size="20" :icon="colorMode.value === 'light'
+                            ? 'i-heroicons-sun-20-solid'
+                            : 'i-heroicons-moon-20-solid'
+                            " tooltip="テーマ" ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600" @click="
                                 colorMode.preference =
-                                    colorMode.value === 'dark'
-                                        ? 'light'
-                                        : 'dark'
-                            "
-                        />
+                                colorMode.value === 'dark'
+                                    ? 'light'
+                                    : 'dark'
+                                " />
                         <template #fallback>
                             <div class="w-0 h-8" />
                         </template>
@@ -103,34 +79,18 @@ onMounted(async () => {
                 </div>
 
                 <div class="flex items-center">
-                    <NuxtLink
-                        v-if="user"
-                        :to="`/user/${user?.id}`"
-                        class="rounded-full flex items-center outline outline-4 outline-transparent hover:outline-neutral-600 transition-all ease-in-out duration-100"
-                    >
-                        <UAvatar
-                            v-if="myAvatar"
-                            :src="myAvatar"
-                            alt="Avatar"
-                            size="sm"
-                        />
-                        <div
-                            v-else
-                            class="flex items-center justify-center size-[32px] rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500"
-                        >
-                            <Icon
-                                name="lucide:user-round"
-                                size="18"
-                                class="text-neutral-600 dark:text-neutral-300"
-                            />
+                    <NuxtLink v-if="user" :to="`/user/${user?.id}`"
+                        class="rounded-full flex items-center outline outline-4 outline-transparent hover:outline-neutral-300 hover:dark:outline-neutral-600 transition-all ease-in-out duration-100">
+                        <UAvatar v-if="avatar" :src="avatar" alt="Avatar" size="sm" />
+                        <div v-else
+                            class="flex items-center justify-center size-[32px] rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500">
+                            <Icon name="lucide:user-round" size="18" class="text-neutral-600 dark:text-neutral-300" />
                         </div>
                     </NuxtLink>
 
                     <NuxtLink v-else to="/login">
-                        <UiButton
-                            label="ログイン"
-                            ui="outline-0 px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
-                        />
+                        <UiButton label="ログイン"
+                            ui="outline-0 px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600" />
                     </NuxtLink>
                 </div>
             </div>

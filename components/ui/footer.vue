@@ -3,7 +3,7 @@ const colorMode = useColorMode();
 const modal_feedback = ref(false);
 
 const buttonLink =
-    "outline-0 p-1 text-xs font-semibold text-neutral-400 hover:text-neutral-500 dark:text-neutral-400 hover:dark:text-neutral-500 hover:bg-transparent hover:dark:bg-transparent";
+    'outline-0 p-1 text-xs font-semibold text-neutral-600 hover:text-neutral-400 dark:text-neutral-400 hover:dark:text-neutral-500 hover:bg-transparent hover:dark:bg-transparent';
 </script>
 
 <template>
@@ -44,9 +44,14 @@ const buttonLink =
                         target="_blank"
                         class="cursor-pointer flex gap-2 items-center justify-center rounded-lg p-1 px-2 hover:bg-neutral-200 dark:hover:bg-neutral-700"
                     >
-                        <LogoLiria color="#ccc" :size="18" />
+                        <LogoLiria
+                            :color="
+                                colorMode.value === 'dark' ? '#ccc' : '#484848'
+                            "
+                            :size="18"
+                        />
                         <span
-                            class="pr-0.5 pt-0.5 font-[Montserrat] font-semibold text-neutral-300"
+                            class="pr-0.5 pt-0.5 font-[Montserrat] font-semibold text-neutral-700 dark:text-neutral-300"
                         >
                             Liria
                         </span>
@@ -54,11 +59,7 @@ const buttonLink =
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <UiButton
-                        to="/releases"
-                        label="お知らせ"
-                        :ui="buttonLink"
-                    />
+                    <UiButton to="/release" label="お知らせ" :ui="buttonLink" />
 
                     <UiButton
                         label="フィードバック"
@@ -67,9 +68,7 @@ const buttonLink =
                     />
                 </div>
             </div>
-            <div
-                class="items-center justify-center gap-4 flex text-neutral-700 dark:text-white"
-            >
+            <div class="items-center justify-center gap-4 flex">
                 <UiButton
                     disabled
                     tooltip="準備中"
@@ -79,18 +78,10 @@ const buttonLink =
 
                 <UiButton to="/faq" label="FAQ" :ui="buttonLink" />
 
-                <UiButton
-                    disabled
-                    to="/terms"
-                    tooltip="準備中"
-                    label="利用規約"
-                    :ui="buttonLink"
-                />
+                <UiButton to="/terms" label="利用規約" :ui="buttonLink" />
 
                 <UiButton
-                    disabled
                     to="/privacy-policy"
-                    tooltip="準備中"
                     label="プライバシーポリシー"
                     :ui="buttonLink"
                 />

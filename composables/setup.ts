@@ -80,15 +80,15 @@ export const usePublishSetup = async (
 
         if (!image) {
             useAddToast(
-                "画像のアップロードに失敗したため、投稿をキャンセルしました。",
-                "画像の形式が非対応の可能性があります。"
+                '画像のアップロードに失敗したため、投稿をキャンセルしました。',
+                '画像の形式が非対応の可能性があります。'
             );
             throw new Error();
         }
     }
 
     const responseSetup = await client
-        .from("setups")
+        .from('setups')
         .insert({
             name: setup.name,
             description: setup.description,
@@ -97,7 +97,7 @@ export const usePublishSetup = async (
             avatar_note: setup.avatar_note,
             image: image,
         } as never)
-        .select("id")
+        .select('id')
         .single();
 
     if (responseSetup.error) {
@@ -106,7 +106,7 @@ export const usePublishSetup = async (
 
     for (const item of setup.items) {
         const responseItems = await client
-            .from("setup_items")
+            .from('setup_items')
             .insert({
                 setup_id: responseSetup.data.id,
                 item_id: item.id,
@@ -122,7 +122,7 @@ export const usePublishSetup = async (
 
     for (const tag of setup.tags) {
         const responseTags = await client
-            .from("setup_tags")
+            .from('setup_tags')
             .insert({
                 setup_id: responseSetup.data.id,
                 tag: tag,
@@ -161,14 +161,14 @@ export const useUpdateSetup = async (
 
     try {
         const { error: deleteError } = await client
-            .from("setup_items")
+            .from('setup_items')
             .delete()
-            .eq("setup_id", Number(id));
+            .eq('setup_id', Number(id));
         if (deleteError) {
             throw deleteError;
         }
 
-        const { error: insertError } = await client.from("setup_items").insert(
+        const { error: insertError } = await client.from('setup_items').insert(
             items.items.map((item) => ({
                 setup_id: Number(id),
                 item_id: item.id,
@@ -181,9 +181,9 @@ export const useUpdateSetup = async (
         }
 
         const { error: updateError } = await client
-            .from("setups")
+            .from('setups')
             .update(setup as never)
-            .eq("id", Number(id));
+            .eq('id', Number(id));
 
         if (updateError) {
             throw updateError;
@@ -192,7 +192,7 @@ export const useUpdateSetup = async (
         return;
     } catch (error) {
         console.error(error);
-        throw new Error("Faild to update setup");
+        throw new Error('Faild to update setup');
     }
 };
 
@@ -201,18 +201,31 @@ export const useDeleteSetup = async (id: number, image: string) => {
     const router = useRouter();
 
     const { error: errorDeleteSetup } = await client
-        .from("setups")
+        .from('setups')
         .delete()
-        .eq("id", id);
+        .eq('id', id);
 
     if (errorDeleteSetup) {
-        useAddToast("セットアップの削除に失敗しました");
-        return new Error("Faild to delete setup");
+        useAddToast('セットアップの削除に失敗しました');
+        return new Error('Faild to delete setup');
     }
 
     // await client.storage.from("images").remove([image]);
     await useDeleteImage(image);
 
-    useAddToast("セットアップを削除しました");
-    router.push("/");
+    useAddToast('セットアップを削除しました');
+    router.push('/');
+};
+
+export const useGetPopularTags = async () => {
+    const client = await useSBClient();
+
+    const { data, error } = await client.rpc('tags_order_by_count');
+
+    if (!error) {
+        return data.map((obj: { tag: string }) => obj.tag);
+    } else {
+        console.error(error);
+        return null;
+    }
 };

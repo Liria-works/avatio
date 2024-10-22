@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useShare } from "@vueuse/core";
+import { useShare } from '@vueuse/core';
 
 const user = useSupabaseUser();
 const route = useRoute();
 const client = await useSBClient();
-const currentUrl = ref<string>("");
+const currentUrl = ref<string>('');
 
 const modal_login = ref(false);
 const modal_report = ref(false);
@@ -15,8 +15,12 @@ const setup = ref<Setup | null>(null);
 const bookmark = ref(false);
 
 const toggleBookmark = async () => {
+    if (!user.value) {
+        return (modal_login.value = true);
+    }
+
     if (!setup.value) {
-        return new Error("Invalid setup data");
+        return new Error('Invalid setup data');
     }
     if (bookmark.value) {
         await useRemoveBookmark(setup.value.id);
@@ -51,51 +55,51 @@ type Item = {
 
 const categorizedItems: { [key: string]: Item[] } = {};
 const categoryAttr: { [key: string]: { label: string; icon: string } } = {
-    cloth: { label: "衣装", icon: "lucide:shirt" },
-    accessory: { label: "アクセサリー", icon: "lucide:star" },
-    other: { label: "その他", icon: "lucide:package" },
+    cloth: { label: '衣装', icon: 'lucide:shirt' },
+    accessory: { label: 'アクセサリー', icon: 'lucide:star' },
+    other: { label: 'その他', icon: 'lucide:package' },
 };
 
 onMounted(async () => {
     if (!route.params.id) {
-        throw new Error("Invalid id");
+        throw new Error('Invalid id');
     }
 
     const select = [
-        "id",
-        "created_at",
-        "updated_at",
-        "name",
-        "description",
-        "avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw)",
-        "avatar_note",
-        "author(id, name, avatar)",
-        "image",
-        "setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)",
-        "setup_tags(tag)",
+        'id',
+        'created_at',
+        'updated_at',
+        'name',
+        'description',
+        'avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw)',
+        'avatar_note',
+        'author(id, name, avatar)',
+        'image',
+        'setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)',
+        'setup_tags(tag)',
     ];
 
     const { data } = await client
-        .from("setups")
-        .select(select.join(", "))
-        .eq("id", Number(id))
+        .from('setups')
+        .select(select.join(', '))
+        .eq('id', Number(id))
         .maybeSingle();
 
     setup.value = data as unknown as Setup; // Supabaseの型生成にバグがあるのでキャストしています
 
     if (!setup.value) {
-        throw new Error("Invalid setup data");
+        throw new Error('Invalid setup data');
     }
 
     if (setup.value?.setup_items) {
         for (const item of setup.value.setup_items) {
             let category: string;
             if (item.item_id.category === 209) {
-                category = "cloth";
+                category = 'cloth';
             } else if (item.item_id.category === 217) {
-                category = "accessory";
+                category = 'accessory';
             } else {
-                category = "other";
+                category = 'other';
             }
 
             if (!categorizedItems[category]) {
@@ -133,11 +137,11 @@ onMounted(async () => {
             />
 
             <div class="w-full flex flex-col gap-3">
-                <div
+                <h1
                     class="w-full text-left text-2xl font-bold line-clamp-2 break-keep [overflow-wrap:anywhere;] text-black dark:text-white"
                 >
-                    {{ useSentence(setup.name) || "" }}
-                </div>
+                    {{ useSentence(setup.name) || '' }}
+                </h1>
 
                 <div class="w-full flex items-center">
                     <div class="grow flex items-center gap-5">
@@ -153,11 +157,11 @@ onMounted(async () => {
                             >
                                 {{
                                     new Date(setup.created_at).toLocaleString(
-                                        "ja-JP",
+                                        'ja-JP',
                                         {
-                                            year: "numeric",
-                                            month: "2-digit",
-                                            day: "2-digit",
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
                                         }
                                     )
                                 }}
@@ -201,6 +205,11 @@ onMounted(async () => {
                             "
                             padding=""
                             ui="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            :ui-icon="
+                                bookmark
+                                    ? 'text-red-500 dark:text-red-400'
+                                    : 'text-neutral-600 dark:text-neutral-300'
+                            "
                             @click="toggleBookmark"
                         />
 
@@ -340,7 +349,7 @@ onMounted(async () => {
                     <p
                         class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100"
                     >
-                        {{ useSentence(setup.description) || "" }}
+                        {{ useSentence(setup.description) || '' }}
                     </p>
                 </div>
             </div>

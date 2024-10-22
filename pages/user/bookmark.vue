@@ -17,6 +17,7 @@ onMounted(async () => {
                 v-for="i in bookmarks"
                 :key="'user-setup-' + i.post.id"
                 :to="{ name: 'setup-id', params: { id: i.post.id } }"
+                class="w-full"
             >
                 <ItemSetupDetail
                     :name="i.post.name"
