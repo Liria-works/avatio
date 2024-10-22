@@ -1,5 +1,9 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 
+export const useAddToast = (title: string, description?: string) => {
+    const toast = useToast();
+    toast.add({ title: title, description: description, color: 'sky' });
+};
 export const useSentence = (text: string) => {
     const parser = loadDefaultJapaneseParser();
     return parser.parse(text).join('\u200b');

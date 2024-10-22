@@ -59,11 +59,7 @@ const buttonLink =
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <UiButton
-                        to="/releases"
-                        label="お知らせ"
-                        :ui="buttonLink"
-                    />
+                    <UiButton to="/release" label="お知らせ" :ui="buttonLink" />
 
                     <UiButton
                         label="フィードバック"
