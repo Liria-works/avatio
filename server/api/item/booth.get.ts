@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import authMiddleware from "../Auth";
+import authMiddleware from '../auth';
 
-import { serverSupabaseClient } from "#supabase/server";
+import { serverSupabaseClient } from '#supabase/server';
 // import { createClient } from "@vercel/edge-config";
 
-const url_base = "https://booth.pm/ja/items/";
+const url_base = 'https://booth.pm/ja/items/';
 
 export default defineEventHandler(async (event) => {
     // console.log(getQuery(event));
     const query = getQuery(event);
     const id = Number(query.id);
 
-    if (typeof id === "number") {
+    if (typeof id === 'number') {
         return GetBoothItem(event, Number(id));
     } else {
         return {
             status: 400,
-            body: { error: "No ID or URL provided" },
+            body: { error: 'No ID or URL provided' },
         };
     }
 });
@@ -31,7 +31,7 @@ async function GetBoothItem(event: any, id: number) {
     try {
         // データ取得
         const { data, error } = await client.functions.invoke(
-            "get-booth-item",
+            'get-booth-item',
             { body: { id: id } }
         );
 
@@ -65,22 +65,22 @@ async function GetBoothItem(event: any, id: number) {
 
         try {
             const config = await event.$fetch(
-                "/api/edgeConfig/allowed_category_id"
+                '/api/edgeConfig/allowed_category_id'
             );
             // const allowed_category_id: number[] | undefined = config.value;
             if (config.status !== 200 || !config.value)
                 return {
                     status: 400,
-                    body: { error: "Error in vercel edge config." },
+                    body: { error: 'Error in vercel edge config.' },
                 };
 
             const allowed_category_id: number[] = config.value;
 
             if (!allowed_category_id.includes(Number(data.category))) {
-                if (!data.tags.map((tag: string) => tag).includes("VRChat")) {
+                if (!data.tags.map((tag: string) => tag).includes('VRChat')) {
                     return {
                         status: 400,
-                        body: { error: "Invalid category ID" },
+                        body: { error: 'Invalid category ID' },
                     };
                 }
             }
@@ -88,7 +88,7 @@ async function GetBoothItem(event: any, id: number) {
             console.log(e);
             return {
                 status: 500,
-                body: { error: "Failed to get allowed tag data." },
+                body: { error: 'Failed to get allowed tag data.' },
             };
         }
 
@@ -110,23 +110,23 @@ async function GetBoothItem(event: any, id: number) {
         };
 
         await client
-            .from("shops")
+            .from('shops')
             .upsert(shopData as never)
-            .eq("id", data.shop_id);
+            .eq('id', data.shop_id);
 
         await client
-            .from("items")
+            .from('items')
             .upsert(itemData as never)
-            .eq("id", id);
+            .eq('id', id);
 
-        logDuration(startTime, "Booth", data.name);
+        logDuration(startTime, 'Booth', data.name);
 
-        return Response(200, "Data fetched from Booth URL", data);
+        return Response(200, 'Data fetched from Booth URL', data);
     } catch (error) {
         console.log(error);
         return {
             status: 500,
-            body: { error: "Failed to fetch data" },
+            body: { error: 'Failed to fetch data' },
         };
     }
 }

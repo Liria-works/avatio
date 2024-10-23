@@ -1,6 +1,6 @@
 import sharp from 'sharp';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import authMiddleware from './Auth';
+import authMiddleware from './auth';
 
 export default defineEventHandler(async (event) => {
     await authMiddleware(event);
