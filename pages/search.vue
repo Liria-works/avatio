@@ -13,51 +13,52 @@ const popularAvatars = ref<{ id: number; name: string; thumbnail: string }[]>(
 );
 
 const Search = async (method: string, query: string[] | number[]) => {
-    if (method === "item") {
+    if (method === 'item') {
         resultItem.value = await useFetchBooth(query[0] as number);
     } else {
         resultItem.value = null;
     }
 
-    const { data, error } = await client.rpc("search_setups", {
+    const { data, error } = await client.rpc('search_setups', {
         method: method,
         query: query,
     });
 
     if (error) console.error(error);
 
-    resultSetups.value = data.map(
-        (i: {
-            id: number;
-            created_at: string;
-            name: string;
-            description: string;
-            image: string | null;
-            author: { id: string; name: string; avatar: string | null };
-            avatar: { id: number; name: string; thumbnail: string };
-        }) => ({
-            id: i.id,
-            created_at: i.created_at,
-            name: i.name,
-            description: i.description,
-            image: i.image,
-            author: {
-                id: i.author.id,
-                name: i.author.name,
-                avatar: i.author.avatar,
-            },
-            avatar: {
-                id: i.avatar.id,
-                name: i.avatar.name,
-                thumbnail: i.avatar.thumbnail,
-            },
-        })
-    );
+    if (data)
+        resultSetups.value = data.map(
+            (i: {
+                id: number;
+                created_at: string;
+                name: string;
+                description: string;
+                image: string | null;
+                author: { id: string; name: string; avatar: string | null };
+                avatar: { id: number; name: string; thumbnail: string };
+            }) => ({
+                id: i.id,
+                created_at: i.created_at,
+                name: i.name,
+                description: i.description,
+                image: i.image,
+                author: {
+                    id: i.author.id,
+                    name: i.author.name,
+                    avatar: i.author.avatar,
+                },
+                avatar: {
+                    id: i.avatar.id,
+                    name: i.avatar.name,
+                    thumbnail: i.avatar.thumbnail,
+                },
+            })
+        );
 };
 
 onMounted(async () => {
     if (!Object.keys(route.query).length) {
-        const { data } = await client.rpc("popular_avatars").limit(20);
+        const { data } = await client.rpc('popular_avatars').limit(20);
         if (data) {
             popularAvatars.value = data;
         } else {
@@ -79,13 +80,13 @@ watch(
         const word = newQuery.q as string;
 
         if (tag && tag.length) {
-            Search("tag", Array.isArray(tag) ? tag : [tag]);
+            Search('tag', Array.isArray(tag) ? tag : [tag]);
         } else if (item) {
-            Search("item", [item]);
+            Search('item', [item]);
         } else if (word) {
-            Search("word", [word]);
+            Search('word', [word]);
         } else {
-            searchWord.value = "";
+            searchWord.value = '';
         }
     },
     { immediate: true }
