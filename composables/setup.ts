@@ -92,7 +92,6 @@ export const usePublishSetup = async (
         .insert({
             name: setup.name,
             description: setup.description,
-            tags: setup.tags,
             avatar: setup.avatar,
             avatar_note: setup.avatar_note,
             image: image,
@@ -100,12 +99,10 @@ export const usePublishSetup = async (
         .select('id')
         .single();
 
-    if (responseSetup.error) {
-        throw responseSetup.error;
-    }
+    if (responseSetup.error) throw responseSetup.error;
 
     for (const item of setup.items) {
-        const responseItems = await client
+        const { error } = await client
             .from('setup_items')
             .insert({
                 setup_id: responseSetup.data.id,
@@ -115,13 +112,11 @@ export const usePublishSetup = async (
             } as never)
             .maybeSingle();
 
-        if (responseItems.error) {
-            throw responseItems.error;
-        }
+        if (error) throw error;
     }
 
     for (const tag of setup.tags) {
-        const responseTags = await client
+        const { error } = await client
             .from('setup_tags')
             .insert({
                 setup_id: responseSetup.data.id,
@@ -129,9 +124,7 @@ export const usePublishSetup = async (
             } as never)
             .maybeSingle();
 
-        if (responseTags.error) {
-            throw responseTags.error;
-        }
+        if (error) throw error;
     }
 
     return responseSetup.data.id;
@@ -164,9 +157,7 @@ export const useUpdateSetup = async (
             .from('setup_items')
             .delete()
             .eq('setup_id', Number(id));
-        if (deleteError) {
-            throw deleteError;
-        }
+        if (deleteError) throw deleteError;
 
         const { error: insertError } = await client.from('setup_items').insert(
             items.items.map((item) => ({
@@ -176,18 +167,14 @@ export const useUpdateSetup = async (
                 unsupported: item.unsupported,
             })) as never
         );
-        if (insertError) {
-            throw insertError;
-        }
+        if (insertError) throw insertError;
 
         const { error: updateError } = await client
             .from('setups')
             .update(setup as never)
             .eq('id', Number(id));
 
-        if (updateError) {
-            throw updateError;
-        }
+        if (updateError) throw updateError;
 
         return;
     } catch (error) {
@@ -198,7 +185,6 @@ export const useUpdateSetup = async (
 
 export const useDeleteSetup = async (id: number, image: string) => {
     const client = await useSBClient();
-    const router = useRouter();
 
     const { error: errorDeleteSetup } = await client
         .from('setups')
@@ -214,7 +200,7 @@ export const useDeleteSetup = async (id: number, image: string) => {
     await useDeleteImage(image);
 
     useAddToast('セットアップを削除しました');
-    router.push('/');
+    navigateTo('/');
 };
 
 export const useGetPopularTags = async () => {

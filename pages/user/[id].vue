@@ -44,35 +44,35 @@ const userData = ref<User | null>(null);
 const linksShort = ref<{ [key: string]: string }[]>([]);
 
 const linkIcons: { [key: string]: string } = {
-    "x.com": "simple-icons:x",
-    "youtube.com": "simple-icons:youtube",
-    "twitch.tv": "simple-icons:twitch",
-    "discordapp.com": "simple-icons:discord",
-    "discord.com": "simple-icons:discord",
-    "instagram.com": "simple-icons:instagram",
-    "github.com": "simple-icons:github",
-    "steamcommunity.com": "simple-icons:steam",
-    "pixiv.net": "simple-icons:pixiv",
-    "artstation.com": "simple-icons:artstation",
-    "booth.pm": "lucide:store", // boothのアイコンをローカルアイコンパックとして登録する
+    'x.com': 'simple-icons:x',
+    'youtube.com': 'simple-icons:youtube',
+    'twitch.tv': 'simple-icons:twitch',
+    'discordapp.com': 'simple-icons:discord',
+    'discord.com': 'simple-icons:discord',
+    'instagram.com': 'simple-icons:instagram',
+    'github.com': 'simple-icons:github',
+    'steamcommunity.com': 'simple-icons:steam',
+    'pixiv.net': 'simple-icons:pixiv',
+    'artstation.com': 'simple-icons:artstation',
+    'booth.pm': 'lucide:store', // boothのアイコンをローカルアイコンパックとして登録する
 };
 
 onMounted(async () => {
     const query = [
-        "name",
-        "avatar",
-        "bio",
-        "links",
-        "created_at",
-        "setups(id, name, description, avatar(id, name, thumbnail), author(id, name, avatar), image, created_at)",
-        "badges(developer, contributor, translator, alpha_tester, shop_owner)",
+        'name',
+        'avatar',
+        'bio',
+        'links',
+        'created_at',
+        'setups(id, name, description, avatar(id, name, thumbnail), author(id, name, avatar), image, created_at)',
+        'badges(developer, contributor, translator, alpha_tester, shop_owner)',
     ];
 
     const { data } = await client
-        .from("users")
-        .select(query.join(", "))
-        .eq("id", userId.value)
-        .order("created_at", { referencedTable: "setups", ascending: false })
+        .from('users')
+        .select(query.join(', '))
+        .eq('id', userId.value)
+        .order('created_at', { referencedTable: 'setups', ascending: false })
         .maybeSingle();
 
     if (!data) {
@@ -87,19 +87,19 @@ onMounted(async () => {
             if (new URL(i).hostname.includes(key)) {
                 return {
                     [i
-                        .replace("https://www.", "")
-                        .replace("http://www.", "")
-                        .replace("https://", "")
-                        .replace("http://", "")]: linkIcons[key],
+                        .replace('https://www.', '')
+                        .replace('http://www.', '')
+                        .replace('https://', '')
+                        .replace('http://', '')]: linkIcons[key],
                 };
             }
         }
         return {
             [i
-                .replace("https://www.", "")
-                .replace("http://www.", "")
-                .replace("https://", "")
-                .replace("http://", "")]: "",
+                .replace('https://www.', '')
+                .replace('http://www.', '')
+                .replace('https://', '')
+                .replace('http://', '')]: '',
         };
     });
 
@@ -146,11 +146,11 @@ onMounted(async () => {
                             アカウント作成日 :
                             {{
                                 new Date(userData.created_at).toLocaleString(
-                                    "ja-JP",
+                                    'ja-JP',
                                     {
-                                        year: "numeric",
-                                        month: "2-digit",
-                                        day: "2-digit",
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
                                     }
                                 )
                             }}

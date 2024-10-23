@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { User } from '@supabase/supabase-js';
-const user = ref<User | null>(null);
+const user = useSupabaseUser();
 const client = await useSBClient();
 
 type Setup = {
@@ -45,10 +44,8 @@ const paginate = async () => {
     page.value++;
 };
 
-paginate();
-
 onMounted(async () => {
-    user.value = useSupabaseUser().value;
+    paginate();
 });
 </script>
 
@@ -58,7 +55,7 @@ onMounted(async () => {
 
         <LayoutMySetups v-if="user" />
 
-        <div class="flex flex-col items-start gap-4 w-full">
+        <div v-if="setups" class="flex flex-col items-start gap-4 w-full">
             <div class="w-full flex gap-4 items-start justify-between">
                 <UiTitle label="みんなのセットアップ" icon="lucide:sparkles" />
                 <!-- <UiButton
@@ -68,7 +65,6 @@ onMounted(async () => {
             /> -->
             </div>
             <MasonryWall
-                v-if="setups"
                 :items="setups"
                 :column-width="200"
                 :gap="20"
@@ -103,12 +99,12 @@ onMounted(async () => {
                 />
             </div>
 
-            <div
+            <!-- <div
                 v-if="!setups"
                 class="w-full my-5 font-medium text-center text-neutral-700 dark:text-neutral-300"
             >
                 <p>セットアップが見つかりませんでした😢</p>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

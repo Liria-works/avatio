@@ -11,19 +11,19 @@ const handleWheel: EventListener = (event) => {
 };
 
 onMounted(async () => {
-    const scrollContainer = document.querySelector(".scroll-container");
-    scrollContainer?.addEventListener("wheel", handleWheel);
+    const scrollContainer = document.querySelector('.scroll-container');
+    scrollContainer?.addEventListener('wheel', handleWheel);
 
     const client = await useSBClient();
 
     if (user.value) {
         const { data: mySetupsData } = await client
-            .from("setups")
+            .from('setups')
             .select(
-                "id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)"
+                'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)'
             )
-            .eq("author", user.value.id)
-            .order("updated_at", { ascending: false })
+            .eq('author', user.value.id)
+            .order('updated_at', { ascending: false })
             .range(0, 20);
 
         if (mySetupsData)
@@ -34,8 +34,8 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-    const scrollContainer = document.querySelector(".scroll-container");
-    scrollContainer?.removeEventListener("wheel", handleWheel);
+    const scrollContainer = document.querySelector('.scroll-container');
+    scrollContainer?.removeEventListener('wheel', handleWheel);
 });
 </script>
 
