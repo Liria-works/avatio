@@ -179,7 +179,11 @@ const handleSignUp = async () => {
         <div v-if="!mode_login" class="flex flex-col gap-4 items-center">
             <div class="font-bold text-2xl mb-4">サインアップ</div>
 
-            <UCheckbox v-model="signUpAgree" class="mb-4">
+            <UCheckbox
+                v-model="signUpAgree"
+                :ui="{ base: 'size-5' }"
+                class="mb-4"
+            >
                 <template #label>
                     <p>
                         <NuxtLink
