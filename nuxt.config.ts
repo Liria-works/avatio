@@ -76,6 +76,8 @@ export default defineNuxtConfig({
         '@nuxtjs/color-mode',
         '@nuxtjs/supabase',
         '@nuxt/eslint',
+        '@nuxt/scripts',
+        '@nuxtjs/turnstile',
     ],
     compatibilityDate: '2024-08-21',
 
@@ -131,14 +133,23 @@ export default defineNuxtConfig({
         },
     },
 
+    turnstile: {
+        siteKey: '0x4AAAAAAA002QQW-WRng1Pr',
+    },
+
     runtimeConfig: {
         public: {
             token: '',
             r2Domain: '',
         },
-        r2Endpoint: '',
-        r2AccessKey: '',
-        r2SecretKey: '',
+        turnstile: {
+            secretKey: '',
+        },
+        r2: {
+            endpoint: '',
+            accessKey: '',
+            secretKey: '',
+        },
     },
 });
 

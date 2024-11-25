@@ -10,6 +10,8 @@ const props = withDefaults(
 
 const emit = defineEmits(['success']);
 
+const token = ref();
+
 const { loginValidate, loginErrorMessages } = useLoginVaridate();
 const { signupValidate, signupErrorMessages } = useSignupVaridate();
 const loginError = ref<string>('');
@@ -52,7 +54,11 @@ const handleLogin = async () => {
     } else {
         try {
             loading.value = true;
-            await useLogin(login.value.email, login.value.password);
+            await useLogin(
+                login.value.email,
+                login.value.password,
+                token.value
+            );
             emit('success');
             navigateTo(props.redirect, { external: true });
         } catch (error) {
@@ -95,6 +101,7 @@ const handleSignUp = async () => {
             <div class="font-bold text-2xl mb-4">ログイン</div>
 
             <UButton
+                :disabled="!token"
                 block
                 variant="outline"
                 icon="simple-icons:x"
@@ -166,7 +173,7 @@ const handleSignUp = async () => {
                 <UButton
                     block
                     type="submit"
-                    :disabled="loading"
+                    :disabled="loading || !token"
                     variant="outline"
                     :ui="{ rounded: 'rounded-xl' }"
                     class="h-10"
@@ -174,6 +181,10 @@ const handleSignUp = async () => {
                     {{ loading ? '処理中' : 'メールアドレスでログイン' }}
                 </UButton>
             </UForm>
+
+            <UDivider />
+
+            <NuxtTurnstile v-model="token" />
         </div>
 
         <div v-if="!mode_login" class="flex flex-col gap-4 items-center">
@@ -215,7 +226,7 @@ const handleSignUp = async () => {
                     ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
                 }"
                 class="h-10"
-                :disabled="!signUpAgree"
+                :disabled="!signUpAgree || !token"
                 @click="useLoginWithTwitter"
             >
                 X アカウントでサインアップ
@@ -309,7 +320,7 @@ const handleSignUp = async () => {
                 <UButton
                     block
                     type="submit"
-                    :disabled="loading || !signUpAgree"
+                    :disabled="loading || !signUpAgree || !token"
                     variant="outline"
                     :ui="{ rounded: 'rounded-xl' }"
                     class="h-10"
@@ -317,6 +328,10 @@ const handleSignUp = async () => {
                     {{ loading ? '処理中' : 'メールアドレスでサインアップ' }}
                 </UButton>
             </UForm>
+
+            <UDivider />
+
+            <NuxtTurnstile v-model="token" />
         </div>
 
         <template #footer>
@@ -329,7 +344,10 @@ const handleSignUp = async () => {
                 <UButton
                     variant="link"
                     :padded="false"
-                    @click="mode_login = !mode_login"
+                    @click="
+                        mode_login = !mode_login;
+                        token = undefined;
+                    "
                 >
                     {{
                         mode_login ? 'サインアップはこちら' : 'ログインはこちら'

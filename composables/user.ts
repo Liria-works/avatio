@@ -60,11 +60,16 @@ export const useSignOut = async () => {
     navigateTo('/', { external: true });
 };
 
-export const useLogin = async (email: string, password: string) => {
+export const useLogin = async (
+    email: string,
+    password: string,
+    token: string
+) => {
     const supabase = useSupabaseClient();
     const { error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
+        options: { captchaToken: token },
     });
     if (error) throw error;
 };
