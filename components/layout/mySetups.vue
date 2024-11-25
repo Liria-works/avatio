@@ -44,6 +44,7 @@ onUnmounted(() => {
             <UiTitle
                 label="あなたのセットアップ"
                 icon="lucide:user-round"
+                size="lg"
                 class="pt-2"
             />
             <UiButton
@@ -57,13 +58,11 @@ onUnmounted(() => {
         <div
             class="w-full h-20 flex gap-4 overflow-x-auto no-scrollbar scroll-container"
         >
-            <NuxtLink
-                v-for="i in mySetups"
-                :to="{ name: 'setup-id', params: { id: i.id } }"
-                class="min-w-64"
-            >
+            <div v-for="i in mySetups" :key="useId()" class="min-w-64">
                 <ItemSetup
                     no-hero
+                    no-user
+                    :id="i.id"
                     :name="i.name"
                     :avatar-name="i.avatar.name"
                     :avatar-thumbnail="i.avatar.thumbnail"
@@ -72,9 +71,8 @@ onUnmounted(() => {
                     :author-avatar="i.author.avatar"
                     :created-at="i.created_at"
                     :image="i.image"
-                    class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
                 />
-            </NuxtLink>
+            </div>
         </div>
     </div>
 

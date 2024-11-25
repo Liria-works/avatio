@@ -249,6 +249,7 @@ onMounted(async () => {
                 :to="{ name: 'setup-id', params: { id: i.id } }"
             >
                 <ItemSetupDetail
+                    :id="Number(i.id)"
                     :name="i.name"
                     :description="i.description"
                     :avatar-name="i.avatar.name"
@@ -258,7 +259,6 @@ onMounted(async () => {
                     :author-avatar="i.author.avatar"
                     :created-at="i.created_at"
                     :image="i.image"
-                    class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
                 />
             </NuxtLink>
         </div>

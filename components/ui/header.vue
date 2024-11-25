@@ -29,12 +29,14 @@ if (user.value) {
                         width="160"
                         src="/logo_2_light.svg"
                         alt="Avatio Logo"
+                        class="select-none"
                     />
                     <NuxtImg
                         v-if="colorMode.value === 'dark'"
                         width="160"
                         src="/logo_2_dark.svg"
                         alt="Avatio Logo"
+                        class="select-none"
                     />
                 </ClientOnly>
             </NuxtLink>
@@ -111,6 +113,7 @@ if (user.value) {
                             :src="avatar"
                             alt="Avatar"
                             size="sm"
+                            class="select-none"
                         />
                         <div
                             v-else

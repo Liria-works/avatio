@@ -20,6 +20,7 @@ onMounted(async () => {
                 class="w-full"
             >
                 <ItemSetupDetail
+                    :id="i.post.id"
                     :name="i.post.name"
                     :description="i.post.description"
                     :avatar-name="i.post.avatar.name"
@@ -29,7 +30,6 @@ onMounted(async () => {
                     :author-avatar="i.post.author.avatar"
                     :created-at="i.post.created_at"
                     :image="i.post.image"
-                    class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
                 />
             </NuxtLink>
         </UiCategory>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const error = useError();
 
-clearError();
+// clearError();
 </script>
 
 <template>
@@ -16,9 +16,9 @@ clearError();
         >
             {{ error && error.statusCode }}
         </h1>
-        <div class="text-xl font-bold text-neutral-500 dark:text-neutral-400">
+        <h2 class="text-xl font-bold text-neutral-500 dark:text-neutral-400">
             {{ error && error.message }}
-        </div>
+        </h2>
         <NuxtLink to="/">ホーム</NuxtLink>
 
         <UiFooter />

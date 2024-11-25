@@ -34,7 +34,7 @@ const main = await marked.parse(props.content, { breaks: true });
         <!-- eslint-disable vue/no-v-html -->
         <div
             v-html="sanitizeHtml(main)"
-            class="prose prose-neutral dark:prose-invert max-w-none"
+            class="prose prose-neutral prose-invert max-w-none"
         ></div>
     </article>
 </template>

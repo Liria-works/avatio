@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 const route = useRoute();
 const client = await useSBClient();
-// const user = useSupabaseUser();
 const query = ref(route.query);
 
-const searchWord = ref<string>();
+const searchWord = ref<string>((route.query.q as string) ?? '');
 const resultSetups = ref<Setup[]>([]);
 const resultItem = ref<Item | null>(null);
 
@@ -168,6 +167,7 @@ watch(
                     :to="{ name: 'setup-id', params: { id: i.id } }"
                 >
                     <ItemSetupDetail
+                        :id="i.id"
                         :name="i.name"
                         :description="i.description"
                         :avatar-name="i.avatar.name"
@@ -177,7 +177,6 @@ watch(
                         :author-avatar="i.author.avatar"
                         :created-at="i.created_at"
                         :image="i.image"
-                        class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
                     />
                 </NuxtLink>
             </div>

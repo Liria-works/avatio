@@ -5,7 +5,7 @@ const user = useSupabaseUser();
 
 <template>
     <div class="w-full flex flex-col sm:flex-row gap-10 sm:gap-5">
-        <aside
+        <div
             v-if="user"
             v-show="
                 user.id === route.params.id ||
@@ -57,7 +57,7 @@ const user = useSupabaseUser();
                 class="w-full"
                 @click="useSignOut"
             />
-        </aside>
+        </div>
         <div class="w-full flex flex-col">
             <NuxtPage />
         </div>

@@ -4,7 +4,7 @@ const props = withDefaults(
         text: string;
     }>(),
     {
-        text: "",
+        text: '',
     }
 );
 </script>

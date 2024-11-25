@@ -57,7 +57,11 @@ onMounted(async () => {
 
         <div v-if="setups" class="flex flex-col items-start gap-4 w-full">
             <div class="w-full flex gap-4 items-start justify-between">
-                <UiTitle label="みんなのセットアップ" icon="lucide:sparkles" />
+                <UiTitle
+                    label="ディスカバリー"
+                    icon="lucide:sparkles"
+                    size="lg"
+                />
                 <!-- <UiButton
                 icon="lucide:rotate-ccw"
                 ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
@@ -72,20 +76,18 @@ onMounted(async () => {
                 :max-columns="3"
             >
                 <template #default="{ item }">
-                    <NuxtLink :to="`/setup/${item.id}`">
-                        <ItemSetup
-                            :name="item.name"
-                            :avatar-name="item.avatar.name"
-                            :avatar-thumbnail="item.avatar.thumbnail"
-                            :author-id="item.author.id"
-                            :author-name="item.author.name"
-                            :author-avatar="item.author.avatar"
-                            :created-at="item.created_at"
-                            :image="item.image"
-                            :image-size="{ width: 16, height: 9 }"
-                            class="hover:bg-neutral-200 dark:hover:bg-neutral-600"
-                        />
-                    </NuxtLink>
+                    <ItemSetup
+                        :id="item.id"
+                        :name="item.name"
+                        :avatar-name="item.avatar.name"
+                        :avatar-thumbnail="item.avatar.thumbnail"
+                        :author-id="item.author.id"
+                        :author-name="item.author.name"
+                        :author-avatar="item.author.avatar"
+                        :created-at="item.created_at"
+                        :image="item.image"
+                        :image-size="{ width: 16, height: 9 }"
+                    />
                 </template>
             </MasonryWall>
 
@@ -98,13 +100,13 @@ onMounted(async () => {
                     @click="paginate()"
                 />
             </div>
+        </div>
 
-            <!-- <div
-                v-if="!setups"
-                class="w-full my-5 font-medium text-center text-neutral-700 dark:text-neutral-300"
-            >
-                <p>セットアップが見つかりませんでした😢</p>
-            </div> -->
+        <div
+            v-if="!setups"
+            class="w-full my-5 font-medium text-center text-neutral-700 dark:text-neutral-300"
+        >
+            <p>セットアップが見つかりませんでした😢</p>
         </div>
     </div>
 </template>

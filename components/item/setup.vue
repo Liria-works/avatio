@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const props = withDefaults(
     defineProps<{
+        id: number;
         name: string;
         avatarName: string;
         avatarThumbnail: string;
@@ -11,6 +12,7 @@ const props = withDefaults(
         image: string | null;
         imageSize?: { width: number; height: number } | null;
         noHero?: boolean;
+        noUser?: boolean;
     }>(),
     {
         image: null,
@@ -38,50 +40,52 @@ const dateLocale = date.toLocaleString('ja-JP', {
 </script>
 
 <template>
-    <ItemBase>
-        <template #hero>
-            <div v-if="props.image && !noHero" class="px-1.5 pt-1.5 pb-0.5">
-                <NuxtImg
-                    :src="useGetImage(props.image)"
-                    format="webp"
-                    quality="85"
-                    sizes="300px"
-                    class="size-full max-h-80 rounded-lg object-cover"
-                />
-            </div>
-        </template>
-        <template #thumbnail>
-            <div
-                v-if="props.image && noHero"
-                class="py-1.5 pl-1.5 flex-shrink-0 max-w-20"
-            >
-                <NuxtImg
-                    :src="useGetImage(props.image)"
-                    :alt="props.name"
-                    fit="cover"
-                    format="webp"
-                    quality="80"
-                    sizes="80px"
-                    class="h-14 rounded-lg overflow-clip"
-                />
-            </div>
-
-            <div v-if="!props.image" class="py-1.5 pl-1.5 flex-shrink-0">
-                <NuxtImg
-                    :src="props.avatarThumbnail"
-                    :alt="props.name"
-                    fit="cover"
-                    format="webp"
-                    quality="80"
-                    sizes="56px"
-                    class="h-14 rounded-lg overflow-clip"
-                />
-            </div>
-        </template>
-        <template #main>
-            <div class="w-full pt-1 flex justify-between">
+    <NuxtLink :to="{ name: 'setup-id', params: { id: props.id } }">
+        <ItemBase
+            class="hover:bg-neutral-200 dark:hover:bg-neutral-700 transition duration-50 delay-0 ease-in-out"
+        >
+            <template #hero>
+                <div v-if="props.image && !noHero" class="p-1.5">
+                    <NuxtImg
+                        :src="useGetImage(props.image)"
+                        format="webp"
+                        quality="85"
+                        sizes="300px"
+                        class="size-full max-h-80 rounded-lg object-cover"
+                    />
+                </div>
+            </template>
+            <template #thumbnail>
                 <div
-                    class="w-full flex flex-col justify-center gap-1 py-2 pr-2 pl-3"
+                    v-if="props.image && noHero"
+                    class="py-1.5 pl-1.5 flex-shrink-0 max-w-20"
+                >
+                    <NuxtImg
+                        :src="useGetImage(props.image)"
+                        :alt="props.name"
+                        fit="cover"
+                        format="webp"
+                        quality="80"
+                        sizes="80px"
+                        class="h-14 rounded-lg overflow-clip"
+                    />
+                </div>
+
+                <div v-if="!props.image" class="py-1.5 pl-1.5 flex-shrink-0">
+                    <NuxtImg
+                        :src="props.avatarThumbnail"
+                        :alt="props.name"
+                        fit="cover"
+                        format="webp"
+                        quality="80"
+                        sizes="56px"
+                        class="h-14 rounded-lg overflow-clip"
+                    />
+                </div>
+            </template>
+            <template #main>
+                <div
+                    class="w-full py-2 pr-2 pl-3 flex flex-col justify-center gap-1"
                 >
                     <p
                         class="text-sm font-medium text-neutral-700 dark:text-neutral-200 break-all line-clamp-1 leading-none"
@@ -102,7 +106,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                                     {{ useDateElapsed(date) }}
                                 </p>
                             </UiTooltip>
-                            <UiTooltip :text="props.authorName">
+                            <UiTooltip v-if="!noUser" :text="props.authorName">
                                 <NuxtLink
                                     :to="{
                                         name: 'user-id',
@@ -131,7 +135,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         </div>
                     </div>
                 </div>
-            </div>
-        </template>
-    </ItemBase>
+            </template>
+        </ItemBase>
+    </NuxtLink>
 </template>
