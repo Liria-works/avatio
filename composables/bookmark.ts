@@ -46,7 +46,8 @@ export const useListBookmarks = async (): Promise<{ post: Setup }[]> => {
         .from('bookmarks')
         .select(
             'post(id, created_at, updated_at, author(id, name, avatar), name, description, image, avatar(name, thumbnail))'
-        );
+        )
+        .order('created_at', { ascending: false });
     if (error) throw error;
 
     return data as never as { post: Setup }[];
