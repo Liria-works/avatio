@@ -45,7 +45,10 @@ const dateLocale = date.toLocaleString('ja-JP', {
             class="hover:bg-neutral-200 dark:hover:bg-neutral-700 transition duration-50 delay-0 ease-in-out"
         >
             <template #hero>
-                <div v-if="props.image && !noHero" class="p-1.5">
+                <div
+                    v-if="props.image && !noHero"
+                    class="w-full p-1.5 aspect-video"
+                >
                     <NuxtImg
                         :src="useGetImage(props.image)"
                         format="webp"
@@ -67,7 +70,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         format="webp"
                         quality="80"
                         sizes="80px"
-                        class="h-14 rounded-lg overflow-clip"
+                        class="h-14 rounded-lg overflow-clip flex-shrink-0 object-cover"
                     />
                 </div>
 
@@ -79,7 +82,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         format="webp"
                         quality="80"
                         sizes="56px"
-                        class="h-14 rounded-lg overflow-clip"
+                        class="h-14 rounded-lg overflow-clip flex-shrink-0"
                     />
                 </div>
             </template>
