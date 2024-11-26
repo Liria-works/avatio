@@ -11,8 +11,8 @@
     },
     "devDependencies": {
         "@iconify-json/heroicons": "^1.2.1",
-        "@iconify-json/lucide": "^1.2.15",
-        "@iconify-json/simple-icons": "^1.2.12",
+        "@iconify-json/lucide": "^1.2.16",
+        "@iconify-json/simple-icons": "^1.2.13",
         "@iconify-json/svg-spinners": "^1.2.1",
         "@nuxt/devtools": "^1.6.1",
         "@nuxt/eslint": "^0.7.1",
@@ -31,7 +31,7 @@
         "prettier": "^3.3.3"
     },
     "dependencies": {
-        "@aws-sdk/client-s3": "^3.699.0",
+        "@aws-sdk/client-s3": "^3.700.0",
         "@supabase/ssr": "^0.5.2",
         "@vercel/edge-config": "^1.4.0",
         "@yeger/vue-masonry-wall": "^5.0.16",
