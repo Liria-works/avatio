@@ -31,13 +31,21 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['click']);
+
+const Link = defineNuxtLink({
+    componentName: 'Link',
+    prefetch: false,
+});
 </script>
 
 <template>
     <UiTooltip :text="props.tooltip">
-        <button
-            v-if="!props.to"
+        <component
+            :is="props.to ? Link : 'button'"
             :type="props.type"
+            :to="props.to"
+            :target="props.newTab ? '_blank' : '_self'"
+            no-rel
             :disabled="props.disabled"
             :class="
                 twMerge(
@@ -65,45 +73,15 @@ const emit = defineEmits(['click']);
                     )
                 "
             />
-            <p class="empty:hidden whitespace-nowrap leading-none">
-                {{ props.label }}
-            </p>
-        </button>
 
-        <NuxtLink
-            v-else
-            :to="props.to"
-            :target="props.newTab ? '_blank' : '_self'"
-            no-rel
-            :disabled="props.disabled"
-            :class="
-                twMerge(
-                    props.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
-                    props.icon.length ? 'p-3' : 'px-4 py-3',
-                    'w-fit rounded-lg flex gap-2 items-center justify-center',
-                    'bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600',
-                    'text-sm font-semibold align-middle leading-none',
-                    'text-neutral-800 dark:text-neutral-200',
-                    'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
-                    props.ui,
-                    'transition duration-50 delay-0 ease-in-out'
-                )
-            "
-        >
-            <Icon
-                v-if="props.icon.length"
-                :name="props.icon"
-                :size="props.iconSize"
-                :class="
-                    twMerge(
-                        'text-neutral-600 dark:text-neutral-300',
-                        props.uiIcon
-                    )
-                "
-            />
-            <p class="empty:hidden whitespace-nowrap leading-none">
+            <p
+                v-if="props.label.length"
+                class="empty:hidden whitespace-nowrap leading-none"
+            >
                 {{ props.label }}
             </p>
-        </NuxtLink>
+
+            <slot />
+        </component>
     </UiTooltip>
 </template>

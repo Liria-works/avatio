@@ -61,10 +61,10 @@ export default defineEventHandler(async (event) => {
 
         const S3 = new S3Client({
             region: 'auto',
-            endpoint: runtime.r2Endpoint,
+            endpoint: runtime.r2.endpoint,
             credentials: {
-                accessKeyId: runtime.r2AccessKey,
-                secretAccessKey: runtime.r2SecretKey,
+                accessKeyId: runtime.r2.accessKey,
+                secretAccessKey: runtime.r2.secretKey,
             },
         });
 

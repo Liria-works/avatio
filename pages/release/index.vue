@@ -10,10 +10,7 @@ const { data: articles } = await client
 
 <template>
     <div class="w-full flex flex-col gap-6 items-center">
-        <div class="flex gap-2 items-center">
-            <Icon name="lucide:rss" class="size-6 mt-1 text-neutral-300" />
-            <h1 class="text-2xl font-bold leading-none">お知らせ</h1>
-        </div>
+        <UiTitle label="お知らせ" icon="lucide:rss" size="lg" />
         <div
             v-if="articles"
             class="w-full rounded-2xl flex flex-col overflow-hidden divide-y divide-neutral-600 border border-neutral-600"

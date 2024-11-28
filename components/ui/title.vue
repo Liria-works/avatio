@@ -19,7 +19,7 @@ const props = withDefaults(
 </script>
 
 <template>
-    <div class="flex items-center justify-between w-full">
+    <div class="flex items-center justify-between">
         <div class="items-center gap-1.5 inline-flex">
             <Icon
                 :name="props.icon"
@@ -28,8 +28,10 @@ const props = withDefaults(
             />
             <div
                 :class="[
-                    'text-black dark:text-white font-medium',
-                    props.size === 'md' ? 'text-[15px]' : 'text-xl',
+                    'text-black dark:text-white',
+                    props.size === 'md'
+                        ? 'text-[15px] font-medium'
+                        : 'text-xl font-bold',
                 ]"
             >
                 {{ props.label }}

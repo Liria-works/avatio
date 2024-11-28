@@ -63,7 +63,8 @@ const handleLogin = async () => {
             navigateTo(props.redirect, { external: true });
         } catch (error) {
             console.error(error);
-            loginError.value = 'メールアドレスまたはパスワードが間違っています';
+            loginError.value =
+                'メールアドレスまたはパスワードが間違っているか、CAPTCHA認証に失敗しています';
         } finally {
             loading.value = false;
         }

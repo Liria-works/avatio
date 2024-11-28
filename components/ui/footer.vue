@@ -39,10 +39,9 @@ const buttonLink =
                         ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                     />
 
-                    <NuxtLink
+                    <UiButton
                         to="https://liria.work"
-                        target="_blank"
-                        class="cursor-pointer flex gap-2 items-center justify-center rounded-lg p-1 px-2 hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                        ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                     >
                         <LogoLiria
                             :color="
@@ -55,7 +54,7 @@ const buttonLink =
                         >
                             Liria
                         </span>
-                    </NuxtLink>
+                    </UiButton>
                 </div>
 
                 <div class="flex items-center gap-4">

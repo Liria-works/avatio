@@ -81,12 +81,6 @@ export default defineNuxtConfig({
     ],
     compatibilityDate: '2024-08-21',
 
-    components: [
-        {
-            path: '~/components',
-        },
-    ],
-
     supabase: {
         url: import.meta.env.SUPABASE_URL,
         key: import.meta.env.SUPABASE_ANON_KEY,
@@ -134,7 +128,7 @@ export default defineNuxtConfig({
     },
 
     turnstile: {
-        siteKey: '0x4AAAAAAA002QQW-WRng1Pr',
+        siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY,
     },
 
     runtimeConfig: {
@@ -143,6 +137,7 @@ export default defineNuxtConfig({
             r2Domain: '',
         },
         turnstile: {
+            siteKey: '',
             secretKey: '',
         },
         r2: {
