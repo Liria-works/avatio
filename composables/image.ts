@@ -5,7 +5,7 @@ export const useGetImage = (path: string) => {
         .split('/')
         .map((p) => encodeURIComponent(p))
         .join('/');
-    return `${runtime.public.r2Domain}/${img}`;
+    return `${runtime.public.r2.domain}/${img}`;
 };
 
 export const useUploadAvatar = async (file: File) => {

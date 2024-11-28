@@ -41,7 +41,10 @@ const emit = defineEmits(['accept', 'close']);
         }"
     >
         <template #header>
-            <UiTitle label="ベースアバターの置換" icon="lucide:rss" />
+            <UiTitle
+                label="ベースアバターの置換"
+                icon="lucide:arrow-right-left"
+            />
         </template>
 
         <div class="gap-4 flex flex-col items-center">

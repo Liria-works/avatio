@@ -84,7 +84,7 @@ export default defineNuxtConfig({
     supabase: {
         url: import.meta.env.SUPABASE_URL,
         key: import.meta.env.SUPABASE_ANON_KEY,
-        serviceKey: import.meta.env.SUPABASE_SERVICE_KEY,
+        serviceKey: import.meta.env.SUPABASE_SERVICE_ROLE_KEY,
         redirect: true,
         redirectOptions: {
             login: '/login',
@@ -135,7 +135,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             token: '',
-            r2Domain: '',
+            r2: { domain: '' },
         },
         turnstile: {
             siteKey: '',
@@ -146,6 +146,7 @@ export default defineNuxtConfig({
             accessKey: '',
             secretKey: '',
         },
+        token: '',
     },
 });
 
