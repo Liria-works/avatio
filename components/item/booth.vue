@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 const props = withDefaults(
     defineProps<{
-        size?: "md" | "lg";
+        noAction?: boolean;
+        size?: 'md' | 'lg';
         note?: string | null;
         unsupported?: boolean;
         id: number;
@@ -17,7 +18,8 @@ const props = withDefaults(
         updatedAt: string;
     }>(),
     {
-        size: "md",
+        noAction: false,
+        size: 'md',
         note: null,
         unsupported: false,
         nsfw: false,
@@ -27,7 +29,7 @@ const props = withDefaults(
 const loading = ref(true);
 const outdated = ref(props.outdated);
 
-const booth_url = "https://booth.pm/ja/items/";
+const booth_url = 'https://booth.pm/ja/items/';
 
 const item = ref<{
     name: string;
@@ -65,7 +67,7 @@ onMounted(async () => {
             status: number;
             body: Item;
         } = await $fetch(apiUrl, {
-            method: "GET",
+            method: 'GET',
             headers: {
                 Authorization: runtimeConfig.public.token,
             },
@@ -208,6 +210,7 @@ onMounted(async () => {
                     </UiTooltip>
 
                     <div
+                        v-if="!props.noAction"
                         class="w-fit items-center gap-1 flex flex-row flex-shrink-0"
                     >
                         <UiButton

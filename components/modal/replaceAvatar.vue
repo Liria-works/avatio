@@ -1,0 +1,103 @@
+<script lang="ts" setup>
+const props = defineProps<{
+    from: {
+        id: number;
+        name: string;
+        thumbnail: string;
+        shop_id: {
+            id: string;
+            name: string;
+            thumbnail: string;
+            verified: boolean;
+        };
+        price: string;
+        nsfw: boolean;
+        updated_at: string;
+    } | null;
+    to: {
+        id: number;
+        name: string;
+        thumbnail: string;
+        shop_id: {
+            id: string;
+            name: string;
+            thumbnail: string;
+            verified: boolean;
+        };
+        price: string;
+        nsfw: boolean;
+        updated_at: string;
+    } | null;
+}>();
+
+const emit = defineEmits(['accept', 'close']);
+</script>
+
+<template>
+    <UCard
+        :ui="{
+            ring: '',
+            divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+        }"
+    >
+        <template #header>
+            <UiTitle label="ベースアバターの置換" icon="lucide:rss" />
+        </template>
+
+        <div class="gap-4 flex flex-col items-center">
+            <p>ベースアバターを置き換えますか？</p>
+
+            <div class="gap-2 flex flex-col items-center">
+                <ItemBooth
+                    v-if="props.from"
+                    no-action
+                    :id="props.from.id"
+                    :name="props.from.name"
+                    :thumbnail="props.from.thumbnail"
+                    :shop="props.from.shop_id.name"
+                    :shop-id="props.from.shop_id.id"
+                    :shop-thumbnail="props.from.shop_id.thumbnail"
+                    :shop-verified="props.from.shop_id.verified"
+                    :price="props.from.price"
+                    :nsfw="props.from.nsfw"
+                    :outdated="false"
+                    :updated-at="props.from.updated_at"
+                />
+                <Icon
+                    name="lucide:arrow-down"
+                    size="24"
+                    class="bg-neutral-300"
+                />
+                <ItemBooth
+                    v-if="props.to"
+                    no-action
+                    size="lg"
+                    :id="props.to.id"
+                    :name="props.to.name"
+                    :thumbnail="props.to.thumbnail"
+                    :shop="props.to.shop_id.name"
+                    :shop-id="props.to.shop_id.id"
+                    :shop-thumbnail="props.to.shop_id.thumbnail"
+                    :shop-verified="props.to.shop_id.verified"
+                    :price="props.to.price"
+                    :nsfw="props.to.nsfw"
+                    :outdated="false"
+                    :updated-at="props.to.updated_at"
+                />
+            </div>
+        </div>
+
+        <template #footer>
+            <div class="w-full flex gap-2 items-center justify-end">
+                <UiButton
+                    label="置換"
+                    @click="
+                        emit('accept');
+                        emit('close');
+                    "
+                />
+                <UiButton label="キャンセル" @click="() => emit('close')" />
+            </div>
+        </template>
+    </UCard>
+</template>
