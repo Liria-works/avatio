@@ -84,6 +84,7 @@ export default defineNuxtConfig({
     supabase: {
         url: import.meta.env.SUPABASE_URL,
         key: import.meta.env.SUPABASE_ANON_KEY,
+        serviceKey: import.meta.env.SUPABASE_SERVICE_KEY,
         redirect: true,
         redirectOptions: {
             login: '/login',

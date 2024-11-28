@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import authMiddleware from '../auth';
+// import authMiddleware from '../auth';
 
 import { serverSupabaseClient } from '#supabase/server';
 // import { createClient } from "@vercel/edge-config";
@@ -7,7 +7,6 @@ import { serverSupabaseClient } from '#supabase/server';
 const url_base = 'https://booth.pm/ja/items/';
 
 export default defineEventHandler(async (event) => {
-    // console.log(getQuery(event));
     const query = getQuery(event);
     const id = Number(query.id);
 
@@ -22,7 +21,7 @@ export default defineEventHandler(async (event) => {
 });
 
 async function GetBoothItem(event: any, id: number) {
-    await authMiddleware(event); // トークンの無いリクエストは弾く
+    // await authMiddleware(event); // トークンの無いリクエストは弾く
 
     const startTime = Date.now(); // 処理開始時刻を記録
 

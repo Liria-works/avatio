@@ -9,8 +9,6 @@ export const useGetImage = (path: string) => {
 };
 
 export const useUploadAvatar = async (file: File) => {
-    const runtime = useRuntimeConfig();
-
     const formData = new FormData();
     formData.append('file', file);
     formData.append('res', '512'); // 512x512
@@ -18,16 +16,11 @@ export const useUploadAvatar = async (file: File) => {
     formData.append('path', 'avatar');
 
     try {
-        const response: PutImage = await $fetch('/api/image', {
+        const response: PutImage = await useAuthFetch('/api/image', {
             method: 'PUT',
-            headers: {
-                Authorization: runtime.public.token,
-            },
             body: formData,
         });
-        if (!response.result) {
-            throw new Error();
-        }
+        if (!response.result) throw new Error();
         return response.path;
     } catch (error) {
         console.error('Failed to upload image:', error);
@@ -36,24 +29,17 @@ export const useUploadAvatar = async (file: File) => {
 };
 
 export const usePostImage = async (file: File) => {
-    const runtime = useRuntimeConfig();
-
     const formData = new FormData();
     formData.append('file', file);
     formData.append('res', '1920'); // 1920x1920
     formData.append('size', '1500'); // 1.5MB
 
     try {
-        const response: PutImage = await $fetch('/api/image', {
+        const response: PutImage = await useAuthFetch('/api/image', {
             method: 'PUT',
-            headers: {
-                Authorization: runtime.public.token,
-            },
             body: formData,
         });
-        if (!response.result) {
-            throw new Error();
-        }
+        if (!response.result) throw new Error();
         return response.path;
     } catch (error) {
         console.error('Failed to upload image:', error);
@@ -67,11 +53,7 @@ export interface PutImage {
 }
 
 export const useDeleteImage = (path: string) => {
-    const runtimeConfig = useRuntimeConfig();
-    return $fetch(`/api/image?path=${encodeURIComponent(path)}`, {
+    return useAuthFetch(`/api/image?path=${encodeURIComponent(path)}`, {
         method: 'DELETE',
-        headers: {
-            Authorization: runtimeConfig.public.token,
-        },
     });
 };
