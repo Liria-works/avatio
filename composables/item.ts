@@ -47,19 +47,10 @@ export const useFetchBooth = async (id: number): Promise<Item | null> => {
         console.log('Data is old, fetching from Booth');
     }
 
-    const apiUrl = `/api/item/booth?id=${encodeURIComponent(id)}`;
-
-    const runtimeConfig = useRuntimeConfig();
-
-    const response: {
-        status: number;
-        body: Item;
-    } = await $fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-            Authorization: runtimeConfig.public.token,
-        },
-    });
+    const response: { status: number; body: Item } = await $fetch(
+        `/api/item/booth?id=${encodeURIComponent(id)}`,
+        { method: 'GET' }
+    );
 
     if (response.status !== 200 || response.body.outdated) {
         // console.error("Failed to fetch item data:", response.body);

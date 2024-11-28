@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// import authMiddleware from '../auth';
-
 import { serverSupabaseClient } from '#supabase/server';
-// import { createClient } from "@vercel/edge-config";
+import type { H3Event } from 'h3';
 
 const url_base = 'https://booth.pm/ja/items/';
 
@@ -20,9 +17,7 @@ export default defineEventHandler(async (event) => {
     }
 });
 
-async function GetBoothItem(event: any, id: number) {
-    // await authMiddleware(event); // トークンの無いリクエストは弾く
-
+async function GetBoothItem(event: H3Event, id: number) {
     const startTime = Date.now(); // 処理開始時刻を記録
 
     const client = await serverSupabaseClient(event);
@@ -34,9 +29,10 @@ async function GetBoothItem(event: any, id: number) {
             { body: { id: id } }
         );
 
-        if (error) console.log(error);
-
-        if (error) throw error;
+        if (error) {
+            console.log(error);
+            throw error;
+        }
 
         // カテゴリIDをチェック
 
@@ -66,22 +62,20 @@ async function GetBoothItem(event: any, id: number) {
             const config = await event.$fetch(
                 '/api/edgeConfig/allowed_category_id'
             );
-            // const allowed_category_id: number[] | undefined = config.value;
             if (config.status !== 200 || !config.value)
                 return {
                     status: 400,
                     body: { error: 'Error in vercel edge config.' },
                 };
 
-            const allowed_category_id: number[] = config.value;
+            const allowed_category_id: number[] = config.value as number[];
 
             if (!allowed_category_id.includes(Number(data.category))) {
-                if (!data.tags.map((tag: string) => tag).includes('VRChat')) {
+                if (!data.tags.map((tag: string) => tag).includes('VRChat'))
                     return {
                         status: 400,
                         body: { error: 'Invalid category ID' },
                     };
-                }
             }
         } catch (e) {
             console.log(e);
@@ -136,6 +130,7 @@ function logDuration(startTime: number, source: string, itemName: string) {
     console.log(`Fetch Done : ${source} : ${duration}ms : ${itemName}`);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Response(status: number, message: string, data: any) {
     return {
         status,
