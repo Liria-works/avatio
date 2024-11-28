@@ -96,7 +96,7 @@ export default defineNuxtConfig({
 
     image: {
         domains: [
-            'booth.pximg.net', // 何故かたまに読み込まないので一旦off
+            'booth.pximg.net', // booth
             import.meta.env.NUXT_PUBLIC_R2_DOMAIN.replace('https://', ''), // R2
         ],
     },

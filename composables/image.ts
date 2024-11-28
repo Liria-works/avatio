@@ -1,6 +1,11 @@
 export const useGetImage = (path: string) => {
     const runtime = useRuntimeConfig();
-    return `${runtime.public.r2Domain}/${encodeURIComponent(path)}`;
+
+    const img = path
+        .split('/')
+        .map((p) => encodeURIComponent(p))
+        .join('/');
+    return `${runtime.public.r2Domain}/${img}`;
 };
 
 export const useUploadAvatar = async (file: File) => {
