@@ -54,6 +54,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         format="webp"
                         quality="85"
                         sizes="300px"
+                        loading="lazy"
                         class="size-full max-h-80 rounded-lg object-cover"
                     />
                 </div>
@@ -82,6 +83,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         format="webp"
                         quality="80"
                         sizes="56px"
+                        loading="lazy"
                         class="h-14 rounded-lg overflow-clip flex-shrink-0"
                     />
                 </div>

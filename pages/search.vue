@@ -154,7 +154,12 @@ watch(
                         'border border-1 border-neutral-500 hover:bg-neutral-600',
                     ]"
                 >
-                    <NuxtImg :src="i.thumbnail" class="rounded-lg" />
+                    <NuxtImg
+                        :src="i.thumbnail"
+                        sizes="128px"
+                        loading="lazy"
+                        class="rounded-lg"
+                    />
                     <p class="text-sm line-clamp-1 break-all">
                         {{ useAvatarName(i.name) }}
                     </p>
