@@ -78,6 +78,7 @@ export default defineNuxtConfig({
         '@nuxt/eslint',
         '@nuxt/scripts',
         '@nuxtjs/turnstile',
+        '@nuxtjs/robots',
     ],
     compatibilityDate: '2024-08-21',
 
@@ -130,6 +131,12 @@ export default defineNuxtConfig({
 
     turnstile: {
         siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY,
+    },
+
+    robots: {
+        allow: ['Twitterbot', 'facebookexternalhit'],
+        blockNonSeoBots: true,
+        blockAiBots: true,
     },
 
     runtimeConfig: {

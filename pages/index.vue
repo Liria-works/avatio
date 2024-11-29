@@ -46,6 +46,8 @@ const paginate = async () => {
 
 onMounted(async () => {
     paginate();
+
+    useSeoHome();
 });
 </script>
 
