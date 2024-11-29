@@ -3,42 +3,43 @@ const client = await useSBClient();
 const user = useSupabaseUser();
 
 const faild = ref<boolean>(false);
-const avatar_loading = ref<boolean>(false);
+const avatarLoading = ref<boolean>(false);
+const modalDeleteUser = ref<boolean>(false);
 
 const avatar = ref<string>('');
 const username = ref<string>('');
 const bio = ref<string>('');
 const links = ref<string[]>([]);
 
-const link_input = ref<string>('');
-const link_adding = ref<boolean>(false);
+const linkInput = ref<string>('');
+const linkAdding = ref<boolean>(false);
 
 const AddLink = async () => {
-    if (link_input.value === '') return;
+    if (linkInput.value === '') return;
 
     if (links.value.length >= 8)
         return useAddToast('リンクは最大 8 つまでです');
 
     try {
-        new URL(link_input.value);
+        new URL(linkInput.value);
     } catch (e) {
         useAddToast('URL が不正です');
         console.error(e);
         return;
     }
 
-    link_adding.value = true;
-    links.value.push(link_input.value);
+    linkAdding.value = true;
+    links.value.push(linkInput.value);
 
     try {
         await useSaveLink(links.value);
     } catch (e) {
         console.error(e);
-        links.value = links.value.filter((i) => i !== link_input.value);
+        links.value = links.value.filter((i) => i !== linkInput.value);
     }
 
-    link_input.value = '';
-    link_adding.value = false;
+    linkInput.value = '';
+    linkAdding.value = false;
 };
 
 const RemoveLink = async (link: string) => {
@@ -48,7 +49,7 @@ const RemoveLink = async (link: string) => {
 
 const PasteFromClipboard = async () => {
     const text = await navigator.clipboard.readText();
-    link_input.value = text;
+    linkInput.value = text;
 };
 
 const ChangeAvatar = async () => {
@@ -62,7 +63,7 @@ const ChangeAvatar = async () => {
             'アバターの変更に失敗しました',
             '画像の形式が非対応の可能性があります。'
         );
-        avatar_loading.value = false;
+        avatarLoading.value = false;
     };
 
     open();
@@ -70,7 +71,7 @@ const ChangeAvatar = async () => {
         if (!files || files.length === 0) throw new Error('No files selected');
         const file = files[0];
 
-        avatar_loading.value = true;
+        avatarLoading.value = true;
 
         const uploaded = await useUploadAvatar(file);
         if (!uploaded) return faild();
@@ -91,7 +92,7 @@ const ChangeAvatar = async () => {
 
         useAddToast('アバターを変更しました');
         avatar.value = uploaded;
-        avatar_loading.value = false;
+        avatarLoading.value = false;
     });
 };
 
@@ -127,7 +128,7 @@ if (!data) {
                     }"
                 >
                     <div
-                        v-if="avatar_loading"
+                        v-if="avatarLoading"
                         class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500 relative"
                     >
                         <Icon
@@ -137,7 +138,7 @@ if (!data) {
                         />
                     </div>
                     <div
-                        v-else-if="avatar.length"
+                        v-else-if="avatar && avatar.length"
                         class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500 relative"
                     >
                         <UAvatar
@@ -173,9 +174,9 @@ if (!data) {
                     </template>
                 </UChip>
                 <div class="flex flex-col gap-0.5 w-full">
-                    <p class="font-medium text-sm text-neutral-400">
+                    <h2 class="font-medium text-sm text-neutral-400">
                         ユーザー名
-                    </p>
+                    </h2>
                     <div class="gap-2 flex items-center w-full">
                         <div class="flex flex-col gap-0.5 w-full">
                             <UInput
@@ -222,10 +223,10 @@ if (!data) {
 
         <div class="w-full flex flex-col gap-6 pl-2">
             <div
-                class="w-full flex flex-col rounded-xl px-4 py-3 gap-2 border border-1 border-neutral-600 bg-neutral-200 dark:bg-neutral-750"
+                class="w-full flex flex-col rounded-xl px-4 py-3 gap-2 border border-1 border-neutral-400"
             >
                 <div class="w-full flex items-center justify-between">
-                    <p class="text-neutral-500 text-sm">bio</p>
+                    <h2 class="text-neutral-500 text-sm font-semibold">bio</h2>
                     <UButton
                         label="保存"
                         size="sm"
@@ -245,7 +246,7 @@ if (!data) {
                     :ui="{
                         border: {
                             base: `${
-                                bio.length < 141
+                                !bio || (bio && bio.length < 141)
                                     ? 'border-neutral-300 dark:border-neutral-600'
                                     : 'border-red-400 dark:border-red-400'
                             }`,
@@ -255,18 +256,18 @@ if (!data) {
                 />
                 <span
                     :class="`w-full text-right text-sm pr-1 ${
-                        bio.length < 141
+                        !bio || (bio && bio.length < 141)
                             ? 'text-neutral-500 dark:text-neutral-500'
                             : 'text-red-500 dark:text-red-400'
                     }`"
                 >
-                    {{ bio.length }} / 140
+                    {{ bio ? bio.length : 0 }} / 140
                 </span>
             </div>
 
             <div class="flex flex-col gap-2 items-start w-full">
                 <div class="flex gap-4 items-center">
-                    <UiTitle label="リンク" icon="lucide:link" />
+                    <UiTitle label="リンク" icon="lucide:link" is="h2" />
                     <p
                         :class="`text-sm whitespace-nowrap text-neutral-700 dark:text-neutral-400 ${links.length === 8 ? 'text-red-400 dark:text-red-400' : ''}`"
                     >
@@ -279,8 +280,8 @@ if (!data) {
                         class="w-full px-1 rounded-xl bg-neutral-300 dark:bg-neutral-900"
                     >
                         <UInput
-                            v-model="link_input"
-                            :disabled="link_adding"
+                            v-model="linkInput"
+                            :disabled="linkAdding"
                             autocomplete="off"
                             variant="none"
                             size="sm"
@@ -294,7 +295,7 @@ if (!data) {
                         >
                             <template #trailing>
                                 <UButton
-                                    v-show="!link_input"
+                                    v-show="!linkInput"
                                     color="gray"
                                     variant="link"
                                     icon="i-heroicons-clipboard"
@@ -302,23 +303,23 @@ if (!data) {
                                     @click="PasteFromClipboard"
                                 />
                                 <UButton
-                                    v-show="link_input !== ''"
+                                    v-show="linkInput !== ''"
                                     color="gray"
                                     variant="link"
                                     icon="i-heroicons-x-mark-20-solid"
                                     :padded="false"
-                                    @click="link_input = ''"
+                                    @click="linkInput = ''"
                                 />
                             </template>
                         </UInput>
                     </div>
                     <UButton
                         :icon="
-                            !link_adding
+                            !linkAdding
                                 ? 'i-heroicons-plus'
                                 : 'i-svg-spinners-ring-resize'
                         "
-                        :disabled="link_adding"
+                        :disabled="linkAdding"
                         label="追加"
                         size="sm"
                         :ui="{
@@ -349,5 +350,30 @@ if (!data) {
                 </div>
             </div>
         </div>
+
+        <div
+            class="gap-3 p-3 mt-6 rounded-lg flex flex-col border border-red-300 dark:border-red-400"
+        >
+            <UiTitle label="DANGER ZONE" icon="lucide:circle-alert" is="h2" />
+            <div class="w-full pl-3 flex gap-2 justify-between items-center">
+                <div class="flex flex-col gap-1">
+                    <h3 class="text-sm font-semibold">アカウント削除</h3>
+                    <p class="text-xs">
+                        アカウントおよびアカウントに紐づくデータをすべて削除します。<br />
+                        削除したアカウントは復元できません。
+                    </p>
+                </div>
+                <UiButton
+                    label="アカウント削除"
+                    class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
+                    @click="modalDeleteUser = true"
+                />
+            </div>
+        </div>
+
+        <ModalDeleteUser
+            v-model="modalDeleteUser"
+            @close="modalDeleteUser = false"
+        />
     </div>
 </template>
