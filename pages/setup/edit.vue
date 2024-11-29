@@ -172,7 +172,7 @@ onMounted(async () => {
                     tooltip="破棄"
                     icon="lucide:trash"
                     :icon-size="18"
-                    ui="outline-0"
+                    class="outline-0"
                     @click="router.back()"
                 />
             </div>

@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/no-dupe-keys -->
 <script lang="ts" setup>
-const emit = defineEmits(["remove", "update:note", "update:unsupported"]);
+const emit = defineEmits(['remove', 'update:note', 'update:unsupported']);
 
 const props = withDefaults(
     defineProps<{
-        size?: "md" | "lg";
+        size?: 'md' | 'lg';
         note?: string | null;
         unsupported?: boolean;
         id: number;
@@ -19,23 +19,23 @@ const props = withDefaults(
         updatedAt: string;
     }>(),
     {
-        size: "md",
+        size: 'md',
         note: null,
         unsupported: false,
     }
 );
 
-const booth_url = "https://booth.pm/ja/items/";
+const booth_url = 'https://booth.pm/ja/items/';
 
-const note = ref<string>(props.note ? props.note : "");
+const note = ref<string>(props.note ? props.note : '');
 const unsupported = ref<boolean>(props.unsupported);
 
 watch(note, (value) => {
-    emit("update:note", value);
+    emit('update:note', value);
 });
 
 watch(unsupported, (value) => {
-    emit("update:unsupported", value);
+    emit('update:unsupported', value);
 });
 </script>
 
@@ -128,7 +128,7 @@ watch(unsupported, (value) => {
                         icon="lucide:trash"
                         :icon-size="16"
                         tooltip="アイテム削除"
-                        ui="p-3"
+                        class="p-3"
                         @click="$emit('remove')"
                     />
 

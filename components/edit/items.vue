@@ -188,15 +188,14 @@ watch(items.value, () => {
                             : 'i-svg-spinners-ring-resize'
                     "
                     label="追加"
-                    ui="pr-3 h-[40px]"
+                    class="pr-3 h-[40px]"
                     @click="addItemFromURL"
                 />
             </div>
             <UiButton
                 icon="lucide:search"
                 label="アバター・アイテムを検索"
-                ui="h-9 w-full"
-                class="w-full"
+                class="h-9 w-full"
                 @click="modalSearchItem = true"
             />
         </div>
@@ -320,7 +319,7 @@ watch(items.value, () => {
         <ModalReplaceAvatar
             :from="items.avatar"
             :to="replaceAvatar"
-            @accept="(inputUrl = ''), (items.avatar = replaceAvatar)"
+            @accept="((inputUrl = ''), (items.avatar = replaceAvatar))"
             @close="modalReplaceAvatar = false"
         />
     </UModal>

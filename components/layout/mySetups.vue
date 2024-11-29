@@ -51,7 +51,7 @@ onUnmounted(() => {
                 to="/setup/edit"
                 icon="i-heroicons-plus"
                 label="セットアップを投稿"
-                ui="pr-6 pl-5 rounded-full whitespace-nowrap"
+                class="pr-6 pl-5 rounded-full whitespace-nowrap"
             />
         </div>
 
@@ -85,7 +85,7 @@ onUnmounted(() => {
             to="/setup/edit"
             icon="i-heroicons-plus"
             label="セットアップを投稿"
-            ui="pr-4 rounded-full whitespace-nowrap"
+            class="pr-4 rounded-full whitespace-nowrap"
         />
     </div>
 </template>

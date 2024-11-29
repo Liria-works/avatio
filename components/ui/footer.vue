@@ -29,19 +29,19 @@ const buttonLink =
                         to="https://x.com/liria_work"
                         new-tab
                         icon="simple-icons:x"
-                        ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        class="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                     />
 
                     <UiButton
                         to="https://github.com/Liria-works/avatio"
                         new-tab
                         icon="simple-icons:github"
-                        ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        class="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                     />
 
                     <UiButton
                         to="https://liria.work"
-                        ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        class="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                     >
                         <LogoLiria
                             :color="
@@ -58,11 +58,15 @@ const buttonLink =
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <UiButton to="/release" label="お知らせ" :ui="buttonLink" />
+                    <UiButton
+                        to="/release"
+                        label="お知らせ"
+                        :class="buttonLink"
+                    />
 
                     <UiButton
                         label="フィードバック"
-                        :ui="buttonLink"
+                        :class="buttonLink"
                         @click="modal_feedback = true"
                     />
                 </div>
@@ -72,17 +76,17 @@ const buttonLink =
                     disabled
                     tooltip="準備中"
                     label="Avatioについて"
-                    :ui="buttonLink"
+                    :class="buttonLink"
                 />
 
-                <UiButton to="/faq" label="FAQ" :ui="buttonLink" />
+                <UiButton to="/faq" label="FAQ" :class="buttonLink" />
 
-                <UiButton to="/terms" label="利用規約" :ui="buttonLink" />
+                <UiButton to="/terms" label="利用規約" :class="buttonLink" />
 
                 <UiButton
                     to="/privacy-policy"
                     label="プライバシーポリシー"
-                    :ui="buttonLink"
+                    :class="buttonLink"
                 />
             </div>
             <p class="text-neutral-500 text-sm">Copyright © 2024 Liria</p>

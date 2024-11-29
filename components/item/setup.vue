@@ -55,7 +55,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         quality="85"
                         sizes="300px"
                         loading="lazy"
-                        class="size-full max-h-80 rounded-lg object-cover"
+                        class="size-full max-h-[420px] rounded-lg object-cover"
                     />
                 </div>
             </template>

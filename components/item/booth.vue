@@ -217,7 +217,7 @@ onMounted(async () => {
                             :to="{ name: 'search', query: { item: props.id } }"
                             icon="lucide:search"
                             tooltip="アイテムからセットアップを検索"
-                            ui="p-2"
+                            class="p-2"
                         />
                     </div>
                 </div>

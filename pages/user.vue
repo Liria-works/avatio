@@ -19,16 +19,14 @@ const user = useSupabaseUser();
                 label="ユーザー情報"
                 icon="lucide:user-round"
                 :icon-size="19"
-                ui="outline-0 w-full justify-start"
-                class="w-full"
+                class="outline-0 w-full justify-start"
             />
             <UiButton
                 :to="{ name: 'user-bookmark' }"
                 label="ブックマーク"
                 icon="lucide:bookmark"
                 :icon-size="19"
-                ui="outline-0 w-full justify-start"
-                class="w-full"
+                class="outline-0 w-full justify-start"
             />
 
             <UDivider
@@ -45,16 +43,14 @@ const user = useSupabaseUser();
                 label="設定"
                 icon="lucide:settings"
                 :icon-size="19"
-                ui="outline-0 w-full justify-start"
-                class="w-full"
+                class="outline-0 w-full justify-start"
             />
 
             <UiButton
                 label="ログアウト"
                 icon="lucide:log-out"
                 :icon-size="19"
-                ui="outline-0 w-full justify-start"
-                class="w-full"
+                class="outline-0 w-full justify-start"
                 @click="useSignOut"
             />
         </div>

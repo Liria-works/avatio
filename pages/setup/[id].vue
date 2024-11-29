@@ -136,7 +136,7 @@ onMounted(async () => {
                 v-if="setup.image"
                 :src="useGetImage(setup.image)"
                 :alt="setup.name"
-                class="rounded-xl w-full"
+                class="rounded-xl max-h-[80vh] content-stretch"
             />
 
             <div class="w-full flex flex-col gap-3">
@@ -207,8 +207,8 @@ onMounted(async () => {
                                     : 'lucide:bookmark'
                             "
                             padding=""
-                            ui="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
-                            :ui-icon="
+                            class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            :icon-class="
                                 bookmark
                                     ? 'text-red-500 dark:text-red-400'
                                     : 'text-neutral-600 dark:text-neutral-300'
@@ -221,8 +221,8 @@ onMounted(async () => {
                             tooltip="削除"
                             icon="lucide:trash"
                             :icon-size="18"
-                            ui="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
-                            ui-icon="text-red-400 dark:text-red-300"
+                            class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            icon-class="text-red-400 dark:text-red-300"
                             @click="modal_delete = true"
                         />
 
@@ -237,7 +237,7 @@ onMounted(async () => {
                                 icon="lucide:share-2"
                                 :icon-size="18"
                                 tooltip="シェア"
-                                ui="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                                class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             />
 
                             <template #panel="{ close }">
@@ -250,15 +250,13 @@ onMounted(async () => {
                                         icon="simple-icons:x"
                                         :icon-size="18"
                                         label="ポスト"
-                                        ui="w-full outline-0"
-                                        class="w-full"
+                                        class="w-full outline-0"
                                     />
                                     <UiButton
                                         icon="lucide:link"
                                         :icon-size="18"
                                         label="URLをコピー"
-                                        ui="w-full outline-0"
-                                        class="w-full"
+                                        class="w-full outline-0"
                                         @click="
                                             useWriteClipboard(currentUrl);
                                             close();
@@ -269,8 +267,7 @@ onMounted(async () => {
                                         icon="lucide:share-2"
                                         :icon-size="18"
                                         label="その他"
-                                        ui="w-full outline-0"
-                                        class="w-full"
+                                        class="w-full outline-0"
                                         @click="
                                             share({
                                                 title: setup.name,
@@ -379,8 +376,8 @@ onMounted(async () => {
                 icon="lucide:flag"
                 :icon-size="16"
                 :outline="false"
-                ui="px-3 py-2 mt-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-                ui-icon="text-red-400 dark:text-red-400"
+                class="px-3 py-2 mt-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                icon-class="text-red-400 dark:text-red-400"
                 @click="
                     if (user) {
                         modal_report = true;

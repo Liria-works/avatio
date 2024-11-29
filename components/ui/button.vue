@@ -12,9 +12,11 @@ const props = withDefaults(
         iconSize?: number;
         label?: string;
         outline?: boolean;
-        ui?: string;
-        uiIcon?: string;
         tooltip?: string;
+        // eslint-disable-next-line vue/require-default-prop
+        class?: string;
+        // eslint-disable-next-line vue/require-default-prop
+        iconClass?: string;
     }>(),
     {
         disabled: false,
@@ -24,8 +26,6 @@ const props = withDefaults(
         iconSize: 18,
         label: '',
         outline: true,
-        ui: '',
-        uiIcon: '',
         tooltip: '',
     }
 );
@@ -56,8 +56,8 @@ const Link = defineNuxtLink({
                     'text-sm font-semibold align-middle leading-none',
                     'text-neutral-800 dark:text-neutral-200',
                     'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
-                    props.ui,
-                    'transition duration-50 delay-0 ease-in-out'
+                    'transition duration-50 delay-0 ease-in-out',
+                    props.class
                 )
             "
             @click="emit('click')"
@@ -69,7 +69,7 @@ const Link = defineNuxtLink({
                 :class="
                     twMerge(
                         'text-neutral-600 dark:text-neutral-300',
-                        props.uiIcon
+                        props.iconClass
                     )
                 "
             />

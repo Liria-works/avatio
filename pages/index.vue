@@ -66,7 +66,7 @@ onMounted(async () => {
                 />
                 <!-- <UiButton
                 icon="lucide:rotate-ccw"
-                ui="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                class="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                 @click="get"
             /> -->
             </div>
@@ -98,7 +98,7 @@ onMounted(async () => {
                     :disabled="loading"
                     label="さらに読み込む"
                     :icon="loading ? 'svg-spinners:ring-resize' : ''"
-                    ui="h-10"
+                    class="h-10"
                     @click="paginate()"
                 />
             </div>

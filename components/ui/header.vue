@@ -56,7 +56,7 @@ if (user.value) {
                         to="/search"
                         tooltip="検索"
                         icon="lucide:search"
-                        ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                        class="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                     />
 
                     <!-- <UModal v-model="modalSearch" :ui="{
@@ -77,7 +77,7 @@ if (user.value) {
                                     : 'i-heroicons-moon-20-solid'
                             "
                             tooltip="テーマ"
-                            ui="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            class="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             @click="
                                 colorMode.preference =
                                     colorMode.value === 'dark'
@@ -130,7 +130,7 @@ if (user.value) {
                     <NuxtLink v-else to="/login">
                         <UiButton
                             label="ログイン"
-                            ui="outline-0 px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
+                            class="outline-0 px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
                         />
                     </NuxtLink>
                 </div>
