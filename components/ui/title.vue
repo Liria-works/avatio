@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = withDefaults(
     defineProps<{
+        is?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span';
         size?: 'md' | 'lg';
         label: string;
         icon?: string;
@@ -9,6 +10,7 @@ const props = withDefaults(
         infomation?: string;
     }>(),
     {
+        is: 'h1',
         size: 'md',
         icon: 'lucide:circle',
         trailing: '',
@@ -26,7 +28,8 @@ const props = withDefaults(
                 :size="props.size === 'md' ? 20 : 24"
                 class="text-neutral-500 dark:text-neutral-400"
             />
-            <div
+            <component
+                :is="props.is"
                 :class="[
                     'text-black dark:text-white',
                     props.size === 'md'
@@ -35,7 +38,7 @@ const props = withDefaults(
                 ]"
             >
                 {{ props.label }}
-            </div>
+            </component>
             <UTooltip
                 v-if="props.infomation"
                 :prevent="props.infomation ? false : true"
