@@ -3,7 +3,7 @@ const route = useRoute();
 const client = await useSBClient();
 const user = useSupabaseUser();
 
-const modal_report = ref(false);
+const modalReport = ref(false);
 const loading = ref(true);
 
 interface User {
@@ -169,21 +169,10 @@ onMounted(async () => {
                     icon="lucide:flag"
                     :icon-size="19"
                     tooltip="ユーザーを報告"
-                    @click="modal_report = true"
+                    @click="modalReport = true"
                 />
-                <UModal
-                    v-model="modal_report"
-                    :ui="{
-                        background: 'bg-white dark:bg-neutral-100',
-                        ring: 'ring-0',
-                        rounded: 'rounded-xl',
-                    }"
-                >
-                    <ModalReportUser
-                        :id="userId"
-                        @close="modal_report = false"
-                    />
-                </UModal>
+
+                <ModalReportUser v-model="modalReport" :id="userId" />
             </div>
 
             <div class="w-full flex flex-col gap-3 pl-2">
@@ -240,7 +229,10 @@ onMounted(async () => {
             </div>
         </div>
 
-        <div v-if="userData.setups" class="w-full flex flex-col gap-5 pl-2">
+        <div
+            v-if="userData.setups.length"
+            class="w-full flex flex-col gap-5 pl-2"
+        >
             <UiTitle label="セットアップ" icon="lucide:shirt" />
 
             <NuxtLink

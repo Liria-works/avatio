@@ -92,16 +92,6 @@ const buttonLink =
             <p class="text-neutral-500 text-sm">Copyright © 2024 Liria</p>
         </div>
 
-        <UModal
-            v-model="modal_feedback"
-            :ui="{
-                background: 'bg-white dark:bg-neutral-800',
-                ring: 'ring-0',
-                rounded: 'rounded-xl',
-                overlay: { background: 'backdrop-blur-sm' },
-            }"
-        >
-            <ModalFeedback />
-        </UModal>
+        <ModalFeedback v-model="modal_feedback" />
     </footer>
 </template>

@@ -1,43 +1,47 @@
 <script lang="ts" setup>
 const client = await useSBClient();
 
+const vis = defineModel<boolean>({
+    default: false,
+});
+
 const props = defineProps<{
     id: string;
 }>();
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(['close']);
 
 const choices = [
     {
-        value: "spam",
-        label: "スパム、個人情報、不適切な内容",
+        value: 'spam',
+        label: 'スパム、個人情報、不適切な内容',
         descreption:
-            "スパム目的のアカウントと予想される、プロフィールなどに自身および他者の個人情報を含んでいる、その他不適切な情報を含んでいる",
+            'スパム目的のアカウントと予想される、プロフィールなどに自身および他者の個人情報を含んでいる、その他不適切な情報を含んでいる',
     },
     {
-        value: "hate",
-        label: "悪意のあるユーザー",
-        descreption: "ヘイト、差別、脅迫など悪意のある内容を投稿している。",
+        value: 'hate',
+        label: '悪意のあるユーザー',
+        descreption: 'ヘイト、差別、脅迫など悪意のある内容を投稿している。',
     },
     {
-        value: "infringement",
-        label: "権利侵害",
-        descreption: "他者の権利を侵している、または権利侵害を助長している。",
+        value: 'infringement',
+        label: '権利侵害',
+        descreption: '他者の権利を侵している、または権利侵害を助長している。',
     },
     {
-        value: "other",
-        label: "その他",
-        descreption: "その他の理由で報告",
+        value: 'other',
+        label: 'その他',
+        descreption: 'その他の理由で報告',
     },
 ];
 interface Report {
-    [key: string]: boolean | string | null; // Add index signature
+    [key: string]: boolean | string; // Add index signature
     user_id: string;
     spam: boolean;
     hate: boolean;
     infringement: boolean;
     other: boolean;
-    additional: string | null;
+    additional: string;
 }
 
 const report = ref<Report>({
@@ -46,7 +50,7 @@ const report = ref<Report>({
     hate: false,
     infringement: false,
     other: false,
-    additional: null,
+    additional: '',
 });
 
 const Submit = async () => {
@@ -58,38 +62,31 @@ const Submit = async () => {
         !report.value.infringement &&
         !report.value.other
     ) {
-        useAddToast("報告の理由を選択してください");
+        useAddToast('報告の理由を選択してください');
         return;
     }
 
-    if (report.value.additional === "") report.value.additional = null;
-
-    if (report.value.other && !report.value.additional) {
+    if (report.value.other && !report.value.additional.length) {
         useAddToast('"その他"を選択した場合は、理由を入力してください');
         return;
     }
 
     const { error } = await client
-        .from("report_user")
+        .from('report_user')
         .insert(report.value as never);
     if (error) {
         console.error(error);
-        useAddToast("報告の送信に失敗しました", "もう一度お試しください");
+        useAddToast('報告の送信に失敗しました', 'もう一度お試しください');
         return;
     }
 
-    useAddToast("報告が送信されました", "ご協力ありがとうございます！");
-    emit("close");
+    useAddToast('報告が送信されました', 'ご協力ありがとうございます！');
+    emit('close');
 };
 </script>
 
 <template>
-    <UCard
-        :ui="{
-            ring: '',
-            divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-        }"
-    >
+    <ModalBase v-model="vis">
         <template #header>
             <div
                 class="w-full px-10 flex flex-row gap-2 items-center justify-center"
@@ -119,7 +116,7 @@ const Submit = async () => {
                 }"
                 @click="report[choice.value] = !report[choice.value]"
             >
-                <UCheckbox v-model="report[choice.value]" />
+                <UCheckbox v-model="report[choice.value] as boolean" />
                 <div class="flex flex-col gap-1 items-start">
                     <p
                         class="font-medium text-neutral-600 dark:text-neutral-300"
@@ -162,5 +159,5 @@ const Submit = async () => {
                 @click="Submit"
             />
         </template>
-    </UCard>
+    </ModalBase>
 </template>

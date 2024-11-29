@@ -141,8 +141,8 @@ watch(items.value, () => {
 
 <template>
     <div class="flex-col items-center gap-8 flex w-full">
-        <div class="w-full flex flex-col items-center gap-4">
-            <div class="flex gap-1 items-center w-full">
+        <div class="w-full flex flex-col gap-4 items-stretch">
+            <div class="flex gap-1 items-center">
                 <div
                     class="w-full p-1 rounded-lg border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900"
                 >
@@ -295,32 +295,13 @@ watch(items.value, () => {
         </div>
     </div>
 
-    <UModal
-        v-model="modalSearchItem"
-        :ui="{
-            background: 'bg-white dark:bg-neutral-100',
-            ring: 'ring-0',
-            rounded: 'rounded-xl',
-            inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
-        }"
-    >
-        <ModalSearchItem @add="addItem" @close="modalSearchItem = false" />
-    </UModal>
+    <ModalSearchItem v-model="modalSearchItem" @add="addItem" />
 
-    <UModal
+    <ModalReplaceAvatar
         v-model="modalReplaceAvatar"
-        :ui="{
-            background: 'bg-white dark:bg-neutral-100',
-            ring: 'ring-0',
-            rounded: 'rounded-xl',
-            inner: 'fixed inset-auto top-10 left-0 right-0 overflow-y-auto',
-        }"
-    >
-        <ModalReplaceAvatar
-            :from="items.avatar"
-            :to="replaceAvatar"
-            @accept="((inputUrl = ''), (items.avatar = replaceAvatar))"
-            @close="modalReplaceAvatar = false"
-        />
-    </UModal>
+        :from="items.avatar"
+        :to="replaceAvatar"
+        @accept="((inputUrl = ''), (items.avatar = replaceAvatar))"
+        @close="modalReplaceAvatar = false"
+    />
 </template>

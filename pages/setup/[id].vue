@@ -6,9 +6,9 @@ const route = useRoute();
 const client = await useSBClient();
 const currentUrl = ref<string>('');
 
-const modal_login = ref(false);
-const modal_report = ref(false);
-const modal_delete = ref(false);
+const modalLogin = ref(false);
+const modalReport = ref(false);
+const modalDelete = ref(false);
 
 const id = Number(route.params.id);
 const setup = ref<Setup | null>(null);
@@ -16,7 +16,7 @@ const bookmark = ref(false);
 
 const toggleBookmark = async () => {
     if (!user.value) {
-        return (modal_login.value = true);
+        return (modalLogin.value = true);
     }
 
     if (!setup.value) {
@@ -223,7 +223,7 @@ onMounted(async () => {
                             :icon-size="18"
                             class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             icon-class="text-red-400 dark:text-red-300"
-                            @click="modal_delete = true"
+                            @click="modalDelete = true"
                         />
 
                         <UPopover
@@ -380,16 +380,16 @@ onMounted(async () => {
                 icon-class="text-red-400 dark:text-red-400"
                 @click="
                     if (user) {
-                        modal_report = true;
+                        modalReport = true;
                     } else {
-                        modal_login = true;
+                        modalLogin = true;
                     }
                 "
             />
         </div>
 
         <UModal
-            v-model="modal_login"
+            v-model="modalLogin"
             :ui="{
                 background: 'bg-white dark:bg-neutral-100',
                 ring: 'ring-0',
@@ -399,7 +399,7 @@ onMounted(async () => {
             <UiLogin
                 :redirect="`/setup/${route.params.id}`"
                 @success="
-                    modal_login = false;
+                    modalLogin = false;
                     (async () => {
                         if (!setup) return;
                         bookmark = await useCheckBookmark(setup.id);
@@ -408,22 +408,10 @@ onMounted(async () => {
             />
         </UModal>
 
-        <UModal
-            v-model="modal_report"
-            :ui="{
-                background: 'bg-white dark:bg-neutral-100',
-                ring: 'ring-0',
-                rounded: 'rounded-xl',
-            }"
-        >
-            <ModalReportSetup
-                :id="Number(setup?.id)"
-                @close="modal_report = false"
-            />
-        </UModal>
+        <ModalReportSetup v-model="modalReport" :id="Number(setup?.id)" />
 
         <UModal
-            v-model="modal_delete"
+            v-model="modalDelete"
             :ui="{
                 background: 'bg-white dark:bg-neutral-700',
                 ring: 'ring-0',

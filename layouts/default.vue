@@ -14,7 +14,7 @@ useHead({
     meta: [{ name: 'lang', content: 'ja' }],
 });
 
-const modal_feedback = ref(false);
+const modalFeedback = ref(false);
 </script>
 
 <template>
@@ -32,19 +32,9 @@ const modal_feedback = ref(false);
             label="フィードバック"
             :ui="{ rounded: 'rounded-full' }"
             class="fixed bottom-6 right-6 pr-[18px]"
-            @click="modal_feedback = true"
+            @click="modalFeedback = true"
         />
-        <UModal
-            v-model="modal_feedback"
-            :ui="{
-                background: 'bg-white dark:bg-neutral-800',
-                ring: 'ring-0',
-                rounded: 'rounded-xl',
-                overlay: { background: 'backdrop-blur-sm' },
-            }"
-        >
-            <ModalFeedback />
-        </UModal>
+        <ModalFeedback v-model="modalFeedback" />
         <UNotifications />
     </UContainer>
 </template>

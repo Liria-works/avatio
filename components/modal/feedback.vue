@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+const vis = defineModel<boolean>({
+    default: false,
+});
+
 interface Feedback {
     feature: string;
     design: string;
@@ -68,12 +72,7 @@ const Submit = async () => {
 </script>
 
 <template>
-    <UCard
-        :ui="{
-            ring: '',
-            divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-        }"
-    >
+    <ModalBase v-model="vis">
         <template #header>
             <div
                 class="w-full px-10 flex flex-row gap-2 items-center justify-center"
@@ -262,5 +261,5 @@ const Submit = async () => {
                 @click="Submit"
             />
         </template>
-    </UCard>
+    </ModalBase>
 </template>

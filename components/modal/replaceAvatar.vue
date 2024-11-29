@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+const vis = defineModel<boolean>({
+    default: false,
+});
+
 const props = defineProps<{
     from: {
         id: number;
@@ -34,12 +38,7 @@ const emit = defineEmits(['accept', 'close']);
 </script>
 
 <template>
-    <UCard
-        :ui="{
-            ring: '',
-            divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-        }"
-    >
+    <ModalBase v-model="vis">
         <template #header>
             <UiTitle
                 label="ベースアバターの置換"
@@ -102,5 +101,5 @@ const emit = defineEmits(['accept', 'close']);
                 <UiButton label="キャンセル" @click="() => emit('close')" />
             </div>
         </template>
-    </UCard>
+    </ModalBase>
 </template>

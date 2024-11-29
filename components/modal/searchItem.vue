@@ -1,10 +1,14 @@
 <script lang="ts" setup>
+const vis = defineModel<boolean>({
+    default: false,
+});
+
 const router = useRouter();
 
-const emit = defineEmits(["close", "add"]);
+const emit = defineEmits(['close', 'add']);
 const client = await useSBClient();
 
-const searchWord = ref<string>("");
+const searchWord = ref<string>('');
 const searchItems = ref<
     {
         id: number;
@@ -29,12 +33,12 @@ const handleInputChange = useDebounceFn(
             return;
         }
 
-        let query = client.rpc("search_items", {
+        let query = client.rpc('search_items', {
             keywords: value.toString(),
         });
 
         if (filter.value.length) {
-            if (filter.value.includes("other")) {
+            if (filter.value.includes('other')) {
                 let ignore: { [key: string]: number } = {
                     avatar: 208,
                     cloth: 209,
@@ -50,19 +54,19 @@ const handleInputChange = useDebounceFn(
                     );
                 }
                 query = query.not(
-                    "category",
-                    "in",
-                    `(${Object.values(ignore).join(",")})`
+                    'category',
+                    'in',
+                    `(${Object.values(ignore).join(',')})`
                 );
             } else {
                 const categories = [];
-                if (filter.value.includes("avatar")) categories.push(208);
-                if (filter.value.includes("cloth")) categories.push(209);
-                if (filter.value.includes("accessory")) categories.push(217);
+                if (filter.value.includes('avatar')) categories.push(208);
+                if (filter.value.includes('cloth')) categories.push(209);
+                if (filter.value.includes('accessory')) categories.push(217);
 
                 if (categories.length)
                     query = query.or(
-                        categories.map((cat) => `category.eq.${cat}`).join(",")
+                        categories.map((cat) => `category.eq.${cat}`).join(',')
                     );
             }
         }
@@ -85,12 +89,7 @@ watch(filter.value, () => {
 </script>
 
 <template>
-    <UCard
-        :ui="{
-            ring: '',
-            divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-        }"
-    >
+    <ModalBase v-model="vis">
         <template #header>
             <UInput
                 v-model="searchWord"
@@ -363,5 +362,5 @@ watch(filter.value, () => {
                 <Icon name="i-svg-spinners-ring-resize" />
             </div>
         </div>
-    </UCard>
+    </ModalBase>
 </template>
