@@ -19,7 +19,7 @@ const modal_feedback = ref(false);
 
 <template>
     <UContainer
-        class="flex flex-col gap-10"
+        class="flex flex-col gap-10 items-center"
         :ui="{ padding: 'pt-4 px-6 md:px-20 lg:px-40' }"
     >
         <UiHeader />

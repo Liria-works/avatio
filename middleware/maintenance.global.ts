@@ -3,6 +3,6 @@ export default defineNuxtRouteMiddleware(async (_to, _from) => {
     if (isMaintenance.value?.is_maintenance)
         return showError({
             statusCode: 503,
-            statusMessage: 'Now in maintenance',
+            message: 'メンテナンス中です',
         });
 });

@@ -1,16 +1,9 @@
 <script setup lang="ts">
 const error = useError();
-
-// clearError();
 </script>
 
 <template>
-    <UContainer
-        class="flex flex-col items-center gap-10 pt-10"
-        :ui="{ padding: 'px-8 sm:px-10 lg:px-16' }"
-    >
-        <UiHeader />
-
+    <NuxtLayout>
         <h1
             class="flex text-9xl font-extrabold font-['Montserrat'] text-neutral-500 dark:text-neutral-400"
         >
@@ -20,7 +13,5 @@ const error = useError();
             {{ error && error.message }}
         </h2>
         <NuxtLink to="/">ホーム</NuxtLink>
-
-        <UiFooter />
-    </UContainer>
+    </NuxtLayout>
 </template>

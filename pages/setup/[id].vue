@@ -88,7 +88,10 @@ onMounted(async () => {
     setup.value = data as unknown as Setup; // Supabaseの型生成にバグがあるのでキャストしています
 
     if (!setup.value) {
-        throw new Error('Invalid setup data');
+        showError({
+            statusCode: 404,
+            message: 'セットアップが見つかりませんでした',
+        });
     }
 
     if (setup.value?.setup_items) {
