@@ -2,7 +2,12 @@ import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import authMiddleware from './auth';
 
 export default defineEventHandler(async (event) => {
-    await authMiddleware(event);
+    const authenticated = await authMiddleware(event);
+    if (!authenticated)
+        return sendError(
+            event,
+            createError({ statusCode: 403, statusMessage: 'Forbidden' })
+        );
 
     const runtime = useRuntimeConfig();
 
