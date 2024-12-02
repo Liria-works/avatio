@@ -1,15 +1,8 @@
 import { serverSupabaseServiceRole } from '#supabase/server';
-// import authMiddleware from './auth';
+import type { Database } from '../../database.types';
 
 export default defineEventHandler(async (event) => {
-    // const authenticated = await authMiddleware(event);
-    // if (!authenticated)
-    //     return sendError(
-    //         event,
-    //         createError({ statusCode: 403, statusMessage: 'Forbidden' })
-    //     );
-
-    const supabase = serverSupabaseServiceRole(event);
+    const supabase = serverSupabaseServiceRole<Database>(event);
 
     const token = getHeader(event, 'authorization');
     const user = await supabase.auth.getUser(token);

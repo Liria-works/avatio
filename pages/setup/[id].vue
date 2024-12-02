@@ -85,7 +85,7 @@ onMounted(async () => {
         .eq('id', Number(id))
         .maybeSingle();
 
-    setup.value = data as unknown as Setup; // Supabaseの型生成にバグがあるのでキャストしています
+    setup.value = data as unknown as Setup;
 
     if (!setup.value) {
         showError({

@@ -1,4 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
+import type { Database } from '../../../database.types';
 import type { H3Event } from 'h3';
 
 const url_base = 'https://booth.pm/ja/items/';
@@ -20,7 +21,7 @@ export default defineEventHandler(async (event) => {
 async function GetBoothItem(event: H3Event, id: number) {
     const startTime = Date.now(); // 処理開始時刻を記録
 
-    const client = await serverSupabaseClient(event);
+    const client = await serverSupabaseClient<Database>(event);
 
     try {
         // データ取得
