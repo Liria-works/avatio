@@ -131,6 +131,7 @@ watch(filter.value, () => {
         >
             <div class="flex items-center gap-2">
                 <button
+                    type="button"
                     :class="`py-1 px-3 rounded-full text-sm border border-1 border-neutral-400 ${
                         filter.includes('avatar')
                             ? 'text-white dark:text-black bg-neutral-500 hover:bg-neutral-400 dark:bg-neutral-400 hover:dark:bg-neutral-500'
@@ -145,6 +146,7 @@ watch(filter.value, () => {
                     ベースアバター
                 </button>
                 <button
+                    type="button"
                     :class="`py-1 px-3 rounded-full text-sm border border-1 border-neutral-400 ${
                         filter.includes('cloth')
                             ? 'text-white dark:text-black bg-neutral-500 hover:bg-neutral-400 dark:bg-neutral-400 hover:dark:bg-neutral-500'
@@ -160,6 +162,7 @@ watch(filter.value, () => {
                 </button>
 
                 <button
+                    type="button"
                     :class="`py-1 px-3 rounded-full text-sm border border-1 border-neutral-400 ${
                         filter.includes('accessory')
                             ? 'text-white dark:text-black bg-neutral-500 hover:bg-neutral-400 dark:bg-neutral-400 hover:dark:bg-neutral-500'
@@ -175,6 +178,7 @@ watch(filter.value, () => {
                 </button>
 
                 <button
+                    type="button"
                     :class="`py-1 px-3 rounded-full text-sm border border-1 border-neutral-400 ${
                         filter.includes('other')
                             ? 'text-white dark:text-black bg-neutral-500 hover:bg-neutral-400 dark:bg-neutral-400 hover:dark:bg-neutral-500'
@@ -206,6 +210,7 @@ watch(filter.value, () => {
                                 (item) => item.category === 208
                             )"
                             :key="'search-result-' + i.id"
+                            type="button"
                             class="w-full h-10 pr-3 flex gap-2 items-center justify-between rounded-xl bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                             @click="
                                 emit('add', i.id);
@@ -246,6 +251,7 @@ watch(filter.value, () => {
                                 (item) => item.category === 209
                             )"
                             :key="'search-result-' + i.id"
+                            type="button"
                             class="w-full h-10 pr-3 flex gap-2 items-center justify-between rounded-xl bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                             @click="
                                 emit('add', i.id);
@@ -286,6 +292,7 @@ watch(filter.value, () => {
                                 (item) => item.category === 217
                             )"
                             :key="'search-result-' + i.id"
+                            type="button"
                             class="w-full h-10 pr-3 flex gap-2 items-center justify-between rounded-xl bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                             @click="
                                 emit('add', i.id);
@@ -329,6 +336,7 @@ watch(filter.value, () => {
                                     item.category !== 217
                             )"
                             :key="'search-result-' + i.id"
+                            type="button"
                             class="w-full h-10 pr-3 flex gap-2 items-center justify-between rounded-xl bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                             @click="
                                 emit('add', i.id);

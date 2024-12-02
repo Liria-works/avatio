@@ -68,6 +68,7 @@ const Link = defineNuxtLink({
                 :size="props.iconSize"
                 :class="
                     twMerge(
+                        'flex-shrink-0',
                         'text-neutral-600 dark:text-neutral-300',
                         props.iconClass
                     )
