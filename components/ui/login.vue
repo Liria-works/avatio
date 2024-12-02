@@ -191,33 +191,6 @@ const handleSignUp = async () => {
         <div v-if="!mode_login" class="flex flex-col gap-4 items-center">
             <div class="font-bold text-2xl mb-4">サインアップ</div>
 
-            <UCheckbox
-                v-model="signUpAgree"
-                :ui="{ base: 'size-5' }"
-                class="mb-4"
-            >
-                <template #label>
-                    <p>
-                        <NuxtLink
-                            to="/terms"
-                            target="_blank"
-                            class="underline hover:text-neutral-400 hover:dark:text-neutral-400"
-                        >
-                            利用規約
-                        </NuxtLink>
-                        ・
-                        <NuxtLink
-                            to="/privacy-policy"
-                            target="_blank"
-                            class="underline hover:text-neutral-400 hover:dark:text-neutral-400"
-                        >
-                            プライバシーポリシー
-                        </NuxtLink>
-                        に同意
-                    </p>
-                </template>
-            </UCheckbox>
-
             <UButton
                 block
                 variant="outline"
@@ -285,36 +258,6 @@ const handleSignUp = async () => {
                             icon: { trailing: { pointer: '' } },
                         }"
                     >
-                        <template #trailing>
-                            <UPopover
-                                mode="hover"
-                                :ui="{
-                                    rounded: 'rounded-xl',
-                                    ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                                }"
-                                class="flex"
-                            >
-                                <Icon
-                                    name="lucide:info"
-                                    class="text-neutral-300"
-                                />
-
-                                <template #panel>
-                                    <div
-                                        class="flex flex-col gap-2 text-sm p-4 rounded-lg"
-                                    >
-                                        <p>
-                                            プライベートアルファでは弱い強度のパスワードでも登録ができますが、<br />
-                                            パブリックベータ以降では仕様が変更されます。
-                                        </p>
-                                        <p>
-                                            認証方法についてアイデアをお持ちであれば、<br />
-                                            フィードバックをお送りください。
-                                        </p>
-                                    </div>
-                                </template>
-                            </UPopover>
-                        </template>
                     </UInput>
                 </UFormGroup>
 
@@ -332,7 +275,36 @@ const handleSignUp = async () => {
 
             <UDivider />
 
-            <NuxtTurnstile v-model="token" />
+            <div class="flex flex-col gap-1">
+                <UCheckbox
+                    v-model="signUpAgree"
+                    :ui="{ base: 'size-5' }"
+                    class="mb-4"
+                >
+                    <template #label>
+                        <p>
+                            <NuxtLink
+                                to="/terms"
+                                target="_blank"
+                                class="underline hover:text-neutral-400 hover:dark:text-neutral-400"
+                            >
+                                利用規約
+                            </NuxtLink>
+                            ・
+                            <NuxtLink
+                                to="/privacy-policy"
+                                target="_blank"
+                                class="underline hover:text-neutral-400 hover:dark:text-neutral-400"
+                            >
+                                プライバシーポリシー
+                            </NuxtLink>
+                            に同意
+                        </p>
+                    </template>
+                </UCheckbox>
+
+                <NuxtTurnstile v-model="token" />
+            </div>
         </div>
 
         <template #footer>

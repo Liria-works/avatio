@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const route = useRoute();
 const colorMode = useColorMode();
 const user = useSupabaseUser();
 const client = await useSBClient();
@@ -15,6 +16,10 @@ if (user.value) {
     if (data && data.avatar && data.avatar.length)
         avatar.value = useGetImage(data.avatar);
 }
+
+const badge: { value: { label: string; link: string } } = await $fetch(
+    '/api/edgeConfig/badge_main'
+);
 </script>
 
 <template>
@@ -40,9 +45,13 @@ if (user.value) {
                     />
                 </ClientOnly>
             </NuxtLink>
-            <NuxtLink to="/private_alpha" class="rounded-full">
+            <NuxtLink
+                v-if="badge.value"
+                :to="badge.value.link"
+                class="rounded-full"
+            >
                 <UBadge
-                    label="Private Alpha"
+                    :label="badge.value.label"
                     size="sm"
                     :ui="{ rounded: 'rounded-full' }"
                     class="px-3 hover:bg-neutral-400 hover:dark:bg-neutral-500"
@@ -53,6 +62,7 @@ if (user.value) {
             <div class="items-center gap-2 flex">
                 <div class="items-center gap-0.5 flex">
                     <UiButton
+                        v-if="route.path !== '/login'"
                         to="/search"
                         tooltip="検索"
                         icon="lucide:search"
@@ -127,7 +137,7 @@ if (user.value) {
                         </div>
                     </NuxtLink>
 
-                    <NuxtLink v-else to="/login">
+                    <NuxtLink v-else-if="route.path !== '/login'" to="/login">
                         <UiButton
                             label="ログイン"
                             class="outline-0 px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"

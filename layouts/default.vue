@@ -14,7 +14,7 @@ useHead({
     meta: [{ name: 'lang', content: 'ja' }],
 });
 
-const modalFeedback = ref(false);
+// const modalFeedback = ref(false);
 </script>
 
 <template>
@@ -26,15 +26,15 @@ const modalFeedback = ref(false);
         <slot />
         <UiFooter />
 
-        <UButton
+        <!-- <UButton
             size="xl"
             icon="lucide:lightbulb"
             label="フィードバック"
             :ui="{ rounded: 'rounded-full' }"
             class="fixed bottom-6 right-6 pr-[18px]"
             @click="modalFeedback = true"
-        />
-        <ModalFeedback v-model="modalFeedback" />
+        /> -->
+        <!-- <ModalFeedback v-model="modalFeedback" /> -->
         <UNotifications />
     </UContainer>
 </template>
