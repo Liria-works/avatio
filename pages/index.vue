@@ -1,4 +1,6 @@
 <script setup lang="ts">
+useSeoHome();
+
 const user = useSupabaseUser();
 const client = await useSBClient();
 
@@ -7,7 +9,7 @@ type Setup = {
     created_at: string;
     updated_at: string;
     name: string;
-    avatar: { name: string; thumbnail: string };
+    avatar: { name: string; thumbnail: string; outdated: boolean };
     author: { id: string; name: string; avatar: string };
     image: string;
 };
@@ -24,7 +26,7 @@ const get = async (num: number) => {
     let query = client
         .from('setups')
         .select(
-            'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)'
+            'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail, outdated)'
         );
     if (user.value) query = query.neq('author', user.value.id);
     query = query
@@ -46,8 +48,6 @@ const paginate = async () => {
 
 onMounted(async () => {
     paginate();
-
-    useSeoHome();
 });
 </script>
 
@@ -83,6 +83,7 @@ onMounted(async () => {
                         :name="item.name"
                         :avatar-name="item.avatar.name"
                         :avatar-thumbnail="item.avatar.thumbnail"
+                        :avatar-outdated="item.avatar.outdated"
                         :author-id="item.author.id"
                         :author-name="item.author.name"
                         :author-avatar="item.author.avatar"

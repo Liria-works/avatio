@@ -5,6 +5,7 @@ const props = withDefaults(
         name: string;
         avatarName: string;
         avatarThumbnail: string;
+        avatarOutdated: boolean;
         authorId: string;
         authorName: string;
         authorAvatar: string | null;
@@ -27,16 +28,6 @@ const dateLocale = date.toLocaleString('ja-JP', {
     month: '2-digit',
     day: '2-digit',
 });
-
-// const fetchAvatar = ref<BoothItem | null>();
-
-// onMounted(async () => {
-// fetchAvatar.value = await useFetchBooth({ id: props.avatar, url: null });
-// if (!fetchAvatar.value) {
-//     console.log("avatar not found");
-//     // TODO: アバターがリンク切れの場合のハンドリング
-// }
-// });
 </script>
 
 <template>
@@ -51,10 +42,8 @@ const dateLocale = date.toLocaleString('ja-JP', {
                 >
                     <NuxtImg
                         :src="useGetImage(props.image)"
-                        format="webp"
-                        quality="85"
-                        sizes="300px"
-                        loading="lazy"
+                        preset="thumbnail"
+                        :placeholder="[50, 25, 75, 5]"
                         class="size-full max-h-[420px] rounded-lg object-cover"
                     />
                 </div>
@@ -67,10 +56,8 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     <NuxtImg
                         :src="useGetImage(props.image)"
                         :alt="props.name"
-                        fit="cover"
-                        format="webp"
-                        quality="80"
-                        sizes="80px"
+                        preset="avatarThumbnail"
+                        :placeholder="[30, 30, 75, 5]"
                         class="h-14 rounded-lg overflow-clip flex-shrink-0 object-cover"
                     />
                 </div>
@@ -79,11 +66,8 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     <NuxtImg
                         :src="props.avatarThumbnail"
                         :alt="props.name"
-                        fit="cover"
-                        format="webp"
-                        quality="80"
-                        sizes="56px"
-                        loading="lazy"
+                        preset="avatarThumbnail"
+                        :placeholder="[30, 30, 75, 5]"
                         class="h-14 rounded-lg overflow-clip flex-shrink-0"
                     />
                 </div>
@@ -101,7 +85,11 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         <p
                             class="text-xs text-neutral-500 dark:text-neutral-400 break-all line-clamp-1 leading-none"
                         >
-                            {{ useAvatarName(props.avatarName) }}
+                            {{
+                                !props.avatarOutdated
+                                    ? useAvatarName(props.avatarName)
+                                    : '不明なベースアバター'
+                            }}
                         </p>
                         <div class="flex items-center gap-2">
                             <UiTooltip :text="dateLocale">

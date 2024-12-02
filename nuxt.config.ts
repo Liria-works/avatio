@@ -101,6 +101,26 @@ export default defineNuxtConfig({
             'booth.pximg.net', // booth
             import.meta.env.NUXT_PUBLIC_R2_DOMAIN.replace('https://', ''), // R2
         ],
+        presets: {
+            thumbnail: {
+                modifiers: {
+                    format: 'webp',
+                    sizes: '300px',
+                    quality: 85,
+                    loading: 'lazy',
+                    fit: 'cover',
+                },
+            },
+            avatarThumbnail: {
+                modifiers: {
+                    format: 'webp',
+                    sizes: '80px',
+                    quality: 80,
+                    loading: 'lazy',
+                    fit: 'cover',
+                },
+            },
+        },
     },
 
     fonts: {

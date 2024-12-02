@@ -18,6 +18,8 @@ const vis = defineModel<boolean>({
             :ui="{
                 ring: '',
                 divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+                header: { base: 'empty:hidden' },
+                footer: { base: 'empty:hidden' },
             }"
         >
             <template #header>
