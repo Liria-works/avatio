@@ -66,7 +66,8 @@ const badge: { value: { label: string; link: string } } = await $fetch(
                         to="/search"
                         tooltip="検索"
                         icon="lucide:search"
-                        class="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                        :outline="false"
+                        class="hidden sm:block p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                     />
 
                     <!-- <UModal v-model="modalSearch" :ui="{
@@ -87,7 +88,8 @@ const badge: { value: { label: string; link: string } } = await $fetch(
                                     : 'i-heroicons-moon-20-solid'
                             "
                             tooltip="テーマ"
-                            class="outline-0 p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            :outline="false"
+                            class="hidden sm:block p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
                             @click="
                                 colorMode.preference =
                                     colorMode.value === 'dark'
@@ -112,38 +114,80 @@ const badge: { value: { label: string; link: string } } = await $fetch(
                     </UPopover> -->
                 </div>
 
-                <div class="flex items-center">
-                    <NuxtLink
-                        v-if="user"
-                        :to="`/user/${user?.id}`"
-                        class="rounded-full flex items-center outline outline-4 outline-transparent hover:outline-neutral-300 hover:dark:outline-neutral-600 transition-all ease-in-out duration-100"
+                <NuxtLink
+                    v-if="user"
+                    :to="`/user/${user?.id}`"
+                    class="hidden sm:flex rounded-full items-center outline outline-4 outline-transparent hover:outline-neutral-300 hover:dark:outline-neutral-600 transition-all ease-in-out duration-100"
+                >
+                    <UAvatar
+                        v-if="avatar"
+                        :src="avatar"
+                        alt="Avatar"
+                        size="sm"
+                        class="select-none"
+                    />
+                    <div
+                        v-else
+                        class="flex items-center justify-center size-[32px] rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500"
                     >
-                        <UAvatar
-                            v-if="avatar"
-                            :src="avatar"
-                            alt="Avatar"
-                            size="sm"
-                            class="select-none"
+                        <Icon
+                            name="lucide:user-round"
+                            size="18"
+                            class="text-neutral-600 dark:text-neutral-300"
                         />
-                        <div
-                            v-else
-                            class="flex items-center justify-center size-[32px] rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500"
-                        >
-                            <Icon
-                                name="lucide:user-round"
-                                size="18"
-                                class="text-neutral-600 dark:text-neutral-300"
-                            />
-                        </div>
-                    </NuxtLink>
+                    </div>
+                </NuxtLink>
 
-                    <NuxtLink v-else-if="route.path !== '/login'" to="/login">
+                <UiButton
+                    v-else-if="route.path !== '/login'"
+                    to="/login"
+                    label="ログイン"
+                    :outline="false"
+                    class="hidden sm:block px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
+                />
+
+                <PopupBase>
+                    <template #trigger>
                         <UiButton
-                            label="ログイン"
-                            class="outline-0 px-4 py-3 rounded-lg text-neutral-100 bg-neutral-500 dark:bg-neutral-500 hover:bg-neutral-600 hover:dark:bg-neutral-600"
+                            icon="lucide:menu"
+                            :outline="false"
+                            class="sm:hidden"
                         />
-                    </NuxtLink>
-                </div>
+                    </template>
+                    <template #panel>
+                        <div class="flex items-center gap-1">
+                            <UiButton
+                                to="/search"
+                                tooltip="検索"
+                                icon="lucide:search"
+                                :outline="false"
+                                class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            />
+                            <ClientOnly>
+                                <UiButton
+                                    :icon-size="20"
+                                    :icon="
+                                        colorMode.value === 'light'
+                                            ? 'i-heroicons-sun-20-solid'
+                                            : 'i-heroicons-moon-20-solid'
+                                    "
+                                    tooltip="テーマ"
+                                    :outline="false"
+                                    class="hidden sm:block p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                                    @click="
+                                        colorMode.preference =
+                                            colorMode.value === 'dark'
+                                                ? 'light'
+                                                : 'dark'
+                                    "
+                                />
+                                <template #fallback>
+                                    <div class="w-0 h-8" />
+                                </template>
+                            </ClientOnly>
+                        </div>
+                    </template>
+                </PopupBase>
             </div>
         </div>
     </div>

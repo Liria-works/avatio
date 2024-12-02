@@ -3,25 +3,20 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
 </script>
 
 <template>
-    <UPopover
-        mode="hover"
-        :ui="{
-            rounded: 'rounded-xl',
-            ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-        }"
-        class="w-full"
-    >
-        <button class="flex items-center gap-1 w-full">
-            <Icon
-                name="lucide:info"
-                class="text-indigo-400 dark:text-indigo-300"
-            />
-            <span
-                class="text-xs font-medium text-neutral-600 dark:text-neutral-300"
-            >
-                画像の添付について
-            </span>
-        </button>
+    <PopupBase>
+        <template #trigger>
+            <button type="button" class="flex items-center gap-1 w-full">
+                <Icon
+                    name="lucide:info"
+                    class="text-indigo-400 dark:text-indigo-300"
+                />
+                <span
+                    class="text-xs font-medium text-neutral-600 dark:text-neutral-300"
+                >
+                    画像の添付について
+                </span>
+            </button>
+        </template>
 
         <template #panel>
             <div
@@ -56,5 +51,5 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
                 </div>
             </div>
         </template>
-    </UPopover>
+    </PopupBase>
 </template>

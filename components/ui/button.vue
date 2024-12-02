@@ -55,7 +55,8 @@ const Link = defineNuxtLink({
                     'bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600',
                     'text-sm font-semibold align-middle leading-none',
                     'text-neutral-800 dark:text-neutral-200',
-                    'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
+                    props.outline &&
+                        'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
                     'transition duration-50 delay-0 ease-in-out',
                     props.class
                 )

@@ -74,7 +74,7 @@ onMounted(async () => {
                 :items="setups"
                 :column-width="200"
                 :gap="20"
-                :min-columns="2"
+                :min-columns="1"
                 :max-columns="3"
             >
                 <template #default="{ item }">
