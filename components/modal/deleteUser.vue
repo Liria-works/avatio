@@ -6,10 +6,12 @@ const vis = defineModel<boolean>({
 const emit = defineEmits(['accept', 'close']);
 
 const status = ref<'idle' | 'loading' | 'error'>('idle');
+const error = ref<string>('');
 const password = ref<string>('');
 
 const deleteUser = async () => {
     status.value = 'loading';
+    error.value = '';
 
     try {
         const res = await useAuthFetch('/api/user', {
@@ -19,15 +21,26 @@ const deleteUser = async () => {
         console.log(res);
         if (!res) throw new Error('Failed to delete user');
 
-        navigateTo('/', { external: true });
+        useSignOut();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
         console.error(e);
         status.value = 'error';
         if (e.statusCode === 401) {
-            alert('パスワードが違います');
+            error.value = 'パスワードが違います';
+        } else if (e.statusCode === 403) {
+            error.value = '認証に失敗しました';
+        } else {
+            error.value = 'エラーが発生しました';
         }
     }
 };
+
+watch(vis, () => {
+    status.value = 'idle';
+    password.value = '';
+    error.value = '';
+});
 </script>
 
 <template>
@@ -62,7 +75,7 @@ const deleteUser = async () => {
         </div>
 
         <div v-else-if="status === 'error'" class="gap-6 px-3 flex flex-col">
-            <p class="text-sm">エラーにより処理が未了</p>
+            <p class="text-sm">{{ error }}</p>
         </div>
 
         <template #footer>

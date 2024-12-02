@@ -25,13 +25,25 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const plainPassword = body.plainPassword;
 
-    const { data: checkPasswordResult } = await supabase.rpc('check_password', {
-        user_id: user.data.user.id,
-        plain_password: plainPassword,
-    });
+    const { data: checkPasswordResult, error: checkPasswordError } =
+        await supabase.rpc('check_password', {
+            user_id: user.data.user.id,
+            plain_password: plainPassword,
+        });
+
+    if (checkPasswordError) {
+        console.error(checkPasswordError);
+        return sendError(
+            event,
+            createError({
+                statusCode: 500,
+                statusMessage: 'Error on checking password.',
+            })
+        );
+    }
 
     if (!checkPasswordResult) {
-        console.log('Invalid password');
+        console.error('Invalid password');
         return sendError(
             event,
             createError({ statusCode: 401, statusMessage: 'Invalid password' })
