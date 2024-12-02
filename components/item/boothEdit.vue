@@ -1,12 +1,18 @@
 <!-- eslint-disable vue/no-dupe-keys -->
 <script lang="ts" setup>
-const emit = defineEmits(['remove', 'update:note', 'update:unsupported']);
+const note = defineModel<string>('note', {
+    required: true,
+    default: '',
+});
+const unsupported = defineModel<boolean>('unsupported', {
+    default: false,
+});
+
+const emit = defineEmits(['remove']);
 
 const props = withDefaults(
     defineProps<{
         size?: 'md' | 'lg';
-        note?: string | null;
-        unsupported?: boolean;
         id: number;
         name: string;
         thumbnail: string;
@@ -20,23 +26,10 @@ const props = withDefaults(
     }>(),
     {
         size: 'md',
-        note: null,
-        unsupported: false,
     }
 );
 
 const booth_url = 'https://booth.pm/ja/items/';
-
-const note = ref<string>(props.note ? props.note : '');
-const unsupported = ref<boolean>(props.unsupported);
-
-watch(note, (value) => {
-    emit('update:note', value);
-});
-
-watch(unsupported, (value) => {
-    emit('update:unsupported', value);
-});
 </script>
 
 <template>
@@ -129,7 +122,7 @@ watch(unsupported, (value) => {
                         :icon-size="16"
                         tooltip="アイテム削除"
                         class="p-3"
-                        @click="$emit('remove')"
+                        @click="emit('remove')"
                     />
 
                     <UCheckbox

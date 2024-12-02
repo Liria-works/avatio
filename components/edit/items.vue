@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+const emit = defineEmits(['undo', 'redo']);
+
 interface Items {
     avatar: SetupItem | null;
     avatar_note: string;
     items: SetupItem[];
+    // items: { category: number; items: SetupItem[] }[];
 }
 
 const items = defineModel<Items>({
@@ -13,15 +16,38 @@ const adding = ref(false);
 const modalSearchItem = ref(false);
 const modalReplaceAvatar = ref(false);
 
-const categorizedItems = ref<{ [key: string]: SetupItem[] }>({});
+const categorizedItems = computed(() => {
+    const categorized: { [key: string]: SetupItem[] } = {};
+
+    if (items.value.items.length) {
+        for (const item of items.value.items) {
+            let category: string;
+            if (item.category === 209) {
+                category = 'cloth';
+            } else if (item.category === 217) {
+                category = 'accessory';
+            } else {
+                category = 'other';
+            }
+
+            if (!categorized[category]) {
+                categorized[category] = [];
+            }
+            categorized[category].push(item);
+        }
+    }
+
+    return categorized;
+});
+
 const categoryAttr: { [key: string]: { label: string; icon: string } } = {
     cloth: { label: '衣装', icon: 'lucide:shirt' },
     accessory: { label: 'アクセサリー', icon: 'lucide:star' },
     other: { label: 'その他', icon: 'lucide:package' },
 };
+
 const quickAvatarsOwned = ref<
-    | { id: number; name: string; short: string | null; thumbnail: string }[]
-    | null
+    { id: number; name: string; thumbnail: string }[] | null
 >(null);
 const inputUrl = ref<string>('');
 const replaceAvatar = ref<SetupItem | null>(null);
@@ -71,6 +97,7 @@ const addItem = async (id: number) => {
             inputUrl.value = '';
         }
     }
+
     adding.value = false;
 };
 
@@ -112,30 +139,8 @@ const removeItem = (id: number) => {
     items.value.items = items.value.items.filter((item) => item.id !== id);
 };
 
-const categorize = () => {
-    categorizedItems.value = {};
-
-    if (items.value.items.length) {
-        for (const item of items.value.items) {
-            let category: string;
-            if (item.category === 209) {
-                category = 'cloth';
-            } else if (item.category === 217) {
-                category = 'accessory';
-            } else {
-                category = 'other';
-            }
-
-            if (!categorizedItems.value[category]) {
-                categorizedItems.value[category] = [];
-            }
-            categorizedItems.value[category].push(item);
-        }
-    }
-};
-
-watch(items.value, () => {
-    categorize();
+onMounted(async () => {
+    quickAvatarsOwned.value = await useGetOwnedAvatars();
 });
 </script>
 
@@ -192,12 +197,28 @@ watch(items.value, () => {
                     @click="addItemFromURL"
                 />
             </div>
-            <UiButton
-                icon="lucide:search"
-                label="アバター・アイテムを検索"
-                class="h-9 w-full"
-                @click="modalSearchItem = true"
-            />
+
+            <div class="self-end gap-2 flex">
+                <UiButton
+                    icon="lucide:search"
+                    label="アバター・アイテムを検索"
+                    class="h-9"
+                    @click="modalSearchItem = true"
+                />
+
+                <div class="self-end gap-1 flex items-center">
+                    <UiButton
+                        icon="lucide:undo-2"
+                        class="size-9"
+                        @click="emit('undo')"
+                    />
+                    <UiButton
+                        icon="lucide:redo-2"
+                        class="size-9"
+                        @click="emit('redo')"
+                    />
+                </div>
+            </div>
         </div>
 
         <UiCategory title="ベースアバター" icon="lucide:person-standing">
@@ -218,25 +239,32 @@ watch(items.value, () => {
                     >
                         <button
                             v-for="i in quickAvatarsOwned"
-                            :key="'suggest-avatar-' + i.id"
+                            :key="useId()"
+                            type="button"
                             @click="addItem(i.id)"
                         >
                             <ItemTiny
-                                :label="i.short ? i.short : i.name"
+                                :label="useAvatarName(i.name)"
                                 :thumbnail="i.thumbnail"
                                 class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
                             />
                         </button>
                     </div>
                 </div>
+
+                <div v-else class="self-center flex flex-col gap-3">
+                    <p class="text-sm text-neutral-400">
+                        ベースアバターが登録されていません
+                    </p>
+                </div>
             </div>
 
             <ItemBoothEdit
                 v-if="items.avatar"
+                v-model:note="items.avatar_note"
                 :id="items.avatar.id"
                 :key="'item-' + items.avatar.id"
                 size="lg"
-                :note="items.avatar_note"
                 :name="items.avatar.name"
                 :thumbnail="items.avatar.thumbnail"
                 :price="items.avatar.price"
@@ -247,15 +275,14 @@ watch(items.value, () => {
                 :nsfw="items.avatar.nsfw"
                 :updated-at="items.avatar.updated_at"
                 @remove="items.avatar = null"
-                @update:note="items.avatar_note = $event"
             />
         </UiCategory>
 
         <div
             v-if="!Object.keys(categorizedItems).length"
-            class="my-10 font-medium text-neutral-400"
+            class="flex flex-col gap-3"
         >
-            アイテムが登録されていません
+            <p class="text-sm text-neutral-400">アイテムが登録されていません</p>
         </div>
 
         <div
@@ -274,10 +301,10 @@ watch(items.value, () => {
 
                 <ItemBoothEdit
                     v-for="item in categorizedItems[i]"
+                    v-model:note="item.note"
+                    v-model:unsupported="item.unsupported"
                     :id="item.id"
                     :key="'item-' + item.id"
-                    :note="item.note"
-                    :unsupported="item.unsupported"
                     :name="item.name"
                     :thumbnail="item.thumbnail"
                     :price="item.price"
@@ -287,15 +314,17 @@ watch(items.value, () => {
                     :shop-verified="item.shop_id.verified"
                     :nsfw="item.nsfw"
                     :updated-at="item.updated_at"
-                    @update:note="item.note = $event"
-                    @update:unsupported="item.unsupported = $event"
                     @remove="removeItem(item.id)"
                 />
             </div>
         </div>
     </div>
 
-    <ModalSearchItem v-model="modalSearchItem" @add="addItem" />
+    <ModalSearchItem
+        v-model="modalSearchItem"
+        @add="addItem"
+        @close="modalSearchItem = false"
+    />
 
     <ModalReplaceAvatar
         v-model="modalReplaceAvatar"

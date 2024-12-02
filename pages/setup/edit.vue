@@ -15,6 +15,8 @@ const items = ref<Items>({
     avatar_note: '',
     items: [],
 });
+const { undo, redo } = useRefHistory(items, { deep: true });
+
 const title = ref<string>('');
 const description = ref<string>('');
 const tags = ref<string[]>([]);
@@ -179,7 +181,7 @@ onMounted(async () => {
         </div>
 
         <div class="flex flex-col lg:flex-row items-start gap-8 w-full">
-            <EditItems v-model="items" />
+            <EditItems v-model="items" @undo="undo" @redo="redo" />
 
             <UDivider
                 :ui="{
