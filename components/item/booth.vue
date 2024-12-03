@@ -59,19 +59,10 @@ onMounted(async () => {
 
     // 時間の差分が1日を超えている場合、処理継続する
     if (timeDifference > 24 * 60 * 60 * 1000) {
-        const apiUrl = `/api/item/booth?id=${encodeURIComponent(props.id)}`;
-
-        const runtimeConfig = useRuntimeConfig();
-
         const response: {
             status: number;
             body: Item;
-        } = await $fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                Authorization: runtimeConfig.public.token,
-            },
-        });
+        } = await $fetch(`/api/item/booth?id=${encodeURIComponent(props.id)}`);
 
         if (response.status !== 200 || response.body.outdated) {
             outdated.value = true;

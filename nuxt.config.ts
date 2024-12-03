@@ -161,7 +161,6 @@ export default defineNuxtConfig({
 
     runtimeConfig: {
         public: {
-            token: '',
             r2: { domain: '' },
         },
         turnstile: {
@@ -173,7 +172,6 @@ export default defineNuxtConfig({
             accessKey: '',
             secretKey: '',
         },
-        token: '',
     },
 });
 
