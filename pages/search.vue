@@ -11,59 +11,9 @@ const popularAvatars = ref<{ id: number; name: string; thumbnail: string }[]>(
     []
 );
 
-const Search = async (method: string, query: string[] | number[]) => {
-    if (method === 'item') {
-        resultItem.value = await useFetchBooth(query[0] as number);
-    } else {
-        resultItem.value = null;
-    }
-
-    const { data, error } = await client.rpc('search_setups', {
-        method: method,
-        query: query,
-    });
-
-    if (error) console.error(error);
-
-    if (data)
-        resultSetups.value = data.map(
-            (i: {
-                id: number;
-                created_at: string;
-                name: string;
-                description: string;
-                image: string | null;
-                author: { id: string; name: string; avatar: string | null };
-                avatar: { id: number; name: string; thumbnail: string };
-            }) => ({
-                id: i.id,
-                created_at: i.created_at,
-                name: i.name,
-                description: i.description,
-                image: i.image,
-                author: {
-                    id: i.author.id,
-                    name: i.author.name,
-                    avatar: i.author.avatar,
-                },
-                avatar: {
-                    id: i.avatar.id,
-                    name: i.avatar.name,
-                    thumbnail: i.avatar.thumbnail,
-                },
-            })
-        );
-};
-
 onMounted(async () => {
-    if (!Object.keys(route.query).length) {
-        const { data } = await client.rpc('popular_avatars').limit(20);
-        if (data) {
-            popularAvatars.value = data;
-        } else {
-            popularAvatars.value = [];
-        }
-    }
+    const { data } = await client.rpc('popular_avatars').limit(20);
+    if (data) popularAvatars.value = data;
 });
 
 // クエリパラメータの変更を監視
@@ -78,15 +28,29 @@ watch(
         const item = newQuery.item as string;
         const word = newQuery.q as string;
 
+        if (!tag && !item && !word) return (searchWord.value = '');
+
+        let search = client
+            .from('setups')
+            .select(
+                'id, created_at, name, description, image, avatar(id, name, thumbnail), author(id, name, avatar), setup_items!inner(item_id), setup_tags!inner(tag)'
+            );
+
         if (tag && tag.length) {
-            Search('tag', Array.isArray(tag) ? tag : [tag]);
+            search = search.in(
+                'setup_tags.tag',
+                Array.isArray(tag) ? tag : [tag]
+            );
         } else if (item) {
-            Search('item', [item]);
+            resultItem.value = await useFetchBooth(parseInt(item));
+            search = search.in('setup_items.item_id', [item]); // todo:avatarとitemの両方でクエリするように
         } else if (word) {
-            Search('word', [word]);
-        } else {
-            searchWord.value = '';
+            search = search.ilike('name', `%${word}%`);
         }
+
+        const { data } = await search.order('created_at', { ascending: false });
+        resultSetups.value = data as unknown as Setup[];
+        console.log(data);
     },
     { immediate: true }
 );
