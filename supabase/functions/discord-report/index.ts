@@ -1,9 +1,6 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
-import { createClient } from 'jsr:@supabase/supabase-js@2';
-import {
-    createBot,
-    sendMessage,
-} from 'https://deno.land/x/discordeno@20.0.0/mod.ts';
+import { createClient } from 'npm:@supabase/supabase-js';
+import { createBot } from 'npm:discordeno';
 
 const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
@@ -27,18 +24,21 @@ Deno.serve(async () => {
     const { data: feedbackData, error: feedbackError } = await supabase
         .from('feedback')
         .select('*')
+        .neq('dealt', true)
         .lt('created_at', now.toISOString())
         .gt('created_at', yesterday.toISOString());
 
     const { data: reportSetupData, error: reportSetupError } = await supabase
         .from('report_setup')
         .select('*')
+        .neq('dealt', true)
         .lt('created_at', now.toISOString())
         .gt('created_at', yesterday.toISOString());
 
     const { data: reportUserData, error: reportUserError } = await supabase
         .from('report_user')
         .select('*')
+        .neq('dealt', true)
         .lt('created_at', now.toISOString())
         .gt('created_at', yesterday.toISOString());
 
@@ -59,26 +59,28 @@ Deno.serve(async () => {
         },
     };
 
-    const contents = [
-        response.feedback.number &&
-            `1. 送信されたフィードバック: **${
-                response.feedback.error
-                    ? 'フィードバックの取得に失敗'
-                    : response.feedback.number
-            }**`,
-        response.report.setup.number &&
-            `1. 送信されたセットアップ報告: **${
-                response.report.setup.error
-                    ? 'セットアップ報告の取得に失敗'
-                    : response.report.setup.number
-            }**`,
-        response.report.user.number &&
-            `1. 送信されたユーザー報告: **${
-                response.report.user.error
-                    ? 'ユーザー報告の取得に失敗'
-                    : response.report.user.number
-            }**`,
-    ];
+    const contents: string[] = [];
+
+    if (response.feedback.error)
+        contents.push('1. 取得に失敗 : フィードバック');
+    if (response.feedback.number !== 0)
+        contents.push(
+            `1. 送信されたフィードバック: **${response.feedback.number}**`
+        );
+
+    if (response.report.setup.error)
+        contents.push('2. 取得に失敗 : セットアップ報告');
+    if (response.report.setup.number !== 0)
+        contents.push(
+            `1. 送信されたセットアップ報告: **${response.report.setup.number}**`
+        );
+
+    if (response.report.user.error)
+        contents.push('3. 取得に失敗 : ユーザー報告');
+    if (response.report.user.number !== 0)
+        contents.push(
+            `1. 送信されたユーザー報告: **${response.report.user.number}**`
+        );
 
     const message =
         '**Avatio**\n\n' +
@@ -90,9 +92,10 @@ Deno.serve(async () => {
         contents.join('\n');
 
     if (contents.length) {
-        await sendMessage(basebot, Deno.env.get('DISCORD_BOT_CHANNEL_ID')!, {
-            content: message,
-        });
+        await basebot.helpers.sendMessage(
+            Deno.env.get('DISCORD_BOT_CHANNEL_ID')!,
+            { content: message }
+        );
     }
 
     return new Response(
