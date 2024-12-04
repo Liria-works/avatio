@@ -111,7 +111,7 @@ watch(
             >
                 <NuxtLink
                     v-for="i in popularAvatars"
-                    :key="useId"
+                    :key="useId()"
                     :to="`/search?item=${i.id}`"
                     :class="[
                         'w-32 p-4 gap-2 flex flex-col items-center rounded-lg',
