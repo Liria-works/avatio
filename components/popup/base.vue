@@ -11,7 +11,11 @@
         <slot name="trigger" />
 
         <template #panel>
-            <slot name="panel" />
+            <div
+                class="p-3 gap-2 flex flex-col bg-neutral-300 dark:bg-neutral-900"
+            >
+                <slot name="panel" />
+            </div>
         </template>
     </UPopover>
 </template>
