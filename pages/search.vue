@@ -30,27 +30,52 @@ watch(
 
         if (!tag && !item && !word) return (searchWord.value = '');
 
-        let search = client
-            .from('setups')
-            .select(
-                'id, created_at, name, description, image, avatar(id, name, thumbnail), author(id, name, avatar), setup_items!inner(item_id), setup_tags!inner(tag)'
-            );
-
         if (tag && tag.length) {
-            search = search.in(
-                'setup_tags.tag',
-                Array.isArray(tag) ? tag : [tag]
-            );
-        } else if (item) {
-            resultItem.value = await useFetchBooth(parseInt(item));
-            search = search.in('setup_items.item_id', [item]); // todo:avatarとitemの両方でクエリするように
-        } else if (word) {
-            search = search.ilike('name', `%${word}%`);
+            const { data } = await client
+                .from('setups')
+                .select(
+                    'id, created_at, name, description, image, avatar(id, name, thumbnail), author(id, name, avatar), setup_items!inner(item_id), setup_tags!inner(tag)'
+                )
+                .in('setup_tags.tag', Array.isArray(tag) ? tag : [tag])
+                .order('created_at', { ascending: false });
+
+            return (resultSetups.value = data as unknown as Setup[]);
         }
 
-        const { data } = await search.order('created_at', { ascending: false });
-        resultSetups.value = data as unknown as Setup[];
-        console.log(data);
+        if (item) {
+            resultItem.value = await useFetchBooth(parseInt(item));
+
+            const { data } = await client.rpc('search_setups_item', {
+                query: [parseInt(item)],
+            });
+
+            return (resultSetups.value = data.map((i) => {
+                return {
+                    id: i.id,
+                    created_at: i.created_at,
+                    name: i.name,
+                    description: i.description,
+                    image: i.image,
+                    tags: i.tag,
+                    author: {
+                        id: i.author_id,
+                        name: i.author_name,
+                        avatar: i.author_avatar,
+                    },
+                    avatar: {
+                        id: i.avatar_id,
+                        name: i.avatar_name,
+                        thumbnail: i.avatar_thumbnail,
+                    },
+                    avatar_note: i.avatar_note,
+                    setup_items: i.item_id,
+                };
+            }));
+        }
+
+        if (word) {
+            // search = search.ilike('name', `%${word}%`);
+        }
     },
     { immediate: true }
 );

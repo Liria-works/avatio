@@ -32,28 +32,13 @@ const toggleBookmark = async () => {
 
 const { share, isSupported } = useShare();
 
-type Item = {
-    item_id: {
-        id: number;
-        updated_at: string;
-        outdated: boolean;
-        category: number;
-        name: string;
-        thumbnail: string;
-        price: string;
-        shop: {
-            id: string;
-            name: string;
-            thumbnail: string;
-            verified: boolean;
-        };
-        nsfw: boolean;
-    };
+interface ItemInterface {
+    item_id: Item;
     note: string;
     unsupported: boolean;
-};
+}
 
-const categorizedItems: { [key: string]: Item[] } = {};
+const categorizedItems: { [key: string]: ItemInterface[] } = {};
 const categoryAttr: { [key: string]: { label: string; icon: string } } = {
     cloth: { label: '衣装', icon: 'lucide:shirt' },
     accessory: { label: 'アクセサリー', icon: 'lucide:star' },

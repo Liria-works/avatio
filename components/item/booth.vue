@@ -12,7 +12,7 @@ const props = withDefaults(
         shopId: string;
         shopThumbnail: string;
         shopVerified: boolean;
-        price: string;
+        price: string | null;
         nsfw: boolean;
         outdated: boolean;
         updatedAt: string;
@@ -37,7 +37,7 @@ const item = ref<{
     shopId: string;
     shopThumbnail: string;
     shopVerified: boolean;
-    price: string;
+    price: string | null;
     nsfw: boolean;
     outdated: boolean;
 }>({
@@ -62,7 +62,7 @@ onMounted(async () => {
             query: { id: encodeURIComponent(props.id) },
         });
 
-        if (response.data && response.data.outdated)
+        if (response.data)
             item.value = {
                 name: response.data.name,
                 thumbnail: response.data.thumbnail,
@@ -74,6 +74,7 @@ onMounted(async () => {
                 nsfw: response.data.nsfw,
                 outdated: response.data.outdated,
             };
+        if (!response.data) item.value.outdated = true;
     }
 
     loading.value = false;
@@ -156,7 +157,7 @@ onMounted(async () => {
                             target="_blank"
                             class="text-sm font-semibold text-neutral-700 dark:text-neutral-300"
                         >
-                            {{ item.price }}
+                            {{ item.price ? item.price : '価格不明' }}
                         </NuxtLink>
 
                         <NuxtLink

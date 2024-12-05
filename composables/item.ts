@@ -4,7 +4,7 @@ export interface Item {
     category: number;
     name: string;
     thumbnail: string;
-    price: string;
+    price: string | null;
     shop: { id: string; name: string; thumbnail: string; verified: boolean };
     nsfw: boolean;
     outdated: boolean;

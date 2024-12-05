@@ -136,6 +136,7 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
             category: itemBooth.category,
             shop_id: itemBooth.shopId,
             nsfw: itemBooth.nsfw,
+            outdated: false,
         };
 
         await client
