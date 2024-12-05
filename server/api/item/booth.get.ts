@@ -38,24 +38,6 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
     const startTime = Date.now(); // 処理開始時刻を記録
     const url_base = 'https://booth.pm/ja/items/';
 
-    const { data: itemDB } = await client
-        .from('items')
-        .select(
-            'checked_at, id, name, thumbnail, price, category, shop:shop_id(id, name, thumbnail, verified), nsfw, outdated'
-        )
-        .eq('id', id)
-        .maybeSingle();
-
-    // 時間の差分が1日以内であればDBの情報をそのまま返す
-    if (
-        itemDB &&
-        startTime - new Date(itemDB.checked_at).getTime() < 24 * 60 * 60 * 1000
-    )
-        return {
-            data: itemDB as unknown as Item,
-            error: null,
-        };
-
     try {
         // データ取得
         const { data, error } = await client.functions.invoke<ResponseData>(
@@ -63,14 +45,27 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
             { body: { id: id } }
         );
 
-        if (error || !data) {
-            console.log(error);
-            throw error;
-        }
+        if (error || !data || data.error) {
+            const { data: itemDB } = await client
+                .from('items')
+                .select('id')
+                .eq('id', id)
+                .maybeSingle();
 
-        if (data.error) {
-            console.log(data.error.message, data.error.details);
-            throw error;
+            if (itemDB) {
+                await client
+                    .from('items')
+                    .update({ outdated: true })
+                    .eq('id', id);
+                await client.rpc('update_item_updated_at', { item_id: id });
+            }
+
+            const e =
+                error ||
+                (data?.error?.message, data?.error?.details) ||
+                'Unknown error';
+            console.log(e);
+            throw new Error(e);
         }
 
         const itemBooth = data.data!;

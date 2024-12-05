@@ -27,7 +27,6 @@ const props = withDefaults(
 );
 
 const loading = ref(true);
-const outdated = ref(props.outdated);
 
 const booth_url = 'https://booth.pm/ja/items/';
 
@@ -59,28 +58,22 @@ onMounted(async () => {
 
     // 時間の差分が1日を超えている場合、処理継続する
     if (timeDifference > 24 * 60 * 60 * 1000) {
-        const response: {
-            status: number;
-            body: Item;
-        } = await $fetch('/api/item/booth', {
+        const response = await $fetch('/api/item/booth', {
             query: { id: encodeURIComponent(props.id) },
         });
 
-        if (response.status !== 200 || response.body.outdated) {
-            outdated.value = true;
-        } else {
+        if (response.data && response.data.outdated)
             item.value = {
-                name: response.body.name,
-                thumbnail: response.body.thumbnail,
-                price: response.body.price,
-                shop: response.body.shop.name,
-                shopId: response.body.shop.id,
-                shopThumbnail: response.body.shop.thumbnail,
-                shopVerified: response.body.shop.verified,
-                nsfw: response.body.nsfw,
-                outdated: response.body.outdated,
+                name: response.data.name,
+                thumbnail: response.data.thumbnail,
+                price: response.data.price,
+                shop: response.data.shop.name,
+                shopId: response.data.shop.id,
+                shopThumbnail: response.data.shop.thumbnail,
+                shopVerified: response.data.shop.verified,
+                nsfw: response.data.nsfw,
+                outdated: response.data.outdated,
             };
-        }
     }
 
     loading.value = false;
@@ -98,7 +91,7 @@ onMounted(async () => {
         </template>
     </ItemBase>
 
-    <ItemBase v-else-if="!outdated">
+    <ItemBase v-else-if="!item.outdated">
         <template #thumbnail>
             <div
                 :class="`flex-shrink-0 ${props.size === 'lg' ? 'p-2 pr-4' : 'p-1.5 pr-4'}`"
