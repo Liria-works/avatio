@@ -14,7 +14,7 @@ const props = defineProps<{
             thumbnail: string;
             verified: boolean;
         };
-        price: string;
+        price: string | null;
         nsfw: boolean;
         updated_at: string;
     } | null;
@@ -28,7 +28,7 @@ const props = defineProps<{
             thumbnail: string;
             verified: boolean;
         };
-        price: string;
+        price: string | null;
         nsfw: boolean;
         updated_at: string;
     } | null;

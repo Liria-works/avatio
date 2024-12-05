@@ -16,7 +16,7 @@ const props = withDefaults(
         id: number;
         name: string;
         thumbnail: string;
-        price: string;
+        price: string | null;
         shop: string;
         shopId: string;
         shopThumbnail: string;

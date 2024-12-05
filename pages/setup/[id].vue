@@ -117,13 +117,6 @@ onMounted(async () => {
         class="w-full flex flex-col xl:flex-row items-start gap-8"
     >
         <div class="w-full flex flex-col items-center gap-8">
-            <NuxtImg
-                v-if="setup.image"
-                :src="useGetImage(setup.image)"
-                :alt="setup.name"
-                class="rounded-xl max-h-[80vh] content-stretch"
-            />
-
             <div class="w-full flex flex-col gap-3">
                 <h1
                     class="w-full text-left text-2xl font-bold line-clamp-2 break-keep [overflow-wrap:anywhere;] text-black dark:text-white"
@@ -270,22 +263,32 @@ onMounted(async () => {
                 </div>
             </div>
 
-            <ItemBooth
-                v-if="setup.avatar"
-                size="lg"
-                :note="setup.avatar_note"
-                :id="setup.avatar.id"
-                :name="setup.avatar.name"
-                :thumbnail="setup.avatar.thumbnail"
-                :shop="setup.avatar.shop.name"
-                :shop-id="setup.avatar.shop.id"
-                :shop-thumbnail="setup.avatar.shop.thumbnail"
-                :shop-verified="setup.avatar.shop.verified"
-                :price="setup.avatar.price"
-                :nsfw="setup.avatar.nsfw"
-                :outdated="setup.avatar.outdated"
-                :updated-at="setup.avatar.updated_at"
+            <NuxtImg
+                v-if="setup.image"
+                :src="useGetImage(setup.image)"
+                :alt="setup.name"
+                class="rounded-xl max-h-[70vh] content-stretch"
             />
+
+            <div class="w-full flex flex-col gap-3">
+                <UiTitle label="ベースアバター" icon="lucide:person-standing" />
+                <ItemBooth
+                    v-if="setup.avatar"
+                    size="lg"
+                    :note="setup.avatar_note"
+                    :id="setup.avatar.id"
+                    :name="setup.avatar.name"
+                    :thumbnail="setup.avatar.thumbnail"
+                    :shop="setup.avatar.shop.name"
+                    :shop-id="setup.avatar.shop.id"
+                    :shop-thumbnail="setup.avatar.shop.thumbnail"
+                    :shop-verified="setup.avatar.shop.verified"
+                    :price="setup.avatar.price"
+                    :nsfw="setup.avatar.nsfw"
+                    :outdated="setup.avatar.outdated"
+                    :updated-at="setup.avatar.updated_at"
+                />
+            </div>
 
             <div
                 v-if="Object.keys(categorizedItems).length"
