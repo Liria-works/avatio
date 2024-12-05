@@ -2,8 +2,8 @@
 import { useShare } from '@vueuse/core';
 
 const user = useSupabaseUser();
-const route = useRoute();
 const client = await useSBClient();
+const route = useRoute();
 const currentUrl = ref<string>('');
 
 const modalLogin = ref(false);
@@ -15,30 +15,25 @@ const setup = ref<Setup | null>(null);
 const bookmark = ref(false);
 
 const toggleBookmark = async () => {
-    if (!user.value) {
-        return (modalLogin.value = true);
-    }
+    if (!user.value) return (modalLogin.value = true);
 
-    if (!setup.value) {
-        return new Error('Invalid setup data');
-    }
-    if (bookmark.value) {
-        await useRemoveBookmark(setup.value.id);
-    } else {
-        await useAddBookmark(setup.value.id);
-    }
+    if (!setup.value) return new Error('Invalid setup data');
+
+    if (bookmark.value) await useRemoveBookmark(setup.value.id);
+    else await useAddBookmark(setup.value.id);
+
     bookmark.value = await useCheckBookmark(setup.value.id);
 };
 
 const { share, isSupported } = useShare();
 
-interface ItemInterface {
-    item_id: Item;
-    note: string;
-    unsupported: boolean;
-}
-
-const categorizedItems: { [key: string]: ItemInterface[] } = {};
+const categorizedItems: {
+    [key: string]: {
+        data: Item;
+        note: string;
+        unsupported: boolean;
+    }[];
+} = {};
 const categoryAttr: { [key: string]: { label: string; icon: string } } = {
     cloth: { label: '衣装', icon: 'lucide:shirt' },
     accessory: { label: 'アクセサリー', icon: 'lucide:star' },
@@ -46,45 +41,46 @@ const categoryAttr: { [key: string]: { label: string; icon: string } } = {
 };
 
 onMounted(async () => {
-    if (!route.params.id) {
-        throw new Error('Invalid id');
-    }
-
-    const select = [
-        'id',
-        'created_at',
-        'updated_at',
-        'name',
-        'description',
-        'avatar(id, updated_at, outdated, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw)',
-        'avatar_note',
-        'author(id, name, avatar)',
-        'image',
-        'setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)',
-        'setup_tags(tag)',
-    ];
+    if (!route.params.id)
+        showError({
+            statusCode: 404,
+            message: 'IDが無効です',
+        });
 
     const { data } = await client
         .from('setups')
-        .select(select.join(', '))
+        .select(
+            `
+            id,
+            created_at,
+            updated_at,
+            name,
+            description,
+            avatar(id, updated_at, outdated, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw),
+            avatar_note,
+            author(id, name, avatar),
+            image,
+            items:setup_items(data:item_id(id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw), note, unsupported),
+            tags:setup_tags(tag)
+            `
+        )
         .eq('id', Number(id))
-        .maybeSingle();
+        .returns<Setup>();
 
-    setup.value = data as unknown as Setup;
+    setup.value = data;
 
-    if (!setup.value) {
-        showError({
+    if (!setup.value)
+        return showError({
             statusCode: 404,
             message: 'セットアップが見つかりませんでした',
         });
-    }
 
-    if (setup.value?.setup_items) {
-        for (const item of setup.value.setup_items) {
+    if (setup.value?.items) {
+        for (const item of setup.value.items) {
             let category: string;
-            if (item.item_id.category === 209) {
+            if (item.data.category === 209) {
                 category = 'cloth';
-            } else if (item.item_id.category === 217) {
+            } else if (item.data.category === 217) {
                 category = 'accessory';
             } else {
                 category = 'other';
@@ -306,20 +302,20 @@ onMounted(async () => {
 
                     <ItemBooth
                         v-for="item in categorizedItems[i]"
-                        :id="item.item_id.id"
-                        :key="'item-' + item.item_id.id"
+                        :id="item.data.id"
+                        :key="'item-' + item.data.id"
                         :note="item.note"
                         :unsupported="item.unsupported"
-                        :name="item.item_id.name"
-                        :thumbnail="item.item_id.thumbnail"
-                        :price="item.item_id.price"
-                        :shop="item.item_id.shop.name"
-                        :shop-id="item.item_id.shop.id"
-                        :shop-thumbnail="item.item_id.shop.thumbnail"
-                        :shop-verified="item.item_id.shop.verified"
-                        :nsfw="item.item_id.nsfw"
-                        :updated-at="item.item_id.updated_at"
-                        :outdated="item.item_id.outdated"
+                        :name="item.data.name"
+                        :thumbnail="item.data.thumbnail"
+                        :price="item.data.price"
+                        :shop="item.data.shop.name"
+                        :shop-id="item.data.shop.id"
+                        :shop-thumbnail="item.data.shop.thumbnail"
+                        :shop-verified="item.data.shop.verified"
+                        :nsfw="item.data.nsfw"
+                        :updated-at="item.data.updated_at"
+                        :outdated="item.data.outdated"
                     />
                 </div>
             </div>
@@ -343,13 +339,13 @@ onMounted(async () => {
             </div>
 
             <div
-                v-if="setup.setup_tags && setup.setup_tags.length"
+                v-if="setup.tags && setup.tags.length"
                 class="gap-2.5 flex flex-col"
             >
                 <Title label="タグ" icon="lucide:tags" />
                 <div class="items-center gap-1.5 flex flex-row flex-wrap">
                     <button
-                        v-for="tag in setup.setup_tags"
+                        v-for="tag in setup.tags"
                         :key="useId()"
                         class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
                         @click="navigateTo(`/search?tag=${tag.tag}`)"

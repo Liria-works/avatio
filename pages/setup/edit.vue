@@ -4,13 +4,11 @@ const skip_router_hook = ref(false);
 
 const publishing = ref(false);
 
-interface Items {
+const items = ref<{
     avatar: SetupItem | null;
     avatar_note: string;
     items: SetupItem[];
-}
-
-const items = ref<Items>({
+}>({
     avatar: null,
     avatar_note: '',
     items: [],
@@ -70,11 +68,8 @@ onBeforeRouteLeave(
             const answer = window.confirm(
                 '入力された内容が破棄されます。よろしいですか？'
             );
-            if (answer) {
-                next(true);
-            } else {
-                next(false);
-            }
+            if (answer) next(true);
+            else next(false);
         } else {
             next(true);
         }

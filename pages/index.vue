@@ -4,17 +4,7 @@ useSeoHome();
 const user = useSupabaseUser();
 const client = await useSBClient();
 
-type Setup = {
-    id: number;
-    created_at: string;
-    updated_at: string;
-    name: string;
-    avatar: { name: string; thumbnail: string; outdated: boolean };
-    author: { id: string; name: string; avatar: string };
-    image: string;
-};
-
-const setups = ref<Setup[]>([]);
+const setups = ref<SetupSimple[]>([]);
 const page = ref(0);
 const loading = ref(false);
 
@@ -33,11 +23,11 @@ const get = async (num: number) => {
         .range(num * setupsPerPage, num * setupsPerPage + (setupsPerPage - 1))
         .order('created_at', { ascending: false });
 
-    const { data } = await query;
+    const { data } = await query.returns<SetupSimple[]>();
 
     loading.value = false;
 
-    if (data) return data as unknown as Setup[];
+    if (data) return data;
     return [];
 };
 

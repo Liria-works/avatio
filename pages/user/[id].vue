@@ -58,19 +58,19 @@ const linkIcons: { [key: string]: string } = {
 };
 
 onMounted(async () => {
-    const query = [
-        'name',
-        'avatar',
-        'bio',
-        'links',
-        'created_at',
-        'setups(id, name, description, avatar(id, name, thumbnail), author(id, name, avatar), image, created_at)',
-        'badges(developer, contributor, translator, alpha_tester, shop_owner)',
-    ];
-
     const { data } = await client
         .from('users')
-        .select(query.join(', '))
+        .select(
+            `
+            name,
+            avatar,
+            bio,
+            links,
+            created_at,
+            setups(id, name, description, avatar(id, name, thumbnail), author(id, name, avatar), image, created_at),
+            badges(developer, contributor, translator, alpha_tester, shop_owner)
+            `
+        )
         .eq('id', userId.value)
         .order('created_at', { referencedTable: 'setups', ascending: false })
         .maybeSingle();
@@ -83,8 +83,8 @@ onMounted(async () => {
     userData.value = data as unknown as User;
 
     linksShort.value = userData.value.links.map((i) => {
-        for (const key in linkIcons) {
-            if (new URL(i).hostname.includes(key)) {
+        for (const key in linkIcons)
+            if (new URL(i).hostname.includes(key))
                 return {
                     [i
                         .replace('https://www.', '')
@@ -92,8 +92,7 @@ onMounted(async () => {
                         .replace('https://', '')
                         .replace('http://', '')]: linkIcons[key],
                 };
-            }
-        }
+
         return {
             [i
                 .replace('https://www.', '')

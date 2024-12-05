@@ -1,35 +1,3 @@
-export interface Setup {
-    id: number;
-    created_at: string;
-    updated_at: string;
-    name: string;
-    description: string | null;
-    avatar: Item;
-    avatar_note: string | null;
-    setup_tags: { tag: string }[];
-    author: {
-        id: string;
-        name: string;
-        avatar: string;
-    };
-    image: string;
-    setup_items: {
-        item_id: Item;
-        note: string;
-        unsupported: boolean;
-    }[];
-}
-
-export interface SetupSimple {
-    id: number;
-    created_at: string;
-    updated_at: string;
-    name: string;
-    avatar: { name: string; thumbnail: string; outdated: boolean };
-    author: { id: string; name: string; avatar: string };
-    image: string;
-}
-
 export const usePublishSetup = async (
     setup: {
         name: string;
@@ -185,4 +153,59 @@ export const useGetPopularTags = async () => {
         console.error(error);
         return null;
     }
+};
+
+export const useAddBookmark = async (id: number) => {
+    const client = await useSBClient();
+
+    const { data, error } = await client
+        .from('bookmarks')
+        .insert({ post: id } as never);
+    if (error) throw error;
+
+    useAddToast('ブックマークに追加しました。');
+    return data;
+};
+
+export const useRemoveBookmark = async (id: number) => {
+    const client = await useSBClient();
+
+    const { data, error } = await client
+        .from('bookmarks')
+        .delete()
+        .eq('post', id);
+    if (error) throw error;
+
+    useAddToast('ブックマークから削除しました。');
+    return data;
+};
+
+export const useCheckBookmark = async (id: number) => {
+    const client = await useSBClient();
+    const user = useSupabaseUser();
+
+    if (!user.value) return false;
+
+    const { data, error } = await client
+        .from('bookmarks')
+        .select('post')
+        .eq('user_id', user.value.id)
+        .eq('post', id);
+    if (error) throw error;
+
+    return Boolean(data.length);
+};
+
+export const useListBookmarks = async (): Promise<{ post: Setup }[]> => {
+    const client = await useSBClient();
+
+    const { data, error } = await client
+        .from('bookmarks')
+        .select(
+            'post(id, created_at, updated_at, author(id, name, avatar), name, description, image, avatar(name, thumbnail))'
+        )
+        .order('created_at', { ascending: false });
+    if (error) throw error;
+
+    return data as never as { post: Setup }[];
 };

@@ -1,20 +1,3 @@
-export interface Item {
-    id: number;
-    updated_at: string;
-    category: number;
-    name: string;
-    thumbnail: string;
-    price: string | null;
-    shop: { id: string; name: string; thumbnail: string; verified: boolean };
-    nsfw: boolean;
-    outdated: boolean;
-}
-
-export interface SetupItem extends Item {
-    note: string;
-    unsupported: boolean;
-}
-
 export const useFetchBooth = async (id: number): Promise<Item | null> => {
     if (!id) return null;
 

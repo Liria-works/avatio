@@ -12,9 +12,10 @@ if (user.value) {
         )
         .eq('author', user.value.id)
         .order('updated_at', { ascending: false })
-        .range(0, 20);
+        .range(0, 20)
+        .returns<SetupSimple[]>();
 
-    if (mySetupsData) mySetups.value = mySetupsData as unknown as SetupSimple[];
+    if (mySetupsData) mySetups.value = mySetupsData;
 }
 
 const handleWheel: EventListener = (event) => {

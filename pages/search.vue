@@ -34,12 +34,13 @@ watch(
             const { data } = await client
                 .from('setups')
                 .select(
-                    'id, created_at, name, description, image, avatar(id, name, thumbnail), author(id, name, avatar), setup_items!inner(item_id), setup_tags!inner(tag)'
+                    'id, created_at, name, description, image, avatar(id, name, thumbnail), author(id, name, avatar), items:setup_items!inner(item_id), tags:setup_tags!inner(tag)'
                 )
                 .in('setup_tags.tag', Array.isArray(tag) ? tag : [tag])
-                .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false })
+                .returns<Setup[]>();
 
-            return (resultSetups.value = data as unknown as Setup[]);
+            return (resultSetups.value = data ? data : []);
         }
 
         if (item) {
@@ -68,7 +69,7 @@ watch(
                         thumbnail: i.avatar_thumbnail,
                     },
                     avatar_note: i.avatar_note,
-                    setup_items: i.item_id,
+                    items: i.item_id,
                 };
             }));
         }
