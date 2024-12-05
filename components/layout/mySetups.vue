@@ -8,7 +8,7 @@ if (user.value) {
     const { data: mySetupsData } = await client
         .from('setups')
         .select(
-            'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail)'
+            'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail, outdated)'
         )
         .eq('author', user.value.id)
         .order('updated_at', { ascending: false })
@@ -66,6 +66,7 @@ onUnmounted(() => {
                     :name="i.name"
                     :avatar-name="i.avatar.name"
                     :avatar-thumbnail="i.avatar.thumbnail"
+                    :avatar-outdated="i.avatar.outdated"
                     :author-id="i.author.id"
                     :author-name="i.author.name"
                     :author-avatar="i.author.avatar"

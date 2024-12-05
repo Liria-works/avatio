@@ -25,7 +25,7 @@ export interface SetupSimple {
     created_at: string;
     updated_at: string;
     name: string;
-    avatar: { name: string; thumbnail: string };
+    avatar: { name: string; thumbnail: string; outdated: boolean };
     author: { id: string; name: string; avatar: string };
     image: string;
 }

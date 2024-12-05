@@ -124,7 +124,7 @@ onMounted(async () => {
                     {{ useSentence(setup.name) || '' }}
                 </h1>
 
-                <div class="w-full flex items-center">
+                <div class="w-full gap-3 flex flex-wrap items-center">
                     <div class="grow flex items-center gap-5">
                         <UiUser
                             :id="setup.author.id"
