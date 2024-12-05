@@ -136,21 +136,21 @@ export type Database = {
             };
             feedback: {
                 Row: {
-                    contents: Json;
+                    contents: string;
                     created_at: string;
                     dealt: boolean;
                     id: number;
                     user: string;
                 };
                 Insert: {
-                    contents: Json;
+                    contents: string;
                     created_at?: string;
                     dealt?: boolean;
                     id?: number;
                     user?: string;
                 };
                 Update: {
-                    contents?: Json;
+                    contents?: string;
                     created_at?: string;
                     dealt?: boolean;
                     id?: number;
@@ -169,6 +169,7 @@ export type Database = {
             items: {
                 Row: {
                     category: number;
+                    checked_at: string;
                     created_at: string;
                     id: number;
                     name: string;
@@ -181,6 +182,7 @@ export type Database = {
                 };
                 Insert: {
                     category: number;
+                    checked_at?: string;
                     created_at?: string;
                     id: number;
                     name: string;
@@ -193,6 +195,7 @@ export type Database = {
                 };
                 Update: {
                     category?: number;
+                    checked_at?: string;
                     created_at?: string;
                     id?: number;
                     name?: string;
@@ -491,7 +494,7 @@ export type Database = {
                     id: string;
                     links?: string[];
                     name?: string | null;
-                    public_id?: string;
+                    public_id: string;
                 };
                 Update: {
                     avatar?: string | null;
@@ -520,22 +523,11 @@ export type Database = {
                 };
                 Returns: boolean;
             };
-            gen_random_key: {
-                Args: {
-                    bytea_length: number;
-                };
-                Returns: string;
-            };
-            get_public_id: {
-                Args: {
-                    user_id: string;
-                };
-                Returns: string;
-            };
             popular_avatars: {
                 Args: Record<PropertyKey, never>;
                 Returns: {
                     category: number;
+                    checked_at: string;
                     created_at: string;
                     id: number;
                     name: string;
@@ -563,12 +555,49 @@ export type Database = {
                     score: number;
                 }[];
             };
-            search_setups: {
+            search_setups_item: {
                 Args: {
-                    method: string;
+                    query: number[];
+                };
+                Returns: {
+                    id: number;
+                    created_at: string;
+                    updated_at: string;
+                    name: string;
+                    description: string;
+                    image: string;
+                    avatar_id: number;
+                    avatar_name: string;
+                    avatar_thumbnail: string;
+                    avatar_note: string;
+                    author_id: string;
+                    author_name: string;
+                    author_avatar: string;
+                    item_id: number;
+                    tag: string;
+                }[];
+            };
+            search_setups_tag: {
+                Args: {
                     query: string[];
                 };
-                Returns: Database['public']['CompositeTypes']['setup_with_details'][];
+                Returns: {
+                    id: number;
+                    created_at: string;
+                    updated_at: string;
+                    name: string;
+                    description: string;
+                    image: string;
+                    avatar_id: number;
+                    avatar_name: string;
+                    avatar_thumbnail: string;
+                    avatar_note: string;
+                    author_id: string;
+                    author_name: string;
+                    author_avatar: string;
+                    item_id: number;
+                    tag: string;
+                }[];
             };
             search_tags: {
                 Args: {

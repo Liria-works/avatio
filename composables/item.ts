@@ -5,23 +5,14 @@ export interface Item {
     name: string;
     thumbnail: string;
     price: string;
-    shop_id: { id: string; name: string; thumbnail: string; verified: boolean };
+    shop: { id: string; name: string; thumbnail: string; verified: boolean };
     nsfw: boolean;
     outdated: boolean;
 }
 
-export interface SetupItem {
+export interface SetupItem extends Item {
     note: string;
     unsupported: boolean;
-    id: number;
-    updated_at: string;
-    category: number;
-    name: string;
-    thumbnail: string;
-    price: string;
-    shop_id: { id: string; name: string; thumbnail: string; verified: boolean };
-    nsfw: boolean;
-    outdated: boolean;
 }
 
 export const useFetchBooth = async (id: number): Promise<Item | null> => {
@@ -31,35 +22,44 @@ export const useFetchBooth = async (id: number): Promise<Item | null> => {
     const { data: itemData } = await client
         .from('items')
         .select(
-            'id, name, thumbnail, price, category, shop_id(id, name, thumbnail, verified), nsfw, outdated, updated_at'
+            'id, name, thumbnail, price, category, shop:shop_id(id, name, thumbnail, verified), nsfw, outdated, updated_at'
         )
         .eq('id', id)
         .maybeSingle();
 
+    // 時間の差分が1日を超えている場合、処理継続する
     if (itemData) {
         const timeDifference =
             new Date().getTime() - new Date(itemData.updated_at).getTime();
 
-        // 時間の差分が1日を超えている場合、処理継続する
         if (timeDifference < 24 * 60 * 60 * 1000) {
             return itemData as unknown as Item;
         }
         console.log('Data is old, fetching from Booth');
     }
 
-    const response: { status: number; body: Item } = await $fetch(
-        `/api/item/booth?id=${encodeURIComponent(id)}`,
-        { method: 'GET' }
-    );
+    const response = await $fetch('/api/item/booth', {
+        method: 'GET',
+        query: { id: encodeURIComponent(id) },
+    });
 
-    if (response.status !== 200 || response.body.outdated) {
-        // console.error("Failed to fetch item data:", response.body);
+    if (!response.data || response.data?.outdated) {
         return null;
     }
 
     // AddItem(response.body.id, response.body);
 
-    return response.body;
+    return {
+        id: response.data.id,
+        updated_at: new Date().toISOString(),
+        category: response.data.category,
+        name: response.data.name,
+        thumbnail: response.data.thumbnail,
+        price: response.data.price,
+        shop: response.data.shop,
+        nsfw: response.data.nsfw,
+        outdated: false,
+    };
 };
 
 export const useGetOwnedAvatars = async (): Promise<

@@ -41,7 +41,7 @@ type Item = {
         name: string;
         thumbnail: string;
         price: string;
-        shop_id: {
+        shop: {
             id: string;
             name: string;
             thumbnail: string;
@@ -71,11 +71,11 @@ onMounted(async () => {
         'updated_at',
         'name',
         'description',
-        'avatar(id, updated_at, outdated, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw)',
+        'avatar(id, updated_at, outdated, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw)',
         'avatar_note',
         'author(id, name, avatar)',
         'image',
-        'setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)',
+        'setup_items(item_id(id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw), note, unsupported)',
         'setup_tags(tag)',
     ];
 
@@ -292,10 +292,10 @@ onMounted(async () => {
                 :id="setup.avatar.id"
                 :name="setup.avatar.name"
                 :thumbnail="setup.avatar.thumbnail"
-                :shop="setup.avatar.shop_id.name"
-                :shop-id="setup.avatar.shop_id.id"
-                :shop-thumbnail="setup.avatar.shop_id.thumbnail"
-                :shop-verified="setup.avatar.shop_id.verified"
+                :shop="setup.avatar.shop.name"
+                :shop-id="setup.avatar.shop.id"
+                :shop-thumbnail="setup.avatar.shop.thumbnail"
+                :shop-verified="setup.avatar.shop.verified"
                 :price="setup.avatar.price"
                 :nsfw="setup.avatar.nsfw"
                 :outdated="setup.avatar.outdated"
@@ -325,10 +325,10 @@ onMounted(async () => {
                         :name="item.item_id.name"
                         :thumbnail="item.item_id.thumbnail"
                         :price="item.item_id.price"
-                        :shop="item.item_id.shop_id.name"
-                        :shop-id="item.item_id.shop_id.id"
-                        :shop-thumbnail="item.item_id.shop_id.thumbnail"
-                        :shop-verified="item.item_id.shop_id.verified"
+                        :shop="item.item_id.shop.name"
+                        :shop-id="item.item_id.shop.id"
+                        :shop-thumbnail="item.item_id.shop.thumbnail"
+                        :shop-verified="item.item_id.shop.verified"
                         :nsfw="item.item_id.nsfw"
                         :updated-at="item.item_id.updated_at"
                         :outdated="item.item_id.outdated"

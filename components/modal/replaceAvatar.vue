@@ -8,7 +8,7 @@ const props = defineProps<{
         id: number;
         name: string;
         thumbnail: string;
-        shop_id: {
+        shop: {
             id: string;
             name: string;
             thumbnail: string;
@@ -22,7 +22,7 @@ const props = defineProps<{
         id: number;
         name: string;
         thumbnail: string;
-        shop_id: {
+        shop: {
             id: string;
             name: string;
             thumbnail: string;
@@ -56,10 +56,10 @@ const emit = defineEmits(['accept', 'close']);
                     :id="props.from.id"
                     :name="props.from.name"
                     :thumbnail="props.from.thumbnail"
-                    :shop="props.from.shop_id.name"
-                    :shop-id="props.from.shop_id.id"
-                    :shop-thumbnail="props.from.shop_id.thumbnail"
-                    :shop-verified="props.from.shop_id.verified"
+                    :shop="props.from.shop.name"
+                    :shop-id="props.from.shop.id"
+                    :shop-thumbnail="props.from.shop.thumbnail"
+                    :shop-verified="props.from.shop.verified"
                     :price="props.from.price"
                     :nsfw="props.from.nsfw"
                     :outdated="false"
@@ -77,10 +77,10 @@ const emit = defineEmits(['accept', 'close']);
                     :id="props.to.id"
                     :name="props.to.name"
                     :thumbnail="props.to.thumbnail"
-                    :shop="props.to.shop_id.name"
-                    :shop-id="props.to.shop_id.id"
-                    :shop-thumbnail="props.to.shop_id.thumbnail"
-                    :shop-verified="props.to.shop_id.verified"
+                    :shop="props.to.shop.name"
+                    :shop-id="props.to.shop.id"
+                    :shop-thumbnail="props.to.shop.thumbnail"
+                    :shop-verified="props.to.shop.verified"
                     :price="props.to.price"
                     :nsfw="props.to.nsfw"
                     :outdated="false"

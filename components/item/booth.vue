@@ -62,7 +62,9 @@ onMounted(async () => {
         const response: {
             status: number;
             body: Item;
-        } = await $fetch(`/api/item/booth?id=${encodeURIComponent(props.id)}`);
+        } = await $fetch('/api/item/booth', {
+            query: { id: encodeURIComponent(props.id) },
+        });
 
         if (response.status !== 200 || response.body.outdated) {
             outdated.value = true;
@@ -71,10 +73,10 @@ onMounted(async () => {
                 name: response.body.name,
                 thumbnail: response.body.thumbnail,
                 price: response.body.price,
-                shop: response.body.shop_id.name,
-                shopId: response.body.shop_id.id,
-                shopThumbnail: response.body.shop_id.thumbnail,
-                shopVerified: response.body.shop_id.verified,
+                shop: response.body.shop.name,
+                shopId: response.body.shop.id,
+                shopThumbnail: response.body.shop.thumbnail,
+                shopVerified: response.body.shop.verified,
                 nsfw: response.body.nsfw,
                 outdated: response.body.outdated,
             };

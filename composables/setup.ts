@@ -4,21 +4,7 @@ export interface Setup {
     updated_at: string;
     name: string;
     description: string | null;
-    avatar: {
-        id: number;
-        updated_at: string;
-        outdated: boolean;
-        name: string;
-        thumbnail: string;
-        price: string;
-        shop_id: {
-            id: string;
-            name: string;
-            thumbnail: string;
-            verified: boolean;
-        };
-        nsfw: boolean;
-    };
+    avatar: Item;
     avatar_note: string | null;
     setup_tags: { tag: string }[];
     author: {
@@ -28,22 +14,7 @@ export interface Setup {
     };
     image: string;
     setup_items: {
-        item_id: {
-            id: number;
-            updated_at: string;
-            outdated: boolean;
-            category: number;
-            name: string;
-            thumbnail: string;
-            price: string;
-            shop_id: {
-                id: string;
-                name: string;
-                thumbnail: string;
-                verified: boolean;
-            };
-            nsfw: boolean;
-        };
+        item_id: Item;
         note: string;
         unsupported: boolean;
     }[];

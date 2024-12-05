@@ -1,39 +1,79 @@
 import { serverSupabaseClient } from '#supabase/server';
-import type { Database } from '../../../database.types';
 import type { H3Event } from 'h3';
 
-const url_base = 'https://booth.pm/ja/items/';
+import type { Database } from '../../../database.types';
+import type { ResponseData } from '../../../supabase/functions/get-booth-item/index';
 
-export default defineEventHandler(async (event) => {
-    const query = getQuery(event);
-    const id = Number(query.id);
+interface Item {
+    outdated: boolean;
+    link: string;
+    id: number;
+    name: string;
+    thumbnail: string;
+    price: string;
+    category: number;
+    shop: {
+        id: string;
+        name: string;
+        thumbnail: string;
+        verified: boolean;
+    };
+    nsfw: boolean;
+}
 
-    if (typeof id === 'number') {
-        return GetBoothItem(event, Number(id));
-    } else {
-        return {
-            status: 400,
-            body: { error: 'No ID or URL provided' },
-        };
-    }
-});
+interface Response {
+    data: Item | null;
+    error: string | null;
+}
 
-async function GetBoothItem(event: H3Event, id: number) {
-    const startTime = Date.now(); // 処理開始時刻を記録
+function logDuration(startTime: number, source: string, itemName: string) {
+    const endTime = Date.now();
+    const duration = endTime - startTime;
+    console.log(`Fetch Done : ${source} : ${duration}ms : ${itemName}`);
+}
 
+async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
     const client = await serverSupabaseClient<Database>(event);
+
+    const startTime = Date.now(); // 処理開始時刻を記録
+    const url_base = 'https://booth.pm/ja/items/';
+
+    const { data: itemDB } = await client
+        .from('items')
+        .select(
+            'checked_at, id, name, thumbnail, price, category, shop:shop_id(id, name, thumbnail, verified), nsfw, outdated'
+        )
+        .eq('id', id)
+        .maybeSingle();
+
+    // 時間の差分が1日以内であればDBの情報をそのまま返す
+    if (
+        itemDB &&
+        startTime - new Date(itemDB.checked_at).getTime() < 24 * 60 * 60 * 1000
+    )
+        return {
+            data: itemDB as unknown as Item,
+            error: null,
+        };
 
     try {
         // データ取得
-        const { data, error } = await client.functions.invoke(
+        const { data, error } = await client.functions.invoke<ResponseData>(
             'get-booth-item',
             { body: { id: id } }
         );
 
-        if (error) {
+        if (error || !data) {
             console.log(error);
             throw error;
         }
+
+        if (data.error) {
+            console.log(data.error.message, data.error.details);
+            throw error;
+        }
+
+        const itemBooth = data.data!;
 
         // カテゴリIDをチェック
 
@@ -65,93 +105,94 @@ async function GetBoothItem(event: H3Event, id: number) {
             );
             if (config.status !== 200 || !config.value)
                 return {
-                    status: 400,
-                    body: { error: 'Error in vercel edge config.' },
+                    data: null,
+                    error: 'Error in vercel edge config.',
                 };
 
             const allowed_category_id: number[] = config.value as number[];
 
-            if (!allowed_category_id.includes(Number(data.category))) {
-                if (!data.tags.map((tag: string) => tag).includes('VRChat'))
+            if (!allowed_category_id.includes(Number(itemBooth.category))) {
+                if (!itemBooth.tags.map((t: string) => t).includes('VRChat'))
                     return {
-                        status: 400,
-                        body: { error: 'Invalid category ID' },
+                        data: null,
+                        error: 'Invalid category ID',
                     };
             }
         } catch (e) {
             console.log(e);
             return {
-                status: 500,
-                body: { error: 'Failed to get allowed tag data.' },
+                data: null,
+                error: 'Failed to get allowed tag data.',
             };
         }
 
         const shopData = {
-            id: data.shop_id,
-            name: data.shop,
-            thumbnail: data.shop_thumbnail,
-            verified: data.shop_verified,
+            id: itemBooth.shopId,
+            name: itemBooth.shop,
+            thumbnail: itemBooth.shopThumbnail,
+            verified: itemBooth.shopVerified,
         };
 
         const itemData = {
-            id: data.id,
-            name: data.name,
-            thumbnail: data.thumbnail,
-            price: data.price,
-            category: data.category,
-            shop_id: data.shop_id,
-            nsfw: data.nsfw,
+            id: itemBooth.id,
+            name: itemBooth.name,
+            thumbnail: itemBooth.thumbnail,
+            price: itemBooth.price,
+            category: itemBooth.category,
+            shop_id: itemBooth.shopId,
+            nsfw: itemBooth.nsfw,
         };
 
         await client
             .from('shops')
             .upsert(shopData as never)
-            .eq('id', data.shop_id);
+            .eq('id', itemBooth.shopId);
 
         await client
             .from('items')
             .upsert(itemData as never)
             .eq('id', id);
 
-        logDuration(startTime, 'Booth', data.name);
+        logDuration(startTime, 'Booth', itemBooth.name);
 
-        return Response(200, 'Data fetched from Booth URL', data);
+        return {
+            data: {
+                outdated: false,
+                link: url_base + itemBooth.id,
+                id: itemBooth.id,
+                name: itemBooth.name,
+                thumbnail: itemBooth.thumbnail,
+                price: itemBooth.price,
+                category: itemBooth.category,
+                shop: {
+                    id: itemBooth.shopId,
+                    name: itemBooth.shop,
+                    thumbnail: itemBooth.shopThumbnail,
+                    verified: itemBooth.shopVerified,
+                },
+                nsfw: itemBooth.nsfw,
+            },
+            error: null,
+        };
     } catch (error) {
         console.log(error);
         return {
-            status: 500,
-            body: { error: 'Failed to fetch data' },
+            data: null,
+            error: 'Failed to fetch data',
         };
     }
 }
 
-function logDuration(startTime: number, source: string, itemName: string) {
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-    console.log(`Fetch Done : ${source} : ${duration}ms : ${itemName}`);
-}
+export default defineEventHandler(async (event) => {
+    const query = getQuery(event);
+    const id = Number(query.id);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Response(status: number, message: string, data: any) {
-    return {
-        status,
-        message,
-        body: {
-            link: url_base + data.id,
-            id: data.id,
-            name: data.name,
-            thumbnail: data.thumbnail,
-            price: data.price,
-            category: data.category,
-            avatar_details: data.avatar_details,
-            shop_id: {
-                id: data.shop_id,
-                name: data.shop,
-                thumbnail: data.shop_thumbnail,
-                verified: data.shop_verified,
-            },
-            nsfw: data.nsfw,
-            outdated: data.outdated,
-        },
-    };
-}
+    if (typeof id === 'number') {
+        return GetBoothItem(event, Number(id));
+    } else {
+        return {
+            data: null,
+            error: 'No ID or URL provided',
+        };
+    }
+});
