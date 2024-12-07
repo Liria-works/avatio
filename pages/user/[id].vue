@@ -6,38 +6,6 @@ const user = useSupabaseUser();
 const modalReport = ref(false);
 const loading = ref(true);
 
-interface User {
-    name: string;
-    avatar: string;
-    bio: string;
-    links: string[];
-    created_at: string;
-    setups: {
-        id: string;
-        name: string;
-        description: string;
-        avatar: {
-            id: string;
-            name: string;
-            thumbnail: string;
-        };
-        author: {
-            id: string;
-            name: string;
-            avatar: string;
-        };
-        image: string;
-        created_at: string;
-    }[];
-    badges: {
-        developer: boolean;
-        contributor: boolean;
-        translator: boolean;
-        alpha_tester: boolean;
-        shop_owner: boolean;
-    };
-}
-
 const userId = ref<string>(route.params.id.toString());
 const userData = ref<User | null>(null);
 
@@ -54,7 +22,7 @@ const linkIcons: { [key: string]: string } = {
     'steamcommunity.com': 'simple-icons:steam',
     'pixiv.net': 'simple-icons:pixiv',
     'artstation.com': 'simple-icons:artstation',
-    'booth.pm': 'lucide:store', // boothのアイコンをローカルアイコンパックとして登録する
+    'booth.pm': 'avatio:booth',
 };
 
 onMounted(async () => {
@@ -67,7 +35,7 @@ onMounted(async () => {
             bio,
             links,
             created_at,
-            setups(id, name, description, avatar(id, name, thumbnail), author(id, name, avatar), image, created_at),
+            setups(id, name, description, avatar(id, name, thumbnail, outdated), author(id, name, avatar), image, created_at),
             badges(developer, contributor, translator, alpha_tester, shop_owner)
             `
         )
@@ -75,31 +43,19 @@ onMounted(async () => {
         .order('created_at', { referencedTable: 'setups', ascending: false })
         .maybeSingle();
 
-    if (!data) {
-        loading.value = false;
-        return;
-    }
+    if (!data) return (loading.value = false);
 
     userData.value = data as unknown as User;
 
     linksShort.value = userData.value.links.map((i) => {
+        const replace = (input: string) =>
+            input.replace('https://www.', '').replace('https://', '');
+
         for (const key in linkIcons)
             if (new URL(i).hostname.includes(key))
-                return {
-                    [i
-                        .replace('https://www.', '')
-                        .replace('http://www.', '')
-                        .replace('https://', '')
-                        .replace('http://', '')]: linkIcons[key],
-                };
+                return { [replace(i)]: linkIcons[key] };
 
-        return {
-            [i
-                .replace('https://www.', '')
-                .replace('http://www.', '')
-                .replace('https://', '')
-                .replace('http://', '')]: '',
-        };
+        return { [replace(i)]: '' };
     });
 
     loading.value = false;
@@ -156,13 +112,13 @@ onMounted(async () => {
                         </p>
                     </div>
                 </div>
-                <NuxtLink v-if="user && user.id === userId" to="/user/setting">
-                    <UiButton
-                        icon="lucide:pen-line"
-                        :icon-size="19"
-                        tooltip="プロフィールを編集"
-                    />
-                </NuxtLink>
+                <UiButton
+                    v-if="user && user.id === userId"
+                    to="/user/setting"
+                    icon="lucide:pen-line"
+                    :icon-size="19"
+                    tooltip="プロフィールを編集"
+                />
                 <UiButton
                     v-else
                     icon="lucide:flag"
@@ -179,36 +135,27 @@ onMounted(async () => {
                     v-if="userData.links"
                     class="flex flex-wrap items-center gap-2"
                 >
-                    <UiTooltip
+                    <UiButton
                         v-for="(i, index) in userData.links"
-                        :text="
+                        :to="i"
+                        :tooltip="
                             Object.values(linksShort[index])[0].length
                                 ? Object.keys(linksShort[index])[0]
                                 : ''
                         "
+                        class="min-h-[38px] p-2 rounded-lg flex items-center justify-center text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                     >
-                        <NuxtLink
-                            :to="i"
-                            target="_blank"
-                            class="min-h-[38px] p-2 rounded-lg flex items-center justify-center text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-                        >
-                            <Icon
-                                v-if="
-                                    Object.values(linksShort[index])[0].length
-                                "
-                                :name="Object.values(linksShort[index])[0]"
-                                size="20"
-                                class="text-neutral-600 dark:text-neutral-300"
-                            />
+                        <Icon
+                            v-if="Object.values(linksShort[index])[0].length"
+                            :name="Object.values(linksShort[index])[0]"
+                            size="20"
+                            class="bg-neutral-600 dark:bg-neutral-300"
+                        />
 
-                            <p
-                                v-else
-                                class="px-1 text-sm font-medium leading-none"
-                            >
-                                {{ Object.keys(linksShort[index])[0] }}
-                            </p>
-                        </NuxtLink>
-                    </UiTooltip>
+                        <p v-else class="px-1 text-sm font-medium leading-none">
+                            {{ Object.keys(linksShort[index])[0] }}
+                        </p>
+                    </UiButton>
                 </div>
 
                 <div
@@ -245,6 +192,7 @@ onMounted(async () => {
                     :description="i.description"
                     :avatar-name="i.avatar.name"
                     :avatar-thumbnail="i.avatar.thumbnail"
+                    :avatar-outdated="i.avatar.outdated"
                     :author-id="i.author.id"
                     :author-name="i.author.name"
                     :author-avatar="i.author.avatar"

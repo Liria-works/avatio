@@ -47,10 +47,8 @@ const RemoveLink = async (link: string) => {
     await useSaveLink(links.value);
 };
 
-const PasteFromClipboard = async () => {
-    const text = await navigator.clipboard.readText();
-    linkInput.value = text;
-};
+const PasteFromClipboard = async () =>
+    (linkInput.value = await navigator.clipboard.readText());
 
 const ChangeAvatar = async () => {
     const { open, onChange } = useFileDialog({
@@ -104,9 +102,8 @@ const { data } = await client
     .eq('id', user.value.id)
     .maybeSingle();
 
-if (!data) {
-    faild.value = true;
-} else {
+if (!data) faild.value = true;
+else {
     avatar.value = data.avatar;
     username.value = data.name;
     bio.value = data.bio;
@@ -147,6 +144,7 @@ if (!data) {
                             size="3xl"
                         />
                         <button
+                            type="button"
                             class="absolute inset-0 hover:bg-black/20 rounded-full"
                             @click="ChangeAvatar"
                         />
@@ -161,16 +159,22 @@ if (!data) {
                             class="text-neutral-600 dark:text-neutral-300"
                         />
                         <button
+                            type="button"
                             class="absolute inset-0 hover:bg-black/20 rounded-full"
                             @click="ChangeAvatar"
                         />
                     </div>
                     <template #content>
-                        <Icon
-                            name="lucide:pen-line"
-                            size="18"
-                            class="text-neutral-200"
-                        />
+                        <button
+                            type="button"
+                            class="rounded-full p-2 flex bg-neutral-900"
+                        >
+                            <Icon
+                                name="lucide:pen-line"
+                                size="18"
+                                class="size-4 flex-shrink-0 text-neutral-200"
+                            />
+                        </button>
                     </template>
                 </UChip>
                 <div class="flex flex-col gap-0.5 w-full">

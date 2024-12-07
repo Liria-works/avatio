@@ -4,6 +4,22 @@ export interface Author {
     avatar: string;
 }
 
+export interface Badges {
+    developer: boolean;
+    contributor: boolean;
+    translator: boolean;
+    alpha_tester: boolean;
+    shop_owner: boolean;
+}
+
+export interface User extends Author {
+    bio: string;
+    links: string[];
+    created_at: string;
+    setups: Setup[];
+    badges: Badges;
+}
+
 export interface Item {
     id: number;
     updated_at: string;
