@@ -6,6 +6,7 @@ const props = withDefaults(
         description: string | null;
         avatarName: string;
         avatarThumbnail: string;
+        avatarOutdated: boolean;
         authorId: string;
         authorName: string;
         authorAvatar: string | null;
@@ -51,14 +52,23 @@ onMounted(async () => {
             <template #thumbnail>
                 <div class="p-2 flex-shrink-0">
                     <NuxtImg
-                        :src="
-                            props.image
-                                ? useGetImage(props.image)
-                                : props.avatarThumbnail
-                        "
+                        v-if="props.image"
+                        :src="useGetImage(props.image)"
                         :alt="props.name"
-                        class="h-28 w-28 md:w-auto object-cover rounded-lg overflow-clip"
+                        class="size-28 md:w-auto object-cover rounded-lg overflow-clip"
                     />
+                    <NuxtImg
+                        v-else-if="!props.avatarOutdated"
+                        :src="props.avatarThumbnail"
+                        :alt="props.avatarName"
+                        class="size-28 md:w-auto object-cover rounded-lg overflow-clip"
+                    />
+                    <div
+                        v-else
+                        class="size-28 rounded-lg flex flex-shrink-0 items-center justify-center text-neutral-400 bg-neutral-300 dark:bg-neutral-600"
+                    >
+                        ?
+                    </div>
                 </div>
             </template>
             <template #main>
@@ -74,7 +84,13 @@ onMounted(async () => {
                         <p
                             class="text-sm text-neutral-500 dark:text-neutral-400 break-keep line-clamp-1"
                         >
-                            {{ useSentence(useAvatarName(props.avatarName)) }}
+                            {{
+                                !props.avatarOutdated
+                                    ? useSentence(
+                                          useAvatarName(props.avatarName)
+                                      )
+                                    : '不明なベースアバター'
+                            }}
                         </p>
                     </div>
                     <div class="gap-4 flex justify-between items-center">

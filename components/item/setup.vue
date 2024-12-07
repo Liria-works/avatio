@@ -49,27 +49,29 @@ const dateLocale = date.toLocaleString('ja-JP', {
                 </div>
             </template>
             <template #thumbnail>
-                <div
+                <NuxtImg
                     v-if="props.image && noHero"
-                    class="py-1.5 pl-1.5 flex-shrink-0 max-w-20"
-                >
-                    <NuxtImg
-                        :src="useGetImage(props.image)"
-                        :alt="props.name"
-                        preset="avatarThumbnail"
-                        :placeholder="[30, 30, 75, 5]"
-                        class="h-14 rounded-lg overflow-clip flex-shrink-0 object-cover"
-                    />
-                </div>
+                    :src="useGetImage(props.image)"
+                    :alt="props.name"
+                    preset="avatarThumbnail"
+                    :placeholder="[30, 30, 75, 5]"
+                    class="max-w-20 h-14 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0 object-cover"
+                />
 
-                <div v-if="!props.image" class="py-1.5 pl-1.5 flex-shrink-0">
-                    <NuxtImg
-                        :src="props.avatarThumbnail"
-                        :alt="props.name"
-                        preset="avatarThumbnail"
-                        :placeholder="[30, 30, 75, 5]"
-                        class="h-14 rounded-lg overflow-clip flex-shrink-0"
-                    />
+                <NuxtImg
+                    v-if="!props.image"
+                    :src="props.avatarThumbnail"
+                    :alt="props.name"
+                    preset="avatarThumbnail"
+                    :placeholder="[30, 30, 75, 5]"
+                    class="size-14 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0"
+                />
+
+                <div
+                    v-else-if="props.avatarOutdated"
+                    class="size-14 my-1.5 ml-1.5 rounded-lg flex flex-shrink-0 items-center justify-center text-neutral-400 bg-neutral-300 dark:bg-neutral-600"
+                >
+                    ?
                 </div>
             </template>
             <template #main>

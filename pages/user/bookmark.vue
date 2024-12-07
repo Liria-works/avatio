@@ -25,6 +25,7 @@ onMounted(async () => {
                     :description="i.post.description"
                     :avatar-name="i.post.avatar.name"
                     :avatar-thumbnail="i.post.avatar.thumbnail"
+                    :avatar-outdated="i.post.avatar.outdated"
                     :author-id="i.post.author.id"
                     :author-name="i.post.author.name"
                     :author-avatar="i.post.author.avatar"

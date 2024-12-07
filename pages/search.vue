@@ -167,6 +167,7 @@ watch(
                         :description="i.description"
                         :avatar-name="i.avatar.name"
                         :avatar-thumbnail="i.avatar.thumbnail"
+                        :avatar-outdated="i.avatar.outdated"
                         :author-id="i.author.id"
                         :author-name="i.author.name"
                         :author-avatar="i.author.avatar"

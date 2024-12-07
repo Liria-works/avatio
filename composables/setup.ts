@@ -202,7 +202,7 @@ export const useListBookmarks = async (): Promise<{ post: Setup }[]> => {
     const { data, error } = await client
         .from('bookmarks')
         .select(
-            'post(id, created_at, updated_at, author(id, name, avatar), name, description, image, avatar(name, thumbnail))'
+            'post(id, created_at, updated_at, author(id, name, avatar), name, description, image, avatar(name, thumbnail, outdated))'
         )
         .order('created_at', { ascending: false });
     if (error) throw error;
