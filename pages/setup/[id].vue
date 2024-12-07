@@ -65,9 +65,9 @@ onMounted(async () => {
             `
         )
         .eq('id', Number(id))
-        .returns<Setup>();
+        .maybeSingle();
 
-    setup.value = data;
+    setup.value = data as unknown as Setup;
 
     if (!setup.value)
         return showError({
@@ -75,25 +75,19 @@ onMounted(async () => {
             message: 'セットアップが見つかりませんでした',
         });
 
-    if (setup.value?.items) {
+    if (setup.value?.items)
         for (const item of setup.value.items) {
             let category: string;
-            if (item.data.category === 209) {
-                category = 'cloth';
-            } else if (item.data.category === 217) {
-                category = 'accessory';
-            } else {
-                category = 'other';
-            }
+            if (item.data.category === 209) category = 'cloth';
+            else if (item.data.category === 217) category = 'accessory';
+            else category = 'other';
 
-            if (!categorizedItems[category]) {
-                categorizedItems[category] = [];
-            }
+            if (!categorizedItems[category]) categorizedItems[category] = [];
+
             categorizedItems[category].push(item);
         }
-    }
 
-    bookmark.value = await useCheckBookmark(setup.value.id);
+    bookmark.value = await useCheckBookmark(id);
 
     currentUrl.value = `${window.location.protocol}//${window.location.host}${route.fullPath}`;
 
@@ -333,7 +327,11 @@ onMounted(async () => {
                     <p
                         class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100"
                     >
-                        {{ useSentence(setup.description) || '' }}
+                        {{
+                            setup.description
+                                ? useSentence(setup.description)
+                                : ''
+                        }}
                     </p>
                 </div>
             </div>
@@ -363,11 +361,8 @@ onMounted(async () => {
                 class="px-3 py-2 mt-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                 icon-class="text-red-400 dark:text-red-400"
                 @click="
-                    if (user) {
-                        modalReport = true;
-                    } else {
-                        modalLogin = true;
-                    }
+                    if (user) modalReport = true;
+                    else modalLogin = true;
                 "
             />
         </div>

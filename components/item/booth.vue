@@ -213,22 +213,18 @@ onMounted(async () => {
         <template #under>
             <div
                 v-if="props.note"
-                :class="`w-full flex ${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-0.5 pb-2'}`"
+                class="w-full m-2 mt-0 px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600"
             >
-                <div
-                    class="w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600"
+                <Icon
+                    name="lucide:pen-line"
+                    :size="15"
+                    class="flex-shrink-0 mt-[0.2rem] text-neutral-400 dark:text-neutral-400"
+                />
+                <p
+                    class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-neutral-800 dark:text-neutral-200"
                 >
-                    <Icon
-                        name="lucide:pen-line"
-                        :size="15"
-                        class="flex-shrink-0 mt-[0.2rem] text-neutral-400 dark:text-neutral-400"
-                    />
-                    <p
-                        class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-neutral-800 dark:text-neutral-200"
-                    >
-                        {{ props.note }}
-                    </p>
-                </div>
+                    {{ props.note }}
+                </p>
             </div>
         </template>
     </ItemBase>

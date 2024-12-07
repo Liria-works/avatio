@@ -41,20 +41,11 @@ const buttonLink =
 
                     <UiButton
                         to="https://liria.work"
-                        class="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-                    >
-                        <LogoLiria
-                            :color="
-                                colorMode.value === 'dark' ? '#ccc' : '#484848'
-                            "
-                            :size="18"
-                        />
-                        <span
-                            class="pr-0.5 pt-0.5 font-[Montserrat] font-semibold text-neutral-700 dark:text-neutral-300"
-                        >
-                            Liria
-                        </span>
-                    </UiButton>
+                        new-tab
+                        label="Liria"
+                        icon="avatio:liria"
+                        class="font-[Montserrat] font-semibold outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                    />
                 </div>
 
                 <div class="flex items-center gap-4">
