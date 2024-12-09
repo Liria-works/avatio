@@ -1,0 +1,26 @@
+<script lang="ts" setup>
+import { twMerge } from 'tailwind-merge';
+
+const props = defineProps<{
+    label?: string;
+    icon?: string;
+    class?: string;
+    borderClass?: string;
+}>();
+</script>
+
+<template>
+    <UDivider
+        :label="props.label"
+        :icon="props.icon"
+        :ui="{
+            border: {
+                base: twMerge(
+                    'border-neutral-300 dark:border-neutral-600',
+                    props.borderClass
+                ),
+            },
+        }"
+        :class="props.class"
+    />
+</template>

@@ -196,12 +196,12 @@ else {
                                 }"
                                 class="w-full"
                             />
-                            <UDivider
-                                :ui="{
-                                    border: {
-                                        base: 'border-neutral-300 dark:border-neutral-600',
-                                    },
-                                }"
+                            <UiDivider
+                                :border-class="
+                                    !bio || (bio && bio.length < 141)
+                                        ? 'border-neutral-300 dark:border-neutral-600'
+                                        : 'border-red-400 dark:border-red-400'
+                                "
                             />
                             <p
                                 v-if="
@@ -246,17 +246,12 @@ else {
                     variant="none"
                     :padded="false"
                 />
-                <UDivider
-                    :ui="{
-                        border: {
-                            base: `${
-                                !bio || (bio && bio.length < 141)
-                                    ? 'border-neutral-300 dark:border-neutral-600'
-                                    : 'border-red-400 dark:border-red-400'
-                            }`,
-                        },
-                    }"
-                    class="w-full"
+                <UiDivider
+                    :border-class="
+                        !bio || (bio && bio.length < 141)
+                            ? 'border-neutral-300 dark:border-neutral-600'
+                            : 'border-red-400 dark:border-red-400'
+                    "
                 />
                 <span
                     :class="`w-full text-right text-sm pr-1 ${

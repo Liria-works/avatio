@@ -24,24 +24,6 @@ const dateLocale = date.toLocaleString('ja-JP', {
     month: '2-digit',
     day: '2-digit',
 });
-
-// const fetchAvatar = ref<Item | null>();
-// const fetchImage = ref();
-// const loading = ref(true);
-
-onMounted(async () => {
-    // fetchAvatar.value = await useFetchBooth(props.avatar);
-    // if (!fetchAvatar.value) {
-    //     console.log("avatar not found");
-    //     // TODO: アバターがリンク切れの場合のハンドリング
-    // }
-    // if (props.image) {
-    //     fetchImage.value = await useGetImage(props.image);
-    // } else {
-    //     fetchImage.value = null;
-    // }
-    // loading.value = false;
-});
 </script>
 
 <template>

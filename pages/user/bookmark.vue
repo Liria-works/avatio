@@ -7,12 +7,14 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-3 items-center">
-        <UiCategory title="ブックマーク" icon="lucide:bookmark">
-            <div v-if="!bookmarks.length" class="w-full text-center my-7">
-                ブックマークがありません
-            </div>
+    <div class="flex flex-col gap-5">
+        <UiTitle label="ブックマーク" icon="lucide:bookmark" size="lg" />
 
+        <div v-if="!bookmarks.length" class="w-full text-center my-7">
+            ブックマークがありません
+        </div>
+
+        <div class="flex flex-col gap-3">
             <NuxtLink
                 v-for="i in bookmarks"
                 :key="'user-setup-' + i.post.id"
@@ -33,6 +35,6 @@ onMounted(async () => {
                     :image="i.post.image"
                 />
             </NuxtLink>
-        </UiCategory>
+        </div>
     </div>
 </template>

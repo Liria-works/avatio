@@ -179,27 +179,29 @@ onMounted(async () => {
             v-if="userData.setups.length"
             class="w-full flex flex-col gap-5 pl-2"
         >
-            <UiTitle label="セットアップ" icon="lucide:shirt" />
+            <UiTitle label="セットアップ" icon="lucide:shirt" size="lg" />
 
-            <NuxtLink
-                v-for="i in userData.setups"
-                :key="'user-setup-' + i.id"
-                :to="{ name: 'setup-id', params: { id: i.id } }"
-            >
-                <ItemSetupDetail
-                    :id="Number(i.id)"
-                    :name="i.name"
-                    :description="i.description"
-                    :avatar-name="i.avatar.name"
-                    :avatar-thumbnail="i.avatar.thumbnail"
-                    :avatar-outdated="i.avatar.outdated"
-                    :author-id="i.author.id"
-                    :author-name="i.author.name"
-                    :author-avatar="i.author.avatar"
-                    :created-at="i.created_at"
-                    :image="i.image"
-                />
-            </NuxtLink>
+            <div class="flex flex-col gap-3">
+                <NuxtLink
+                    v-for="i in userData.setups"
+                    :key="'user-setup-' + i.id"
+                    :to="{ name: 'setup-id', params: { id: i.id } }"
+                >
+                    <ItemSetupDetail
+                        :id="Number(i.id)"
+                        :name="i.name"
+                        :description="i.description"
+                        :avatar-name="i.avatar.name"
+                        :avatar-thumbnail="i.avatar.thumbnail"
+                        :avatar-outdated="i.avatar.outdated"
+                        :author-id="i.author.id"
+                        :author-name="i.author.name"
+                        :author-avatar="i.author.avatar"
+                        :created-at="i.created_at"
+                        :image="i.image"
+                    />
+                </NuxtLink>
+            </div>
         </div>
     </div>
 

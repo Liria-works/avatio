@@ -116,7 +116,7 @@ const handleSignUp = async () => {
                 X アカウントでログイン
             </UButton>
 
-            <UDivider label="OR" />
+            <UiDivider label="OR" />
 
             <UForm
                 :state="login"
@@ -183,7 +183,7 @@ const handleSignUp = async () => {
                 </UButton>
             </UForm>
 
-            <UDivider />
+            <UiDivider />
 
             <NuxtTurnstile v-model="token" />
         </div>
@@ -206,7 +206,7 @@ const handleSignUp = async () => {
                 X アカウントでサインアップ
             </UButton>
 
-            <UDivider label="OR" />
+            <UiDivider label="OR" />
 
             <UForm
                 :state="signUp"
@@ -273,7 +273,7 @@ const handleSignUp = async () => {
                 </UButton>
             </UForm>
 
-            <UDivider />
+            <UiDivider />
 
             <div class="flex flex-col gap-1">
                 <UCheckbox

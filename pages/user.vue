@@ -29,14 +29,7 @@ const user = useSupabaseUser();
                 class="outline-0 w-full justify-start"
             />
 
-            <UDivider
-                :ui="{
-                    border: {
-                        base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
-                    },
-                }"
-                class="hidden sm:block"
-            />
+            <UiDivider class="hidden sm:block mx-3 my-2" />
 
             <UiButton
                 :to="{ name: 'user-setting' }"

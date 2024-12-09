@@ -94,17 +94,12 @@ onMounted(async () => {
                     :ui="{ size: { xl: 'text-2xl font-bold' } }"
                     class="w-full"
                 />
-                <UDivider
-                    :ui="{
-                        border: {
-                            base: `${
-                                title.length < 25
-                                    ? 'border-neutral-300 dark:border-neutral-600'
-                                    : 'border-red-400 dark:border-red-600'
-                            }`,
-                        },
-                    }"
-                    class="w-full"
+                <UiDivider
+                    :border-class="
+                        title.length < 25
+                            ? 'border-neutral-300 dark:border-neutral-600'
+                            : 'border-red-400 dark:border-red-600'
+                    "
                 />
             </div>
             <div class="flex gap-2 items-center">
@@ -178,14 +173,7 @@ onMounted(async () => {
         <div class="flex flex-col lg:flex-row items-start gap-8 w-full">
             <EditItems v-model="items" @undo="undo" @redo="redo" />
 
-            <UDivider
-                :ui="{
-                    border: {
-                        base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-2',
-                    },
-                }"
-                class="block lg:hidden"
-            />
+            <UiDivider class="block lg:hidden mx-3 my-2" />
 
             <div
                 class="w-full lg:w-96 flex-col justify-start items-start gap-8 flex"
