@@ -122,7 +122,7 @@ export const useUpdateSetup = async (
     }
 };
 
-export const useDeleteSetup = async (id: number, image: string) => {
+export const useDeleteSetup = async (id: number, image: string | null) => {
     const client = await useSBClient();
 
     const { error: errorDeleteSetup } = await client
@@ -135,8 +135,7 @@ export const useDeleteSetup = async (id: number, image: string) => {
         return new Error('Faild to delete setup');
     }
 
-    // await client.storage.from("images").remove([image]);
-    await useDeleteImage(image);
+    if (image) await useDeleteImage(image);
 
     useAddToast('セットアップを削除しました');
     navigateTo('/');

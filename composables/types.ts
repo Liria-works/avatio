@@ -47,7 +47,7 @@ export interface Setup {
     avatar_note: string | null;
     tags: { tag: string }[];
     author: Author;
-    image: string;
+    image: string | null;
     items: {
         data: Item;
         note: string;
@@ -62,5 +62,5 @@ export interface SetupSimple {
     name: string;
     avatar: { name: string; thumbnail: string; outdated: boolean };
     author: Author;
-    image: string;
+    image: string | null;
 }
