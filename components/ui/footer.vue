@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const colorMode = useColorMode();
 const modal_feedback = ref(false);
 
 const buttonLink =
@@ -8,16 +7,8 @@ const buttonLink =
 
 <template>
     <footer class="flex flex-col gap-10">
-        <UDivider
-            :ui="{
-                border: { base: 'border-neutral-300 dark:border-neutral-600' },
-            }"
-        >
-            <LogoLiria
-                :color="colorMode.value === 'dark' ? '#f0f0f0' : '#484848'"
-                :filled="true"
-            />
-        </UDivider>
+        <UiDivider icon="avatio:liria" />
+
         <div
             class="flex flex-wrap w-full gap-6 pb-10 items-center justify-center"
         >
