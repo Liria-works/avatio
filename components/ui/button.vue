@@ -17,6 +17,7 @@ const props = withDefaults(
         class?: string;
         // eslint-disable-next-line vue/require-default-prop
         iconClass?: string;
+        wFull?: boolean;
     }>(),
     {
         disabled: false,
@@ -27,6 +28,7 @@ const props = withDefaults(
         label: '',
         outline: true,
         tooltip: '',
+        wFull: false,
     }
 );
 
@@ -39,7 +41,7 @@ const Link = defineNuxtLink({
 </script>
 
 <template>
-    <UiTooltip :text="props.tooltip">
+    <UiTooltip :text="props.tooltip" :class="[props.wFull && 'w-full']">
         <component
             :is="props.to ? Link : 'button'"
             :type="props.type"
@@ -51,7 +53,8 @@ const Link = defineNuxtLink({
                 twMerge(
                     props.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
                     props.icon.length ? 'p-3' : 'px-4 py-3',
-                    'w-fit rounded-lg flex gap-2 items-center justify-center',
+                    props.wFull ? 'w-full' : 'w-fit',
+                    'rounded-lg flex gap-2 items-center justify-center',
                     'bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600',
                     'text-sm font-semibold align-middle leading-none',
                     'text-neutral-800 dark:text-neutral-200',

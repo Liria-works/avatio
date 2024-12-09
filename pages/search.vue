@@ -12,7 +12,7 @@ const popularAvatars = ref<{ id: number; name: string; thumbnail: string }[]>(
 );
 
 onMounted(async () => {
-    const { data } = await client.rpc('popular_avatars').limit(20);
+    const { data } = await client.rpc('popular_avatars').limit(24);
     if (data) popularAvatars.value = data;
 });
 
@@ -123,37 +123,35 @@ watch(
                 :updated-at="resultItem.updated_at"
             />
 
-            <UDivider
-                :ui="{
-                    border: {
-                        base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-5',
-                    },
-                }"
-            />
+            <UiDivider class="mx-3 my-5" />
 
-            <div
-                v-if="!Object.keys(query).length && popularAvatars.length"
-                class="flex flex-wrap gap-5 items-center justify-center"
-            >
-                <NuxtLink
-                    v-for="i in popularAvatars"
-                    :key="useId()"
-                    :to="`/search?item=${i.id}`"
-                    :class="[
-                        'w-32 p-4 gap-2 flex flex-col items-center rounded-lg',
-                        'border border-1 border-neutral-500 hover:bg-neutral-600',
-                    ]"
+            <div class="flex flex-col gap-6">
+                <UiTitle
+                    label="人気のアバターから検索"
+                    icon="lucide:user-round"
+                    size="lg"
+                />
+                <div
+                    v-if="!Object.keys(query).length && popularAvatars.length"
+                    class="flex flex-wrap gap-5 items-center justify-center"
                 >
-                    <NuxtImg
-                        :src="i.thumbnail"
-                        sizes="128px"
-                        loading="lazy"
-                        class="rounded-lg"
-                    />
-                    <p class="text-sm line-clamp-1 break-all">
-                        {{ useAvatarName(i.name) }}
-                    </p>
-                </NuxtLink>
+                    <NuxtLink
+                        v-for="i in popularAvatars"
+                        :key="useId()"
+                        :to="`/search?item=${i.id}`"
+                        class="w-32 p-4 gap-2 flex flex-col items-center rounded-lg border border-1 border-neutral-500 hover:bg-neutral-600"
+                    >
+                        <NuxtImg
+                            :src="i.thumbnail"
+                            sizes="128px"
+                            loading="lazy"
+                            class="rounded-lg flex-shrink-0"
+                        />
+                        <p class="text-sm line-clamp-1 break-all">
+                            {{ useAvatarName(i.name) }}
+                        </p>
+                    </NuxtLink>
+                </div>
             </div>
 
             <div class="flex flex-col lg:grid lg:grid-cols-1 gap-5">

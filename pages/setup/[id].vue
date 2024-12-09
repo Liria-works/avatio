@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { useShare } from '@vueuse/core';
-
 const user = useSupabaseUser();
 const client = await useSBClient();
 const route = useRoute();
-const currentUrl = ref<string>('');
 
 const modalLogin = ref(false);
 const modalReport = ref(false);
@@ -24,8 +21,6 @@ const toggleBookmark = async () => {
 
     bookmark.value = await useCheckBookmark(setup.value.id);
 };
-
-const { share, isSupported } = useShare();
 
 const categorizedItems: {
     [key: string]: {
@@ -89,13 +84,11 @@ onMounted(async () => {
 
     bookmark.value = await useCheckBookmark(id);
 
-    currentUrl.value = `${window.location.protocol}//${window.location.host}${route.fullPath}`;
-
     useSeoSetup({
-        url: currentUrl.value,
+        url: useBrowserLocation().value.href!,
         title: setup.value.name,
         description: setup.value.description,
-        image: setup.value.image,
+        image: setup.value.image ?? '/ogp.png',
         userAvatar: setup.value.author.avatar,
     });
 });
@@ -194,61 +187,14 @@ onMounted(async () => {
                             @click="modalDelete = true"
                         />
 
-                        <UPopover
-                            :ui="{
-                                rounded: 'rounded-xl',
-                                ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                            }"
-                            class="flex"
-                        >
-                            <UiButton
-                                icon="lucide:share-2"
-                                :icon-size="18"
-                                tooltip="シェア"
-                                class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
-                            />
-
-                            <template #panel="{ close }">
-                                <div
-                                    class="flex flex-col gap-0.5 text-sm p-2 min-w-48"
-                                >
-                                    <UiButton
-                                        :to="`http://x.com/intent/tweet?text=${encodeURIComponent(setup.name + ' | ' + setup.author.name)}&url=${currentUrl}&hashtags=avatio`"
-                                        new-tab
-                                        icon="simple-icons:x"
-                                        :icon-size="18"
-                                        label="ポスト"
-                                        class="w-full outline-0"
-                                    />
-                                    <UiButton
-                                        icon="lucide:link"
-                                        :icon-size="18"
-                                        label="URLをコピー"
-                                        class="w-full outline-0"
-                                        @click="
-                                            useWriteClipboard(currentUrl);
-                                            close();
-                                        "
-                                    />
-                                    <UiButton
-                                        v-if="isSupported"
-                                        icon="lucide:share-2"
-                                        :icon-size="18"
-                                        label="その他"
-                                        class="w-full outline-0"
-                                        @click="
-                                            share({
-                                                title: setup.name,
-                                                text: setup.description
-                                                    ? setup.description
-                                                    : '',
-                                                url: currentUrl,
-                                            })
-                                        "
-                                    />
-                                </div>
-                            </template>
-                        </UPopover>
+                        <PopupShare
+                            :current-url="useBrowserLocation().value.href!"
+                            :setup-name="setup.name"
+                            :setup-description="
+                                setup.description ? setup.description : ''
+                            "
+                            :setup-author="setup.author.name"
+                        />
                     </div>
                 </div>
             </div>
@@ -367,14 +313,7 @@ onMounted(async () => {
             />
         </div>
 
-        <UModal
-            v-model="modalLogin"
-            :ui="{
-                background: 'bg-white dark:bg-neutral-100',
-                ring: 'ring-0',
-                rounded: 'rounded-xl',
-            }"
-        >
+        <ModalBase v-model="modalLogin">
             <UiLogin
                 :redirect="`/setup/${route.params.id}`"
                 @success="
@@ -385,59 +324,14 @@ onMounted(async () => {
                     })();
                 "
             />
-        </UModal>
+        </ModalBase>
 
         <ModalReportSetup v-model="modalReport" :id="Number(setup?.id)" />
 
-        <UModal
+        <ModalDeleteSetup
             v-model="modalDelete"
-            :ui="{
-                background: 'bg-white dark:bg-neutral-700',
-                ring: 'ring-0',
-                rounded: 'rounded-xl',
-            }"
-        >
-            <UCard
-                :ui="{
-                    ring: '',
-                    divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-                }"
-            >
-                <template #header>
-                    <div
-                        class="w-full pr-2 flex flex-row gap-2 items-center justify-center"
-                    >
-                        <Icon
-                            name="lucide:trash"
-                            size="20"
-                            class="text-neutral-600 dark:text-neutral-400"
-                        />
-                        <span
-                            class="text-black dark:text-neutral-100 font-medium"
-                        >
-                            セットアップ削除
-                        </span>
-                    </div>
-                </template>
-
-                <span
-                    class="w-full text-md font-normal text-neutral-800 dark:text-neutral-100 text-center"
-                >
-                    セットアップを削除します。<br />この操作は取り消せません。よろしいですか？
-                </span>
-
-                <template #footer>
-                    <UButton
-                        v-if="setup"
-                        label="削除"
-                        variant="outline"
-                        block
-                        size="lg"
-                        color="red"
-                        @click="useDeleteSetup(setup.id, setup.image)"
-                    />
-                </template>
-            </UCard>
-        </UModal>
+            :id="Number(setup?.id)"
+            :image="setup?.image"
+        />
     </div>
 </template>
