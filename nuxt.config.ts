@@ -94,6 +94,7 @@ export default defineNuxtConfig({
             exclude: [],
             cookieRedirect: false,
         },
+        types: './database.types.ts',
     },
 
     image: {

@@ -1,7 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
 import type { H3Event } from 'h3';
-
-import type { Database } from '../../../database.types';
 import type { ResponseData } from '../../../supabase/functions/get-booth-item/index';
 
 interface Item {
@@ -33,7 +31,7 @@ function logDuration(startTime: number, source: string, itemName: string) {
 }
 
 async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
-    const client = await serverSupabaseClient<Database>(event);
+    const client = await serverSupabaseClient(event);
 
     const startTime = Date.now(); // 処理開始時刻を記録
     const url_base = 'https://booth.pm/ja/items/';
