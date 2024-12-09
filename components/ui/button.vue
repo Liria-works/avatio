@@ -11,7 +11,7 @@ const props = withDefaults(
         icon?: string;
         iconSize?: number;
         label?: string;
-        outline?: boolean;
+        variant?: 'outline' | 'flat' | 'link';
         tooltip?: string;
         // eslint-disable-next-line vue/require-default-prop
         class?: string;
@@ -26,7 +26,7 @@ const props = withDefaults(
         icon: '',
         iconSize: 18,
         label: '',
-        outline: true,
+        variant: 'outline',
         tooltip: '',
         wFull: false,
     }
@@ -38,6 +38,12 @@ const Link = defineNuxtLink({
     componentName: 'Link',
     prefetch: false,
 });
+
+const variantClass = {
+    outline: 'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
+    flat: '',
+    link: 'p-1 text-xs font-semibold text-neutral-600 hover:text-neutral-400 dark:text-neutral-400 hover:dark:text-neutral-500 hover:bg-transparent hover:dark:bg-transparent',
+};
 </script>
 
 <template>
@@ -58,9 +64,8 @@ const Link = defineNuxtLink({
                     'bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600',
                     'text-sm font-semibold align-middle leading-none',
                     'text-neutral-800 dark:text-neutral-200',
-                    props.outline &&
-                        'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
                     'transition duration-50 delay-0 ease-in-out',
+                    variantClass[props.variant],
                     props.class
                 )
             "

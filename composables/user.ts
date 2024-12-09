@@ -57,7 +57,7 @@ export const useSignupVaridate = () => {
 export const useSignOut = async () => {
     const supabase = await useSBClient();
     await supabase.auth.signOut();
-    navigateTo('/', { external: true });
+    navigateTo('/');
 };
 
 export const useLogin = async (
@@ -74,16 +74,19 @@ export const useLogin = async (
     if (error) throw error;
 };
 
-export const useSignUp = async (email: string, password: string) => {
+export const useSignUp = async (
+    email: string,
+    password: string,
+    token: string
+) => {
     const supabase = await useSBClient();
 
     const { error } = await supabase.auth.signUp({
         email: email,
         password: password,
+        options: { captchaToken: token },
     });
     if (error) throw error;
-
-    navigateTo('/user/setting');
 
     useAddToast('サインアップしました。');
 };

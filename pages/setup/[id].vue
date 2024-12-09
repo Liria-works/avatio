@@ -303,7 +303,7 @@ onMounted(async () => {
                 label="セットアップを報告"
                 icon="lucide:flag"
                 :icon-size="16"
-                :outline="false"
+                variant="flat"
                 class="px-3 py-2 mt-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 hover:dark:bg-neutral-700"
                 icon-class="text-red-400 dark:text-red-400"
                 @click="
@@ -316,7 +316,7 @@ onMounted(async () => {
         <ModalBase v-model="modalLogin">
             <UiLogin
                 :redirect="`/setup/${route.params.id}`"
-                @success="
+                @login-success="
                     modalLogin = false;
                     (async () => {
                         if (!setup) return;

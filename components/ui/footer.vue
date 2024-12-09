@@ -1,8 +1,5 @@
 <script setup lang="ts">
 const modal_feedback = ref(false);
-
-const buttonLink =
-    'outline-0 p-1 text-xs font-semibold text-neutral-600 hover:text-neutral-400 dark:text-neutral-400 hover:dark:text-neutral-500 hover:bg-transparent hover:dark:bg-transparent';
 </script>
 
 <template>
@@ -40,15 +37,11 @@ const buttonLink =
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <UiButton
-                        to="/release"
-                        label="お知らせ"
-                        :class="buttonLink"
-                    />
+                    <UiButton to="/release" label="お知らせ" variant="link" />
 
                     <UiButton
                         label="フィードバック"
-                        :class="buttonLink"
+                        variant="link"
                         @click="modal_feedback = true"
                     />
                 </div>
@@ -58,17 +51,17 @@ const buttonLink =
                     disabled
                     tooltip="準備中"
                     label="Avatioについて"
-                    :class="buttonLink"
+                    variant="link"
                 />
 
-                <UiButton to="/faq" label="FAQ" :class="buttonLink" />
+                <UiButton to="/faq" label="FAQ" variant="link" />
 
-                <UiButton to="/terms" label="利用規約" :class="buttonLink" />
+                <UiButton to="/terms" label="利用規約" variant="link" />
 
                 <UiButton
                     to="/privacy-policy"
                     label="プライバシーポリシー"
-                    :class="buttonLink"
+                    variant="link"
                 />
             </div>
             <p class="text-neutral-500 text-sm">Copyright © 2024 Liria</p>
