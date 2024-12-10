@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-const bookmarks = ref<{ post: Setup }[]>([]);
+const bookmarks = ref<Setup[]>([]);
 
 onMounted(async () => {
-    bookmarks.value = await useListBookmarks();
+    bookmarks.value = await useBookmarks();
 });
 </script>
 
@@ -17,22 +17,18 @@ onMounted(async () => {
         <div class="flex flex-col gap-3">
             <NuxtLink
                 v-for="i in bookmarks"
-                :key="'user-setup-' + i.post.id"
-                :to="{ name: 'setup-id', params: { id: i.post.id } }"
+                :key="'user-setup-' + i.id"
+                :to="{ name: 'setup-id', params: { id: i.id } }"
                 class="w-full"
             >
                 <ItemSetupDetail
-                    :id="i.post.id"
-                    :name="i.post.name"
-                    :description="i.post.description"
-                    :avatar-name="i.post.avatar.name"
-                    :avatar-thumbnail="i.post.avatar.thumbnail"
-                    :avatar-outdated="i.post.avatar.outdated"
-                    :author-id="i.post.author.id"
-                    :author-name="i.post.author.name"
-                    :author-avatar="i.post.author.avatar"
-                    :created-at="i.post.created_at"
-                    :image="i.post.image"
+                    :id="i.id"
+                    :created-at="i.created_at"
+                    :name="i.name"
+                    :description="i.description"
+                    :image="i.image"
+                    :author="i.author"
+                    :items="i.items.map((i) => i.data)"
                 />
             </NuxtLink>
         </div>

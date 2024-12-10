@@ -9,6 +9,16 @@ const modalDelete = ref(false);
 
 const id = Number(route.params.id);
 const setup = ref<Setup | null>(null);
+const items = ref<CategorizedSetupItems>({
+    avatar: {
+        label: 'ベースアバター',
+        icon: 'lucide:person-standing',
+        items: [],
+    },
+    cloth: { label: '衣装', icon: 'lucide:shirt', items: [] },
+    accessory: { label: 'アクセサリー', icon: 'lucide:star', items: [] },
+    other: { label: 'その他', icon: 'lucide:package', items: [] },
+});
 const bookmark = ref(false);
 
 const toggleBookmark = async () => {
@@ -20,19 +30,6 @@ const toggleBookmark = async () => {
     else await useAddBookmark(setup.value.id);
 
     bookmark.value = await useCheckBookmark(setup.value.id);
-};
-
-const categorizedItems: {
-    [key: string]: {
-        data: Item;
-        note: string;
-        unsupported: boolean;
-    }[];
-} = {};
-const categoryAttr: { [key: string]: { label: string; icon: string } } = {
-    cloth: { label: '衣装', icon: 'lucide:shirt' },
-    accessory: { label: 'アクセサリー', icon: 'lucide:star' },
-    other: { label: 'その他', icon: 'lucide:package' },
 };
 
 onMounted(async () => {
@@ -48,14 +45,17 @@ onMounted(async () => {
             `
             id,
             created_at,
-            updated_at,
             name,
             description,
-            avatar(id, updated_at, outdated, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw),
-            avatar_note,
             author(id, name, avatar),
             image,
-            items:setup_items(data:item_id(id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw), note, unsupported),
+            items:setup_items(
+                data:item_id(
+                    id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
+                ),
+                note,
+                unsupported
+            ),
             tags:setup_tags(tag)
             `
         )
@@ -72,15 +72,22 @@ onMounted(async () => {
 
     if (setup.value?.items)
         for (const item of setup.value.items) {
-            let category: string;
-            if (item.data.category === 209) category = 'cloth';
-            else if (item.data.category === 217) category = 'accessory';
-            else category = 'other';
+            const categoryMap: { [key: number]: keyof CategorizedSetupItems } =
+                {
+                    208: 'avatar',
+                    209: 'cloth',
+                    217: 'accessory',
+                };
 
-            if (!categorizedItems[category]) categorizedItems[category] = [];
-
-            categorizedItems[category].push(item);
+            const categoryKey = categoryMap[item.data.category] || 'other';
+            items.value[categoryKey].items.push({
+                ...item.data,
+                note: item.note,
+                unsupported: item.unsupported,
+            });
         }
+    console.log(setup.value);
+    console.log(items.value);
 
     bookmark.value = await useCheckBookmark(id);
 
@@ -131,26 +138,6 @@ onMounted(async () => {
                                 }}
                                 に公開
                             </p>
-
-                            <UiTooltip
-                                v-if="setup.updated_at !== setup.created_at"
-                                :text="
-                                    new Date(setup.updated_at).toLocaleString(
-                                        'ja-JP',
-                                        {
-                                            year: 'numeric',
-                                            month: '2-digit',
-                                            day: '2-digit',
-                                        }
-                                    ) + 'に編集'
-                                "
-                            >
-                                <Icon
-                                    name="lucide:pen"
-                                    size="14"
-                                    class="text-neutral-500 dark:text-neutral-500"
-                                />
-                            </UiTooltip>
                         </div>
                     </div>
 
@@ -207,55 +194,33 @@ onMounted(async () => {
             />
 
             <div class="w-full flex flex-col gap-3">
-                <UiTitle label="ベースアバター" icon="lucide:person-standing" />
-                <ItemBooth
-                    v-if="setup.avatar"
-                    size="lg"
-                    :note="setup.avatar_note"
-                    :id="setup.avatar.id"
-                    :name="setup.avatar.name"
-                    :thumbnail="setup.avatar.thumbnail"
-                    :shop="setup.avatar.shop.name"
-                    :shop-id="setup.avatar.shop.id"
-                    :shop-thumbnail="setup.avatar.shop.thumbnail"
-                    :shop-verified="setup.avatar.shop.verified"
-                    :price="setup.avatar.price"
-                    :nsfw="setup.avatar.nsfw"
-                    :outdated="setup.avatar.outdated"
-                    :updated-at="setup.avatar.updated_at"
-                />
-            </div>
-
-            <div
-                v-if="Object.keys(categorizedItems).length"
-                class="w-full flex flex-col gap-3"
-            >
                 <div
-                    v-for="i in Object.keys(categorizedItems)"
+                    v-for="item in items"
                     :key="useId()"
-                    class="w-full flex flex-col gap-3"
+                    :class="[
+                        'w-full flex flex-col gap-3',
+                        item.items.length ? '' : 'hidden',
+                    ]"
                 >
-                    <UiTitle
-                        :label="categoryAttr[i].label"
-                        :icon="categoryAttr[i].icon"
-                    />
+                    <UiTitle :label="item.label" :icon="item.icon" />
 
                     <ItemBooth
-                        v-for="item in categorizedItems[i]"
-                        :id="item.data.id"
-                        :key="'item-' + item.data.id"
-                        :note="item.note"
-                        :unsupported="item.unsupported"
-                        :name="item.data.name"
-                        :thumbnail="item.data.thumbnail"
-                        :price="item.data.price"
-                        :shop="item.data.shop.name"
-                        :shop-id="item.data.shop.id"
-                        :shop-thumbnail="item.data.shop.thumbnail"
-                        :shop-verified="item.data.shop.verified"
-                        :nsfw="item.data.nsfw"
-                        :updated-at="item.data.updated_at"
-                        :outdated="item.data.outdated"
+                        v-for="i in item.items"
+                        :id="i.id"
+                        :key="useId()"
+                        :size="i.category === 208 ? 'lg' : 'md'"
+                        :note="i.note"
+                        :unsupported="i.unsupported"
+                        :name="i.name"
+                        :thumbnail="i.thumbnail"
+                        :price="i.price"
+                        :shop="i.shop.name"
+                        :shop-id="i.shop.id"
+                        :shop-thumbnail="i.shop.thumbnail"
+                        :shop-verified="i.shop.verified"
+                        :nsfw="i.nsfw"
+                        :updated-at="i.updated_at"
+                        :outdated="i.outdated"
                     />
                 </div>
             </div>

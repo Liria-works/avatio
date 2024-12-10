@@ -2,16 +2,12 @@
 const props = withDefaults(
     defineProps<{
         id: number;
+        createdAt: string;
         name: string;
         description: string | null;
-        avatarName: string;
-        avatarThumbnail: string;
-        avatarOutdated: boolean;
-        authorId: string;
-        authorName: string;
-        authorAvatar: string | null;
-        createdAt: string;
         image: string | null;
+        author: Author;
+        items: Item[];
     }>(),
     {
         image: null,
@@ -24,6 +20,9 @@ const dateLocale = date.toLocaleString('ja-JP', {
     month: '2-digit',
     day: '2-digit',
 });
+
+const avatar = props.items.filter((i) => i.category === 208)[0];
+const nonAvatarItems = props.items.filter((i) => i.category !== 208);
 </script>
 
 <template>
@@ -40,9 +39,9 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         class="size-28 md:w-auto object-cover rounded-lg overflow-clip"
                     />
                     <NuxtImg
-                        v-else-if="!props.avatarOutdated"
-                        :src="props.avatarThumbnail"
-                        :alt="props.avatarName"
+                        v-else-if="!avatar.outdated"
+                        :src="avatar.thumbnail"
+                        :alt="avatar.name"
                         class="size-28 md:w-auto object-cover rounded-lg overflow-clip"
                     />
                     <div
@@ -67,10 +66,8 @@ const dateLocale = date.toLocaleString('ja-JP', {
                             class="text-sm text-neutral-500 dark:text-neutral-400 break-keep line-clamp-1"
                         >
                             {{
-                                !props.avatarOutdated
-                                    ? useSentence(
-                                          useAvatarName(props.avatarName)
-                                      )
+                                !avatar.outdated
+                                    ? useSentence(useAvatarName(avatar.name))
                                     : '不明なベースアバター'
                             }}
                         </p>
@@ -89,19 +86,19 @@ const dateLocale = date.toLocaleString('ja-JP', {
                                     {{ useDateElapsed(date) }}
                                 </p>
                             </UiTooltip>
-                            <UiTooltip :text="props.authorName">
+                            <UiTooltip :text="props.author.name">
                                 <NuxtLink
                                     :to="{
                                         name: 'user-id',
-                                        params: { id: props.authorId },
+                                        params: { id: props.author.id },
                                     }"
                                     class="flex flex-row gap-2 items-center"
                                 >
                                     <UAvatar
-                                        v-if="props.authorAvatar"
+                                        v-if="props.author.avatar"
                                         size="xs"
-                                        :src="useGetImage(props.authorAvatar)"
-                                        :alt="props.authorName"
+                                        :src="useGetImage(props.author.avatar)"
+                                        :alt="props.author.name"
                                     />
                                     <div
                                         v-else
@@ -117,6 +114,18 @@ const dateLocale = date.toLocaleString('ja-JP', {
                             </UiTooltip>
                         </div>
                     </div>
+                </div>
+            </template>
+
+            <template #under v-if="nonAvatarItems.length">
+                <div class="max-w-44 p-2 pt-0 gap-2 flex">
+                    <ItemTiny
+                        v-for="i in nonAvatarItems"
+                        :key="useId()"
+                        :label="i.name"
+                        :thumbnail="i.thumbnail"
+                        class="whitespace-nowrap"
+                    />
                 </div>
             </template>
         </ItemBase>

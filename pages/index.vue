@@ -16,8 +16,20 @@ const get = async (num: number) => {
     let query = client
         .from('setups')
         .select(
-            'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail, outdated)'
-        );
+            `
+            id,
+            created_at,
+            name,
+            author(id, name, avatar),
+            image,
+            items:setup_items(
+                data:item_id(
+                    id, outdated, category, name, thumbnail, nsfw
+                )
+            )
+            `
+        )
+        .eq('setup_items.item_id.category', '208');
     if (user.value) query = query.neq('author', user.value.id);
     query = query
         .range(num * setupsPerPage, num * setupsPerPage + (setupsPerPage - 1))
@@ -32,7 +44,13 @@ const get = async (num: number) => {
 };
 
 const paginate = async () => {
-    setups.value = [...setups.value, ...(await get(page.value))];
+    const temp = [...setups.value, ...(await get(page.value))];
+    setups.value = temp.map((setup) => {
+        return {
+            ...setup,
+            avatars: setup.items.filter((i) => i.data).map((i) => i.data),
+        };
+    });
     page.value++;
 };
 
@@ -66,14 +84,15 @@ onMounted(async () => {
                 :gap="20"
                 :min-columns="1"
                 :max-columns="3"
+                :ssr-columns="3"
             >
                 <template #default="{ item }">
                     <ItemSetup
                         :id="item.id"
                         :name="item.name"
-                        :avatar-name="item.avatar.name"
-                        :avatar-thumbnail="item.avatar.thumbnail"
-                        :avatar-outdated="item.avatar.outdated"
+                        :avatar-name="item.avatars[0].name"
+                        :avatar-thumbnail="item.avatars[0].thumbnail"
+                        :avatar-outdated="item.avatars[0].outdated"
                         :author-id="item.author.id"
                         :author-name="item.author.name"
                         :author-avatar="item.author.avatar"

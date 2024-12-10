@@ -35,7 +35,21 @@ onMounted(async () => {
             bio,
             links,
             created_at,
-            setups(id, name, description, avatar(id, name, thumbnail, outdated), author(id, name, avatar), image, created_at),
+            setups(
+                id,
+                created_at,
+                author(id, name, avatar),
+                name,
+                description,
+                image,
+                items:setup_items(
+                    data:item_id(
+                        id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
+                    ),
+                    note,
+                    unsupported
+                )
+            ),
             badges(developer, contributor, translator, alpha_tester, shop_owner)
             `
         )
@@ -182,25 +196,17 @@ onMounted(async () => {
             <UiTitle label="セットアップ" icon="lucide:shirt" size="lg" />
 
             <div class="flex flex-col gap-3">
-                <NuxtLink
+                <ItemSetupDetail
                     v-for="i in userData.setups"
-                    :key="'user-setup-' + i.id"
-                    :to="{ name: 'setup-id', params: { id: i.id } }"
-                >
-                    <ItemSetupDetail
-                        :id="Number(i.id)"
-                        :name="i.name"
-                        :description="i.description"
-                        :avatar-name="i.avatar.name"
-                        :avatar-thumbnail="i.avatar.thumbnail"
-                        :avatar-outdated="i.avatar.outdated"
-                        :author-id="i.author.id"
-                        :author-name="i.author.name"
-                        :author-avatar="i.author.avatar"
-                        :created-at="i.created_at"
-                        :image="i.image"
-                    />
-                </NuxtLink>
+                    :key="useId()"
+                    :id="Number(i.id)"
+                    :created-at="i.created_at"
+                    :name="i.name"
+                    :description="i.description"
+                    :image="i.image"
+                    :author="i.author"
+                    :items="i.items.map((i) => i.data)"
+                />
             </div>
         </div>
     </div>

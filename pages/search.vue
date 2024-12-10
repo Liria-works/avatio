@@ -50,28 +50,7 @@ watch(
                 query: [parseInt(item)],
             });
 
-            return (resultSetups.value = data.map((i) => {
-                return {
-                    id: i.id,
-                    created_at: i.created_at,
-                    name: i.name,
-                    description: i.description,
-                    image: i.image,
-                    tags: i.tag,
-                    author: {
-                        id: i.author_id,
-                        name: i.author_name,
-                        avatar: i.author_avatar,
-                    },
-                    avatar: {
-                        id: i.avatar_id,
-                        name: i.avatar_name,
-                        thumbnail: i.avatar_thumbnail,
-                    },
-                    avatar_note: i.avatar_note,
-                    items: i.item_id,
-                };
-            }));
+            return console.log(data);
         }
 
         if (word) {

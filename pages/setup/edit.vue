@@ -4,15 +4,7 @@ const skip_router_hook = ref(false);
 
 const publishing = ref(false);
 
-const items = ref<{
-    avatar: SetupItem | null;
-    avatar_note: string;
-    items: SetupItem[];
-}>({
-    avatar: null,
-    avatar_note: '',
-    items: [],
-});
+const items = ref<SetupItem[]>([]);
 const { undo, redo } = useRefHistory(items, { deep: true });
 
 const title = ref<string>('');
@@ -23,7 +15,7 @@ const image = ref<File | null>(null);
 const PublishSetup = async () => {
     publishing.value = true;
 
-    if (!items.value.avatar) {
+    if (!items.value.filter((i) => i.category === 208).length) {
         useAddToast(ERROR_MESSAGES.NO_AVATAR);
         publishing.value = false;
         return;
@@ -35,9 +27,7 @@ const PublishSetup = async () => {
                 name: title.value,
                 description: description.value,
                 tags: tags.value,
-                avatar: items.value.avatar.id,
-                avatar_note: items.value.avatar_note,
-                items: items.value.items,
+                items: items.value,
             },
             image.value
         );
@@ -62,8 +52,7 @@ onBeforeRouteLeave(
             title.value ||
             description.value ||
             tags.value.length ||
-            items.value.avatar ||
-            items.value.items.length
+            items.value.length
         ) {
             const answer = window.confirm(
                 '入力された内容が破棄されます。よろしいですか？'
@@ -116,8 +105,8 @@ onMounted(async () => {
                         :disabled="
                             publishing ||
                             !title ||
-                            !items.avatar ||
-                            !items.items.length
+                            !items.filter((i) => i.category === 208).length ||
+                            !items.filter((i) => i.category !== 208).length
                         "
                         truncate
                         size="lg"
@@ -142,16 +131,30 @@ onMounted(async () => {
                             <p v-if="!title">
                                 {{ ERROR_MESSAGES.NO_TITLE }}
                             </p>
-                            <p v-if="!items.avatar">
+                            <p
+                                v-if="
+                                    !items.filter((i) => i.category === 208)
+                                        .length
+                                "
+                            >
                                 {{ ERROR_MESSAGES.NO_AVATAR }}
                             </p>
-                            <p v-if="!items.items.length">
+                            <p
+                                v-if="
+                                    !items.filter((i) => i.category !== 208)
+                                        .length
+                                "
+                            >
                                 {{ ERROR_MESSAGES.NO_ITEMS }}
                             </p>
 
                             <p
                                 v-if="
-                                    title && items.avatar && items.items.length
+                                    title &&
+                                    items.filter((i) => i.category === 208)
+                                        .length &&
+                                    items.filter((i) => i.category !== 208)
+                                        .length
                                 "
                             >
                                 セットアップを投稿

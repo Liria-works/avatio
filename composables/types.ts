@@ -13,11 +13,11 @@ export interface Badges {
 }
 
 export interface User extends Author {
+    created_at: string;
     bio: string;
     links: string[];
-    created_at: string;
-    setups: Setup[];
     badges: Badges;
+    setups: Setup[];
 }
 
 export interface Item {
@@ -40,11 +40,8 @@ export interface SetupItem extends Item {
 export interface Setup {
     id: number;
     created_at: string;
-    updated_at: string;
     name: string;
     description: string | null;
-    avatar: Item;
-    avatar_note: string | null;
     tags: { tag: string }[];
     author: Author;
     image: string | null;
@@ -60,7 +57,27 @@ export interface SetupSimple {
     created_at: string;
     updated_at: string;
     name: string;
-    avatar: { name: string; thumbnail: string; outdated: boolean };
     author: Author;
+    avatars: {
+        name: string;
+        thumbnail: string;
+        nsfw: boolean;
+        outdated: boolean;
+    }[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items: { data: any }[];
     image: string | null;
+}
+
+export interface CategoryAttr {
+    label: string;
+    icon: string;
+    items: SetupItem[];
+}
+
+export interface CategorizedSetupItems {
+    avatar: CategoryAttr;
+    cloth: CategoryAttr;
+    accessory: CategoryAttr;
+    other: CategoryAttr;
 }

@@ -1,15 +1,8 @@
 <script lang="ts" setup>
 const emit = defineEmits(['undo', 'redo']);
 
-interface Items {
-    avatar: SetupItem | null;
-    avatar_note: string;
-    items: SetupItem[];
-    // items: { category: number; items: SetupItem[] }[];
-}
-
-const items = defineModel<Items>({
-    default: { avatar: null, avatar_note: '', items: [] },
+const items = defineModel<SetupItem[]>({
+    default: [],
 });
 
 const adding = ref(false);
@@ -19,20 +12,16 @@ const modalReplaceAvatar = ref(false);
 const categorizedItems = computed(() => {
     const categorized: { [key: string]: SetupItem[] } = {};
 
-    if (items.value.items.length) {
-        for (const item of items.value.items) {
+    if (items.value.length) {
+        for (const item of items.value) {
             let category: string;
-            if (item.category === 209) {
-                category = 'cloth';
-            } else if (item.category === 217) {
-                category = 'accessory';
-            } else {
-                category = 'other';
-            }
+            if (item.category === 208) category = 'avatar';
+            else if (item.category === 209) category = 'cloth';
+            else if (item.category === 217) category = 'accessory';
+            else category = 'other';
 
-            if (!categorized[category]) {
-                categorized[category] = [];
-            }
+            if (!categorized[category]) categorized[category] = [];
+
             categorized[category].push(item);
         }
     }
@@ -41,6 +30,7 @@ const categorizedItems = computed(() => {
 });
 
 const categoryAttr: { [key: string]: { label: string; icon: string } } = {
+    avatar: { label: 'ベースアバター', icon: 'lucide:person-standing' },
     cloth: { label: '衣装', icon: 'lucide:shirt' },
     accessory: { label: 'アクセサリー', icon: 'lucide:star' },
     other: { label: 'その他', icon: 'lucide:package' },
@@ -78,22 +68,22 @@ const addItem = async (id: number) => {
     const d = { ...data, note: '', unsupported: false };
 
     if (data.category === 208) {
-        if (items.value.avatar) {
-            if (items.value.avatar.id === d.id) {
+        if (items.value.some((i) => i.category === 208)) {
+            if (items.value.filter((i) => i.category === 208)[0].id === d.id)
                 useAddToast(ERROR_MESSAGES.SAME_AVATAR);
-            } else {
+            else {
                 replaceAvatar.value = d;
                 modalReplaceAvatar.value = true;
             }
         } else {
-            items.value.avatar = d;
+            items.value.push(d);
             inputUrl.value = '';
         }
     } else {
-        if (items.value.items.some((item) => item.id === data.id)) {
+        if (items.value.some((item) => item.id === data.id))
             useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
-        } else {
-            items.value.items.push(d);
+        else {
+            items.value.push(d);
             inputUrl.value = '';
         }
     }
@@ -102,10 +92,7 @@ const addItem = async (id: number) => {
 };
 
 const addItemFromURL = async () => {
-    if (!inputUrl.value) {
-        useAddToast(ERROR_MESSAGES.EMPTY_URL);
-        return;
-    }
+    if (!inputUrl.value) return useAddToast(ERROR_MESSAGES.EMPTY_URL);
 
     try {
         new URL(inputUrl.value);
@@ -120,23 +107,19 @@ const addItemFromURL = async () => {
     if (
         url.hostname.split('.').slice(-2)[1] !== 'pm' ||
         url.hostname.split('.').slice(-2)[0] !== 'booth'
-    ) {
-        useAddToast(ERROR_MESSAGES.INVALID_URL);
-        return;
-    }
+    )
+        return useAddToast(ERROR_MESSAGES.INVALID_URL);
 
     const id = url.pathname.split('/').slice(-1)[0];
 
-    if (!Number.isInteger(Number(id))) {
-        useAddToast(ERROR_MESSAGES.INVALID_URL);
-        return;
-    }
+    if (!Number.isInteger(Number(id)))
+        return useAddToast(ERROR_MESSAGES.INVALID_URL);
 
     addItem(Number(id));
 };
 
 const removeItem = (id: number) => {
-    items.value.items = items.value.items.filter((item) => item.id !== id);
+    items.value = items.value.filter((item) => item.id !== id);
 };
 
 onMounted(async () => {
@@ -221,7 +204,7 @@ onMounted(async () => {
             </div>
         </div>
 
-        <UiCategory title="ベースアバター" icon="lucide:person-standing">
+        <!-- <UiCategory title="ベースアバター" icon="lucide:person-standing">
             <div
                 v-if="!items.avatar"
                 class="w-full p-5 flex flex-col gap-5 rounded-lg bg-white dark:bg-neutral-700"
@@ -276,7 +259,7 @@ onMounted(async () => {
                 :updated-at="items.avatar.updated_at"
                 @remove="items.avatar = null"
             />
-        </UiCategory>
+        </UiCategory> -->
 
         <div
             v-if="!Object.keys(categorizedItems).length"
@@ -305,6 +288,7 @@ onMounted(async () => {
                     v-model:unsupported="item.unsupported"
                     :id="item.id"
                     :key="'item-' + item.id"
+                    :size="item.category === 208 ? 'lg' : 'md'"
                     :name="item.name"
                     :thumbnail="item.thumbnail"
                     :price="item.price"
@@ -326,11 +310,11 @@ onMounted(async () => {
         @close="modalSearchItem = false"
     />
 
-    <ModalReplaceAvatar
+    <!-- <ModalReplaceAvatar
         v-model="modalReplaceAvatar"
         :from="items.avatar"
         :to="replaceAvatar"
         @accept="((inputUrl = ''), (items.avatar = replaceAvatar))"
         @close="modalReplaceAvatar = false"
-    />
+    /> -->
 </template>

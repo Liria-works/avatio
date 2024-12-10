@@ -3,8 +3,6 @@ export const usePublishSetup = async (
         name: string;
         description: string;
         tags: string[];
-        avatar: number;
-        avatar_note: string;
         items: { id: number; note: string; unsupported: boolean }[];
     },
     file?: File | null
@@ -15,7 +13,6 @@ export const usePublishSetup = async (
 
     if (file) {
         image = await usePostImage(file);
-        // image = await uploadImage();
 
         if (!image) {
             useAddToast(
@@ -26,100 +23,40 @@ export const usePublishSetup = async (
         }
     }
 
-    const responseSetup = await client
+    const { data: setupData, error: setupError } = await client
         .from('setups')
         .insert({
             name: setup.name,
             description: setup.description,
-            avatar: setup.avatar,
-            avatar_note: setup.avatar_note,
             image: image,
-        } as never)
+        })
         .select('id')
         .single();
+    if (setupError) throw setupError;
 
-    if (responseSetup.error) throw responseSetup.error;
+    const { error: itemsError } = await client.from('setup_items').insert(
+        setup.items.map((i) => {
+            return {
+                setup_id: setupData.id,
+                item_id: i.id,
+                note: i.note,
+                unsupported: i.unsupported,
+            };
+        })
+    );
+    if (itemsError) throw itemsError;
 
-    for (const item of setup.items) {
-        const { error } = await client
-            .from('setup_items')
-            .insert({
-                setup_id: responseSetup.data.id,
-                item_id: item.id,
-                note: item.note,
-                unsupported: item.unsupported,
-            } as never)
-            .maybeSingle();
+    const { error: tagsError } = await client.from('setup_tags').insert(
+        setup.tags.map((i) => {
+            return {
+                setup_id: setupData.id,
+                tag: i,
+            };
+        })
+    );
+    if (tagsError) throw tagsError;
 
-        if (error) throw error;
-    }
-
-    for (const tag of setup.tags) {
-        const { error } = await client
-            .from('setup_tags')
-            .insert({
-                setup_id: responseSetup.data.id,
-                tag: tag,
-            } as never)
-            .maybeSingle();
-
-        if (error) throw error;
-    }
-
-    return responseSetup.data.id;
-};
-
-export const useUpdateSetup = async (
-    id: number,
-    setup: {
-        name: string;
-        description: string;
-        tags: string[];
-        avatar: number | null;
-        avatar_note: string;
-    },
-    items: {
-        avatar: number | null;
-        avatar_note: string;
-        items: {
-            id: number;
-            category: number;
-            note: string;
-            unsupported: boolean;
-        }[];
-    }
-) => {
-    const client = await useSBClient();
-
-    try {
-        const { error: deleteError } = await client
-            .from('setup_items')
-            .delete()
-            .eq('setup_id', Number(id));
-        if (deleteError) throw deleteError;
-
-        const { error: insertError } = await client.from('setup_items').insert(
-            items.items.map((item) => ({
-                setup_id: Number(id),
-                item_id: item.id,
-                note: useLineBreak(item.note),
-                unsupported: item.unsupported,
-            })) as never
-        );
-        if (insertError) throw insertError;
-
-        const { error: updateError } = await client
-            .from('setups')
-            .update(setup as never)
-            .eq('id', Number(id));
-
-        if (updateError) throw updateError;
-
-        return;
-    } catch (error) {
-        console.error(error);
-        throw new Error('Faild to update setup');
-    }
+    return setupData.id;
 };
 
 export const useDeleteSetup = async (id: number, image: string | null) => {
@@ -195,16 +132,32 @@ export const useCheckBookmark = async (id: number) => {
     return Boolean(data.length);
 };
 
-export const useListBookmarks = async (): Promise<{ post: Setup }[]> => {
+export const useBookmarks = async (): Promise<Setup[]> => {
     const client = await useSBClient();
 
     const { data, error } = await client
         .from('bookmarks')
         .select(
-            'post(id, created_at, updated_at, author(id, name, avatar), name, description, image, avatar(name, thumbnail, outdated))'
+            `
+            post(
+                id,
+                created_at,
+                author(id, name, avatar),
+                name,
+                description,
+                image,
+                items:setup_items(
+                    data:item_id(
+                        id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
+                    ),
+                    note,
+                    unsupported
+                )
+            )
+            `
         )
         .order('created_at', { ascending: false });
     if (error) throw error;
 
-    return data as never as { post: Setup }[];
+    return data.map((i) => i.post as unknown as Setup);
 };

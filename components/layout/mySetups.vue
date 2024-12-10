@@ -8,14 +8,32 @@ if (user.value) {
     const { data: mySetupsData } = await client
         .from('setups')
         .select(
-            'id, created_at, updated_at, author(id, name, avatar), name, image, avatar(name, thumbnail, outdated)'
+            `
+            id,
+            created_at,
+            name,
+            author(id, name, avatar),
+            image,
+            items:setup_items(
+                data:item_id(
+                    id, outdated, category, name, thumbnail, nsfw
+                )
+            )
+            `
         )
+        .eq('setup_items.item_id.category', '208')
         .eq('author', user.value.id)
         .order('updated_at', { ascending: false })
         .range(0, 20)
         .returns<SetupSimple[]>();
 
-    if (mySetupsData) mySetups.value = mySetupsData;
+    if (mySetupsData)
+        mySetups.value = mySetupsData.map((setup) => {
+            return {
+                ...setup,
+                avatars: setup.items.filter((i) => i.data).map((i) => i.data),
+            };
+        });
 }
 
 const handleWheel: EventListener = (event) => {
@@ -65,9 +83,9 @@ onUnmounted(() => {
                     no-user
                     :id="i.id"
                     :name="i.name"
-                    :avatar-name="i.avatar.name"
-                    :avatar-thumbnail="i.avatar.thumbnail"
-                    :avatar-outdated="i.avatar.outdated"
+                    :avatar-name="i.avatars[0].name"
+                    :avatar-thumbnail="i.avatars[0].thumbnail"
+                    :avatar-outdated="i.avatars[0].outdated"
                     :author-id="i.author.id"
                     :author-name="i.author.name"
                     :author-avatar="i.author.avatar"

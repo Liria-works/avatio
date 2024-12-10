@@ -5,8 +5,8 @@ const props = withDefaults(
         thumbnail: string;
     }>(),
     {
-        label: "アイテム",
-        thumbnail: "",
+        label: 'アイテム',
+        thumbnail: '',
     }
 );
 </script>
@@ -18,7 +18,8 @@ const props = withDefaults(
                 v-if="props.thumbnail.length"
                 :src="props.thumbnail"
                 :alt="props.label"
-                class="size-10 p-0.5 rounded-lg"
+                loading="lazy"
+                class="size-10 p-0.5 rounded-lg object-cover"
             />
         </template>
         <template #main>
