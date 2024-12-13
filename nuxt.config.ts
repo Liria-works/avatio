@@ -1,3 +1,9 @@
+import { createClient } from '@supabase/supabase-js';
+const supabase = createClient(
+    import.meta.env.SUPABASE_URL,
+    import.meta.env.SUPABASE_ANON_KEY
+);
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     app: {
@@ -79,6 +85,7 @@ export default defineNuxtConfig({
         '@nuxt/scripts',
         '@nuxtjs/turnstile',
         '@nuxtjs/robots',
+        '@nuxtjs/sitemap',
     ],
     compatibilityDate: '2024-08-21',
 
@@ -158,6 +165,91 @@ export default defineNuxtConfig({
         allow: ['Twitterbot', 'facebookexternalhit'],
         blockNonSeoBots: true,
         blockAiBots: true,
+    },
+
+    sitemap: {
+        sitemaps: true,
+        exclude: [
+            '/confirm',
+            '/login',
+            '/search',
+            '/setup/edit',
+            '/user',
+            '/user/setting',
+            '/user/bookmark',
+        ],
+        urls: async () => {
+            const permament = [
+                {
+                    loc: '/',
+                    images: [
+                        {
+                            loc: '/ogp.png',
+                            changefreq: 'never',
+                            title: 'Avatio',
+                        },
+                    ],
+                },
+                {
+                    loc: '/faq',
+                    images: [
+                        { loc: '/ogp.png', changefreq: 'never', title: 'FAQ' },
+                    ],
+                },
+                {
+                    loc: '/terms',
+                    images: [
+                        {
+                            loc: '/ogp.png',
+                            changefreq: 'never',
+                            title: '利用規約',
+                        },
+                    ],
+                },
+                {
+                    loc: '/privacy-policy',
+                    images: [
+                        {
+                            loc: '/ogp.png',
+                            changefreq: 'never',
+                            title: 'プライバシーポリシー',
+                        },
+                    ],
+                },
+            ];
+
+            const { data: setupsData, error: setupsError } = await supabase
+                .from('setups')
+                .select('id, created_at, name, image')
+                .order('created_at', { ascending: true });
+
+            const setups = setupsError
+                ? []
+                : setupsData.map((setup) => {
+                      const image = setup.image;
+
+                      return {
+                          loc: `/setup/${setup.id}`,
+                          lastmod: setup.created_at,
+                          images: image
+                              ? [{ loc: image, title: setup.name }]
+                              : [],
+                          changefreq: 'never',
+                      };
+                  });
+
+            const { data: usersData, error: usersError } = await supabase
+                .from('users')
+                .select('id');
+
+            const users = usersError
+                ? []
+                : usersData.map((user) => {
+                      return { loc: `/user/${user.id}` };
+                  });
+
+            return [...permament, ...setups, ...users];
+        },
     },
 
     runtimeConfig: {
