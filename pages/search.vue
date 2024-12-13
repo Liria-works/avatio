@@ -3,6 +3,7 @@ const route = useRoute();
 const client = await useSBClient();
 const query = ref(route.query);
 
+const searched = ref(false);
 const searchWord = ref<string>((route.query.q as string) ?? '');
 const resultSetups = ref<Setup[]>([]);
 const resultItem = ref<Item | null>(null);
@@ -10,6 +11,27 @@ const resultItem = ref<Item | null>(null);
 const popularAvatars = ref<{ id: number; name: string; thumbnail: string }[]>(
     []
 );
+
+const search = async ({
+    word,
+    items,
+    tags,
+    page,
+}: {
+    word: string;
+    items: number[];
+    tags: string[];
+    page: number;
+}) => {
+    const { data } = await client.rpc('search_setups', {
+        word: word,
+        items: items,
+        tags: tags,
+    });
+    // .range(0, 3);
+    if (data) resultSetups.value = [...resultSetups.value, ...data];
+    searched.value = true;
+};
 
 onMounted(async () => {
     const { data } = await client.rpc('popular_avatars').limit(24);
@@ -23,39 +45,22 @@ watch(
         query.value = newQuery;
         resultSetups.value = [];
         resultItem.value = null;
+        searched.value = false;
 
         const tag: string | string[] = newQuery.tag as string | string[];
         const item = newQuery.item as string;
-        const word = newQuery.q as string;
+        const word = newQuery.q ? (newQuery.q as string) : '';
 
         if (!tag && !item && !word) return (searchWord.value = '');
 
-        if (tag && tag.length) {
-            const { data } = await client
-                .from('setups')
-                .select(
-                    'id, created_at, name, description, image, avatar(id, name, thumbnail), author(id, name, avatar), items:setup_items!inner(item_id), tags:setup_tags!inner(tag)'
-                )
-                .in('setup_tags.tag', Array.isArray(tag) ? tag : [tag])
-                .order('created_at', { ascending: false })
-                .returns<Setup[]>();
+        if (item) resultItem.value = await useFetchBooth(parseInt(item));
 
-            return (resultSetups.value = data ? data : []);
-        }
-
-        if (item) {
-            resultItem.value = await useFetchBooth(parseInt(item));
-
-            const { data } = await client.rpc('search_setups_item', {
-                query: [parseInt(item)],
-            });
-
-            return console.log(data);
-        }
-
-        if (word) {
-            // search = search.ilike('name', `%${word}%`);
-        }
+        return search({
+            word: word,
+            items: item ? [parseInt(item)] : [],
+            tags: tag ? (Array.isArray(tag) ? tag : [tag]) : [],
+            page: 0,
+        });
     },
     { immediate: true }
 );
@@ -92,10 +97,7 @@ watch(
                 :id="resultItem.id"
                 :name="resultItem.name"
                 :thumbnail="resultItem.thumbnail"
-                :shop="resultItem.shop.name"
-                :shop-id="resultItem.shop.id"
-                :shop-thumbnail="resultItem.shop.thumbnail"
-                :shop-verified="resultItem.shop.verified"
+                :shop="resultItem.shop"
                 :price="resultItem.price"
                 :nsfw="resultItem.nsfw"
                 :outdated="false"
@@ -104,16 +106,16 @@ watch(
 
             <UiDivider class="mx-3 my-5" />
 
-            <div class="flex flex-col gap-6">
+            <div
+                v-if="!Object.keys(query).length && popularAvatars.length"
+                class="flex flex-col gap-6"
+            >
                 <UiTitle
                     label="人気のアバターから検索"
                     icon="lucide:user-round"
                     size="lg"
                 />
-                <div
-                    v-if="!Object.keys(query).length && popularAvatars.length"
-                    class="flex flex-wrap gap-5 items-center justify-center"
-                >
+                <div class="flex flex-wrap gap-5 items-center justify-center">
                     <NuxtLink
                         v-for="i in popularAvatars"
                         :key="useId()"
@@ -133,25 +135,30 @@ watch(
                 </div>
             </div>
 
-            <div class="flex flex-col lg:grid lg:grid-cols-1 gap-5">
-                <NuxtLink
-                    v-for="i in resultSetups"
-                    :to="{ name: 'setup-id', params: { id: i.id } }"
+            <div v-if="searched">
+                <div
+                    v-if="resultSetups.length"
+                    class="flex flex-col lg:grid lg:grid-cols-1 gap-5"
                 >
-                    <ItemSetupDetail
-                        :id="i.id"
-                        :name="i.name"
-                        :description="i.description"
-                        :avatar-name="i.avatar.name"
-                        :avatar-thumbnail="i.avatar.thumbnail"
-                        :avatar-outdated="i.avatar.outdated"
-                        :author-id="i.author.id"
-                        :author-name="i.author.name"
-                        :author-avatar="i.author.avatar"
-                        :created-at="i.created_at"
-                        :image="i.image"
-                    />
-                </NuxtLink>
+                    <NuxtLink
+                        v-for="i in resultSetups"
+                        :to="{ name: 'setup-id', params: { id: i.id } }"
+                    >
+                        <ItemSetupDetail
+                            :id="i.id"
+                            :created-at="i.created_at"
+                            :name="i.name"
+                            :description="i.description"
+                            :image="i.image"
+                            :author="i.author"
+                            :items="i.items.map((i) => i.data)"
+                        />
+                    </NuxtLink>
+                </div>
+
+                <div v-else>
+                    <p>セットアップが見つかりませんでした</p>
+                </div>
             </div>
         </div>
     </div>
