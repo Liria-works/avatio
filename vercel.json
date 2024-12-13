@@ -1,3 +1,10 @@
 {
-    "framework": "nuxtjs"
+    "framework": "nuxtjs",
+    "redirects": [
+        {
+            "source": "/admin",
+            "destination": "https://admin.liria.work",
+            "permanent": true
+        }
+    ]
 }
