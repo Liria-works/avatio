@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full min-h-64 p-12 gap-4 flex flex-col justify-between rounded-xl outline outline-2 outline-neutral-300 dark:outline-neutral-600 ring-4 ring-inset ring-neutral-50 dark:ring-neutral-800 bg-neutral-200 dark:bg-neutral-700"
+        class="w-full min-h-64 p-12 gap-4 flex flex-col justify-between rounded-xl outline outline-2 outline-neutral-300 dark:outline-neutral-600 ring-4 ring-inset ring-neutral-50 dark:ring-neutral-800 bg-gradient-to-br from-neutral-50 to-zinc-300 dark:from-neutral-600 dark:to-zinc-700"
     >
         <div class="flex flex-col gap-4">
             <p
@@ -16,7 +16,7 @@
             to="/login"
             icon="lucide:sparkles"
             label="今すぐログイン"
-            class="hover:text-neutral-100 dark:hover:text-neutral-900 hover:bg-neutral-700 dark:hover:bg-neutral-400"
+            class="hover:text-neutral-100 dark:hover:text-neutral-900 dark:bg-neutral-300/20 hover:bg-neutral-700 dark:hover:bg-neutral-300"
         />
     </div>
 </template>

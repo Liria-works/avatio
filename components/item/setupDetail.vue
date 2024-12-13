@@ -8,9 +8,11 @@ const props = withDefaults(
         image: string | null;
         author: Author;
         items: Item[];
+        setupItems?: boolean;
     }>(),
     {
         image: null,
+        setupItems: false,
     }
 );
 
@@ -117,7 +119,7 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                 </div>
             </template>
 
-            <template #under v-if="nonAvatarItems.length">
+            <template #under v-if="props.setupItems && nonAvatarItems.length">
                 <div class="max-w-44 p-2 pt-0 gap-2 flex">
                     <ItemTiny
                         v-for="i in nonAvatarItems"
