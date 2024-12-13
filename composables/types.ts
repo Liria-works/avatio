@@ -20,6 +20,13 @@ export interface User extends Author {
     setups: Setup[];
 }
 
+export interface Shop {
+    id: string;
+    name: string;
+    thumbnail: string;
+    verified: boolean;
+}
+
 export interface Item {
     id: number;
     updated_at: string;
@@ -27,7 +34,7 @@ export interface Item {
     name: string;
     thumbnail: string;
     price: string | null;
-    shop: { id: string; name: string; thumbnail: string; verified: boolean };
+    shop: Shop;
     nsfw: boolean;
     outdated: boolean;
 }

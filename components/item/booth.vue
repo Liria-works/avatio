@@ -8,10 +8,7 @@ const props = withDefaults(
         id: number;
         name: string;
         thumbnail: string;
-        shop: string;
-        shopId: string;
-        shopThumbnail: string;
-        shopVerified: boolean;
+        shop: Shop;
         price: string | null;
         nsfw: boolean;
         outdated: boolean;
@@ -33,20 +30,19 @@ const booth_url = 'https://booth.pm/ja/items/';
 const item = ref<{
     name: string;
     thumbnail: string;
-    shop: string;
-    shopId: string;
-    shopThumbnail: string;
-    shopVerified: boolean;
+    shop: Shop;
     price: string | null;
     nsfw: boolean;
     outdated: boolean;
 }>({
     name: props.name,
     thumbnail: props.thumbnail,
-    shop: props.shop,
-    shopId: props.shopId,
-    shopThumbnail: props.shopThumbnail,
-    shopVerified: props.shopVerified,
+    shop: {
+        name: props.shop.name,
+        id: props.shop.id,
+        thumbnail: props.shop.thumbnail,
+        verified: props.shop.verified,
+    },
     price: props.price,
     nsfw: props.nsfw,
     outdated: props.outdated,
@@ -67,10 +63,12 @@ onMounted(async () => {
                 name: response.data.name,
                 thumbnail: response.data.thumbnail,
                 price: response.data.price,
-                shop: response.data.shop.name,
-                shopId: response.data.shop.id,
-                shopThumbnail: response.data.shop.thumbnail,
-                shopVerified: response.data.shop.verified,
+                shop: {
+                    name: response.data.shop.name,
+                    id: response.data.shop.id,
+                    thumbnail: response.data.shop.thumbnail,
+                    verified: response.data.shop.verified,
+                },
                 nsfw: response.data.nsfw,
                 outdated: response.data.outdated,
             };
@@ -161,22 +159,22 @@ onMounted(async () => {
                         </NuxtLink>
 
                         <NuxtLink
-                            :to="`https://${item.shopId}.booth.pm/`"
+                            :to="`https://${item.shop.id}.booth.pm/`"
                             target="_blank"
                             class="flex items-center gap-1.5 w-fit"
                         >
                             <NuxtImg
-                                :src="item.shopThumbnail"
-                                :alt="item.shop"
+                                :src="item.shop.thumbnail"
+                                :alt="item.shop.name"
                                 class="size-5 rounded-md border border-1 border-neutral-300"
                             />
                             <span
                                 class="font-semibold line-clamp-1 break-all text-neutral-700 dark:text-neutral-300 text-xs"
                             >
-                                {{ item.shop }}
+                                {{ item.shop.name }}
                             </span>
                             <Icon
-                                v-if="item.shopVerified"
+                                v-if="item.shop.verified"
                                 name="lucide:check"
                                 :size="16"
                                 class="flex-shrink-0 size-3 text-neutral-700 dark:text-neutral-300"
