@@ -6,6 +6,12 @@ const { data: articles } = await client
     .select('*')
     .eq('category', 'release')
     .order('created_at', { ascending: false });
+
+onMounted(() => {
+    useOGP({
+        title: 'お知らせ',
+    });
+});
 </script>
 
 <template>

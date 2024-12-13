@@ -15,7 +15,7 @@ const main = await marked.parse(props.content, { breaks: true });
 </script>
 
 <template>
-    <article v-if="!error" class="my-3 flex flex-col gap-10">
+    <article v-if="!error" class="w-full my-3 flex flex-col gap-10">
         <div class="markdown flex flex-col gap-4">
             <h1 class="text-4xl font-[900]">
                 {{ props.title }}

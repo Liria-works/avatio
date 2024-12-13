@@ -86,17 +86,14 @@ onMounted(async () => {
                 unsupported: item.unsupported,
             });
         }
-    console.log(setup.value);
-    console.log(items.value);
 
     bookmark.value = await useCheckBookmark(id);
 
-    useSeoSetup({
-        url: useBrowserLocation().value.href!,
+    useOGP({
         title: setup.value.name,
         description: setup.value.description,
-        image: setup.value.image ?? '/ogp.png',
-        userAvatar: setup.value.author.avatar,
+        image: setup.value.image ? useGetImage(setup.value.image) : '/ogp.png',
+        twitterCard: setup.value.image ? 'summary_large_image' : 'summary',
     });
 });
 </script>

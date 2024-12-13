@@ -66,7 +66,9 @@ onBeforeRouteLeave(
 );
 
 onMounted(async () => {
-    useSeoEdit();
+    useOGP({
+        title: 'セットアップ作成',
+    });
 });
 </script>
 

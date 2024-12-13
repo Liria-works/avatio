@@ -72,6 +72,14 @@ onMounted(async () => {
         return { [replace(i)]: '' };
     });
 
+    useOGP({
+        title: userData.value.name,
+        description: userData.value.bio,
+        image: userData.value.avatar
+            ? useGetImage(userData.value.avatar)
+            : null,
+    });
+
     loading.value = false;
 });
 </script>

@@ -109,6 +109,12 @@ else {
     bio.value = data.bio;
     links.value = data.links;
 }
+
+onMounted(() => {
+    useOGP({
+        title: 'ユーザー設定',
+    });
+});
 </script>
 
 <template>

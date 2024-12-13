@@ -7,6 +7,12 @@ const { data } = await client
     .select('*')
     .eq('slug', route.params.slug.toString())
     .maybeSingle();
+
+onMounted(() => {
+    useOGP({
+        title: data.title,
+    });
+});
 </script>
 
 <template>

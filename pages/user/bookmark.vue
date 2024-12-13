@@ -3,6 +3,10 @@ const bookmarks = ref<Setup[]>([]);
 
 onMounted(async () => {
     bookmarks.value = await useBookmarks();
+
+    useOGP({
+        title: 'ブックマーク',
+    });
 });
 </script>
 

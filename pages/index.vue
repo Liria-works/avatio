@@ -1,6 +1,4 @@
 <script setup lang="ts">
-useSeoHome();
-
 const user = useSupabaseUser();
 const client = await useSBClient();
 
@@ -56,6 +54,15 @@ const paginate = async () => {
 
 onMounted(async () => {
     paginate();
+
+    useOGP({
+        url: 'https://avatio.me',
+        type: 'website',
+        title: 'Avatio',
+        titleTemplate: '%s',
+        description: 'アバターセットアップ共有サービス',
+        twitterCard: 'summary_large_image',
+    });
 });
 </script>
 
