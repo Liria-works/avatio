@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 const props = withDefaults(
     defineProps<{
-        id: string;
-        name: string;
-        avatar?: string;
-        size?: "md" | "sm";
+        user: Author;
+        size?: 'md' | 'sm';
     }>(),
     {
-        avatar: "",
-        size: "md",
+        size: 'md',
     }
 );
 </script>
@@ -16,13 +13,13 @@ const props = withDefaults(
 <template>
     <div v-if="size === 'md'" class="flex items-center justify-between">
         <NuxtLink
-            :to="{ name: 'user-id', params: { id: props.id } }"
+            :to="{ name: 'user-id', params: { id: props.user.id } }"
             class="flex flex-row gap-3 items-center"
         >
             <UAvatar
-                v-if="props.avatar && props.avatar.length"
-                :src="useGetImage(props.avatar)"
-                :alt="props.name"
+                v-if="props.user.avatar && props.user.avatar.length"
+                :src="useGetImage(props.user.avatar)"
+                :alt="props.user.name"
             />
             <div
                 v-else
@@ -35,21 +32,21 @@ const props = withDefaults(
                 />
             </div>
             <p class="text-black dark:text-white pb-0.5 text-left font-normal">
-                {{ props.name }}
+                {{ props.user.name }}
             </p>
         </NuxtLink>
     </div>
 
-    <UiTooltip v-else-if="size === 'sm'" :text="props.name">
+    <UiTooltip v-else-if="size === 'sm'" :text="props.user.name">
         <NuxtLink
-            :to="{ name: 'user-id', params: { id: props.id } }"
+            :to="{ name: 'user-id', params: { id: props.user.id } }"
             class="flex flex-row gap-2 items-center"
         >
             <UAvatar
-                v-if="props.avatar && props.avatar.length"
+                v-if="props.user.avatar && props.user.avatar.length"
                 size="xs"
-                :src="useGetImage(props.avatar)"
-                :alt="props.name"
+                :src="useGetImage(props.user.avatar)"
+                :alt="props.user.name"
             />
             <div
                 v-else

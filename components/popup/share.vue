@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 const props = defineProps<{
-    currentUrl: string;
     setupName: string;
     setupDescription: string;
     setupAuthor: string;
@@ -8,7 +7,7 @@ const props = defineProps<{
 
 const { share, isSupported } = useShare();
 
-const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupName + ' | ' + props.setupAuthor)}&url=${props.currentUrl}&hashtags=avatio`;
+const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupName + ' | ' + props.setupAuthor)}&url=${useBrowserLocation().value.href!}&hashtags=avatio`;
 </script>
 
 <template>
@@ -38,7 +37,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                     label="URLをコピー"
                     class="w-full outline-0"
                     @click="
-                        useWriteClipboard(props.currentUrl);
+                        useWriteClipboard(useBrowserLocation().value.href!);
                         close();
                     "
                 />
@@ -52,7 +51,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                         share({
                             title: props.setupName,
                             text: props.setupDescription,
-                            url: currentUrl,
+                            url: useBrowserLocation().value.href!,
                         })
                     "
                 />
