@@ -83,7 +83,10 @@ onMounted(async () => {
     <ItemBase v-if="loading">
         <template #main>
             <div
-                :class="`flex items-center px-6 ${props.size === 'lg' ? 'h-32' : 'h-20'}`"
+                :class="[
+                    'flex items-center px-6',
+                    props.size === 'lg' ? 'h-20 sm:h-32' : 'h-20',
+                ]"
             >
                 <Icon name="svg-spinners:ring-resize" size="24" />
             </div>
@@ -93,12 +96,15 @@ onMounted(async () => {
     <ItemBase v-else-if="!item.outdated">
         <template #thumbnail>
             <div
-                :class="`flex-shrink-0 ${props.size === 'lg' ? 'p-2 pr-4' : 'p-1.5 pr-4'}`"
+                :class="[
+                    'flex-shrink-0 pr-4',
+                    props.size === 'lg' ? 'p-1.5 sm:p-2' : 'p-1.5',
+                ]"
             >
                 <div
                     :class="[
                         'rounded-lg object-cover select-none overflow-hidden',
-                        props.size === 'lg' ? 'size-32' : 'size-20',
+                        props.size === 'lg' ? 'size-20 sm:size-32' : 'size-20',
                     ]"
                 >
                     <NuxtLink
@@ -125,7 +131,10 @@ onMounted(async () => {
         <template #main>
             <div class="w-full flex gap-5 pr-4 justify-between items-center">
                 <div
-                    :class="`w-fit flex flex-col gap-3 items-start justify-center ${props.size === 'lg' ? 'h-32' : 'h-20'}`"
+                    :class="[
+                        'w-fit flex flex-col gap-3 items-start justify-center',
+                        props.size === 'lg' ? 'h-20 sm:h-32' : 'h-20',
+                    ]"
                 >
                     <div class="w-fit flex items-center gap-2">
                         <NuxtLink
@@ -134,7 +143,12 @@ onMounted(async () => {
                             class="w-fit gap-2"
                         >
                             <p
-                                :class="`w-fit font-medium break-keep text-black dark:text-white ${props.size === 'lg' ? 'line-clamp-2' : 'line-clamp-1'}`"
+                                :class="[
+                                    'w-fit font-medium text-sm sm:text-base break-keep text-black dark:text-white',
+                                    props.size === 'lg'
+                                        ? 'line-clamp-2'
+                                        : 'line-clamp-2 sm:line-clamp-1',
+                                ]"
                             >
                                 {{ useSentence(item.name) }}
                             </p>
@@ -153,7 +167,7 @@ onMounted(async () => {
                         <NuxtLink
                             :to="booth_url + props.id"
                             target="_blank"
-                            class="text-sm font-semibold text-neutral-700 dark:text-neutral-300"
+                            class="text-sm font-semibold leading-none whitespace-nowrap text-neutral-700 dark:text-neutral-300"
                         >
                             {{ item.price ? item.price : '価格不明' }}
                         </NuxtLink>
@@ -166,10 +180,10 @@ onMounted(async () => {
                             <NuxtImg
                                 :src="item.shop.thumbnail"
                                 :alt="item.shop.name"
-                                class="size-5 rounded-md border border-1 border-neutral-300"
+                                class="size-5 rounded-md border border-neutral-300"
                             />
                             <span
-                                class="font-semibold line-clamp-1 break-all text-neutral-700 dark:text-neutral-300 text-xs"
+                                class="font-semibold text-xs line-clamp-1 break-all leading-none whitespace-nowrap text-neutral-700 dark:text-neutral-300"
                             >
                                 {{ item.shop.name }}
                             </span>
@@ -188,7 +202,7 @@ onMounted(async () => {
                         text="ベースアバターに非対応"
                     >
                         <Icon
-                            name="heroicons:paint-brush-20-solid"
+                            name="lucide:user-x"
                             :size="18"
                             class="text-neutral-600 dark:text-neutral-200"
                         />

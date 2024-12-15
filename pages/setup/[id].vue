@@ -19,7 +19,7 @@ const items = ref<CategorizedSetupItems>({
     accessory: { label: 'アクセサリー', icon: 'lucide:star', items: [] },
     other: { label: 'その他', icon: 'lucide:package', items: [] },
 });
-const bookmark = ref(false);
+const bookmark = ref(await useCheckBookmark(id));
 
 const toggleBookmark = async () => {
     if (!user.value) return (modalLogin.value = true);
@@ -33,8 +33,8 @@ const toggleBookmark = async () => {
 };
 
 onMounted(async () => {
-    if (!route.params.id)
-        showError({
+    if (!id)
+        return showError({
             statusCode: 404,
             message: 'IDが無効です',
         });
@@ -87,8 +87,6 @@ onMounted(async () => {
             });
         }
 
-    bookmark.value = await useCheckBookmark(id);
-
     useOGP({
         title: setup.value.name,
         description: setup.value.description,
@@ -112,27 +110,16 @@ onMounted(async () => {
                 </h1>
 
                 <div class="w-full gap-3 flex flex-wrap items-center">
-                    <div class="grow flex items-center gap-5">
-                        <UiUser
-                            :id="setup.author.id"
-                            :name="setup.author.name"
-                            :avatar="setup.author.avatar"
-                        />
+                    <div
+                        class="grow flex flex-wrap items-center gap-x-5 gap-y-2"
+                    >
+                        <UiUser :user="setup.author" />
 
                         <div class="flex items-center gap-2">
                             <p
                                 class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-nowrap leading-none"
                             >
-                                {{
-                                    new Date(setup.created_at).toLocaleString(
-                                        'ja-JP',
-                                        {
-                                            year: 'numeric',
-                                            month: '2-digit',
-                                            day: '2-digit',
-                                        }
-                                    )
-                                }}
+                                {{ useLocaledDate(new Date(setup.created_at)) }}
                                 に公開
                             </p>
                         </div>
@@ -172,7 +159,6 @@ onMounted(async () => {
                         />
 
                         <PopupShare
-                            :current-url="useBrowserLocation().value.href!"
                             :setup-name="setup.name"
                             :setup-description="
                                 setup.description ? setup.description : ''
@@ -189,6 +175,37 @@ onMounted(async () => {
                 :alt="setup.name"
                 class="rounded-xl max-h-[70vh] content-stretch"
             />
+
+            <div class="self-stretch flex xl:hidden flex-col gap-3">
+                <div
+                    v-if="setup.description"
+                    class="self-stretch rounded-lg flex flex-col gap-1.5 px-3 py-2 border border-neutral-300 dark:border-neutral-600"
+                >
+                    <p class="text-neutral-500 text-sm mt-1 leading-none">
+                        説明
+                    </p>
+                    <p
+                        class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100"
+                    >
+                        {{ useSentence(setup.description) }}
+                    </p>
+                </div>
+
+                <div
+                    v-if="setup.tags && setup.tags.length"
+                    class="items-center gap-1.5 flex flex-row flex-wrap"
+                >
+                    <button
+                        v-for="tag in setup.tags"
+                        :key="useId()"
+                        type="button"
+                        class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
+                        @click="navigateTo(`/search?tag=${tag.tag}`)"
+                    >
+                        {{ tag.tag }}
+                    </button>
+                </div>
+            </div>
 
             <div class="w-full flex flex-col gap-3">
                 <div
@@ -220,42 +237,32 @@ onMounted(async () => {
             </div>
         </div>
 
-        <div class="w-full xl:w-96 xl:pt-12 flex flex-col items-start gap-6">
+        <div class="w-full xl:w-96 xl:pt-12 flex flex-col gap-6">
             <div
                 v-if="setup.description"
-                class="w-full gap-2 flex flex-col justify-start items-start"
+                class="hidden xl:flex flex-col self-stretch rounded-lg gap-1.5 px-3 py-2 border border-neutral-300 dark:border-neutral-600"
             >
-                <Title label="説明" icon="lucide:text" />
-                <div
-                    class="w-full rounded-lg flex items-center px-3 py-2 border border-1 border-neutral-300 dark:border-neutral-600"
+                <p class="text-neutral-500 text-sm mt-1 leading-none">説明</p>
+                <p
+                    class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100"
                 >
-                    <p
-                        class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100"
-                    >
-                        {{
-                            setup.description
-                                ? useSentence(setup.description)
-                                : ''
-                        }}
-                    </p>
-                </div>
+                    {{ useSentence(setup.description) }}
+                </p>
             </div>
 
             <div
                 v-if="setup.tags && setup.tags.length"
-                class="gap-2.5 flex flex-col"
+                class="hidden xl:flex flex-wrap items-center gap-1.5"
             >
-                <Title label="タグ" icon="lucide:tags" />
-                <div class="items-center gap-1.5 flex flex-row flex-wrap">
-                    <button
-                        v-for="tag in setup.tags"
-                        :key="useId()"
-                        class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
-                        @click="navigateTo(`/search?tag=${tag.tag}`)"
-                    >
-                        {{ tag.tag }}
-                    </button>
-                </div>
+                <button
+                    v-for="tag in setup.tags"
+                    :key="useId()"
+                    type="button"
+                    class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
+                    @click="navigateTo(`/search?tag=${tag.tag}`)"
+                >
+                    {{ tag.tag }}
+                </button>
             </div>
 
             <UiButton

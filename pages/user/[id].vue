@@ -183,7 +183,7 @@ onMounted(async () => {
                 <div
                     class="w-full rounded-xl px-4 py-3 gap-1 flex flex-col border border-1 border-neutral-400 dark:border-neutral-600"
                 >
-                    <p class="text-neutral-500 text-sm mt-[-2px]">bio</p>
+                    <span class="text-neutral-500 text-sm mt-[-2px]">bio</span>
                     <p v-if="!userData.bio" class="text-neutral-400">
                         自己紹介が未設定
                     </p>

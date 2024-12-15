@@ -3,14 +3,14 @@ const modal_feedback = ref(false);
 </script>
 
 <template>
-    <footer class="flex flex-col gap-10">
+    <footer class="self-stretch flex flex-col gap-10">
         <UiDivider icon="avatio:liria" />
 
         <div
-            class="flex flex-wrap w-full gap-6 pb-10 items-center justify-center"
+            class="flex flex-wrap gap-x-6 gap-y-2 pb-10 items-center justify-center"
         >
             <div
-                class="flex-col sm:flex-row flex items-center justify-center gap-4 text-neutral-700 dark:text-white"
+                class="flex-wrap flex items-center justify-center gap-x-4 gap-y-2 text-neutral-700 dark:text-white"
             >
                 <div class="flex items-center gap-2">
                     <UiButton
@@ -46,7 +46,9 @@ const modal_feedback = ref(false);
                     />
                 </div>
             </div>
-            <div class="items-center justify-center gap-4 flex">
+            <div
+                class="items-center justify-center gap-x-4 gap-y-2 flex flex-wrap"
+            >
                 <UiButton
                     disabled
                     tooltip="準備中"
