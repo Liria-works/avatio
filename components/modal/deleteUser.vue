@@ -53,7 +53,7 @@ watch(vis, () => {
             <div class="gap-2 flex flex-col text-sm">
                 <p>アカウントに関連するデータは、直ちにすべて削除されます。</p>
                 <p>削除したアカウントおよびデータは復元できません。</p>
-                <p class="text-xs text-neutral-400">
+                <p class="text-xs text-zinc-400">
                     アカウント・データの復元に関するお問い合わせには、一切対応いたしません。
                 </p>
             </div>

@@ -120,7 +120,7 @@ watch(
                         v-for="i in popularAvatars"
                         :key="useId()"
                         :to="`/search?item=${i.id}`"
-                        class="w-32 p-4 gap-2 flex flex-col items-center rounded-lg border border-1 border-neutral-500 hover:bg-neutral-600"
+                        class="w-32 p-4 gap-2 flex flex-col items-center rounded-lg border border-1 border-zinc-500 hover:bg-zinc-200 hover:dark:bg-zinc-600"
                     >
                         <NuxtImg
                             :src="i.thumbnail"

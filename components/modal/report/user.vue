@@ -94,7 +94,7 @@ const Submit = async () => {
                 <Icon
                     name="lucide:flag"
                     size="20"
-                    class="text-neutral-600 dark:text-neutral-400"
+                    class="text-zinc-600 dark:text-zinc-400"
                 />
                 <span class="text-black dark:text-white font-medium">
                     ユーザーの報告
@@ -103,28 +103,26 @@ const Submit = async () => {
         </template>
 
         <div
-            class="w-full flex flex-col items-center gap-2 text-md font-normal text-neutral-300"
+            class="w-full flex flex-col items-center gap-2 text-md font-normal text-zinc-300"
         >
             <button
                 v-for="choice in choices"
                 :key="choice.value"
                 :class="{
-                    'w-full p-5 gap-4 flex items-center rounded-xl border border-1 border-neutral-500 dark:border-neutral-500':
+                    'w-full p-5 gap-4 flex items-center rounded-xl border border-1 border-zinc-500 dark:border-zinc-500':
                         !report[choice.value],
-                    'w-full p-5 gap-4 flex items-center rounded-xl border border-1 border-neutral-500 dark:border-neutral-500 bg-black/10 dark:bg-white/10':
+                    'w-full p-5 gap-4 flex items-center rounded-xl border border-1 border-zinc-500 dark:border-zinc-500 bg-black/10 dark:bg-white/10':
                         report[choice.value],
                 }"
                 @click="report[choice.value] = !report[choice.value]"
             >
                 <UCheckbox v-model="report[choice.value] as boolean" />
                 <div class="flex flex-col gap-1 items-start">
-                    <p
-                        class="font-medium text-neutral-600 dark:text-neutral-300"
-                    >
+                    <p class="font-medium text-zinc-600 dark:text-zinc-300">
                         {{ choice.label }}
                     </p>
                     <div
-                        class="text-neutral-600 dark:text-neutral-400 text-sm text-left"
+                        class="text-zinc-600 dark:text-zinc-400 text-sm text-left"
                     >
                         <p
                             v-for="line in choice.descreption.split('\n')"
@@ -136,7 +134,7 @@ const Submit = async () => {
                 </div>
             </button>
             <p
-                class="text-neutral-600 dark:text-neutral-300 font-medium w-full text-left mt-3"
+                class="text-zinc-600 dark:text-zinc-300 font-medium w-full text-left mt-3"
             >
                 報告の詳細や背景情報
             </p>

@@ -132,17 +132,17 @@ onMounted(() => {
                 >
                     <div
                         v-if="avatarLoading"
-                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500 relative"
+                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
                     >
                         <Icon
                             name="svg-spinners:ring-resize"
                             size="36"
-                            class="text-neutral-600 dark:text-neutral-300"
+                            class="text-zinc-600 dark:text-zinc-300"
                         />
                     </div>
                     <div
                         v-else-if="avatar && avatar.length"
-                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500 relative"
+                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
                     >
                         <UAvatar
                             :src="useGetImage(avatar)"
@@ -157,12 +157,12 @@ onMounted(() => {
                     </div>
                     <div
                         v-else
-                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500 relative"
+                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
                     >
                         <Icon
                             name="lucide:user-round"
                             size="36"
-                            class="text-neutral-600 dark:text-neutral-300"
+                            class="text-zinc-600 dark:text-zinc-300"
                         />
                         <button
                             type="button"
@@ -173,18 +173,18 @@ onMounted(() => {
                     <template #content>
                         <button
                             type="button"
-                            class="rounded-full p-2 flex bg-neutral-900"
+                            class="rounded-full p-2 flex bg-zinc-900"
                         >
                             <Icon
                                 name="lucide:pen-line"
                                 size="18"
-                                class="size-4 flex-shrink-0 text-neutral-200"
+                                class="size-4 flex-shrink-0 text-zinc-200"
                             />
                         </button>
                     </template>
                 </UChip>
                 <div class="flex flex-col gap-0.5 w-full">
-                    <h2 class="font-medium text-sm text-neutral-400">
+                    <h2 class="font-medium text-sm text-zinc-400">
                         ユーザー名
                     </h2>
                     <div class="gap-2 flex items-center w-full">
@@ -205,7 +205,7 @@ onMounted(() => {
                             <UiDivider
                                 :border-class="
                                     !bio || (bio && bio.length < 141)
-                                        ? 'border-neutral-300 dark:border-neutral-600'
+                                        ? 'border-zinc-300 dark:border-zinc-600'
                                         : 'border-red-400 dark:border-red-400'
                                 "
                             />
@@ -233,10 +233,10 @@ onMounted(() => {
 
         <div class="w-full flex flex-col gap-6 pl-2">
             <div
-                class="w-full flex flex-col rounded-xl px-4 py-3 gap-2 border border-1 border-neutral-400"
+                class="w-full flex flex-col rounded-xl px-4 py-3 gap-2 border border-1 border-zinc-400"
             >
                 <div class="w-full flex items-center justify-between">
-                    <h2 class="text-neutral-500 text-sm font-semibold">bio</h2>
+                    <h2 class="text-zinc-500 text-sm font-semibold">bio</h2>
                     <UButton
                         label="保存"
                         size="sm"
@@ -255,14 +255,14 @@ onMounted(() => {
                 <UiDivider
                     :border-class="
                         !bio || (bio && bio.length < 141)
-                            ? 'border-neutral-300 dark:border-neutral-600'
+                            ? 'border-zinc-300 dark:border-zinc-600'
                             : 'border-red-400 dark:border-red-400'
                     "
                 />
                 <span
                     :class="`w-full text-right text-sm pr-1 ${
                         !bio || (bio && bio.length < 141)
-                            ? 'text-neutral-500 dark:text-neutral-500'
+                            ? 'text-zinc-500 dark:text-zinc-500'
                             : 'text-red-500 dark:text-red-400'
                     }`"
                 >
@@ -274,7 +274,7 @@ onMounted(() => {
                 <div class="flex gap-4 items-center">
                     <UiTitle label="リンク" icon="lucide:link" is="h2" />
                     <p
-                        :class="`text-sm whitespace-nowrap text-neutral-700 dark:text-neutral-400 ${links.length === 8 ? 'text-red-400 dark:text-red-400' : ''}`"
+                        :class="`text-sm whitespace-nowrap text-zinc-700 dark:text-zinc-400 ${links.length === 8 ? 'text-red-400 dark:text-red-400' : ''}`"
                     >
                         {{ links.length }} / 8
                     </p>
@@ -282,7 +282,7 @@ onMounted(() => {
 
                 <div class="flex gap-1 items-center w-full mt-1">
                     <div
-                        class="w-full px-1 rounded-xl bg-neutral-300 dark:bg-neutral-900"
+                        class="w-full px-1 rounded-xl bg-zinc-300 dark:bg-zinc-900"
                     >
                         <UInput
                             v-model="linkInput"
@@ -338,9 +338,9 @@ onMounted(() => {
                     <div
                         v-for="i in links"
                         :key="'link-' + i"
-                        class="pl-5 pr-4 py-2 flex gap-3 items-center rounded-full bg-neutral-300 dark:bg-neutral-700"
+                        class="pl-5 pr-4 py-2 flex gap-3 items-center rounded-full bg-zinc-300 dark:bg-zinc-700"
                     >
-                        <p class="dark:text-neutral-300">{{ i }}</p>
+                        <p class="dark:text-zinc-300">{{ i }}</p>
                         <button
                             class="flex flex-shrink-0"
                             @click="RemoveLink(i)"
@@ -348,7 +348,7 @@ onMounted(() => {
                             <Icon
                                 name="lucide:x"
                                 size="20"
-                                class="text-neutral-500 dark:text-neutral-300 hover:text-red-500 hover:dark:text-red-400"
+                                class="text-zinc-500 dark:text-zinc-300 hover:text-red-500 hover:dark:text-red-400"
                             />
                         </button>
                     </div>
@@ -358,7 +358,7 @@ onMounted(() => {
 
         <div class="mt-6 flex flex-col gap-3">
             <div
-                class="gap-3 p-3 mt-6 rounded-lg flex flex-col border border-neutral-300 dark:border-neutral-400"
+                class="gap-3 p-3 mt-6 rounded-lg flex flex-col border border-zinc-300 dark:border-zinc-400"
             >
                 <UiTitle
                     label="アカウント操作"

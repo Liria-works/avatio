@@ -167,7 +167,7 @@ onMounted(async () => {
                         <NuxtLink
                             :to="booth_url + props.id"
                             target="_blank"
-                            class="text-sm font-semibold leading-none whitespace-nowrap text-neutral-700 dark:text-neutral-300"
+                            class="text-sm font-semibold leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
                         >
                             {{ item.price ? item.price : '価格不明' }}
                         </NuxtLink>
@@ -180,10 +180,10 @@ onMounted(async () => {
                             <NuxtImg
                                 :src="item.shop.thumbnail"
                                 :alt="item.shop.name"
-                                class="size-5 rounded-md border border-neutral-300"
+                                class="size-5 rounded-md border border-zinc-300"
                             />
                             <span
-                                class="font-semibold text-xs line-clamp-1 break-all leading-none whitespace-nowrap text-neutral-700 dark:text-neutral-300"
+                                class="font-semibold text-xs line-clamp-1 break-all leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
                             >
                                 {{ item.shop.name }}
                             </span>
@@ -191,7 +191,7 @@ onMounted(async () => {
                                 v-if="item.shop.verified"
                                 name="lucide:check"
                                 :size="16"
-                                class="flex-shrink-0 size-3 text-neutral-700 dark:text-neutral-300"
+                                class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
                             />
                         </NuxtLink>
                     </div>
@@ -204,7 +204,7 @@ onMounted(async () => {
                         <Icon
                             name="lucide:user-x"
                             :size="18"
-                            class="text-neutral-600 dark:text-neutral-200"
+                            class="text-zinc-600 dark:text-zinc-200"
                         />
                     </UiTooltip>
 
@@ -225,15 +225,15 @@ onMounted(async () => {
         <template #under>
             <div
                 v-if="props.note"
-                class="w-full m-2 mt-0 px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600"
+                class="w-full m-2 mt-0 px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-600"
             >
                 <Icon
                     name="lucide:pen-line"
                     :size="15"
-                    class="flex-shrink-0 mt-[0.2rem] text-neutral-400 dark:text-neutral-400"
+                    class="flex-shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
                 />
                 <p
-                    class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-neutral-800 dark:text-neutral-200"
+                    class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-zinc-800 dark:text-zinc-200"
                 >
                     {{ props.note }}
                 </p>
@@ -246,16 +246,16 @@ onMounted(async () => {
             <div class="h-20 flex items-center px-5 gap-4">
                 <Icon
                     name="lucide:file-question"
-                    class="size-5 text-neutral-700 dark:text-neutral-200"
+                    class="size-5 text-zinc-700 dark:text-zinc-200"
                 />
                 <div class="flex flex-col gap-3 pb-0.5">
                     <p
-                        class="text-sm font-semibold leading-none text-neutral-900 dark:text-neutral-100"
+                        class="text-sm font-semibold leading-none text-zinc-900 dark:text-zinc-100"
                     >
                         アイテムの取得に失敗
                     </p>
                     <p
-                        class="text-xs font-medium leading-none text-neutral-600 dark:text-neutral-300"
+                        class="text-xs font-medium leading-none text-zinc-600 dark:text-zinc-300"
                     >
                         アイテムが非公開になっているか、削除されている可能性があります
                     </p>

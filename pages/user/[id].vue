@@ -89,28 +89,20 @@ onMounted(async () => {
         <div class="w-full flex flex-col gap-3">
             <div class="w-full flex items-center justify-between">
                 <div class="flex gap-6 items-center">
-                    <UAvatar
-                        v-if="userData.avatar"
-                        :src="useGetImage(userData.avatar)"
-                        alt="Avatar"
-                        size="3xl"
+                    <UiAvatar
+                        :url="
+                            userData.avatar ? useGetImage(userData.avatar) : ''
+                        "
+                        :alt="userData.name"
+                        :icon-size="36"
+                        class="size-20"
                     />
-                    <div
-                        v-else
-                        class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500"
-                    >
-                        <Icon
-                            name="lucide:user-round"
-                            size="36"
-                            class="text-neutral-600 dark:text-neutral-300"
-                        />
-                    </div>
                     <div class="flex flex-col gap-1">
                         <div class="flex gap-3 items-center">
                             <p class="text-2xl font-bold">
                                 {{ userData.name }}
                             </p>
-                            <UserBadge
+                            <BadgeUser
                                 v-if="userData.badges"
                                 :developer="userData.badges.developer"
                                 :contributor="userData.badges.contributor"
@@ -119,7 +111,7 @@ onMounted(async () => {
                                 :shop-owner="userData.badges.shop_owner"
                             />
                         </div>
-                        <p class="text-sm text-neutral-500">
+                        <p class="text-sm text-zinc-500">
                             アカウント作成日 :
                             {{
                                 new Date(userData.created_at).toLocaleString(
@@ -165,13 +157,13 @@ onMounted(async () => {
                                 ? Object.keys(linksShort[index])[0]
                                 : ''
                         "
-                        class="min-h-[38px] p-2 rounded-lg flex items-center justify-center text-neutral-600 dark:text-neutral-300 border border-1 border-neutral-400 dark:border-neutral-600 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        class="min-h-[38px] p-2 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-300 border border-1 border-zinc-400 dark:border-zinc-600 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     >
                         <Icon
                             v-if="Object.values(linksShort[index])[0].length"
                             :name="Object.values(linksShort[index])[0]"
                             size="20"
-                            class="bg-neutral-600 dark:bg-neutral-300"
+                            class="bg-zinc-600 dark:bg-zinc-300"
                         />
 
                         <p v-else class="px-1 text-sm font-medium leading-none">
@@ -181,10 +173,10 @@ onMounted(async () => {
                 </div>
 
                 <div
-                    class="w-full rounded-xl px-4 py-3 gap-1 flex flex-col border border-1 border-neutral-400 dark:border-neutral-600"
+                    class="w-full rounded-xl px-4 py-3 gap-1 flex flex-col border border-1 border-zinc-400 dark:border-zinc-600"
                 >
-                    <span class="text-neutral-500 text-sm mt-[-2px]">bio</span>
-                    <p v-if="!userData.bio" class="text-neutral-400">
+                    <span class="text-zinc-500 text-sm mt-[-2px]">bio</span>
+                    <p v-if="!userData.bio" class="text-zinc-400">
                         自己紹介が未設定
                     </p>
                     <p
@@ -227,6 +219,6 @@ onMounted(async () => {
     </div>
 
     <div v-else-if="!userData" class="w-full flex flex-col items-center">
-        <p class="text-neutral-400 mt-5">ユーザーデータの取得に失敗しました</p>
+        <p class="text-zinc-400 mt-5">ユーザーデータの取得に失敗しました</p>
     </div>
 </template>

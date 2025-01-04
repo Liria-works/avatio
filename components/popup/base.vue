@@ -1,30 +1,25 @@
-<script lang="ts" setup>
-const props = withDefaults(
-    defineProps<{
-        mode?: 'hover' | 'click';
-    }>(),
-    {
-        mode: 'hover',
-    }
-);
-</script>
+<script lang="ts" setup></script>
 
 <template>
-    <UPopover
-        :mode="props.mode"
-        :ui="{
-            rounded: 'rounded-xl',
-            ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-        }"
-    >
-        <slot name="trigger" />
-
-        <template #panel="{ open, close }">
-            <div
-                class="p-3 gap-2 flex flex-col bg-neutral-300 dark:bg-neutral-900"
-            >
-                <slot name="panel" :open="open" :close="close" />
-            </div>
-        </template>
-    </UPopover>
+    <PopoverRoot>
+        <PopoverTrigger as-child>
+            <slot name="trigger" />
+        </PopoverTrigger>
+        <PopoverPortal>
+            <PopoverContent side="bottom" :side-offset="5" as-child>
+                <div
+                    :class="[
+                        'rounded-lg p-2 gap-2 flex flex-col bg-zinc-100 dark:bg-zinc-900 shadow-lg shadow-black/50 border border-zinc-400 dark:border-zinc-600',
+                        'data-[side=top]:mt-2 data-[side=top]:mx-2',
+                        'data-[side=bottom]:mb-2 data-[side=bottom]:mx-2',
+                        'data-[side=left]:ml-2 data-[side=left]:my-2',
+                        'data-[side=right]:mr-2 data-[side=right]:my-2',
+                    ]"
+                >
+                    <slot name="panel" />
+                </div>
+                <PopoverArrow class="fill-zinc-400 dark:fill-zinc-600" />
+            </PopoverContent>
+        </PopoverPortal>
+    </PopoverRoot>
 </template>

@@ -11,17 +11,17 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
 </script>
 
 <template>
-    <PopupBase mode="click">
+    <PopupBase>
         <template #trigger>
             <UiButton
                 icon="lucide:share-2"
                 :icon-size="18"
                 tooltip="シェア"
-                class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
             />
         </template>
 
-        <template #panel="{ close }">
+        <template #panel>
             <div class="flex flex-col gap-0.5 text-sm min-w-48">
                 <UiButton
                     :to="tweet"
@@ -36,10 +36,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                     :icon-size="18"
                     label="URLをコピー"
                     class="w-full outline-0"
-                    @click="
-                        useWriteClipboard(useBrowserLocation().value.href!);
-                        close();
-                    "
+                    @click="useWriteClipboard(useBrowserLocation().value.href!)"
                 />
                 <UiButton
                     v-if="isSupported"

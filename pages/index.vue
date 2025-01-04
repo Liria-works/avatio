@@ -11,49 +11,56 @@ const get = async (num: number) => {
 
     loading.value = true;
 
-    let query = client
-        .from('setups')
-        .select(
-            `
-            id,
-            created_at,
-            name,
-            author(id, name, avatar),
-            image,
-            items:setup_items(
-                data:item_id(
-                    id, outdated, category, name, thumbnail, nsfw
-                )
+    try {
+        let query = client
+            .from('setups')
+            .select(
+                `
+                    id,
+                    created_at,
+                    name,
+                    author(id, name, avatar),
+                    image,
+                    items:setup_items(
+                        data:item_id(
+                            id, outdated, category, name, thumbnail, nsfw
+                        )
+                    )
+                `
             )
-            `
-        )
-        .eq('setup_items.item_id.category', '208');
-    if (user.value) query = query.neq('author', user.value.id);
-    query = query
-        .range(num * setupsPerPage, num * setupsPerPage + (setupsPerPage - 1))
-        .order('created_at', { ascending: false });
+            .eq('setup_items.item_id.category', '208');
 
-    const { data } = await query.returns<SetupSimple[]>();
+        if (user.value) {
+            query = query.neq('author', user.value.id);
+        }
 
-    loading.value = false;
+        const { data } = await query
+            .range(
+                num * setupsPerPage,
+                num * setupsPerPage + (setupsPerPage - 1)
+            )
+            .order('created_at', { ascending: false });
 
-    if (data) return data;
-    return [];
+        return data ?? [];
+    } finally {
+        loading.value = false;
+    }
 };
 
 const paginate = async () => {
-    const temp = [...setups.value, ...(await get(page.value))];
-    setups.value = temp.map((setup) => {
-        return {
+    const newData = await get(page.value);
+    setups.value = [
+        ...setups.value,
+        ...newData.map((setup) => ({
             ...setup,
             avatars: setup.items.filter((i) => i.data).map((i) => i.data),
-        };
-    });
+        })),
+    ];
     page.value++;
 };
 
 onMounted(async () => {
-    paginate();
+    await paginate();
 
     useOGP({
         url: 'https://avatio.me',
@@ -81,7 +88,7 @@ onMounted(async () => {
                 />
                 <!-- <UiButton
                 icon="lucide:rotate-ccw"
-                class="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                 @click="get"
             /> -->
             </div>
@@ -90,8 +97,8 @@ onMounted(async () => {
                 :column-width="200"
                 :gap="20"
                 :min-columns="1"
-                :max-columns="3"
-                :ssr-columns="3"
+                :max-columns="4"
+                :ssr-columns="4"
             >
                 <template #default="{ item }">
                     <ItemSetup
@@ -123,7 +130,7 @@ onMounted(async () => {
 
         <div
             v-if="!setups"
-            class="w-full my-5 font-medium text-center text-neutral-700 dark:text-neutral-300"
+            class="w-full my-5 font-medium text-center text-zinc-700 dark:text-zinc-300"
         >
             <p>セットアップが見つかりませんでした😢</p>
         </div>

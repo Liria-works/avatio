@@ -141,7 +141,7 @@ const handleSignUp = async () => {
                         <NuxtLink
                             to="/terms"
                             target="_blank"
-                            class="underline hover:text-neutral-400 hover:dark:text-neutral-400"
+                            class="underline hover:text-zinc-400 hover:dark:text-zinc-400"
                         >
                             利用規約
                         </NuxtLink>
@@ -149,7 +149,7 @@ const handleSignUp = async () => {
                         <NuxtLink
                             to="/privacy-policy"
                             target="_blank"
-                            class="underline hover:text-neutral-400 hover:dark:text-neutral-400"
+                            class="underline hover:text-zinc-400 hover:dark:text-zinc-400"
                         >
                             プライバシーポリシー
                         </NuxtLink>

@@ -5,7 +5,7 @@
         <template #trigger>
             <Icon
                 name="lucide:info"
-                class="flex-shrink-0 size-4 text-neutral-400 dark:text-neutral-300"
+                class="flex-shrink-0 size-4 text-zinc-400 dark:text-zinc-300"
             />
         </template>
 

@@ -62,11 +62,7 @@ const emit = defineEmits(['accept', 'close']);
                     :outdated="false"
                     :updated-at="props.from.updated_at"
                 />
-                <Icon
-                    name="lucide:arrow-down"
-                    size="24"
-                    class="bg-neutral-300"
-                />
+                <Icon name="lucide:arrow-down" size="24" class="bg-zinc-300" />
                 <ItemBooth
                     v-if="props.to"
                     no-action

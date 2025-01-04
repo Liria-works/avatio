@@ -40,9 +40,9 @@ const Link = defineNuxtLink({
 });
 
 const variantClass = {
-    outline: 'outline outline-1 outline-neutral-400 dark:outline-neutral-600',
+    outline: 'outline outline-1 outline-zinc-400 dark:outline-zinc-600',
     flat: '',
-    link: 'p-1 text-xs font-semibold text-neutral-600 hover:text-neutral-400 dark:text-neutral-400 hover:dark:text-neutral-500 hover:bg-transparent hover:dark:bg-transparent',
+    link: 'p-1 text-xs font-semibold text-zinc-600 hover:text-zinc-400 dark:text-zinc-400 hover:dark:text-zinc-500 hover:bg-transparent hover:dark:bg-transparent',
 };
 </script>
 
@@ -61,9 +61,9 @@ const variantClass = {
                     props.icon.length ? 'p-3' : 'px-4 py-3',
                     props.wFull ? 'w-full' : 'w-fit',
                     'rounded-lg flex gap-2 items-center justify-center',
-                    'bg-transparent dark:bg-transparent hover:bg-neutral-200 dark:hover:bg-neutral-600',
+                    'bg-transparent dark:bg-transparent hover:bg-zinc-200 dark:hover:bg-zinc-600',
                     'text-sm font-semibold align-middle leading-none',
-                    'text-neutral-800 dark:text-neutral-200',
+                    'text-zinc-800 dark:text-zinc-200',
                     'transition duration-50 delay-0 ease-in-out',
                     variantClass[props.variant],
                     props.class

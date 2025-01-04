@@ -19,7 +19,7 @@ const items = ref<CategorizedSetupItems>({
     accessory: { label: 'アクセサリー', icon: 'lucide:star', items: [] },
     other: { label: 'その他', icon: 'lucide:package', items: [] },
 });
-const bookmark = ref(await useCheckBookmark(id));
+const bookmark = ref(false);
 
 const toggleBookmark = async () => {
     if (!user.value) return (modalLogin.value = true);
@@ -38,6 +38,8 @@ onMounted(async () => {
             statusCode: 404,
             message: 'IDが無効です',
         });
+
+    bookmark.value = await useCheckBookmark(id);
 
     const { data } = await client
         .from('setups')
@@ -113,11 +115,41 @@ onMounted(async () => {
                     <div
                         class="grow flex flex-wrap items-center gap-x-5 gap-y-2"
                     >
-                        <UiUser :user="setup.author" />
+                        <NuxtLink
+                            :to="{
+                                name: 'user-id',
+                                params: { id: setup.author.id },
+                            }"
+                            class="flex flex-row gap-3 items-center"
+                        >
+                            <UAvatar
+                                v-if="
+                                    setup.author.avatar &&
+                                    setup.author.avatar.length
+                                "
+                                :src="useGetImage(setup.author.avatar)"
+                                :alt="setup.author.name"
+                            />
+                            <div
+                                v-else
+                                class="flex items-center justify-center size-[25px] rounded-full flex-shrink-0 bg-zinc-200 dark:bg-zinc-500"
+                            >
+                                <Icon
+                                    name="lucide:user-round"
+                                    size="14"
+                                    class="text-zinc-600 dark:text-zinc-300"
+                                />
+                            </div>
+                            <p
+                                class="text-black dark:text-white pb-0.5 text-left font-normal"
+                            >
+                                {{ setup.author.name }}
+                            </p>
+                        </NuxtLink>
 
                         <div class="flex items-center gap-2">
                             <p
-                                class="text-sm text-neutral-500 dark:text-neutral-400 whitespace-nowrap leading-none"
+                                class="text-sm text-zinc-500 dark:text-zinc-400 whitespace-nowrap leading-none"
                             >
                                 {{ useLocaledDate(new Date(setup.created_at)) }}
                                 に公開
@@ -139,11 +171,11 @@ onMounted(async () => {
                                     : 'lucide:bookmark'
                             "
                             padding=""
-                            class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                             :icon-class="
                                 bookmark
                                     ? 'text-red-500 dark:text-red-400'
-                                    : 'text-neutral-600 dark:text-neutral-300'
+                                    : 'text-zinc-600 dark:text-zinc-300'
                             "
                             @click="toggleBookmark"
                         />
@@ -153,7 +185,7 @@ onMounted(async () => {
                             tooltip="削除"
                             icon="lucide:trash"
                             :icon-size="18"
-                            class="p-2.5 hover:bg-neutral-300 hover:dark:bg-neutral-600"
+                            class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                             icon-class="text-red-400 dark:text-red-300"
                             @click="modalDelete = true"
                         />
@@ -179,13 +211,11 @@ onMounted(async () => {
             <div class="self-stretch flex xl:hidden flex-col gap-3">
                 <div
                     v-if="setup.description"
-                    class="self-stretch rounded-lg flex flex-col gap-1.5 px-3 py-2 border border-neutral-300 dark:border-neutral-600"
+                    class="self-stretch rounded-lg flex flex-col gap-1.5 px-3 py-2 border border-zinc-300 dark:border-zinc-600"
                 >
-                    <p class="text-neutral-500 text-sm mt-1 leading-none">
-                        説明
-                    </p>
+                    <p class="text-zinc-500 text-sm mt-1 leading-none">説明</p>
                     <p
-                        class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100"
+                        class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                     >
                         {{ useSentence(setup.description) }}
                     </p>
@@ -199,7 +229,7 @@ onMounted(async () => {
                         v-for="tag in setup.tags"
                         :key="useId()"
                         type="button"
-                        class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
+                        class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-zinc-400 dark:border-zinc-500 hover:bg-zinc-300 hover:dark:bg-zinc-600 text-zinc-900 dark:text-zinc-200"
                         @click="navigateTo(`/search?tag=${tag.tag}`)"
                     >
                         {{ tag.tag }}
@@ -240,11 +270,11 @@ onMounted(async () => {
         <div class="w-full xl:w-96 xl:pt-12 flex flex-col gap-6">
             <div
                 v-if="setup.description"
-                class="hidden xl:flex flex-col self-stretch rounded-lg gap-1.5 px-3 py-2 border border-neutral-300 dark:border-neutral-600"
+                class="hidden xl:flex flex-col self-stretch rounded-lg gap-1.5 px-3 py-2 border border-zinc-300 dark:border-zinc-600"
             >
-                <p class="text-neutral-500 text-sm mt-1 leading-none">説明</p>
+                <p class="text-zinc-500 text-sm mt-1 leading-none">説明</p>
                 <p
-                    class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-neutral-900 dark:text-neutral-100"
+                    class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                 >
                     {{ useSentence(setup.description) }}
                 </p>
@@ -258,7 +288,7 @@ onMounted(async () => {
                     v-for="tag in setup.tags"
                     :key="useId()"
                     type="button"
-                    class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-neutral-400 dark:border-neutral-500 hover:bg-neutral-300 hover:dark:bg-neutral-600 text-neutral-900 dark:text-neutral-200"
+                    class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-zinc-400 dark:border-zinc-500 hover:bg-zinc-300 hover:dark:bg-zinc-600 text-zinc-900 dark:text-zinc-200"
                     @click="navigateTo(`/search?tag=${tag.tag}`)"
                 >
                     {{ tag.tag }}
@@ -270,7 +300,7 @@ onMounted(async () => {
                 icon="lucide:flag"
                 :icon-size="16"
                 variant="flat"
-                class="px-3 py-2 mt-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                class="px-3 py-2 mt-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                 icon-class="text-red-400 dark:text-red-400"
                 @click="
                     if (user) modalReport = true;

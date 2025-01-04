@@ -30,7 +30,7 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
 <template>
     <NuxtLink :to="{ name: 'setup-id', params: { id: props.id } }">
         <ItemBase
-            class="hover:bg-neutral-200 dark:hover:bg-neutral-700 transition duration-50 delay-0 ease-in-out"
+            class="hover:bg-zinc-200 dark:hover:bg-zinc-700 transition duration-50 delay-0 ease-in-out"
         >
             <template #thumbnail>
                 <div class="p-2 flex-shrink-0">
@@ -48,7 +48,7 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                     />
                     <div
                         v-else
-                        class="size-28 rounded-lg flex flex-shrink-0 items-center justify-center text-neutral-400 bg-neutral-300 dark:bg-neutral-600"
+                        class="size-28 rounded-lg flex flex-shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
                     >
                         ?
                     </div>
@@ -60,12 +60,12 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                 >
                     <div class="flex flex-col gap-1">
                         <p
-                            class="text-lg font-medium text-neutral-700 dark:text-neutral-200 break-all line-clamp-1"
+                            class="text-lg font-medium text-zinc-700 dark:text-zinc-200 break-all line-clamp-1"
                         >
                             {{ props.name }}
                         </p>
                         <p
-                            class="text-sm text-neutral-500 dark:text-neutral-400 break-keep line-clamp-1"
+                            class="text-sm text-zinc-500 dark:text-zinc-400 break-keep line-clamp-1"
                         >
                             {{
                                 !avatar.outdated
@@ -76,14 +76,14 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                     </div>
                     <div class="gap-4 flex justify-between items-center">
                         <p
-                            class="text-sm text-neutral-600 dark:text-neutral-400 break-all line-clamp-1"
+                            class="text-sm text-zinc-600 dark:text-zinc-400 break-all line-clamp-1"
                         >
                             {{ props.description ? props.description : '' }}
                         </p>
                         <div class="flex items-center gap-2">
                             <UiTooltip :text="dateLocale">
                                 <p
-                                    class="text-sm text-neutral-600 dark:text-neutral-400 whitespace-nowrap"
+                                    class="text-sm text-zinc-600 dark:text-zinc-400 whitespace-nowrap"
                                 >
                                     {{ useDateElapsed(date) }}
                                 </p>
@@ -96,22 +96,18 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                                     }"
                                     class="flex flex-row gap-2 items-center"
                                 >
-                                    <UAvatar
-                                        v-if="props.author.avatar"
-                                        size="xs"
-                                        :src="useGetImage(props.author.avatar)"
-                                        :alt="props.author.name"
+                                    <UiAvatar
+                                        :url="
+                                            props.author.avatar
+                                                ? useGetImage(
+                                                      props.author.avatar
+                                                  )
+                                                : ''
+                                        "
+                                        :alt="props.author.name ?? ''"
+                                        :icon-size="14"
+                                        class="size-6"
                                     />
-                                    <div
-                                        v-else
-                                        class="flex items-center justify-center size-[25px] rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500"
-                                    >
-                                        <Icon
-                                            name="lucide:user-round"
-                                            size="14"
-                                            class="text-neutral-600 dark:text-neutral-300"
-                                        />
-                                    </div>
                                 </NuxtLink>
                             </UiTooltip>
                         </div>

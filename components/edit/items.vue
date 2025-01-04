@@ -132,7 +132,7 @@ onMounted(async () => {
         <div class="w-full flex flex-col gap-4 items-stretch">
             <div class="flex gap-1 items-center">
                 <div
-                    class="w-full p-1 rounded-lg border border-1 border-neutral-400 dark:border-neutral-500 bg-neutral-200 dark:bg-neutral-900"
+                    class="w-full p-1 rounded-lg border border-1 border-zinc-400 dark:border-zinc-500 bg-zinc-200 dark:bg-zinc-900"
                 >
                     <UInput
                         v-model="inputUrl"
@@ -204,68 +204,11 @@ onMounted(async () => {
             </div>
         </div>
 
-        <!-- <UiCategory title="ベースアバター" icon="lucide:person-standing">
-            <div
-                v-if="!items.avatar"
-                class="w-full p-5 flex flex-col gap-5 rounded-lg bg-white dark:bg-neutral-700"
-            >
-                <div
-                    v-if="quickAvatarsOwned?.length"
-                    class="w-full flex flex-col gap-3"
-                >
-                    <UiTitle
-                        label="あなたのセットアップから"
-                        icon="lucide:user-round"
-                    />
-                    <div
-                        class="justify-start items-center gap-1.5 flex flex-row flex-wrap w-full"
-                    >
-                        <button
-                            v-for="i in quickAvatarsOwned"
-                            :key="useId()"
-                            type="button"
-                            @click="addItem(i.id)"
-                        >
-                            <ItemTiny
-                                :label="useAvatarName(i.name)"
-                                :thumbnail="i.thumbnail"
-                                class="bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 hover:dark:bg-neutral-700"
-                            />
-                        </button>
-                    </div>
-                </div>
-
-                <div v-else class="self-center flex flex-col gap-3">
-                    <p class="text-sm text-neutral-400">
-                        ベースアバターが登録されていません
-                    </p>
-                </div>
-            </div>
-
-            <ItemBoothEdit
-                v-if="items.avatar"
-                v-model:note="items.avatar_note"
-                :id="items.avatar.id"
-                :key="'item-' + items.avatar.id"
-                size="lg"
-                :name="items.avatar.name"
-                :thumbnail="items.avatar.thumbnail"
-                :price="items.avatar.price"
-                :shop="items.avatar.shop.name"
-                :shop-id="items.avatar.shop.id"
-                :shop-thumbnail="items.avatar.shop.thumbnail"
-                :shop-verified="items.avatar.shop.verified"
-                :nsfw="items.avatar.nsfw"
-                :updated-at="items.avatar.updated_at"
-                @remove="items.avatar = null"
-            />
-        </UiCategory> -->
-
         <div
             v-if="!Object.keys(categorizedItems).length"
             class="flex flex-col gap-3"
         >
-            <p class="text-sm text-neutral-400">アイテムが登録されていません</p>
+            <p class="text-sm text-zinc-400">アイテムが登録されていません</p>
         </div>
 
         <div

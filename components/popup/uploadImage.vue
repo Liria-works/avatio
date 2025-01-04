@@ -11,7 +11,7 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
                     class="text-indigo-400 dark:text-indigo-300"
                 />
                 <span
-                    class="text-xs font-medium text-neutral-600 dark:text-neutral-300"
+                    class="text-xs font-medium text-zinc-600 dark:text-zinc-300"
                 >
                     画像の添付について
                 </span>
@@ -20,9 +20,7 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
 
         <template #panel>
             <div class="flex flex-col gap-1.5">
-                <p
-                    class="text-sm font-bold text-neutral-600 dark:text-neutral-200"
-                >
+                <p class="text-sm font-bold text-zinc-600 dark:text-zinc-200">
                     対応形式
                 </p>
                 <div class="flex flex-wrap gap-1 items-center">
@@ -33,16 +31,12 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
                     />
                 </div>
             </div>
-            <div class="flex flex-col gap-1.5">
-                <p
-                    class="text-sm/relaxed text-neutral-600 dark:text-neutral-400"
-                >
+            <div class="flex flex-col gap-1.5 text-zinc-600 dark:text-zinc-400">
+                <p class="text-sm/relaxed">
                     アップロードされた画像は、自動的に下記の仕様でJPEG圧縮されます。<br />
                     非営利運営に必要な処置になりますのでご了承ください。
                 </p>
-                <p
-                    class="text-sm/relaxed text-neutral-600 dark:text-neutral-400"
-                >
+                <p class="text-sm/relaxed">
                     最大長辺解像度 1920px<br />最大ファイルサイズ 1.5MB
                 </p>
             </div>

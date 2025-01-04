@@ -18,7 +18,7 @@ const emit = defineEmits(['close']);
         </template>
 
         <span
-            class="w-full text-md font-normal text-neutral-800 dark:text-neutral-100 text-center"
+            class="w-full text-md font-normal text-zinc-800 dark:text-zinc-100 text-center"
         >
             セットアップを削除します。<br />
             この操作は取り消せません。よろしいですか？

@@ -88,7 +88,7 @@ onMounted(async () => {
                 <UiDivider
                     :border-class="
                         title.length < 25
-                            ? 'border-neutral-300 dark:border-neutral-600'
+                            ? 'border-zinc-300 dark:border-zinc-600'
                             : 'border-red-400 dark:border-red-600'
                     "
                 />
@@ -128,7 +128,7 @@ onMounted(async () => {
 
                     <template #panel>
                         <div
-                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-neutral-900 dark:text-neutral-100"
+                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-zinc-900 dark:text-zinc-100"
                         >
                             <p v-if="!title">
                                 {{ ERROR_MESSAGES.NO_TITLE }}
@@ -185,12 +185,13 @@ onMounted(async () => {
             >
                 <EditImage v-model="image" />
 
-                <UiCategory title="説明" icon="lucide:text">
+                <div class="w-full flex flex-col items-start gap-3">
+                    <UiTitle label="説明" icon="lucide:text" />
                     <div class="w-full flex flex-col gap-1 items-end">
                         <div
-                            :class="`w-full p-3 rounded-lg border border-1 bg-neutral-200 dark:bg-neutral-900 ${
+                            :class="`w-full p-3 rounded-lg border border-1 bg-zinc-200 dark:bg-zinc-900 ${
                                 description.length < 141
-                                    ? 'border-neutral-400 dark:border-neutral-600'
+                                    ? 'border-zinc-400 dark:border-zinc-600'
                                     : 'border-red-400 dark:border-red-600'
                             }`"
                         >
@@ -207,18 +208,19 @@ onMounted(async () => {
                         <span
                             :class="`text-sm pr-1 ${
                                 description.length < 141
-                                    ? 'text-neutral-500 dark:text-neutral-500'
+                                    ? 'text-zinc-500 dark:text-zinc-500'
                                     : 'text-red-500 dark:text-red-400'
                             }`"
                         >
                             {{ description.length }} / 140
                         </span>
                     </div>
-                </UiCategory>
+                </div>
 
-                <UiCategory title="タグ" icon="lucide:tags">
+                <div class="w-full flex flex-col items-start gap-3">
+                    <UiTitle label="タグ" icon="lucide:tags" />
                     <EditTags v-model="tags" />
-                </UiCategory>
+                </div>
             </div>
         </div>
     </div>

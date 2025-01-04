@@ -9,9 +9,10 @@ const { data } = await client
     .maybeSingle();
 
 onMounted(() => {
-    useOGP({
-        title: data.title,
-    });
+    if (data)
+        useOGP({
+            title: data.title,
+        });
 });
 </script>
 
@@ -26,11 +27,11 @@ onMounted(() => {
 
     <div v-else class="flex flex-col items-center gap-10 pt-10">
         <h2
-            class="flex text-9xl font-extrabold font-['Montserrat'] text-neutral-500 dark:text-neutral-400"
+            class="flex text-9xl font-extrabold font-['Montserrat'] text-zinc-500 dark:text-zinc-400"
         >
             404
         </h2>
-        <div class="text-xl font-bold text-neutral-500 dark:text-neutral-400">
+        <div class="text-xl font-bold text-zinc-500 dark:text-zinc-400">
             ページが見つかりませんでした。
         </div>
     </div>

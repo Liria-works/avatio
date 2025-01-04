@@ -75,7 +75,9 @@ export default defineNuxtConfig({
         },
     },
     modules: [
+        'radix-vue/nuxt',
         '@nuxt/ui',
+        '@nuxtjs/tailwindcss',
         '@vueuse/nuxt',
         '@nuxt/image',
         '@nuxt/fonts',

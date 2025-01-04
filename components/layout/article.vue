@@ -20,7 +20,7 @@ const main = await marked.parse(props.content, { breaks: true });
             <h1 class="text-4xl font-[900]">
                 {{ props.title }}
             </h1>
-            <span class="text-neutral-500">
+            <span class="text-zinc-500">
                 {{
                     new Date(props.createdAt).toLocaleString('ja-JP', {
                         year: 'numeric',
@@ -34,7 +34,7 @@ const main = await marked.parse(props.content, { breaks: true });
         <!-- eslint-disable vue/no-v-html -->
         <div
             v-html="sanitizeHtml(main)"
-            class="prose prose-neutral prose-invert max-w-none"
+            class="prose prose-zinc dark:prose-invert max-w-none"
         ></div>
     </article>
 </template>

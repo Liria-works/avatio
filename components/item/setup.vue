@@ -33,7 +33,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
 <template>
     <NuxtLink :to="{ name: 'setup-id', params: { id: props.id } }">
         <ItemBase
-            class="hover:bg-neutral-200 dark:hover:bg-neutral-700 transition duration-50 delay-0 ease-in-out"
+            class="hover:bg-zinc-200 dark:hover:bg-zinc-700 transition duration-50 delay-0 ease-in-out"
         >
             <template #hero>
                 <div
@@ -69,7 +69,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
 
                 <div
                     v-else-if="props.avatarOutdated"
-                    class="size-14 my-1.5 ml-1.5 rounded-lg flex flex-shrink-0 items-center justify-center text-neutral-400 bg-neutral-300 dark:bg-neutral-600"
+                    class="size-14 my-1.5 ml-1.5 rounded-lg flex flex-shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
                 >
                     ?
                 </div>
@@ -79,13 +79,13 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     class="w-full py-2 pr-2 pl-3 flex flex-col justify-center gap-1"
                 >
                     <p
-                        class="text-sm font-medium text-neutral-700 dark:text-neutral-200 break-all line-clamp-1 leading-none"
+                        class="text-sm font-medium text-zinc-700 dark:text-zinc-200 break-all line-clamp-1 leading-none"
                     >
                         {{ props.name }}
                     </p>
                     <div class="flex justify-between items-center gap-2">
                         <p
-                            class="text-xs text-neutral-500 dark:text-neutral-400 break-all line-clamp-1 leading-none"
+                            class="text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"
                         >
                             {{
                                 !props.avatarOutdated
@@ -96,7 +96,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         <div class="flex items-center gap-2">
                             <UiTooltip :text="dateLocale">
                                 <p
-                                    class="text-xs text-neutral-600 dark:text-neutral-400 whitespace-nowrap"
+                                    class="text-xs text-zinc-600 dark:text-zinc-400 whitespace-nowrap"
                                 >
                                     {{ useDateElapsed(date) }}
                                 </p>
@@ -109,22 +109,18 @@ const dateLocale = date.toLocaleString('ja-JP', {
                                     }"
                                     class="flex flex-row gap-2 items-center"
                                 >
-                                    <UAvatar
-                                        v-if="props.authorAvatar"
-                                        size="xs"
-                                        :src="useGetImage(props.authorAvatar)"
-                                        :alt="props.authorName"
+                                    <UiAvatar
+                                        :url="
+                                            props.authorAvatar
+                                                ? useGetImage(
+                                                      props.authorAvatar
+                                                  )
+                                                : ''
+                                        "
+                                        :alt="props.authorName ?? ''"
+                                        :icon-size="14"
+                                        class="size-6"
                                     />
-                                    <div
-                                        v-else
-                                        class="flex items-center justify-center size-[25px] rounded-full flex-shrink-0 bg-neutral-200 dark:bg-neutral-500"
-                                    >
-                                        <Icon
-                                            name="lucide:user-round"
-                                            size="14"
-                                            class="text-neutral-600 dark:text-neutral-300"
-                                        />
-                                    </div>
                                 </NuxtLink>
                             </UiTooltip>
                         </div>

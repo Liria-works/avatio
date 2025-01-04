@@ -85,7 +85,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                         <NuxtLink
                             :to="booth_url + props.id"
                             target="_blank"
-                            class="text-sm font-semibold leading-none whitespace-nowrap text-neutral-700 dark:text-neutral-300"
+                            class="text-sm font-semibold leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
                         >
                             {{ props.price }}
                         </NuxtLink>
@@ -98,10 +98,10 @@ const booth_url = 'https://booth.pm/ja/items/';
                             <NuxtImg
                                 :src="props.shopThumbnail"
                                 :alt="props.shop"
-                                class="size-5 rounded-md select-none border border-1 border-neutral-300"
+                                class="size-5 rounded-md select-none border border-1 border-zinc-300"
                             />
                             <span
-                                class="text-xs font-semibold leading-none line-clamp-1 break-all text-neutral-700 dark:text-neutral-300 xs"
+                                class="text-xs font-semibold leading-none line-clamp-1 break-all text-zinc-700 dark:text-zinc-300 xs"
                             >
                                 {{ props.shop }}
                             </span>
@@ -109,7 +109,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                                 v-if="props.shopVerified"
                                 name="lucide:check"
                                 size="16"
-                                class="flex-shrink-0 size-3 text-neutral-700 dark:text-neutral-300"
+                                class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
                             />
                         </NuxtLink>
                     </div>
@@ -140,7 +140,7 @@ const booth_url = 'https://booth.pm/ja/items/';
             >
                 <div
                     :class="[
-                        'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-neutral-200 dark:bg-neutral-600',
+                        'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-600',
                         {
                             'border border-1 border-red-400 dark:border-red-400':
                                 note.length > 140,
@@ -151,7 +151,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                         name="lucide:pen-line"
                         :width="15"
                         :height="15"
-                        class="self-start flex-shrink-0 mt-[0.2rem] text-neutral-400 dark:text-neutral-400"
+                        class="self-start flex-shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
                     />
                     <UTextarea
                         v-model="note"

@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+const route = useRoute();
+
+const paddingExclude = ['/', '/setup/edit'];
+
 useHead({
     bodyAttrs: {
-        class: 'bg-[#f0f0f0] dark:bg-[#262626] text-black dark:text-white font-[Murecho] transition duration-50 delay-0 ease-in-out',
+        class: 'bg-zinc-50 dark:bg-zinc-900 text-black dark:text-white font-[Murecho] transition duration-50 delay-0 ease-in-out',
     },
     title: 'Avatio',
     link: [
@@ -14,27 +18,30 @@ useHead({
     meta: [{ name: 'lang', content: 'ja' }],
 });
 
-// const modalFeedback = ref(false);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// const handleError = (error: any) => {
+//     console.error('Layout error:', error);
+// };
 </script>
 
 <template>
     <UContainer
         class="flex flex-col gap-10 items-center"
-        :ui="{ padding: 'pt-4 px-6 md:px-20 lg:px-40' }"
+        :ui="{ padding: 'pt-4 px-6 ' }"
     >
         <UiHeader />
-        <slot />
+        <div
+            :class="[
+                'w-full',
+                paddingExclude.includes(route.path)
+                    ? 'px-4'
+                    : 'md:px-20 lg:px-40',
+            ]"
+        >
+            <slot />
+        </div>
         <UiFooter />
 
-        <!-- <UButton
-            size="xl"
-            icon="lucide:lightbulb"
-            label="フィードバック"
-            :ui="{ rounded: 'rounded-full' }"
-            class="fixed bottom-6 right-6 pr-[18px]"
-            @click="modalFeedback = true"
-        /> -->
-        <!-- <ModalFeedback v-model="modalFeedback" /> -->
         <UNotifications />
     </UContainer>
 </template>

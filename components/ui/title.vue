@@ -26,7 +26,7 @@ const props = withDefaults(
             <Icon
                 :name="props.icon"
                 :size="props.size === 'md' ? 20 : 24"
-                class="text-neutral-500 dark:text-neutral-400"
+                class="flex-shrink-0 text-zinc-500 dark:text-zinc-400"
             />
             <component
                 :is="props.is"
@@ -37,7 +37,7 @@ const props = withDefaults(
                         : 'text-xl font-bold',
                 ]"
             >
-                {{ props.label }}
+                <span class="whitespace-nowrap">{{ props.label }}</span>
             </component>
             <UTooltip
                 v-if="props.infomation"
@@ -52,18 +52,18 @@ const props = withDefaults(
                 <Icon
                     name="lucide:info"
                     size="15"
-                    class="ml-1 text-neutral-500 dark:text-neutral-400"
+                    class="flex-shrink-0 ml-1 text-zinc-500 dark:text-zinc-400"
                 />
             </UTooltip>
         </div>
         <button v-if="props.trailing" class="items-center gap-1 inline-flex">
-            <div class="text-black dark:text-neutral-400 text-sm">
+            <div class="text-black dark:text-zinc-400 text-sm">
                 {{ props.trailing }}
             </div>
             <Icon
                 :name="props.trailingIcon"
                 :size="18"
-                class="text-neutral-600 dark:text-neutral-400"
+                class="text-zinc-600 dark:text-zinc-400"
             />
         </button>
     </div>

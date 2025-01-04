@@ -2,7 +2,7 @@
 
 <template>
     <div
-        class="w-full flex flex-col border border-1 border-neutral-300 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-750 rounded-lg overflow-clip"
+        class="w-full flex flex-col border border-1 border-zinc-300 dark:border-zinc-600 rounded-lg overflow-clip"
     >
         <div class="empty:hidden w-full">
             <slot name="hero" />

@@ -16,7 +16,7 @@ const props = defineProps<{
         :ui="{
             border: {
                 base: twMerge(
-                    'border-neutral-300 dark:border-neutral-600',
+                    'border-zinc-300 dark:border-zinc-600',
                     props.borderClass
                 ),
             },

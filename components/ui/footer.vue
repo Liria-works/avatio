@@ -10,21 +10,21 @@ const modal_feedback = ref(false);
             class="flex flex-wrap gap-x-6 gap-y-2 pb-10 items-center justify-center"
         >
             <div
-                class="flex-wrap flex items-center justify-center gap-x-4 gap-y-2 text-neutral-700 dark:text-white"
+                class="flex-wrap flex items-center justify-center gap-x-4 gap-y-2 text-zinc-700 dark:text-white"
             >
                 <div class="flex items-center gap-2">
                     <UiButton
                         to="https://x.com/liria_work"
                         new-tab
                         icon="simple-icons:x"
-                        class="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     />
 
                     <UiButton
                         to="https://github.com/Liria-works/avatio"
                         new-tab
                         icon="simple-icons:github"
-                        class="outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     />
 
                     <UiButton
@@ -32,7 +32,7 @@ const modal_feedback = ref(false);
                         new-tab
                         label="Liria"
                         icon="avatio:liria"
-                        class="font-[Montserrat] font-semibold outline-0 p-2 hover:bg-neutral-300 hover:dark:bg-neutral-700"
+                        class="font-[Montserrat] font-semibold outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     />
                 </div>
 
@@ -66,7 +66,7 @@ const modal_feedback = ref(false);
                     variant="link"
                 />
             </div>
-            <p class="text-neutral-500 text-sm">Copyright © 2024 Liria</p>
+            <p class="text-zinc-500 text-sm">Copyright © 2024 Liria</p>
         </div>
 
         <ModalFeedback v-model="modal_feedback" />

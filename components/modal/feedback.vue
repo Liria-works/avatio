@@ -2,11 +2,9 @@
 const vis = defineModel<boolean>({
     default: false,
 });
-const emit = defineEmits(['close']);
 const client = await useSBClient();
 
 const feedback = ref<string>('');
-const submited = ref(false);
 
 const Submit = async () => {
     if (!feedback.value.length)
@@ -18,8 +16,8 @@ const Submit = async () => {
 
     if (error) return useAddToast('フィードバックの送信に失敗');
 
-    submited.value = true;
     useAddToast('フィードバックを送信しました');
+    vis.value = false;
 };
 </script>
 
@@ -28,11 +26,38 @@ const Submit = async () => {
         <template #header>
             <div class="flex items-center gap-2 justify-between">
                 <UiTitle label="フィードバック" icon="lucide:lightbulb" />
-                <PopupFeedback />
+                <!-- <PopupFeedback /> -->
+
+                <HoverCardRoot :open-delay="0" :close-delay="300">
+                    <HoverCardTrigger as-child>
+                        <Icon
+                            name="lucide:info"
+                            class="flex-shrink-0 size-4 text-zinc-400 dark:text-zinc-300"
+                        />
+                    </HoverCardTrigger>
+                    <HoverCardPortal>
+                        <HoverCardContent
+                            class="rounded-md bg-zinc-900 p-5 z-[200] shadow-lg shadow-black/50"
+                            :side-offset="5"
+                        >
+                            <div class="flex flex-col gap-4">
+                                <h2 class="text-sm font-semibold">
+                                    フィードバックについて
+                                </h2>
+                                <p class="text-xs">
+                                    内容は第三者に対し公開されることはありません。<br />
+                                    送信したユーザーは、運営により確認可能です。
+                                </p>
+                            </div>
+
+                            <HoverCardArrow class="fill-zinc-900" :width="8" />
+                        </HoverCardContent>
+                    </HoverCardPortal>
+                </HoverCardRoot>
             </div>
         </template>
 
-        <div v-if="!submited" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-5">
             <div class="relative">
                 <UTextarea
                     autoresize
@@ -41,29 +66,22 @@ const Submit = async () => {
                         color: {
                             white: {
                                 outline:
-                                    'transition duration-50 delay-0 ease-in-out focus:ring-neutral-500 dark:focus:ring-neutral-500 hover:ring-2 dark:hover:ring-neutral-500',
+                                    'transition duration-50 delay-0 ease-in-out focus:ring-zinc-500 dark:focus:ring-zinc-500 hover:ring-2 dark:hover:ring-zinc-500',
                             },
                         },
                     }"
                 />
                 <Icon
                     name="simple-icons:markdown"
-                    class="absolute right-2 bottom-1 size-6 flex-shrink-0 select-none bg-neutral-500"
+                    class="absolute right-2 bottom-1 size-6 flex-shrink-0 select-none bg-zinc-500"
                 />
             </div>
         </div>
 
-        <div v-if="submited" class="w-full flex flex-col items-center">
-            <p class="text-neutral-400">
-                フィードバックを送信しました。<br />
-                ご協力ありがとうございます！
-            </p>
-        </div>
-
-        <template #footer v-if="!submited">
+        <template #footer>
             <div class="gap-1.5 flex items-center justify-end">
                 <UiButton label="送信" @click="Submit" />
-                <UiButton label="キャンセル" @click="emit('close')" />
+                <UiButton label="キャンセル" @click="vis = false" />
             </div>
         </template>
     </ModalBase>
