@@ -144,7 +144,7 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
             .from('shops')
             .upsert({
                 id: item.shop.id,
-                name: item.shop,
+                name: item.shop.name,
                 thumbnail: item.shop.thumbnail,
                 verified: item.shop.verified,
             } as never)
