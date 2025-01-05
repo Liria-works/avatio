@@ -38,6 +38,13 @@ onMounted(async () => {
     <div class="items-center gap-2 flex">
         <div class="items-center gap-0.5 flex">
             <UiButton
+                to="/setup/edit"
+                icon="i-heroicons-plus"
+                label="セットアップを投稿"
+                class="pr-6 pl-5 mr-2 rounded-full whitespace-nowrap"
+            />
+
+            <UiButton
                 v-if="route.path !== '/login'"
                 to="/search"
                 tooltip="検索"

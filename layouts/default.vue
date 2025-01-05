@@ -19,29 +19,31 @@ useHead({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// const handleError = (error: any) => {
-//     console.error('Layout error:', error);
-// };
+const handleError = (error: any) => {
+    console.error('Layout error:', error);
+};
 </script>
 
 <template>
-    <UContainer
-        class="flex flex-col gap-10 items-center"
-        :ui="{ padding: 'pt-4 px-6 ' }"
-    >
-        <UiHeader />
-        <div
-            :class="[
-                'w-full',
-                paddingExclude.includes(route.path)
-                    ? 'px-4'
-                    : 'md:px-20 lg:px-40',
-            ]"
+    <NuxtErrorBoundary @error="handleError">
+        <UContainer
+            class="flex flex-col gap-10 items-center"
+            :ui="{ padding: 'pt-4 px-6 ' }"
         >
-            <slot />
-        </div>
-        <UiFooter />
+            <UiHeader />
+            <div
+                :class="[
+                    'w-full',
+                    paddingExclude.includes(route.path)
+                        ? 'px-4'
+                        : 'md:px-20 lg:px-40',
+                ]"
+            >
+                <slot />
+            </div>
+            <UiFooter />
 
-        <UNotifications />
-    </UContainer>
+            <UNotifications />
+        </UContainer>
+    </NuxtErrorBoundary>
 </template>

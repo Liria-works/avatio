@@ -1,4 +1,11 @@
 <script lang="ts" setup>
+import { twMerge } from 'tailwind-merge';
+
+interface Props {
+    class?: string;
+}
+const props = defineProps<Props>();
+
 const vis = defineModel<boolean>({
     default: false,
 });
@@ -12,12 +19,14 @@ const vis = defineModel<boolean>({
         <DialogPortal>
             <DialogOverlay class="bg-black/50 fixed inset-0 z-30" />
             <DialogContent
-                class="z-[100] flex flex-col gap-5 fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white dark:bg-zinc-800 p-6 focus:outline-none"
+                :class="
+                    twMerge(
+                        'z-[100] p-6 flex flex-col gap-5 fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%]',
+                        'rounded-lg bg-zinc-100 dark:bg-zinc-900 focus:outline-none border border-zinc-300 dark:border-zinc-700 shadow-lg shadow-black/50',
+                        props.class
+                    )
+                "
             >
-                <!-- <DialogTitle class="m-0 text-[17px] font-semibold">
-                    フィードバック
-                </DialogTitle> -->
-
                 <slot name="header" />
                 <div class="overflow-y-auto">
                     <slot />

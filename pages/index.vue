@@ -3,12 +3,11 @@ const user = useSupabaseUser();
 const client = await useSBClient();
 
 const setups = ref<SetupSimple[]>([]);
+const setupsPerPage: number = 20;
 const page = ref(0);
 const loading = ref(false);
 
-const get = async (num: number) => {
-    const setupsPerPage: number = 10;
-
+const get = async (num: number): Promise<SetupSimple[]> => {
     loading.value = true;
 
     try {
@@ -30,9 +29,7 @@ const get = async (num: number) => {
             )
             .eq('setup_items.item_id.category', '208');
 
-        if (user.value) {
-            query = query.neq('author', user.value.id);
-        }
+        if (user.value) query = query.neq('author', user.value.id);
 
         const { data } = await query
             .range(
@@ -41,7 +38,7 @@ const get = async (num: number) => {
             )
             .order('created_at', { ascending: false });
 
-        return data ?? [];
+        return (data as unknown as SetupSimple[]) ?? [];
     } finally {
         loading.value = false;
     }
@@ -78,6 +75,8 @@ onMounted(async () => {
         <BannerHome v-if="!user" />
 
         <LayoutMySetups v-if="user" />
+
+        <UiDivider />
 
         <div v-if="setups" class="flex flex-col items-start gap-4 w-full">
             <div class="w-full flex gap-4 items-start justify-between">

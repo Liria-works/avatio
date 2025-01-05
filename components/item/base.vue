@@ -1,8 +1,29 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { twMerge } from 'tailwind-merge';
+
+interface Props {
+    to?: string | object;
+    class?: string;
+}
+const props = defineProps<Props>();
+
+const customLink = defineNuxtLink({
+    componentName: 'customLink',
+    prefetch: false,
+});
+</script>
 
 <template>
-    <div
-        class="w-full flex flex-col border border-1 border-zinc-300 dark:border-zinc-600 rounded-lg overflow-clip"
+    <component
+        :is="props.to ? customLink : 'div'"
+        :to="props.to"
+        tabindex="0"
+        :class="
+            twMerge(
+                'w-full flex flex-col border border-zinc-300 dark:border-zinc-600 rounded-lg overflow-clip',
+                props.class
+            )
+        "
     >
         <div class="empty:hidden w-full">
             <slot name="hero" />
@@ -14,5 +35,5 @@
         <div class="empty:hidden w-full flex">
             <slot name="under" />
         </div>
-    </div>
+    </component>
 </template>

@@ -40,7 +40,8 @@ const Link = defineNuxtLink({
 });
 
 const variantClass = {
-    outline: 'outline outline-1 outline-zinc-400 dark:outline-zinc-600',
+    outline:
+        'outline outline-1 outline-zinc-400 dark:outline-zinc-600 focus:outline-zinc-600 focus:outline-2',
     flat: '',
     link: 'p-1 text-xs font-semibold text-zinc-600 hover:text-zinc-400 dark:text-zinc-400 hover:dark:text-zinc-500 hover:bg-transparent hover:dark:bg-transparent',
 };
@@ -49,6 +50,7 @@ const variantClass = {
 <template>
     <UiTooltip :text="props.tooltip" :class="[props.wFull && 'w-full']">
         <component
+            tabindex="0"
             :is="props.to ? Link : 'button'"
             :type="props.type"
             :to="props.to"
@@ -71,21 +73,21 @@ const variantClass = {
             "
             @click="emit('click')"
         >
-            <Icon
-                v-if="props.icon.length"
-                :name="props.icon"
-                :size="props.iconSize"
-                :class="twMerge('flex-shrink-0', props.iconClass)"
-            />
+            <slot>
+                <Icon
+                    v-if="props.icon.length"
+                    :name="props.icon"
+                    :size="props.iconSize"
+                    :class="twMerge('flex-shrink-0', props.iconClass)"
+                />
 
-            <p
-                v-if="props.label.length"
-                class="empty:hidden whitespace-nowrap leading-none"
-            >
-                {{ props.label }}
-            </p>
-
-            <slot />
+                <p
+                    v-if="props.label.length"
+                    class="empty:hidden whitespace-nowrap leading-none"
+                >
+                    {{ props.label }}
+                </p>
+            </slot>
         </component>
     </UiTooltip>
 </template>

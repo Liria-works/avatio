@@ -201,11 +201,17 @@ onMounted(async () => {
                 </div>
             </div>
 
-            <NuxtImg
+            <!-- <NuxtImg
                 v-if="setup.image"
                 :src="useGetImage(setup.image)"
                 :alt="setup.name"
                 class="rounded-xl max-h-[70vh] content-stretch"
+            /> -->
+            <UiImage
+                v-if="setup.image"
+                :src="useGetImage(setup.image)"
+                :alt="setup.name"
+                class="max-h-[70vh]"
             />
 
             <div class="self-stretch flex xl:hidden flex-col gap-3">

@@ -181,7 +181,7 @@ onMounted(async () => {
             <UiDivider class="block lg:hidden mx-3 my-2" />
 
             <div
-                class="w-full lg:w-96 flex-col justify-start items-start gap-8 flex"
+                class="w-full lg:max-w-[30%] flex-col justify-start items-start gap-8 flex"
             >
                 <EditImage v-model="image" />
 

@@ -62,7 +62,6 @@ export interface Setup {
 export interface SetupSimple {
     id: number;
     created_at: string;
-    updated_at: string;
     name: string;
     author: Author;
     avatars: {

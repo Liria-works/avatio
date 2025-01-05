@@ -25,7 +25,10 @@ const Submit = async () => {
     <ModalBase v-model="vis">
         <template #header>
             <div class="flex items-center gap-2 justify-between">
-                <UiTitle label="フィードバック" icon="lucide:lightbulb" />
+                <DialogTitle>
+                    <UiTitle label="フィードバック" icon="lucide:lightbulb" />
+                </DialogTitle>
+
                 <!-- <PopupFeedback /> -->
 
                 <HoverCardRoot :open-delay="0" :close-delay="300">
@@ -37,10 +40,10 @@ const Submit = async () => {
                     </HoverCardTrigger>
                     <HoverCardPortal>
                         <HoverCardContent
-                            class="rounded-md bg-zinc-900 p-5 z-[200] shadow-lg shadow-black/50"
+                            class="rounded-lg bg-zinc-100 dark:bg-zinc-900 p-5 z-[200] shadow-lg shadow-black/50 border border-zinc-300 dark:border-zinc-700"
                             :side-offset="5"
                         >
-                            <div class="flex flex-col gap-4">
+                            <DialogDescription class="flex flex-col gap-4">
                                 <h2 class="text-sm font-semibold">
                                     フィードバックについて
                                 </h2>
@@ -48,9 +51,12 @@ const Submit = async () => {
                                     内容は第三者に対し公開されることはありません。<br />
                                     送信したユーザーは、運営により確認可能です。
                                 </p>
-                            </div>
+                            </DialogDescription>
 
-                            <HoverCardArrow class="fill-zinc-900" :width="8" />
+                            <HoverCardArrow
+                                class="fill-zinc-300 dark:fill-zinc-700"
+                                :width="8"
+                            />
                         </HoverCardContent>
                     </HoverCardPortal>
                 </HoverCardRoot>
@@ -59,17 +65,9 @@ const Submit = async () => {
 
         <div class="flex flex-col gap-5">
             <div class="relative">
-                <UTextarea
+                <UiTextarea
                     autoresize
                     placeholder="なにかアイデアがあればお送りください！"
-                    :ui="{
-                        color: {
-                            white: {
-                                outline:
-                                    'transition duration-50 delay-0 ease-in-out focus:ring-zinc-500 dark:focus:ring-zinc-500 hover:ring-2 dark:hover:ring-zinc-500',
-                            },
-                        },
-                    }"
                 />
                 <Icon
                     name="simple-icons:markdown"

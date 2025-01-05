@@ -66,33 +66,34 @@ onUnmounted(() => {
                 size="lg"
                 class="pt-2"
             />
-            <UiButton
+            <!-- <UiButton
                 to="/setup/edit"
                 icon="i-heroicons-plus"
                 label="セットアップを投稿"
                 class="pr-6 pl-5 rounded-full whitespace-nowrap"
-            />
+            /> -->
         </div>
 
         <div
-            class="w-full h-20 flex gap-4 overflow-x-auto no-scrollbar scroll-container"
+            class="w-full flex gap-4 overflow-x-auto no-scrollbar scroll-container"
         >
-            <div v-for="i in mySetups" :key="useId()" class="min-w-64">
-                <ItemSetup
-                    no-hero
-                    no-user
-                    :id="i.id"
-                    :name="i.name"
-                    :avatar-name="i.avatars[0].name"
-                    :avatar-thumbnail="i.avatars[0].thumbnail"
-                    :avatar-outdated="i.avatars[0].outdated"
-                    :author-id="i.author.id"
-                    :author-name="i.author.name"
-                    :author-avatar="i.author.avatar"
-                    :created-at="i.created_at"
-                    :image="i.image"
-                />
-            </div>
+            <ItemSetup
+                v-for="i in mySetups"
+                :key="useId()"
+                no-hero
+                no-user
+                :id="i.id"
+                :name="i.name"
+                :avatar-name="i.avatars[0].name"
+                :avatar-thumbnail="i.avatars[0].thumbnail"
+                :avatar-outdated="i.avatars[0].outdated"
+                :author-id="i.author.id"
+                :author-name="i.author.name"
+                :author-avatar="i.author.avatar"
+                :created-at="i.created_at"
+                :image="i.image"
+                class="min-w-64"
+            />
         </div>
     </div>
 
