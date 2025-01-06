@@ -57,22 +57,14 @@ onUnmounted(() => {
     <div
         v-if="user"
         v-show="mySetups.length"
-        class="w-full flex flex-col gap-4"
+        class="w-full flex flex-col gap-5"
     >
-        <div class="w-full flex items-start justify-between">
-            <UiTitle
-                label="あなたのセットアップ"
-                icon="lucide:user-round"
-                size="lg"
-                class="pt-2"
-            />
-            <!-- <UiButton
-                to="/setup/edit"
-                icon="i-heroicons-plus"
-                label="セットアップを投稿"
-                class="pr-6 pl-5 rounded-full whitespace-nowrap"
-            /> -->
-        </div>
+        <UiTitle
+            label="あなたのセットアップ"
+            icon="lucide:user-round"
+            size="lg"
+            class="pt-2"
+        />
 
         <div
             class="w-full flex gap-4 overflow-x-auto no-scrollbar scroll-container"
@@ -104,7 +96,7 @@ onUnmounted(() => {
         <p>最初のセットアップを作成してみましょう</p>
         <UiButton
             to="/setup/edit"
-            icon="i-heroicons-plus"
+            icon="lucide:plus"
             label="セットアップを投稿"
             class="pr-4 rounded-full whitespace-nowrap"
         />

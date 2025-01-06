@@ -94,7 +94,7 @@ watch(filter.value, () => {
             <UInput
                 v-model="searchWord"
                 autofocus
-                icon="i-heroicons-magnifying-glass-20-solid"
+                icon="lucide:search"
                 size="lg"
                 variant="none"
                 :trailing="false"

@@ -115,7 +115,7 @@ onMounted(async () => {
                         label="公開"
                         :icon="
                             !publishing
-                                ? 'i-heroicons-arrow-up-tray-16-solid'
+                                ? 'lucide:upload'
                                 : 'i-svg-spinners-ring-resize'
                         "
                         :ui="{

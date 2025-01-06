@@ -156,7 +156,7 @@ onMounted(async () => {
 
                         <UiTooltip v-if="item.nsfw" text="NSFW">
                             <Icon
-                                name="heroicons:heart-16-solid"
+                                name="lucide:heart"
                                 :size="18"
                                 class="text-pink-400"
                             />
@@ -225,7 +225,7 @@ onMounted(async () => {
         <template #under>
             <div
                 v-if="props.note"
-                class="w-full m-2 mt-0 px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-600"
+                class="w-full m-2 mt-0 px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700"
             >
                 <Icon
                     name="lucide:pen-line"

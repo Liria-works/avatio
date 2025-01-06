@@ -21,16 +21,18 @@ const vis = defineModel<boolean>({
             <DialogContent
                 :class="
                     twMerge(
-                        'z-[100] p-6 flex flex-col gap-5 fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%]',
-                        'rounded-lg bg-zinc-100 dark:bg-zinc-900 focus:outline-none border border-zinc-300 dark:border-zinc-700 shadow-lg shadow-black/50',
+                        'z-[100] fixed inset-0 place-self-center max-h-[85vh] w-[90vw] max-w-[450px] p-6 flex flex-col gap-5',
+                        'rounded-2xl bg-zinc-100 dark:bg-zinc-900 focus:outline-none border border-zinc-300 dark:border-zinc-700 shadow-lg shadow-black/50',
                         props.class
                     )
                 "
             >
                 <slot name="header" />
+                <UiDivider />
                 <div class="overflow-y-auto">
                     <slot />
                 </div>
+                <UiDivider />
                 <slot name="footer" />
 
                 <!-- <DialogClose

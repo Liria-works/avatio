@@ -24,6 +24,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
         <template #panel>
             <div class="flex flex-col gap-0.5 text-sm min-w-48">
                 <UiButton
+                    :tabindex="0"
                     :to="tweet"
                     new-tab
                     icon="simple-icons:x"
@@ -32,6 +33,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                     class="w-full outline-0"
                 />
                 <UiButton
+                    :tabindex="1"
                     icon="lucide:link"
                     :icon-size="18"
                     label="URLをコピー"
@@ -39,6 +41,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                     @click="useWriteClipboard(useBrowserLocation().value.href!)"
                 />
                 <UiButton
+                    :tabindex="2"
                     v-if="isSupported"
                     icon="lucide:share-2"
                     :icon-size="18"

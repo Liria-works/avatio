@@ -9,8 +9,6 @@ const loading = ref(true);
 const userId = ref<string>(route.params.id.toString());
 const userData = ref<User | null>(null);
 
-const linksShort = ref<{ [key: string]: string }[]>([]);
-
 const linkIcons: { [key: string]: string } = {
     'x.com': 'simple-icons:x',
     'youtube.com': 'simple-icons:youtube',
@@ -23,6 +21,17 @@ const linkIcons: { [key: string]: string } = {
     'pixiv.net': 'simple-icons:pixiv',
     'artstation.com': 'simple-icons:artstation',
     'booth.pm': 'avatio:booth',
+};
+
+const getIcon = (url: string) => {
+    try {
+        const hostname = new URL(url).hostname.replace('www.', '');
+        if (Object.keys(linkIcons).includes(hostname))
+            return linkIcons[hostname];
+        else return 'lucide:link';
+    } catch {
+        return '';
+    }
 };
 
 onMounted(async () => {
@@ -61,16 +70,16 @@ onMounted(async () => {
 
     userData.value = data as unknown as User;
 
-    linksShort.value = userData.value.links.map((i) => {
-        const replace = (input: string) =>
-            input.replace('https://www.', '').replace('https://', '');
+    // linksShort.value = userData.value.links.map((i) => {
+    //     const replace = (input: string) =>
+    //         input.replace('https://www.', '').replace('https://', '');
 
-        for (const key in linkIcons)
-            if (new URL(i).hostname.includes(key))
-                return { [replace(i)]: linkIcons[key] };
+    //     for (const key in linkIcons)
+    //         if (new URL(i).hostname.includes(key))
+    //             return { [replace(i)]: linkIcons[key] };
 
-        return { [replace(i)]: '' };
-    });
+    //     return { [replace(i)]: '' };
+    // });
 
     useOGP({
         title: userData.value.name,
@@ -150,25 +159,16 @@ onMounted(async () => {
                     class="flex flex-wrap items-center gap-2"
                 >
                     <UiButton
-                        v-for="(i, index) in userData.links"
+                        v-for="i in userData.links"
                         :to="i"
-                        :tooltip="
-                            Object.values(linksShort[index])[0].length
-                                ? Object.keys(linksShort[index])[0]
-                                : ''
-                        "
-                        class="min-h-[38px] p-2 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-300 border border-1 border-zinc-400 dark:border-zinc-600 hover:bg-zinc-300 hover:dark:bg-zinc-700"
+                        :tooltip="i"
+                        class="min-h-[38px] p-2 rounded-lg flex items-center justify-center hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     >
                         <Icon
-                            v-if="Object.values(linksShort[index])[0].length"
-                            :name="Object.values(linksShort[index])[0]"
+                            :name="getIcon(i)"
                             size="20"
-                            class="bg-zinc-600 dark:bg-zinc-300"
+                            class="bg-zinc-700 dark:bg-zinc-200"
                         />
-
-                        <p v-else class="px-1 text-sm font-medium leading-none">
-                            {{ Object.keys(linksShort[index])[0] }}
-                        </p>
                     </UiButton>
                 </div>
 

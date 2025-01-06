@@ -303,7 +303,7 @@ onMounted(() => {
                                     v-show="!linkInput"
                                     color="gray"
                                     variant="link"
-                                    icon="i-heroicons-clipboard"
+                                    icon="lucide:clipboard"
                                     :padded="false"
                                     @click="PasteFromClipboard"
                                 />
@@ -311,7 +311,7 @@ onMounted(() => {
                                     v-show="linkInput !== ''"
                                     color="gray"
                                     variant="link"
-                                    icon="i-heroicons-x-mark-20-solid"
+                                    icon="lucide:x"
                                     :padded="false"
                                     @click="linkInput = ''"
                                 />
@@ -321,7 +321,7 @@ onMounted(() => {
                     <UButton
                         :icon="
                             !linkAdding
-                                ? 'i-heroicons-plus'
+                                ? 'lucide:plus'
                                 : 'i-svg-spinners-ring-resize'
                         "
                         :disabled="linkAdding"

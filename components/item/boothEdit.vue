@@ -74,7 +74,7 @@ const booth_url = 'https://booth.pm/ja/items/';
 
                         <UiTooltip v-if="props.nsfw" text="NSFW">
                             <Icon
-                                name="heroicons:heart-16-solid"
+                                name="lucide:heart"
                                 size="18"
                                 class="text-pink-400"
                             />

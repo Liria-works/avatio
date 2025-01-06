@@ -81,7 +81,7 @@ watch(
                 <UInput
                     v-model="searchWord"
                     autofocus
-                    icon="i-heroicons-magnifying-glass-20-solid"
+                    icon="lucide:search"
                     size="xl"
                     :trailing="false"
                     placeholder="キーワード検索"

@@ -153,7 +153,7 @@ onMounted(async () => {
                                 v-show="!inputUrl"
                                 color="gray"
                                 variant="link"
-                                icon="i-heroicons-clipboard"
+                                icon="lucide:clipboard"
                                 :padded="false"
                                 @click="pasteFromClipboard"
                             />
@@ -161,7 +161,7 @@ onMounted(async () => {
                                 v-show="inputUrl !== ''"
                                 color="gray"
                                 variant="link"
-                                icon="i-heroicons-x-mark-20-solid"
+                                icon="lucide:x"
                                 :padded="false"
                                 @click="inputUrl = ''"
                             />
@@ -171,9 +171,7 @@ onMounted(async () => {
                 <UiButton
                     :disabled="adding"
                     :icon="
-                        !adding
-                            ? 'i-heroicons-plus'
-                            : 'i-svg-spinners-ring-resize'
+                        !adding ? 'lucide:plus' : 'i-svg-spinners-ring-resize'
                     "
                     label="追加"
                     class="pr-3 h-[40px]"

@@ -4,6 +4,7 @@ import { twMerge } from 'tailwind-merge';
 const props = withDefaults(
     defineProps<{
         disabled?: boolean;
+        tabindex?: number;
         type?: 'button' | 'submit' | 'reset';
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, vue/require-default-prop
         to?: any;
@@ -21,6 +22,7 @@ const props = withDefaults(
     }>(),
     {
         disabled: false,
+        tabindex: 0,
         type: 'button',
         newTab: false,
         icon: '',
@@ -50,7 +52,7 @@ const variantClass = {
 <template>
     <UiTooltip :text="props.tooltip" :class="[props.wFull && 'w-full']">
         <component
-            tabindex="0"
+            :tabindex="props.tabindex"
             :is="props.to ? Link : 'button'"
             :type="props.type"
             :to="props.to"

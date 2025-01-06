@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 
 interface Props {
     to?: string | object;
+    tabindex?: number;
     class?: string;
 }
 const props = defineProps<Props>();
@@ -17,7 +18,7 @@ const customLink = defineNuxtLink({
     <component
         :is="props.to ? customLink : 'div'"
         :to="props.to"
-        tabindex="0"
+        :tabindex="props.to ? (props.tabindex ?? 0) : undefined"
         :class="
             twMerge(
                 'w-full flex flex-col border border-zinc-300 dark:border-zinc-600 rounded-lg overflow-clip',

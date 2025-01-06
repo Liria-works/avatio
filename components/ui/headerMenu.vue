@@ -38,10 +38,11 @@ onMounted(async () => {
     <div class="items-center gap-2 flex">
         <div class="items-center gap-0.5 flex">
             <UiButton
+                v-if="route.path !== '/login'"
                 to="/setup/edit"
-                icon="i-heroicons-plus"
+                icon="lucide:plus"
                 label="セットアップを投稿"
-                class="pr-6 pl-5 mr-2 rounded-full whitespace-nowrap"
+                class="pr-6 pl-5 mr-2 rounded-full whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 hover:dark:bg-zinc-300 hover:dark:text-zinc-800"
             />
 
             <UiButton
@@ -69,8 +70,9 @@ onMounted(async () => {
 
         <UTooltip v-if="user" :text="name ?? ''">
             <NuxtLink
+                tabindex="0"
                 :to="`/user/${user?.id}`"
-                class="hidden sm:flex rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
+                class="hidden sm:flex select-none rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
             >
                 <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
             </NuxtLink>
@@ -100,6 +102,7 @@ onMounted(async () => {
                     <UiThemeButton />
                     <NuxtLink
                         v-if="user"
+                        tabindex="0"
                         :to="`/user/${user?.id}`"
                         class="hidden sm:flex rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
                     >

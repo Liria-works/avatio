@@ -78,7 +78,7 @@ onMounted(async () => {
 
         <UiDivider />
 
-        <div v-if="setups" class="flex flex-col items-start gap-4 w-full">
+        <div v-if="setups" class="flex flex-col items-start gap-5 w-full">
             <div class="w-full flex gap-4 items-start justify-between">
                 <UiTitle
                     label="ディスカバリー"

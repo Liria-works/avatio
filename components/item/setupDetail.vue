@@ -38,13 +38,13 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                     v-if="props.image"
                     :src="useGetImage(props.image)"
                     :alt="props.name"
-                    class="size-28 md:w-auto object-cover rounded-lg overflow-clip"
+                    class="size-28 md:w-auto md:max-w-40 object-cover rounded-lg overflow-clip text-xs"
                 />
                 <NuxtImg
                     v-else-if="!avatar.outdated"
                     :src="avatar.thumbnail"
                     :alt="avatar.name"
-                    class="size-28 md:w-auto object-cover rounded-lg overflow-clip"
+                    class="size-28 md:w-auto md:max-w-40 object-cover rounded-lg overflow-clip text-xs"
                 />
                 <div
                     v-else

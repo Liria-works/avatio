@@ -211,7 +211,7 @@ onMounted(async () => {
                 v-if="setup.image"
                 :src="useGetImage(setup.image)"
                 :alt="setup.name"
-                class="max-h-[70vh]"
+                class="w-full max-h-[70vh]"
             />
 
             <div class="self-stretch flex xl:hidden flex-col gap-3">
