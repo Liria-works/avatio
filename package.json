@@ -8,7 +8,8 @@
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
-        "package-update": "npx npm-check-updates"
+        "package-check": "npx npm-check-updates",
+        "package-update": "npx npm-check-updates -u"
     },
     "devDependencies": {
         "@iconify-json/lucide": "^1.2.21",
