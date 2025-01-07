@@ -68,9 +68,9 @@ watch(
 
 <template>
     <div class="w-full flex">
-        <aside v-if="false" class="hidden w-80 sm:flex flex-col gap-1 px-2">
+        <div v-if="false" class="hidden w-80 sm:flex flex-col gap-1 px-2">
             <UiTitle label="検索オプション" icon="lucide:menu" />
-        </aside>
+        </div>
         <div class="flex flex-col w-full gap-5">
             <div class="w-full flex flex-col gap-3 pt-4">
                 <!-- <UiTitle
