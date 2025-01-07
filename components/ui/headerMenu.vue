@@ -20,7 +20,9 @@ const userRefresh = async () => {
             .maybeSingle();
 
         name.value = data?.name ?? null;
-        avatar.value = data?.avatar?.length ? useGetImage(data.avatar) : null;
+        avatar.value = data?.avatar?.length
+            ? useGetImage(data.avatar, { prefix: 'avatar' })
+            : null;
     } catch {
         name.value = null;
         avatar.value = null;

@@ -97,7 +97,9 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                                 <UiAvatar
                                     :url="
                                         props.author.avatar
-                                            ? useGetImage(props.author.avatar)
+                                            ? useGetImage(props.author.avatar, {
+                                                  prefix: 'avatar',
+                                              })
                                             : ''
                                     "
                                     :alt="props.author.name ?? ''"

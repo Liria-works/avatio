@@ -70,17 +70,6 @@ onMounted(async () => {
 
     userData.value = data as unknown as User;
 
-    // linksShort.value = userData.value.links.map((i) => {
-    //     const replace = (input: string) =>
-    //         input.replace('https://www.', '').replace('https://', '');
-
-    //     for (const key in linkIcons)
-    //         if (new URL(i).hostname.includes(key))
-    //             return { [replace(i)]: linkIcons[key] };
-
-    //     return { [replace(i)]: '' };
-    // });
-
     useOGP({
         title: userData.value.name,
         description: userData.value.bio,
@@ -100,7 +89,11 @@ onMounted(async () => {
                 <div class="flex gap-6 items-center">
                     <UiAvatar
                         :url="
-                            userData.avatar ? useGetImage(userData.avatar) : ''
+                            userData.avatar
+                                ? useGetImage(userData.avatar, {
+                                      prefix: 'avatar',
+                                  })
+                                : ''
                         "
                         :alt="userData.name"
                         :icon-size="36"

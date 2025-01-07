@@ -118,7 +118,9 @@ const dateLocale = date.toLocaleString('ja-JP', {
                             <UiAvatar
                                 :url="
                                     props.authorAvatar
-                                        ? useGetImage(props.authorAvatar)
+                                        ? useGetImage(props.authorAvatar, {
+                                              prefix: 'avatar',
+                                          })
                                         : ''
                                 "
                                 :alt="props.authorName ?? ''"

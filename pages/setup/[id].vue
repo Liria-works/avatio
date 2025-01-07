@@ -124,24 +124,16 @@ onMounted(async () => {
                             }"
                             class="flex flex-row gap-3 items-center"
                         >
-                            <UAvatar
-                                v-if="
-                                    setup.author.avatar &&
-                                    setup.author.avatar.length
+                            <UiAvatar
+                                :url="
+                                    setup.author.avatar
+                                        ? useGetImage(setup.author.avatar, {
+                                              prefix: 'avatar',
+                                          })
+                                        : ''
                                 "
-                                :src="useGetImage(setup.author.avatar)"
                                 :alt="setup.author.name"
                             />
-                            <div
-                                v-else
-                                class="flex items-center justify-center size-[25px] rounded-full flex-shrink-0 bg-zinc-200 dark:bg-zinc-500"
-                            >
-                                <Icon
-                                    name="lucide:user-round"
-                                    size="14"
-                                    class="text-zinc-600 dark:text-zinc-300"
-                                />
-                            </div>
                             <p
                                 class="text-black dark:text-white pb-0.5 text-left font-normal"
                             >

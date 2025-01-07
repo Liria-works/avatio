@@ -71,7 +71,11 @@ const ChangeAvatar = async () => {
 
         avatarLoading.value = true;
 
-        const uploaded = await useUploadAvatar(file);
+        const uploaded = await usePostImage(file, {
+            res: 512,
+            size: 300,
+            prefix: 'avatar',
+        });
         if (!uploaded) return faild();
 
         const { data: legacy } = await client
@@ -82,14 +86,14 @@ const ChangeAvatar = async () => {
 
         const { error } = await client
             .from('users')
-            .update({ avatar: uploaded } as never)
+            .update({ avatar: uploaded.name } as never)
             .eq('id', user.value.id);
         if (error) return faild();
 
-        if (legacy) await useDeleteImage(legacy.avatar);
+        if (legacy) await useDeleteImage(legacy.avatar, { prefix: 'avatar' });
 
         useAddToast('アバターを変更しました');
-        avatar.value = uploaded;
+        avatar.value = uploaded.name;
         avatarLoading.value = false;
     });
 };
@@ -144,10 +148,17 @@ onMounted(() => {
                         v-else-if="avatar && avatar.length"
                         class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
                     >
-                        <UAvatar
-                            :src="useGetImage(avatar)"
-                            alt="Avatar"
-                            size="3xl"
+                        <UiAvatar
+                            :url="
+                                avatar
+                                    ? useGetImage(avatar, {
+                                          prefix: 'avatar',
+                                      })
+                                    : ''
+                            "
+                            alt="User avatar"
+                            :icon-size="36"
+                            class="size-20"
                         />
                         <button
                             type="button"
@@ -173,7 +184,7 @@ onMounted(() => {
                     <template #content>
                         <button
                             type="button"
-                            class="rounded-full p-2 flex bg-zinc-900"
+                            class="rounded-full p-2 flex bg-zinc-700 dark:bg-zinc-800"
                         >
                             <Icon
                                 name="lucide:pen-line"
@@ -184,7 +195,7 @@ onMounted(() => {
                     </template>
                 </UChip>
                 <div class="flex flex-col gap-0.5 w-full">
-                    <h2 class="font-medium text-sm text-zinc-400">
+                    <h2 class="font-medium text-sm text-zinc-400 select-none">
                         ユーザー名
                     </h2>
                     <div class="gap-2 flex items-center w-full">
@@ -219,11 +230,9 @@ onMounted(() => {
                                 ユーザー名は 1 ～ 16 文字である必要があります
                             </p>
                         </div>
-                        <UButton
+                        <UiButton
                             label="保存"
-                            size="sm"
-                            variant="outline"
-                            :ui="{ rounded: 'rounded-xl' }"
+                            class="px-3 py-2"
                             @click="useSaveUsername(username)"
                         />
                     </div>
@@ -236,12 +245,12 @@ onMounted(() => {
                 class="w-full flex flex-col rounded-xl px-4 py-3 gap-2 border border-1 border-zinc-400"
             >
                 <div class="w-full flex items-center justify-between">
-                    <h2 class="text-zinc-500 text-sm font-semibold">bio</h2>
-                    <UButton
+                    <h2 class="text-zinc-500 text-sm font-semibold select-none">
+                        bio
+                    </h2>
+                    <UiButton
                         label="保存"
-                        size="sm"
-                        variant="outline"
-                        :ui="{ rounded: 'rounded-xl' }"
+                        class="px-3 py-2"
                         @click="useSaveBio(bio)"
                     />
                 </div>
@@ -282,7 +291,7 @@ onMounted(() => {
 
                 <div class="flex gap-1 items-center w-full mt-1">
                     <div
-                        class="w-full px-1 rounded-xl bg-zinc-300 dark:bg-zinc-900"
+                        class="w-full px-1 rounded-xl bg-zinc-200 dark:bg-zinc-800 ring-1 ring-zinc-300 dark:ring-zinc-700"
                     >
                         <UInput
                             v-model="linkInput"
@@ -330,7 +339,7 @@ onMounted(() => {
                         :ui="{
                             rounded: 'rounded-xl',
                         }"
-                        class="pr-3 h-[32px]"
+                        class="pr-3 h-[34px]"
                         @click="AddLink()"
                     />
                 </div>
@@ -338,10 +347,11 @@ onMounted(() => {
                     <div
                         v-for="i in links"
                         :key="'link-' + i"
-                        class="pl-5 pr-4 py-2 flex gap-3 items-center rounded-full bg-zinc-300 dark:bg-zinc-700"
+                        class="pl-5 pr-4 py-2 flex gap-3 items-center rounded-full bg-zinc-100 dark:bg-zinc-800 ring-1 ring-zinc-300 dark:ring-zinc-700"
                     >
-                        <p class="dark:text-zinc-300">{{ i }}</p>
+                        <p class="text-sm dark:text-zinc-300">{{ i }}</p>
                         <button
+                            type="button"
                             class="flex flex-shrink-0"
                             @click="RemoveLink(i)"
                         >
