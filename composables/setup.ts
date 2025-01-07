@@ -1,64 +1,3 @@
-export const usePublishSetup = async (
-    setup: {
-        name: string;
-        description: string;
-        tags: string[];
-        items: { id: number; note: string; unsupported: boolean }[];
-    },
-    file?: File | null
-): Promise<number> => {
-    const client = await useSBClient();
-
-    let image: string | null = null;
-
-    if (file) {
-        image = await usePostImage(file);
-
-        if (!image) {
-            useAddToast(
-                '画像のアップロードに失敗したため、投稿をキャンセルしました。',
-                '画像の形式が非対応の可能性があります。'
-            );
-            throw new Error();
-        }
-    }
-
-    const { data: setupData, error: setupError } = await client
-        .from('setups')
-        .insert({
-            name: setup.name,
-            description: setup.description,
-            image: image,
-        })
-        .select('id')
-        .single();
-    if (setupError) throw setupError;
-
-    const { error: itemsError } = await client.from('setup_items').insert(
-        setup.items.map((i) => {
-            return {
-                setup_id: setupData.id,
-                item_id: i.id,
-                note: i.note,
-                unsupported: i.unsupported,
-            };
-        })
-    );
-    if (itemsError) throw itemsError;
-
-    const { error: tagsError } = await client.from('setup_tags').insert(
-        setup.tags.map((i) => {
-            return {
-                setup_id: setupData.id,
-                tag: i,
-            };
-        })
-    );
-    if (tagsError) throw tagsError;
-
-    return setupData.id;
-};
-
 export const useDeleteSetup = async (id: number, image: string | null) => {
     const client = await useSBClient();
 
@@ -72,7 +11,7 @@ export const useDeleteSetup = async (id: number, image: string | null) => {
         return new Error('Faild to delete setup');
     }
 
-    if (image) await useDeleteImage(image);
+    if (image) await useDeleteImage(`setup:${image}`);
 
     useAddToast('セットアップを削除しました');
     navigateTo('/');

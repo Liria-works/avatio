@@ -92,7 +92,9 @@ onMounted(async () => {
     useOGP({
         title: setup.value.name,
         description: setup.value.description,
-        image: setup.value.image ? useGetImage(setup.value.image) : '/ogp.png',
+        image: setup.value.image
+            ? useGetImage(setup.value.image, { prefix: 'setup' })
+            : '/ogp.png',
         twitterCard: setup.value.image ? 'summary_large_image' : 'summary',
     });
 });
@@ -209,7 +211,7 @@ onMounted(async () => {
             /> -->
             <UiImage
                 v-if="setup.image"
-                :src="useGetImage(setup.image)"
+                :src="useGetImage(setup.image, { prefix: 'setup' })"
                 :alt="setup.name"
                 class="w-full max-h-[70vh]"
             />

@@ -36,7 +36,7 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
             <div class="p-2 flex-shrink-0">
                 <NuxtImg
                     v-if="props.image"
-                    :src="useGetImage(props.image)"
+                    :src="useGetImage(props.image, { prefix: 'setup' })"
                     :alt="props.name"
                     class="size-28 md:w-auto md:max-w-40 object-cover rounded-lg overflow-clip text-xs"
                 />

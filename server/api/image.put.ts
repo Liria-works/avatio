@@ -1,6 +1,19 @@
 import sharp from 'sharp';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { createStorage } from 'unstorage';
+import s3Driver from 'unstorage/drivers/s3';
 import authMiddleware from './auth';
+
+const runtime = useRuntimeConfig();
+
+const storage = createStorage({
+    driver: s3Driver({
+        accessKeyId: runtime.r2.accessKey,
+        secretAccessKey: runtime.r2.secretKey,
+        endpoint: runtime.r2.endpoint,
+        bucket: 'avatio',
+        region: 'auto',
+    }),
+});
 
 export default defineEventHandler(async (event) => {
     const authenticated = await authMiddleware(event);
@@ -10,13 +23,11 @@ export default defineEventHandler(async (event) => {
             createError({ statusCode: 403, statusMessage: 'Forbidden' })
         );
 
-    const runtime = useRuntimeConfig();
-
     const formData = await readFormData(event);
     const file = formData.get('file') as File;
     const size = formData.get('size') as string;
     const res = formData.get('res') as string;
-    const path = formData.get('path') as string;
+    const path = (formData.get('path') as string) ?? '';
 
     if (!file || !file.size)
         throw createError({ statusCode: 400, message: 'No file provided' });
@@ -42,11 +53,9 @@ export default defineEventHandler(async (event) => {
         const width = (await image.metadata()).width;
         const height = (await image.metadata()).height;
 
-        if (width && height) {
-            if (Math.max(width, height) < maxRes) {
+        if (width && height)
+            if (Math.max(width, height) < maxRes)
                 resolution = Math.max(width, height);
-            }
-        }
 
         const compressed = await image
             .resize({ width: resolution, height: resolution, fit: 'inside' })
@@ -60,30 +69,17 @@ export default defineEventHandler(async (event) => {
         );
         base64UnixTime = base64UnixTime.replace(/[\\/:*?"<>|]/g, '');
 
-        const fileName = path
-            ? `${path}/${base64UnixTime}.jpg`
-            : `${base64UnixTime}.jpg`;
+        const fileName = `${base64UnixTime}.jpg`;
+        const fileNamePrefixed = `${path.length ? `${path}:` : ''}${fileName}`;
 
-        const S3 = new S3Client({
-            region: 'auto',
-            endpoint: runtime.r2.endpoint,
-            credentials: {
-                accessKeyId: runtime.r2.accessKey,
-                secretAccessKey: runtime.r2.secretKey,
-            },
+        await storage.setItemRaw(fileNamePrefixed, compressed);
+        const success = await storage.has(fileNamePrefixed);
+
+        return Response.json({
+            path: fileName,
+            prefix: path,
+            success: success,
         });
-
-        const put = new PutObjectCommand({
-            ACL: 'public-read',
-            Body: compressed,
-            ContentType: 'image/jpeg',
-            Bucket: 'avatio',
-            Key: fileName,
-        });
-
-        const result = await S3.send(put);
-
-        return Response.json({ path: fileName, result: result });
     } catch (error) {
         console.error(error);
         throw createError({

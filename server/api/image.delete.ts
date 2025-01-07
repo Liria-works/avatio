@@ -1,5 +1,18 @@
-import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { createStorage } from 'unstorage';
+import s3Driver from 'unstorage/drivers/s3';
 import authMiddleware from './auth';
+
+const runtime = useRuntimeConfig();
+
+const storage = createStorage({
+    driver: s3Driver({
+        accessKeyId: runtime.r2.accessKey,
+        secretAccessKey: runtime.r2.secretKey,
+        endpoint: runtime.r2.endpoint,
+        bucket: 'avatio',
+        region: 'auto',
+    }),
+});
 
 export default defineEventHandler(async (event) => {
     const authenticated = await authMiddleware(event);
@@ -9,29 +22,16 @@ export default defineEventHandler(async (event) => {
             createError({ statusCode: 403, statusMessage: 'Forbidden' })
         );
 
-    const runtime = useRuntimeConfig();
+    const query: { path: string } = getQuery(event);
 
-    const S3 = new S3Client({
-        region: 'auto',
-        endpoint: runtime.r2.endpoint,
-        credentials: {
-            accessKeyId: runtime.r2.accessKey,
-            secretAccessKey: runtime.r2.secretKey,
-        },
-    });
-
-    const query = getQuery(event);
-    const path = query.path;
-
-    if (!path)
+    if (!query.path)
         return Response.json({ message: 'No path provided', status: 400 });
 
-    const del = new DeleteObjectCommand({
-        Bucket: 'avatio',
-        Key: path.toString(),
+    await storage.del(query.path);
+    const success = !(await storage.has(query.path));
+
+    return Response.json({
+        path: query.path,
+        success: success,
     });
-
-    const result = await S3.send(del);
-
-    return result;
 });

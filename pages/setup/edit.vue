@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const router = useRouter();
 const skip_router_hook = ref(false);
+const client = await useSBClient();
 
 const publishing = ref(false);
 
@@ -15,25 +16,64 @@ const image = ref<File | null>(null);
 const PublishSetup = async () => {
     publishing.value = true;
 
-    if (!items.value.filter((i) => i.category === 208).length) {
-        useAddToast(ERROR_MESSAGES.NO_AVATAR);
-        publishing.value = false;
-        return;
-    }
-
     try {
-        const id = await usePublishSetup(
-            {
+        if (!items.value.filter((i) => i.category === 208).length)
+            return useAddToast(ERROR_MESSAGES.NO_AVATAR);
+
+        let imagePath: string | null = null;
+
+        if (image.value) {
+            const uploadResult = await usePostImage(image.value, {
+                res: 1920,
+                size: 1500,
+                prefix: 'setup',
+            });
+
+            if (!uploadResult) {
+                useAddToast(
+                    '画像のアップロードに失敗したため、投稿をキャンセルしました。',
+                    '画像の形式が非対応の可能性があります。'
+                );
+                throw new Error();
+            } else imagePath = uploadResult.name;
+        }
+
+        const { data: setupData, error: setupError } = await client
+            .from('setups')
+            .insert({
                 name: title.value,
                 description: description.value,
-                tags: tags.value,
-                items: items.value,
-            },
-            image.value
+                image: imagePath,
+            })
+            .select('id')
+            .single();
+        if (setupError) throw setupError;
+
+        const { error: itemsError } = await client.from('setup_items').insert(
+            items.value.map((i) => {
+                return {
+                    setup_id: setupData.id,
+                    item_id: i.id,
+                    note: i.note,
+                    unsupported: i.unsupported,
+                };
+            })
         );
+        if (itemsError) throw itemsError;
+
+        const { error: tagsError } = await client.from('setup_tags').insert(
+            tags.value.map((i) => {
+                return {
+                    setup_id: setupData.id,
+                    tag: i,
+                };
+            })
+        );
+        if (tagsError) throw tagsError;
+
         useAddToast('セットアップを公開しました。');
         skip_router_hook.value = true;
-        navigateTo(`/setup/${id}`);
+        navigateTo(`/setup/${setupData.id}`);
     } catch (error) {
         console.error(error);
         useAddToast('セットアップの公開に失敗しました。');
@@ -44,10 +84,8 @@ const PublishSetup = async () => {
 
 onBeforeRouteLeave(
     (to: unknown, from: unknown, next: (arg0: boolean | undefined) => void) => {
-        if (skip_router_hook.value) {
-            next(true);
-            return;
-        }
+        if (skip_router_hook.value) return next(true);
+
         if (
             title.value ||
             description.value ||
@@ -59,9 +97,7 @@ onBeforeRouteLeave(
             );
             if (answer) next(true);
             else next(false);
-        } else {
-            next(true);
-        }
+        } else next(true);
     }
 );
 

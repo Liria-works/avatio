@@ -41,7 +41,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                 class="w-full p-1.5 aspect-video"
             >
                 <NuxtImg
-                    :src="useGetImage(props.image)"
+                    :src="useGetImage(props.image, { prefix: 'setup' })"
                     preset="thumbnail"
                     :placeholder="[50, 25, 75, 5]"
                     class="size-full max-h-[420px] rounded-lg object-cover"
@@ -51,7 +51,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
         <template #thumbnail>
             <NuxtImg
                 v-if="props.image && noHero"
-                :src="useGetImage(props.image)"
+                :src="useGetImage(props.image, { prefix: 'setup' })"
                 :alt="props.name"
                 preset="avatarThumbnail"
                 :placeholder="[30, 30, 75, 5]"
