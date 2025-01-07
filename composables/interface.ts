@@ -39,7 +39,8 @@ export const useAvatarName = (text: string) => {
         .replace(/』/g, ' ')
         .replace(/【/g, ' ')
         .replace(/】/g, ' ')
-        .replace(/ {2}/g, ' ');
+        .replace(/ {2}/g, ' ')
+        .trim();
 };
 
 export const useDateElapsed = (date: Date) => {

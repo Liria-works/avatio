@@ -1,26 +1,28 @@
 <script lang="ts" setup>
-const props = withDefaults(
-    defineProps<{
-        id: number;
-        name: string;
-        avatarName: string;
-        avatarThumbnail: string;
-        avatarOutdated: boolean;
-        authorId: string;
-        authorName: string;
-        authorAvatar: string | null;
-        createdAt: string;
-        image: string | null;
-        imageSize?: { width: number; height: number } | null;
-        noHero?: boolean;
-        noUser?: boolean;
-    }>(),
-    {
-        image: null,
-        imageSize: null,
-        noHero: false,
-    }
-);
+interface Props {
+    link?: boolean;
+    id: number;
+    name: string;
+    avatarName: string;
+    avatarThumbnail: string;
+    avatarOutdated: boolean;
+    authorId: string;
+    authorName: string;
+    authorAvatar: string | null;
+    createdAt: string;
+    image: string | null;
+    imageSize?: { width: number; height: number } | null;
+    noHero?: boolean;
+    noUser?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+    link: true,
+    image: null,
+    imageSize: null,
+    noHero: false,
+});
+
+const emit = defineEmits(['click']);
 
 const date = new Date(props.createdAt);
 const dateLocale = date.toLocaleString('ja-JP', {
@@ -32,8 +34,16 @@ const dateLocale = date.toLocaleString('ja-JP', {
 
 <template>
     <ItemBase
-        :to="{ name: 'setup-id', params: { id: props.id } }"
-        class="hover:bg-zinc-200 dark:hover:bg-zinc-700 transition duration-50 delay-0 ease-in-out"
+        :to="
+            props.link
+                ? { name: 'setup-id', params: { id: props.id } }
+                : undefined
+        "
+        :class="[
+            'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:shadow-xl shadow-black',
+            'transition duration-50 ease-in-out',
+        ]"
+        @click="emit('click')"
     >
         <template #hero>
             <div
@@ -76,7 +86,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
         </template>
         <template #main>
             <div
-                class="w-full py-2 pr-2 pl-3 flex flex-col justify-center gap-1.5"
+                class="w-full py-2 pr-2 pl-3 flex flex-col items-start justify-center gap-1.5"
             >
                 <span
                     :class="[
@@ -124,8 +134,8 @@ const dateLocale = date.toLocaleString('ja-JP', {
                                         : ''
                                 "
                                 :alt="props.authorName ?? ''"
-                                :icon-size="14"
-                                class="size-6"
+                                :icon-size="12"
+                                class="size-5"
                             />
                         </NuxtLink>
                     </UiTooltip>

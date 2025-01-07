@@ -5,7 +5,7 @@ interface Props {
     url: string;
     alt: string;
     iconSize?: number;
-    class?: string;
+    class?: string | string[];
 }
 
 const props = defineProps<Props>();

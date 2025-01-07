@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 const props = defineProps<{
     label?: string;
     icon?: string;
-    class?: string;
+    class?: string | string[];
     borderClass?: string;
 }>();
 </script>

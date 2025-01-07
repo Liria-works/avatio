@@ -30,7 +30,10 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
 <template>
     <ItemBase
         :to="{ name: 'setup-id', params: { id: props.id } }"
-        class="hover:bg-zinc-200 dark:hover:bg-zinc-700 transition duration-50 delay-0 ease-in-out"
+        :class="[
+            'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:shadow-xl shadow-black',
+            'transition duration-50 ease-in-out',
+        ]"
     >
         <template #thumbnail>
             <div class="p-2 flex-shrink-0">

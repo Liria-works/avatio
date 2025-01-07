@@ -15,7 +15,7 @@ const props = withDefaults(
         variant?: 'outline' | 'flat' | 'link';
         tooltip?: string;
         // eslint-disable-next-line vue/require-default-prop
-        class?: string;
+        class?: string | string[];
         // eslint-disable-next-line vue/require-default-prop
         iconClass?: string;
         wFull?: boolean;

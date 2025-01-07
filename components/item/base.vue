@@ -4,9 +4,11 @@ import { twMerge } from 'tailwind-merge';
 interface Props {
     to?: string | object;
     tabindex?: number;
-    class?: string;
+    class?: string | string[];
 }
 const props = defineProps<Props>();
+
+const emit = defineEmits(['click']);
 
 const customLink = defineNuxtLink({
     componentName: 'customLink',
@@ -16,15 +18,17 @@ const customLink = defineNuxtLink({
 
 <template>
     <component
-        :is="props.to ? customLink : 'div'"
+        :is="props.to ? customLink : 'button'"
         :to="props.to"
         :tabindex="props.to ? (props.tabindex ?? 0) : undefined"
+        type="button"
         :class="
             twMerge(
-                'w-full flex flex-col border border-zinc-300 dark:border-zinc-600 rounded-lg overflow-clip',
+                'w-full flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600 rounded-lg overflow-clip',
                 props.class
             )
         "
+        @click="emit('click')"
     >
         <div class="empty:hidden w-full">
             <slot name="hero" />

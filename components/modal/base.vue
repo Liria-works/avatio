@@ -2,7 +2,7 @@
 import { twMerge } from 'tailwind-merge';
 
 interface Props {
-    class?: string;
+    class?: string | string[];
 }
 const props = defineProps<Props>();
 
@@ -17,12 +17,15 @@ const vis = defineModel<boolean>({
             <slot name="trigger" />
         </DialogTrigger> -->
         <DialogPortal>
-            <DialogOverlay class="bg-black/50 fixed inset-0 z-30" />
+            <DialogOverlay
+                class="z-30 fixed inset-0 backdrop-blur-md animate-in fade-in transition-all duration-200 ease-in-out"
+            />
             <DialogContent
                 :class="
                     twMerge(
                         'z-[100] fixed inset-0 place-self-center max-h-[85vh] w-[90vw] max-w-[450px] p-6 flex flex-col gap-5',
-                        'rounded-2xl bg-zinc-100 dark:bg-zinc-900 focus:outline-none border border-zinc-300 dark:border-zinc-700 shadow-lg shadow-black/50',
+                        'rounded-2xl bg-zinc-100 dark:bg-zinc-900 focus:outline-none border border-zinc-300 dark:border-zinc-700 shadow-xl',
+                        'animate-in slide-in-from-bottom-10 fade-in ease-in-out',
                         props.class
                     )
                 "

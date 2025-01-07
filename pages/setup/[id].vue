@@ -101,117 +101,176 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div
-        v-if="setup"
-        class="w-full flex flex-col xl:flex-row items-start gap-8"
-    >
-        <div class="w-full flex flex-col items-center gap-8">
-            <div class="w-full flex flex-col gap-3">
-                <h1
-                    class="w-full text-left text-2xl font-bold line-clamp-2 break-keep [overflow-wrap:anywhere;] text-black dark:text-white"
-                >
-                    {{ useSentence(setup.name) || '' }}
-                </h1>
-
-                <div class="w-full gap-3 flex flex-wrap items-center">
-                    <div
-                        class="grow flex flex-wrap items-center gap-x-5 gap-y-2"
+    <div v-if="setup" class="flex flex-col gap-8">
+        <div class="w-full flex flex-col xl:flex-row items-start gap-8">
+            <div class="w-full flex flex-col items-center gap-8">
+                <div class="w-full flex flex-col gap-3">
+                    <h1
+                        class="w-full text-left text-2xl font-bold line-clamp-2 break-keep [overflow-wrap:anywhere;] text-black dark:text-white"
                     >
-                        <NuxtLink
-                            :to="{
-                                name: 'user-id',
-                                params: { id: setup.author.id },
-                            }"
-                            class="flex flex-row gap-3 items-center"
-                        >
-                            <UiAvatar
-                                :url="
-                                    setup.author.avatar
-                                        ? useGetImage(setup.author.avatar, {
-                                              prefix: 'avatar',
-                                          })
-                                        : ''
-                                "
-                                :alt="setup.author.name"
-                            />
-                            <p
-                                class="text-black dark:text-white pb-0.5 text-left font-normal"
-                            >
-                                {{ setup.author.name }}
-                            </p>
-                        </NuxtLink>
+                        {{ useSentence(setup.name) || '' }}
+                    </h1>
 
-                        <div class="flex items-center gap-2">
-                            <p
-                                class="text-sm text-zinc-500 dark:text-zinc-400 whitespace-nowrap leading-none"
+                    <div class="w-full gap-3 flex flex-wrap items-center">
+                        <div
+                            class="grow flex flex-wrap items-center gap-x-5 gap-y-2"
+                        >
+                            <NuxtLink
+                                :to="{
+                                    name: 'user-id',
+                                    params: { id: setup.author.id },
+                                }"
+                                class="flex flex-row gap-3 items-center"
                             >
-                                {{ useLocaledDate(new Date(setup.created_at)) }}
-                                に公開
-                            </p>
+                                <UiAvatar
+                                    :url="
+                                        setup.author.avatar
+                                            ? useGetImage(setup.author.avatar, {
+                                                  prefix: 'avatar',
+                                              })
+                                            : ''
+                                    "
+                                    :alt="setup.author.name"
+                                />
+                                <p
+                                    class="text-black dark:text-white pb-0.5 text-left font-normal"
+                                >
+                                    {{ setup.author.name }}
+                                </p>
+                            </NuxtLink>
+
+                            <div class="flex items-center gap-2">
+                                <p
+                                    class="text-sm text-zinc-500 dark:text-zinc-400 whitespace-nowrap leading-none"
+                                >
+                                    {{
+                                        useLocaledDate(
+                                            new Date(setup.created_at)
+                                        )
+                                    }}
+                                    に公開
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-1">
+                            <UiButton
+                                v-if="user?.id !== setup.author.id"
+                                :tooltip="
+                                    bookmark
+                                        ? 'ブックマークから削除'
+                                        : 'ブックマーク'
+                                "
+                                :icon="
+                                    bookmark
+                                        ? 'lucide:bookmark-x'
+                                        : 'lucide:bookmark'
+                                "
+                                padding=""
+                                class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
+                                :icon-class="
+                                    bookmark
+                                        ? 'text-red-500 dark:text-red-400'
+                                        : 'text-zinc-600 dark:text-zinc-300'
+                                "
+                                @click="toggleBookmark"
+                            />
+
+                            <UiButton
+                                v-if="user?.id === setup.author.id"
+                                tooltip="削除"
+                                icon="lucide:trash"
+                                :icon-size="18"
+                                class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
+                                icon-class="text-red-400 dark:text-red-300"
+                                @click="modalDelete = true"
+                            />
+
+                            <PopupShare
+                                :setup-name="setup.name"
+                                :setup-description="
+                                    setup.description ? setup.description : ''
+                                "
+                                :setup-author="setup.author.name"
+                            />
                         </div>
                     </div>
+                </div>
 
-                    <div class="flex items-center gap-1">
-                        <UiButton
-                            v-if="user?.id !== setup.author.id"
-                            :tooltip="
-                                bookmark
-                                    ? 'ブックマークから削除'
-                                    : 'ブックマーク'
-                            "
-                            :icon="
-                                bookmark
-                                    ? 'lucide:bookmark-x'
-                                    : 'lucide:bookmark'
-                            "
-                            padding=""
-                            class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
-                            :icon-class="
-                                bookmark
-                                    ? 'text-red-500 dark:text-red-400'
-                                    : 'text-zinc-600 dark:text-zinc-300'
-                            "
-                            @click="toggleBookmark"
-                        />
+                <UiImage
+                    v-if="setup.image"
+                    :src="useGetImage(setup.image, { prefix: 'setup' })"
+                    :alt="setup.name"
+                    class="w-full max-h-[70vh]"
+                />
 
-                        <UiButton
-                            v-if="user?.id === setup.author.id"
-                            tooltip="削除"
-                            icon="lucide:trash"
-                            :icon-size="18"
-                            class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
-                            icon-class="text-red-400 dark:text-red-300"
-                            @click="modalDelete = true"
-                        />
+                <div class="self-stretch flex xl:hidden flex-col gap-3">
+                    <div
+                        v-if="setup.description"
+                        class="self-stretch rounded-lg flex flex-col gap-1.5 px-3 py-2 border border-zinc-300 dark:border-zinc-600"
+                    >
+                        <p class="text-zinc-500 text-sm mt-1 leading-none">
+                            説明
+                        </p>
+                        <p
+                            class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
+                        >
+                            {{ useSentence(setup.description) }}
+                        </p>
+                    </div>
 
-                        <PopupShare
-                            :setup-name="setup.name"
-                            :setup-description="
-                                setup.description ? setup.description : ''
-                            "
-                            :setup-author="setup.author.name"
+                    <div
+                        v-if="setup.tags && setup.tags.length"
+                        class="items-center gap-1.5 flex flex-row flex-wrap"
+                    >
+                        <button
+                            v-for="tag in setup.tags"
+                            :key="useId()"
+                            type="button"
+                            class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-zinc-400 dark:border-zinc-500 hover:bg-zinc-300 hover:dark:bg-zinc-600 text-zinc-900 dark:text-zinc-200"
+                            @click="navigateTo(`/search?tag=${tag.tag}`)"
+                        >
+                            {{ tag.tag }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="w-full flex flex-col gap-3">
+                    <div
+                        v-for="item in items"
+                        :key="useId()"
+                        :class="[
+                            'w-full flex flex-col gap-3',
+                            item.items.length ? '' : 'hidden',
+                        ]"
+                    >
+                        <UiTitle :label="item.label" :icon="item.icon" />
+
+                        <ItemBooth
+                            v-for="i in item.items"
+                            :id="i.id"
+                            :key="useId()"
+                            :size="i.category === 208 ? 'lg' : 'md'"
+                            :note="i.note"
+                            :unsupported="i.unsupported"
+                            :name="i.name"
+                            :thumbnail="i.thumbnail"
+                            :price="i.price"
+                            :shop="i.shop"
+                            :nsfw="i.nsfw"
+                            :updated-at="i.updated_at"
+                            :outdated="i.outdated"
                         />
                     </div>
                 </div>
             </div>
 
-            <!-- <NuxtImg
-                v-if="setup.image"
-                :src="useGetImage(setup.image)"
-                :alt="setup.name"
-                class="rounded-xl max-h-[70vh] content-stretch"
-            /> -->
-            <UiImage
-                v-if="setup.image"
-                :src="useGetImage(setup.image, { prefix: 'setup' })"
-                :alt="setup.name"
-                class="w-full max-h-[70vh]"
-            />
-
-            <div class="self-stretch flex xl:hidden flex-col gap-3">
+            <div
+                class="empty:hidden w-full xl:w-96 xl:pt-12 flex flex-col gap-6"
+            >
                 <div
                     v-if="setup.description"
-                    class="self-stretch rounded-lg flex flex-col gap-1.5 px-3 py-2 border border-zinc-300 dark:border-zinc-600"
+                    class="hidden xl:flex flex-col self-stretch rounded-lg gap-1.5 px-3 py-2 border border-zinc-300 dark:border-zinc-600"
                 >
                     <p class="text-zinc-500 text-sm mt-1 leading-none">説明</p>
                     <p
@@ -223,7 +282,7 @@ onMounted(async () => {
 
                 <div
                     v-if="setup.tags && setup.tags.length"
-                    class="items-center gap-1.5 flex flex-row flex-wrap"
+                    class="hidden xl:flex flex-wrap items-center gap-1.5"
                 >
                     <button
                         v-for="tag in setup.tags"
@@ -236,78 +295,20 @@ onMounted(async () => {
                     </button>
                 </div>
             </div>
-
-            <div class="w-full flex flex-col gap-3">
-                <div
-                    v-for="item in items"
-                    :key="useId()"
-                    :class="[
-                        'w-full flex flex-col gap-3',
-                        item.items.length ? '' : 'hidden',
-                    ]"
-                >
-                    <UiTitle :label="item.label" :icon="item.icon" />
-
-                    <ItemBooth
-                        v-for="i in item.items"
-                        :id="i.id"
-                        :key="useId()"
-                        :size="i.category === 208 ? 'lg' : 'md'"
-                        :note="i.note"
-                        :unsupported="i.unsupported"
-                        :name="i.name"
-                        :thumbnail="i.thumbnail"
-                        :price="i.price"
-                        :shop="i.shop"
-                        :nsfw="i.nsfw"
-                        :updated-at="i.updated_at"
-                        :outdated="i.outdated"
-                    />
-                </div>
-            </div>
         </div>
 
-        <div class="w-full xl:w-96 xl:pt-12 flex flex-col gap-6">
-            <div
-                v-if="setup.description"
-                class="hidden xl:flex flex-col self-stretch rounded-lg gap-1.5 px-3 py-2 border border-zinc-300 dark:border-zinc-600"
-            >
-                <p class="text-zinc-500 text-sm mt-1 leading-none">説明</p>
-                <p
-                    class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
-                >
-                    {{ useSentence(setup.description) }}
-                </p>
-            </div>
-
-            <div
-                v-if="setup.tags && setup.tags.length"
-                class="hidden xl:flex flex-wrap items-center gap-1.5"
-            >
-                <button
-                    v-for="tag in setup.tags"
-                    :key="useId()"
-                    type="button"
-                    class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-zinc-400 dark:border-zinc-500 hover:bg-zinc-300 hover:dark:bg-zinc-600 text-zinc-900 dark:text-zinc-200"
-                    @click="navigateTo(`/search?tag=${tag.tag}`)"
-                >
-                    {{ tag.tag }}
-                </button>
-            </div>
-
-            <UiButton
-                label="セットアップを報告"
-                icon="lucide:flag"
-                :icon-size="16"
-                variant="flat"
-                class="px-3 py-2 mt-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-300 hover:dark:bg-zinc-700"
-                icon-class="text-red-400 dark:text-red-400"
-                @click="
-                    if (user) modalReport = true;
-                    else modalLogin = true;
-                "
-            />
-        </div>
+        <UiButton
+            label="セットアップを報告"
+            icon="lucide:flag"
+            :icon-size="16"
+            variant="flat"
+            class="px-3 py-2 mt-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-300 hover:dark:bg-zinc-700"
+            icon-class="text-red-400 dark:text-red-400"
+            @click="
+                if (user) modalReport = true;
+                else modalLogin = true;
+            "
+        />
 
         <ModalBase v-model="modalLogin">
             <UiLogin

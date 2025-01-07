@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 interface Props {
     src: string;
     alt: string;
-    class?: string;
+    class?: string | string[];
 }
 const props = defineProps<Props>();
 
