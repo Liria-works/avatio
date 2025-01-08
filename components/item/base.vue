@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 
 interface Props {
     to?: string | object;
+    is?: HTMLElement;
     tabindex?: number;
     class?: string | string[];
 }
@@ -18,7 +19,7 @@ const customLink = defineNuxtLink({
 
 <template>
     <component
-        :is="props.to ? customLink : 'button'"
+        :is="props.to ? customLink : (props.is ?? 'div')"
         :to="props.to"
         :tabindex="props.to ? (props.tabindex ?? 0) : undefined"
         type="button"

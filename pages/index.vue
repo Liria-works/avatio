@@ -98,17 +98,18 @@ onMounted(async () => {
                 :min-columns="1"
                 :max-columns="4"
                 :ssr-columns="4"
+                class="p-1"
             >
                 <template #default="{ item }">
                     <ItemSetup
                         :id="item.id"
                         :name="item.name"
-                        :avatar-name="item.avatars[0].name"
-                        :avatar-thumbnail="item.avatars[0].thumbnail"
-                        :avatar-outdated="item.avatars[0].outdated"
-                        :author-id="item.author.id"
-                        :author-name="item.author.name"
-                        :author-avatar="item.author.avatar"
+                        :avatar="{
+                            name: item.avatars[0].name,
+                            thumbnail: item.avatars[0].thumbnail,
+                            outdated: item.avatars[0].outdated,
+                        }"
+                        :author="item.author"
                         :created-at="item.created_at"
                         :image="item.image"
                         :image-size="{ width: 16, height: 9 }"

@@ -13,12 +13,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
 <template>
     <PopupBase>
         <template #trigger>
-            <UiButton
-                icon="lucide:share-2"
-                :icon-size="18"
-                tooltip="シェア"
-                class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
-            />
+            <slot />
         </template>
 
         <template #panel>

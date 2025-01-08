@@ -166,7 +166,7 @@ onMounted(async () => {
                                         ? 'lucide:bookmark-x'
                                         : 'lucide:bookmark'
                                 "
-                                padding=""
+                                variant="flat"
                                 class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                                 :icon-class="
                                     bookmark
@@ -181,6 +181,7 @@ onMounted(async () => {
                                 tooltip="削除"
                                 icon="lucide:trash"
                                 :icon-size="18"
+                                variant="flat"
                                 class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                                 icon-class="text-red-400 dark:text-red-300"
                                 @click="modalDelete = true"
@@ -192,7 +193,15 @@ onMounted(async () => {
                                     setup.description ? setup.description : ''
                                 "
                                 :setup-author="setup.author.name"
-                            />
+                            >
+                                <UiButton
+                                    icon="lucide:share-2"
+                                    :icon-size="18"
+                                    tooltip="シェア"
+                                    variant="flat"
+                                    class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
+                                />
+                            </PopupShare>
                         </div>
                     </div>
                 </div>
@@ -223,15 +232,12 @@ onMounted(async () => {
                         v-if="setup.tags && setup.tags.length"
                         class="items-center gap-1.5 flex flex-row flex-wrap"
                     >
-                        <button
+                        <UiButton
                             v-for="tag in setup.tags"
                             :key="useId()"
-                            type="button"
-                            class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-zinc-400 dark:border-zinc-500 hover:bg-zinc-300 hover:dark:bg-zinc-600 text-zinc-900 dark:text-zinc-200"
+                            :label="tag.tag"
                             @click="navigateTo(`/search?tag=${tag.tag}`)"
-                        >
-                            {{ tag.tag }}
-                        </button>
+                        />
                     </div>
                 </div>
 
@@ -266,11 +272,11 @@ onMounted(async () => {
             </div>
 
             <div
-                class="empty:hidden w-full xl:w-96 xl:pt-12 flex flex-col gap-6"
+                class="empty:hidden w-full xl:w-[440px] xl:pt-12 flex flex-col gap-6"
             >
                 <div
                     v-if="setup.description"
-                    class="hidden xl:flex flex-col self-stretch rounded-lg gap-1.5 px-3 py-2 border border-zinc-300 dark:border-zinc-600"
+                    class="hidden xl:flex flex-col self-stretch rounded-xl gap-1.5 px-3.5 py-2.5 border border-zinc-300 dark:border-zinc-600"
                 >
                     <p class="text-zinc-500 text-sm mt-1 leading-none">説明</p>
                     <p
@@ -284,15 +290,13 @@ onMounted(async () => {
                     v-if="setup.tags && setup.tags.length"
                     class="hidden xl:flex flex-wrap items-center gap-1.5"
                 >
-                    <button
+                    <UiButton
                         v-for="tag in setup.tags"
                         :key="useId()"
-                        type="button"
-                        class="px-3.5 py-2 rounded-full text-sm font-semibold border border-1 border-zinc-400 dark:border-zinc-500 hover:bg-zinc-300 hover:dark:bg-zinc-600 text-zinc-900 dark:text-zinc-200"
+                        :label="tag.tag"
+                        class="rounded-full"
                         @click="navigateTo(`/search?tag=${tag.tag}`)"
-                    >
-                        {{ tag.tag }}
-                    </button>
+                    />
                 </div>
             </div>
         </div>

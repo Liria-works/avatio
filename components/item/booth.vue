@@ -133,7 +133,7 @@ onMounted(async () => {
                 <div
                     :class="[
                         'w-fit flex flex-col gap-3 items-start justify-center',
-                        props.size === 'lg' ? 'h-20 sm:h-32' : 'h-20',
+                        props.size === 'lg' ? 'h-20 sm:h-32 pl-1.5' : 'h-20',
                     ]"
                 >
                     <div class="w-fit flex items-center gap-2">
@@ -144,7 +144,7 @@ onMounted(async () => {
                         >
                             <p
                                 :class="[
-                                    'w-fit font-medium text-sm sm:text-base break-keep text-black dark:text-white',
+                                    'w-fit font-medium text-sm sm:text-base text-left break-keep text-black dark:text-white',
                                     props.size === 'lg'
                                         ? 'line-clamp-2'
                                         : 'line-clamp-2 sm:line-clamp-1',
@@ -172,28 +172,30 @@ onMounted(async () => {
                             {{ item.price ? item.price : '価格不明' }}
                         </NuxtLink>
 
-                        <NuxtLink
-                            :to="`https://${item.shop.id}.booth.pm/`"
-                            target="_blank"
-                            class="flex items-center gap-1.5 w-fit"
-                        >
-                            <NuxtImg
-                                :src="item.shop.thumbnail"
-                                :alt="item.shop.name"
-                                class="size-5 rounded-md border border-zinc-300"
-                            />
-                            <span
-                                class="font-semibold text-xs line-clamp-1 break-all leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
+                        <HovercardShop :shop="item.shop">
+                            <NuxtLink
+                                :to="`https://${item.shop.id}.booth.pm/`"
+                                target="_blank"
+                                class="flex items-center gap-1.5 w-fit"
                             >
-                                {{ item.shop.name }}
-                            </span>
-                            <Icon
-                                v-if="item.shop.verified"
-                                name="lucide:check"
-                                :size="16"
-                                class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
-                            />
-                        </NuxtLink>
+                                <NuxtImg
+                                    :src="item.shop.thumbnail"
+                                    :alt="item.shop.name"
+                                    class="size-5 rounded-md border border-zinc-300"
+                                />
+                                <span
+                                    class="font-semibold text-xs line-clamp-1 break-all leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
+                                >
+                                    {{ item.shop.name }}
+                                </span>
+                                <Icon
+                                    v-if="item.shop.verified"
+                                    name="lucide:check"
+                                    :size="16"
+                                    class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
+                                />
+                            </NuxtLink>
+                        </HovercardShop>
                     </div>
                 </div>
                 <div class="w-fit gap-3 flex flex-shrink-0 items-center">
@@ -225,7 +227,7 @@ onMounted(async () => {
         <template #under>
             <div
                 v-if="props.note"
-                class="w-full m-2 mt-0 px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700"
+                class="w-full m-2 mt-0 px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700"
             >
                 <Icon
                     name="lucide:pen-line"
@@ -233,7 +235,7 @@ onMounted(async () => {
                     class="flex-shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
                 />
                 <p
-                    class="text-xs/relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-zinc-800 dark:text-zinc-200"
+                    class="text-xs/relaxed text-left break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                 >
                     {{ props.note }}
                 </p>
@@ -243,12 +245,12 @@ onMounted(async () => {
 
     <ItemBase v-else>
         <template #main>
-            <div class="h-20 flex items-center px-5 gap-4">
+            <div class="h-20 flex items-center gap-2">
                 <Icon
                     name="lucide:file-question"
-                    class="size-5 text-zinc-700 dark:text-zinc-200"
+                    class="size-6 m-8 text-zinc-700 dark:text-zinc-200"
                 />
-                <div class="flex flex-col gap-3 pb-0.5">
+                <div class="flex flex-col items-start gap-3 pb-0.5">
                     <p
                         class="text-sm font-semibold leading-none text-zinc-900 dark:text-zinc-100"
                     >

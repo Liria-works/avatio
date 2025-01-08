@@ -1,20 +1,22 @@
 <script lang="ts" setup>
-const props = withDefaults(
-    defineProps<{
-        id: number;
-        createdAt: string;
-        name: string;
-        description: string | null;
-        image: string | null;
-        author: Author;
-        items: Item[];
-        setupItems?: boolean;
-    }>(),
-    {
-        image: null,
-        setupItems: false,
-    }
-);
+interface Props {
+    link?: boolean;
+    id: number;
+    createdAt: string;
+    name: string;
+    description: string | null;
+    image: string | null;
+    author: Author;
+    items: Item[];
+    setupItems?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+    link: true,
+    image: null,
+    setupItems: false,
+});
+
+const emit = defineEmits(['click']);
 
 const date = new Date(props.createdAt);
 const dateLocale = date.toLocaleString('ja-JP', {
@@ -29,11 +31,16 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
 
 <template>
     <ItemBase
-        :to="{ name: 'setup-id', params: { id: props.id } }"
+        :to="
+            props.link
+                ? { name: 'setup-id', params: { id: props.id } }
+                : undefined
+        "
         :class="[
-            'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:shadow-xl shadow-black',
+            'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:shadow-xl shadow-black dark:shadow-white/10',
             'transition duration-50 ease-in-out',
         ]"
+        @click="emit('click')"
     >
         <template #thumbnail>
             <div class="p-2 flex-shrink-0">
@@ -59,7 +66,7 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
         </template>
         <template #main>
             <div class="w-full flex flex-col gap-3 justify-between px-4 py-5">
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col items-start gap-1">
                     <p
                         class="text-lg font-medium text-zinc-700 dark:text-zinc-200 break-all line-clamp-1"
                     >
@@ -89,7 +96,7 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                                 {{ useDateElapsed(date) }}
                             </p>
                         </UiTooltip>
-                        <UiTooltip :text="props.author.name">
+                        <HovercardUser :user="props.author">
                             <NuxtLink
                                 :to="{
                                     name: 'user-id',
@@ -110,7 +117,7 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                                     class="size-6"
                                 />
                             </NuxtLink>
-                        </UiTooltip>
+                        </HovercardUser>
                     </div>
                 </div>
             </div>

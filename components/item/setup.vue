@@ -3,12 +3,8 @@ interface Props {
     link?: boolean;
     id: number;
     name: string;
-    avatarName: string;
-    avatarThumbnail: string;
-    avatarOutdated: boolean;
-    authorId: string;
-    authorName: string;
-    authorAvatar: string | null;
+    avatar: { name: string; thumbnail: string; outdated: boolean };
+    author: Author;
     createdAt: string;
     image: string | null;
     imageSize?: { width: number; height: number } | null;
@@ -40,7 +36,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                 : undefined
         "
         :class="[
-            'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:shadow-xl shadow-black',
+            'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:shadow-xl shadow-black dark:shadow-white/10',
             'transition duration-50 ease-in-out',
         ]"
         @click="emit('click')"
@@ -70,7 +66,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
 
             <NuxtImg
                 v-if="!props.image"
-                :src="props.avatarThumbnail"
+                :src="props.avatar.thumbnail"
                 :alt="props.name"
                 preset="avatarThumbnail"
                 :placeholder="[30, 30, 75, 5]"
@@ -78,7 +74,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
             />
 
             <div
-                v-else-if="props.avatarOutdated"
+                v-else-if="props.avatar.outdated"
                 class="size-14 my-1.5 ml-1.5 rounded-lg flex flex-shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
             >
                 ?
@@ -86,7 +82,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
         </template>
         <template #main>
             <div
-                class="w-full py-2 pr-2 pl-3 flex flex-col items-start justify-center gap-1.5"
+                class="w-full py-2 pr-2 pl-3 flex flex-col items-start justify-center gap-2"
             >
                 <span
                     :class="[
@@ -99,15 +95,22 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     {{ props.name }}
                 </span>
 
-                <span
-                    class="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"
-                >
-                    {{
-                        !props.avatarOutdated
-                            ? useAvatarName(props.avatarName)
-                            : '不明なベースアバター'
-                    }}
-                </span>
+                <div class="flex items-center gap-1">
+                    <Icon
+                        name="lucide:person-standing"
+                        size="15"
+                        class="bg-zinc-500 dark:bg-zinc-400"
+                    />
+                    <span
+                        class="text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"
+                    >
+                        {{
+                            !props.avatar.outdated
+                                ? useAvatarName(props.avatar.name)
+                                : '不明なベースアバター'
+                        }}
+                    </span>
+                </div>
 
                 <div class="self-end flex items-center gap-2">
                     <UiTooltip :text="dateLocale">
@@ -117,28 +120,28 @@ const dateLocale = date.toLocaleString('ja-JP', {
                             {{ useDateElapsed(date) }}
                         </p>
                     </UiTooltip>
-                    <UiTooltip v-if="!noUser" :text="props.authorName">
+                    <HovercardUser v-if="!noUser" :user="props.author">
                         <NuxtLink
                             :to="{
                                 name: 'user-id',
-                                params: { id: props.authorId },
+                                params: { id: props.author.id },
                             }"
                             class="flex flex-row gap-2 items-center"
                         >
                             <UiAvatar
                                 :url="
-                                    props.authorAvatar
-                                        ? useGetImage(props.authorAvatar, {
+                                    props.author.avatar
+                                        ? useGetImage(props.author.avatar, {
                                               prefix: 'avatar',
                                           })
                                         : ''
                                 "
-                                :alt="props.authorName ?? ''"
+                                :alt="props.author.name ?? ''"
                                 :icon-size="12"
                                 class="size-5"
                             />
                         </NuxtLink>
-                    </UiTooltip>
+                    </HovercardUser>
                 </div>
             </div>
         </template>

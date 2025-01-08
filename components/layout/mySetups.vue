@@ -67,7 +67,7 @@ onUnmounted(() => {
         />
 
         <div
-            class="w-full flex gap-4 overflow-x-auto no-scrollbar scroll-container"
+            class="w-full p-1 flex gap-4 overflow-x-auto no-scrollbar scroll-container"
         >
             <ItemSetup
                 v-for="i in mySetups"
@@ -76,12 +76,12 @@ onUnmounted(() => {
                 no-user
                 :id="i.id"
                 :name="i.name"
-                :avatar-name="i.avatars[0].name"
-                :avatar-thumbnail="i.avatars[0].thumbnail"
-                :avatar-outdated="i.avatars[0].outdated"
-                :author-id="i.author.id"
-                :author-name="i.author.name"
-                :author-avatar="i.author.avatar"
+                :avatar="{
+                    name: i.avatars[0].name,
+                    thumbnail: i.avatars[0].thumbnail,
+                    outdated: i.avatars[0].outdated,
+                }"
+                :author="i.author"
                 :created-at="i.created_at"
                 :image="i.image"
                 class="min-w-64"

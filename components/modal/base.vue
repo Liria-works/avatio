@@ -9,6 +9,8 @@ const props = defineProps<Props>();
 const vis = defineModel<boolean>({
     default: false,
 });
+
+const slots = useSlots() as Record<string, (() => VNode[]) | undefined>;
 </script>
 
 <template>
@@ -31,11 +33,11 @@ const vis = defineModel<boolean>({
                 "
             >
                 <slot name="header" />
-                <UiDivider />
+                <UiDivider v-if="slots.header && slots.header().length" />
                 <div class="overflow-y-auto">
                     <slot />
                 </div>
-                <UiDivider />
+                <UiDivider v-if="slots.footer && slots.footer().length" />
                 <slot name="footer" />
 
                 <!-- <DialogClose

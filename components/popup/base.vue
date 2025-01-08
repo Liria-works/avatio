@@ -1,4 +1,13 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+interface Props {
+    side?: 'top' | 'bottom' | 'left' | 'right';
+    sideOffset?: number;
+}
+const props = withDefaults(defineProps<Props>(), {
+    side: 'bottom',
+    sideOffset: 5,
+});
+</script>
 
 <template>
     <PopoverRoot>
@@ -6,7 +15,11 @@
             <slot name="trigger" />
         </PopoverTrigger>
         <PopoverPortal>
-            <PopoverContent side="bottom" :side-offset="5" as-child>
+            <PopoverContent
+                :side="props.side"
+                :side-offset="props.sideOffset"
+                as-child
+            >
                 <div
                     :class="[
                         'rounded-lg p-2 gap-2 flex flex-col bg-zinc-100 dark:bg-zinc-900 shadow-lg shadow-black/50 border border-zinc-400 dark:border-zinc-600',

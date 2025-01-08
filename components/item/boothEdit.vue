@@ -140,7 +140,7 @@ const booth_url = 'https://booth.pm/ja/items/';
             >
                 <div
                     :class="[
-                        'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-600',
+                        'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700',
                         {
                             'border border-1 border-red-400 dark:border-red-400':
                                 note.length > 140,

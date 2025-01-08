@@ -27,8 +27,8 @@ const handleError = (error: any) => {
 <template>
     <NuxtErrorBoundary @error="handleError">
         <UContainer
-            class="flex flex-col gap-10 items-center"
-            :ui="{ padding: 'pt-4 px-6 ' }"
+            class="flex flex-col gap-12 items-center"
+            :ui="{ padding: 'pt-6 px-6 ' }"
         >
             <UiHeader />
             <div
@@ -36,7 +36,7 @@ const handleError = (error: any) => {
                     'w-full',
                     paddingExclude.includes(route.path)
                         ? 'px-4'
-                        : 'md:px-20 lg:px-40',
+                        : 'md:px-20 lg:px-32',
                 ]"
             >
                 <slot />

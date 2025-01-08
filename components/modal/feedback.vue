@@ -29,37 +29,12 @@ const Submit = async () => {
                     <UiTitle label="フィードバック" icon="lucide:lightbulb" />
                 </DialogTitle>
 
-                <!-- <PopupFeedback /> -->
-
-                <HoverCardRoot :open-delay="0" :close-delay="300">
-                    <HoverCardTrigger as-child>
-                        <Icon
-                            name="lucide:info"
-                            class="flex-shrink-0 size-4 text-zinc-400 dark:text-zinc-300"
-                        />
-                    </HoverCardTrigger>
-                    <HoverCardPortal>
-                        <HoverCardContent
-                            class="rounded-lg bg-zinc-100 dark:bg-zinc-900 p-5 z-[200] shadow-lg shadow-black/50 border border-zinc-300 dark:border-zinc-700"
-                            :side-offset="5"
-                        >
-                            <DialogDescription class="flex flex-col gap-4">
-                                <h2 class="text-sm font-semibold">
-                                    フィードバックについて
-                                </h2>
-                                <p class="text-xs">
-                                    内容は第三者に対し公開されることはありません。<br />
-                                    送信したユーザーは、運営により確認可能です。
-                                </p>
-                            </DialogDescription>
-
-                            <HoverCardArrow
-                                class="fill-zinc-300 dark:fill-zinc-700"
-                                :width="8"
-                            />
-                        </HoverCardContent>
-                    </HoverCardPortal>
-                </HoverCardRoot>
+                <HovercardFeedback>
+                    <Icon
+                        name="lucide:info"
+                        class="flex-shrink-0 size-4 text-zinc-400 dark:text-zinc-300"
+                    />
+                </HovercardFeedback>
             </div>
         </template>
 

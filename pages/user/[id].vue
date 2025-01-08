@@ -134,12 +134,14 @@ onMounted(async () => {
                     icon="lucide:pen-line"
                     :icon-size="19"
                     tooltip="プロフィールを編集"
+                    variant="flat"
                 />
                 <UiButton
                     v-else
                     icon="lucide:flag"
                     :icon-size="19"
                     tooltip="ユーザーを報告"
+                    variant="flat"
                     @click="modalReport = true"
                 />
 
@@ -155,6 +157,7 @@ onMounted(async () => {
                         v-for="i in userData.links"
                         :to="i"
                         :tooltip="i"
+                        variant="flat"
                         class="min-h-[38px] p-2 rounded-lg flex items-center justify-center hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     >
                         <Icon
