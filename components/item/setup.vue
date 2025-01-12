@@ -48,6 +48,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
             >
                 <NuxtImg
                     :src="useGetImage(props.image, { prefix: 'setup' })"
+                    :alt="props.name"
                     preset="thumbnail"
                     :placeholder="[50, 25, 75, 5]"
                     class="size-full max-h-[420px] rounded-lg object-cover"
@@ -126,6 +127,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                                 name: 'user-id',
                                 params: { id: props.author.id },
                             }"
+                            :aria-label="props.author.name"
                             class="flex flex-row gap-2 items-center"
                         >
                             <UiAvatar
@@ -137,6 +139,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                                         : ''
                                 "
                                 :alt="props.author.name ?? ''"
+                                aria-hidden="true"
                                 :icon-size="12"
                                 class="size-5"
                             />

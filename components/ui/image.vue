@@ -14,6 +14,7 @@ const openImage = ref(false);
 <template>
     <button
         type="button"
+        aria-label="画像を拡大"
         @click="openImage = true"
         :class="[
             'p-1.5 rounded-xl ring-1 ring-zinc-400 dark:ring-zinc-700',

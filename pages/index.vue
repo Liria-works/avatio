@@ -102,6 +102,7 @@ onMounted(async () => {
             >
                 <template #default="{ item }">
                     <ItemSetup
+                        :aria-label="item.name"
                         :id="item.id"
                         :name="item.name"
                         :avatar="{

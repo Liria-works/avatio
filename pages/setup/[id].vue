@@ -166,6 +166,11 @@ onMounted(async () => {
                                         ? 'lucide:bookmark-x'
                                         : 'lucide:bookmark'
                                 "
+                                :aria-label="
+                                    bookmark
+                                        ? 'ブックマークから削除'
+                                        : 'ブックマーク'
+                                "
                                 variant="flat"
                                 class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                                 :icon-class="
@@ -179,6 +184,7 @@ onMounted(async () => {
                             <UiButton
                                 v-if="user?.id === setup.author.id"
                                 tooltip="削除"
+                                aria-label="削除"
                                 icon="lucide:trash"
                                 :icon-size="18"
                                 variant="flat"
@@ -198,6 +204,8 @@ onMounted(async () => {
                                     icon="lucide:share-2"
                                     :icon-size="18"
                                     tooltip="シェア"
+                                    aria-label="シェア"
+                                    aria-expanded="false"
                                     variant="flat"
                                     class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                                 />
@@ -216,11 +224,11 @@ onMounted(async () => {
                 <div class="self-stretch flex xl:hidden flex-col gap-3">
                     <div
                         v-if="setup.description"
-                        class="self-stretch rounded-lg flex flex-col gap-1.5 px-3 py-2 border border-zinc-300 dark:border-zinc-600"
+                        class="self-stretch rounded-lg flex flex-col gap-1.5"
                     >
-                        <p class="text-zinc-500 text-sm mt-1 leading-none">
+                        <h2 class="text-zinc-500 text-sm mt-1 leading-none">
                             説明
-                        </p>
+                        </h2>
                         <p
                             class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                         >
@@ -236,6 +244,7 @@ onMounted(async () => {
                             v-for="tag in setup.tags"
                             :key="useId()"
                             :label="tag.tag"
+                            class="rounded-full"
                             @click="navigateTo(`/search?tag=${tag.tag}`)"
                         />
                     </div>
@@ -250,7 +259,11 @@ onMounted(async () => {
                             item.items.length ? '' : 'hidden',
                         ]"
                     >
-                        <UiTitle :label="item.label" :icon="item.icon" />
+                        <UiTitle
+                            :label="item.label"
+                            :icon="item.icon"
+                            is="h2"
+                        />
 
                         <ItemBooth
                             v-for="i in item.items"
@@ -276,9 +289,11 @@ onMounted(async () => {
             >
                 <div
                     v-if="setup.description"
-                    class="hidden xl:flex flex-col self-stretch rounded-xl gap-1.5 px-3.5 py-2.5 border border-zinc-300 dark:border-zinc-600"
+                    class="hidden xl:flex flex-col self-stretch rounded-xl gap-1.5"
                 >
-                    <p class="text-zinc-500 text-sm mt-1 leading-none">説明</p>
+                    <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                        説明
+                    </h2>
                     <p
                         class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                     >
@@ -286,18 +301,18 @@ onMounted(async () => {
                     </p>
                 </div>
 
-                <div
+                <ul
                     v-if="setup.tags && setup.tags.length"
                     class="hidden xl:flex flex-wrap items-center gap-1.5"
                 >
-                    <UiButton
-                        v-for="tag in setup.tags"
-                        :key="useId()"
-                        :label="tag.tag"
-                        class="rounded-full"
-                        @click="navigateTo(`/search?tag=${tag.tag}`)"
-                    />
-                </div>
+                    <li v-for="tag in setup.tags" :key="useId()">
+                        <UiButton
+                            :label="tag.tag"
+                            class="rounded-full"
+                            @click="navigateTo(`/search?tag=${tag.tag}`)"
+                        />
+                    </li>
+                </ul>
             </div>
         </div>
 

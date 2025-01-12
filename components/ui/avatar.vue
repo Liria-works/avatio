@@ -4,6 +4,7 @@ import { twMerge } from 'tailwind-merge';
 interface Props {
     url: string;
     alt: string;
+    ariaHidden?: 'false' | 'true';
     iconSize?: number;
     class?: string | string[];
 }
@@ -24,6 +25,7 @@ const props = defineProps<Props>();
             class="h-full w-full rounded-[inherit] object-cover"
             :src="props.url"
             :alt="props.alt"
+            :aria-hidden="props.ariaHidden"
         />
         <AvatarFallback as-child :delay-ms="0">
             <Icon

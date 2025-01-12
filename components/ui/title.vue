@@ -31,13 +31,13 @@ const props = withDefaults(
             <component
                 :is="props.is"
                 :class="[
-                    'text-black dark:text-white',
+                    'text-black dark:text-white whitespace-nowrap',
                     props.size === 'md'
                         ? 'text-[15px] font-medium'
                         : 'text-xl font-bold',
                 ]"
             >
-                <span class="whitespace-nowrap">{{ props.label }}</span>
+                {{ props.label }}
             </component>
             <UTooltip
                 v-if="props.infomation"

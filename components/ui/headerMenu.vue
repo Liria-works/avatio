@@ -51,6 +51,7 @@ onMounted(async () => {
                 v-if="route.path !== '/login'"
                 to="/search"
                 tooltip="検索"
+                aria-label="検索"
                 icon="lucide:search"
                 variant="flat"
                 class="hidden sm:block p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"

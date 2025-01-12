@@ -134,6 +134,7 @@ onMounted(async () => {
                     icon="lucide:pen-line"
                     :icon-size="19"
                     tooltip="プロフィールを編集"
+                    aria-label="プロフィールを編集"
                     variant="flat"
                 />
                 <UiButton
@@ -141,6 +142,7 @@ onMounted(async () => {
                     icon="lucide:flag"
                     :icon-size="19"
                     tooltip="ユーザーを報告"
+                    aria-label="ユーザーを報告"
                     variant="flat"
                     @click="modalReport = true"
                 />
@@ -155,8 +157,10 @@ onMounted(async () => {
                 >
                     <UiButton
                         v-for="i in userData.links"
+                        :key="useId()"
                         :to="i"
                         :tooltip="i"
+                        :aria-label="i"
                         variant="flat"
                         class="min-h-[38px] p-2 rounded-lg flex items-center justify-center hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     >

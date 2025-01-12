@@ -85,6 +85,7 @@ watch(
                     size="xl"
                     :trailing="false"
                     placeholder="キーワード検索"
+                    aria-label="キーワード検索"
                     :ui="{ rounded: 'rounded-xl' }"
                     class="mt-1"
                     @keyup.enter="navigateTo('/search?q=' + searchWord)"
@@ -120,10 +121,12 @@ watch(
                         v-for="i in popularAvatars"
                         :key="useId()"
                         :to="`/search?item=${i.id}`"
+                        :aria-label="i.name"
                         class="w-32 p-4 gap-2 flex flex-col items-center rounded-lg border border-1 border-zinc-500 hover:bg-zinc-200 hover:dark:bg-zinc-600"
                     >
                         <NuxtImg
                             :src="i.thumbnail"
+                            :alt="i.name"
                             sizes="128px"
                             loading="lazy"
                             class="rounded-lg flex-shrink-0"
@@ -140,20 +143,17 @@ watch(
                     v-if="resultSetups.length"
                     class="flex flex-col lg:grid lg:grid-cols-1 gap-5"
                 >
-                    <NuxtLink
+                    <ItemSetupDetail
                         v-for="i in resultSetups"
-                        :to="{ name: 'setup-id', params: { id: i.id } }"
-                    >
-                        <ItemSetupDetail
-                            :id="i.id"
-                            :created-at="i.created_at"
-                            :name="i.name"
-                            :description="i.description"
-                            :image="i.image"
-                            :author="i.author"
-                            :items="i.items.map((i) => i.data)"
-                        />
-                    </NuxtLink>
+                        :aria-label="i.name"
+                        :id="i.id"
+                        :created-at="i.created_at"
+                        :name="i.name"
+                        :description="i.description"
+                        :image="i.image"
+                        :author="i.author"
+                        :items="i.items.map((i) => i.data)"
+                    />
                 </div>
 
                 <div v-else>

@@ -1,38 +1,38 @@
 <script setup lang="ts">
 import { twMerge } from 'tailwind-merge';
 
-const props = withDefaults(
-    defineProps<{
-        disabled?: boolean;
-        tabindex?: number;
-        type?: 'button' | 'submit' | 'reset';
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, vue/require-default-prop
-        to?: any;
-        newTab?: boolean;
-        icon?: string;
-        iconSize?: number;
-        label?: string;
-        variant?: 'outline' | 'flat' | 'link';
-        tooltip?: string;
-        // eslint-disable-next-line vue/require-default-prop
-        class?: string | string[];
-        // eslint-disable-next-line vue/require-default-prop
-        iconClass?: string;
-        wFull?: boolean;
-    }>(),
-    {
-        disabled: false,
-        tabindex: 0,
-        type: 'button',
-        newTab: false,
-        icon: '',
-        iconSize: 18,
-        label: '',
-        variant: 'outline',
-        tooltip: '',
-        wFull: false,
-    }
-);
+interface Props {
+    disabled?: boolean;
+    tabindex?: number;
+    type?: 'button' | 'submit' | 'reset';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, vue/require-default-prop
+    to?: any;
+    newTab?: boolean;
+    icon?: string;
+    iconSize?: number;
+    label?: string;
+    ariaLabel?: string;
+    variant?: 'outline' | 'flat' | 'link';
+    tooltip?: string;
+    // eslint-disable-next-line vue/require-default-prop
+    class?: string | string[];
+    // eslint-disable-next-line vue/require-default-prop
+    iconClass?: string;
+    wFull?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+    disabled: false,
+    tabindex: 0,
+    type: 'button',
+    newTab: false,
+    icon: '',
+    iconSize: 18,
+    label: '',
+    ariaLabel: '',
+    variant: 'outline',
+    tooltip: '',
+    wFull: false,
+});
 
 const emit = defineEmits(['click']);
 
@@ -59,6 +59,7 @@ const variantClass = {
             :target="props.newTab ? '_blank' : '_self'"
             no-rel
             :disabled="props.disabled"
+            :aria-label="props.ariaLabel"
             :class="
                 twMerge(
                     props.disabled ? 'cursor-not-allowed' : 'cursor-pointer',

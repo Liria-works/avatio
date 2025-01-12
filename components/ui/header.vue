@@ -6,7 +6,7 @@
             class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-shrink-0"
         >
             <NuxtLink to="/" class="pt-1">
-                <LogoLiria class="w-48" />
+                <LogoLiria class="w-48" aria-label="Avatio" />
             </NuxtLink>
             <BadgeHeader />
         </div>

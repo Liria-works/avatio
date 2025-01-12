@@ -5,6 +5,7 @@ const colorMode = useColorMode();
 <template>
     <UiButton
         tooltip="テーマ"
+        aria-label="テーマ"
         variant="flat"
         class="hidden sm:block p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
         @click="

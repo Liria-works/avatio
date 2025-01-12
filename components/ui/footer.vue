@@ -17,6 +17,7 @@ const modal_feedback = ref(false);
                         to="https://x.com/liria_work"
                         new-tab
                         icon="simple-icons:x"
+                        aria-label="X"
                         class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     />
 
@@ -24,6 +25,7 @@ const modal_feedback = ref(false);
                         to="https://github.com/Liria-works/avatio"
                         new-tab
                         icon="simple-icons:github"
+                        aria-label="GitHub"
                         class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     />
 
