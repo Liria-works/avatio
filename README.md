@@ -3,11 +3,19 @@
 [![](/public/ogp.png)](https://avatio.me)
 
 <div align="center">
-    [![Vercel badge](https://svgl-badge.vercel.app/api/Hosting/Vercel?theme=dark)](https://vercel.com)
-    [![Supabase badge](https://svgl-badge.vercel.app/api/Database/Supabase?theme=dark)](https://supabase.com)
-    [![Nuxt badge](https://svgl-badge.vercel.app/api/Framework/Nuxt?theme=dark)](https://nuxt.com)
-    [![Tailwind badge](https://svgl-badge.vercel.app/api/Framework/Tailwind%20CSS?theme=dark)](https://tailwindcss.com)
+
+[![Vercel badge](https://svgl-badge.vercel.app/api/Hosting/Vercel?theme=dark)](https://vercel.com)
+[![Supabase badge](https://svgl-badge.vercel.app/api/Database/Supabase?theme=dark)](https://supabase.com)
+[![Nuxt badge](https://svgl-badge.vercel.app/api/Framework/Nuxt?theme=dark)](https://nuxt.com)
+[![Tailwind badge](https://svgl-badge.vercel.app/api/Framework/Tailwind%20CSS?theme=dark)](https://tailwindcss.com)
+
 </div>
+
+<div align="center">
+    Copyright © 2024 Liria
+</div>
+
+---
 
 Avatio はVRSNSユーザー向けのアバターセットアップ共有サービスです。<br>
 ユーザーが使用しているアバターと、衣装・装飾品・ツールなどを「セットアップ」としてリスト化し、他のユーザーに共有することができます。
