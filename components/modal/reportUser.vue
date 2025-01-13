@@ -130,14 +130,14 @@ const Submit = async () => {
         </div>
 
         <template #footer>
-            <UButton
-                block
-                label="ユーザーを報告"
-                variant="outline"
-                color="red"
-                :ui="{ rounded: 'rounded-xl' }"
-                @click="Submit"
-            />
+            <div class="gap-1.5 flex items-center justify-between">
+                <UiButton
+                    label="キャンセル"
+                    variant="flat"
+                    @click="vis = false"
+                />
+                <UiButton label="報告" @click="Submit" />
+            </div>
         </template>
     </ModalBase>
 </template>

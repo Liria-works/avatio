@@ -52,9 +52,13 @@ const Submit = async () => {
         </div>
 
         <template #footer>
-            <div class="gap-1.5 flex items-center justify-end">
+            <div class="gap-1.5 flex items-center justify-between">
+                <UiButton
+                    label="キャンセル"
+                    variant="flat"
+                    @click="vis = false"
+                />
                 <UiButton label="送信" @click="Submit" />
-                <UiButton label="キャンセル" @click="vis = false" />
             </div>
         </template>
     </ModalBase>
