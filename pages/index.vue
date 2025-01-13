@@ -5,16 +5,40 @@ const client = await useSBClient();
 const setups = ref<SetupSimple[]>([]);
 const setupsPerPage: number = 20;
 const page = ref(0);
+const filter = ref<'all' | 'mine' | 'bookmark'>('all');
 const loading = ref(false);
 
 const get = async (num: number): Promise<SetupSimple[]> => {
     loading.value = true;
 
     try {
-        let query = client
-            .from('setups')
-            .select(
-                `
+        let query;
+
+        if (filter.value === 'bookmark')
+            query = client
+                .from('bookmarks')
+                .select(
+                    `
+                    post(
+                        id,
+                        created_at,
+                        name,
+                        author(id, name, avatar),
+                        image,
+                        items:setup_items(
+                            data:item_id(
+                                id, outdated, category, name, thumbnail, nsfw
+                            )
+                        )
+                    )
+                    `
+                )
+                .eq('post.setup_items.item_id.category', '208');
+        else {
+            query = client
+                .from('setups')
+                .select(
+                    `
                     id,
                     created_at,
                     name,
@@ -25,11 +49,13 @@ const get = async (num: number): Promise<SetupSimple[]> => {
                             id, outdated, category, name, thumbnail, nsfw
                         )
                     )
-                `
-            )
-            .eq('setup_items.item_id.category', '208');
+                    `
+                )
+                .eq('setup_items.item_id.category', '208');
 
-        if (user.value) query = query.neq('author', user.value.id);
+            if (filter.value === 'mine')
+                query = query.eq('author', user.value.id);
+        }
 
         const { data } = await query
             .range(
@@ -38,7 +64,14 @@ const get = async (num: number): Promise<SetupSimple[]> => {
             )
             .order('created_at', { ascending: false });
 
+        if (filter.value === 'bookmark')
+            return (data as unknown as { post: SetupSimple }[]).map(
+                (d) => d.post
+            );
+
         return (data as unknown as SetupSimple[]) ?? [];
+    } catch {
+        return [];
     } finally {
         loading.value = false;
     }
@@ -68,28 +101,50 @@ onMounted(async () => {
         twitterCard: 'summary_large_image',
     });
 });
+
+watch(filter, async () => {
+    page.value = 0;
+    setups.value = [];
+    await paginate();
+});
 </script>
 
 <template>
     <div class="w-full flex flex-col gap-10">
         <BannerHome v-if="!user" />
 
-        <LayoutMySetups v-if="user" />
-
-        <UiDivider />
-
         <div v-if="setups" class="flex flex-col items-start gap-5 w-full">
-            <div class="w-full flex gap-4 items-start justify-between">
-                <UiTitle
-                    label="ディスカバリー"
-                    icon="lucide:sparkles"
-                    size="lg"
+            <UiTitle label="ホーム" size="lg" />
+            <div class="flex items-center gap-1">
+                <UiButton
+                    label="すべて"
+                    variant="flat"
+                    :class="[
+                        'text-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-700',
+                        filter === 'all' ? 'bg-zinc-200 dark:bg-zinc-700' : '',
+                    ]"
+                    @click="filter = 'all'"
                 />
-                <!-- <UiButton
-                icon="lucide:rotate-ccw"
-                class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
-                @click="get"
-            /> -->
+                <UiButton
+                    label="自分の投稿"
+                    variant="flat"
+                    :class="[
+                        'text-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-700',
+                        filter === 'mine' ? 'bg-zinc-200 dark:bg-zinc-700' : '',
+                    ]"
+                    @click="filter = 'mine'"
+                />
+                <UiButton
+                    label="ブックマーク"
+                    variant="flat"
+                    :class="[
+                        'text-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-700',
+                        filter === 'bookmark'
+                            ? 'bg-zinc-200 dark:bg-zinc-700'
+                            : '',
+                    ]"
+                    @click="filter = 'bookmark'"
+                />
             </div>
             <MasonryWall
                 :items="setups"

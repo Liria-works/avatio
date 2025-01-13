@@ -12,7 +12,7 @@ const props = withDefaults(
     {
         is: 'h1',
         size: 'md',
-        icon: 'lucide:circle',
+        icon: '',
         trailing: '',
         trailingIcon: 'lucide:arrow-right',
         infomation: '',
@@ -24,6 +24,7 @@ const props = withDefaults(
     <div class="flex items-center justify-between">
         <div class="items-center gap-1.5 inline-flex">
             <Icon
+                v-if="props.icon.length"
                 :name="props.icon"
                 :size="props.size === 'md' ? 20 : 24"
                 class="flex-shrink-0 text-zinc-500 dark:text-zinc-400"

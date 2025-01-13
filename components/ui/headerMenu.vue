@@ -42,10 +42,11 @@ onMounted(async () => {
             <UiButton
                 v-if="route.path !== '/login'"
                 to="/setup/edit"
-                icon="lucide:plus"
-                label="セットアップを投稿"
-                class="pr-6 pl-5 mr-2 rounded-full whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 hover:dark:bg-zinc-300 hover:dark:text-zinc-800"
-            />
+                class="p-3 md:pr-6 md:pl-5 md:mr-2 rounded-full whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 hover:dark:bg-zinc-300 hover:dark:text-zinc-800"
+            >
+                <Icon name="lucide:plus" :size="18" />
+                <span class="hidden md:block">セットアップを投稿</span>
+            </UiButton>
 
             <UiButton
                 v-if="route.path !== '/login'"
