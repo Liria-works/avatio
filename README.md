@@ -1,6 +1,13 @@
 このリポジトリは現在開発中です。
 
-# Avatio
+[![](/public/ogp.png)](https://avatio.me)
+
+<div align="center">
+    [![Vercel badge](https://svgl-badge.vercel.app/api/Hosting/Vercel?theme=dark)](https://vercel.com)
+    [![Supabase badge](https://svgl-badge.vercel.app/api/Database/Supabase?theme=dark)](https://supabase.com)
+    [![Nuxt badge](https://svgl-badge.vercel.app/api/Framework/Nuxt?theme=dark)](https://nuxt.com)
+    [![Tailwind badge](https://svgl-badge.vercel.app/api/Framework/Tailwind%20CSS?theme=dark)](https://tailwindcss.com)
+</div>
 
 Avatio はVRSNSユーザー向けのアバターセットアップ共有サービスです。<br>
 ユーザーが使用しているアバターと、衣装・装飾品・ツールなどを「セットアップ」としてリスト化し、他のユーザーに共有することができます。
@@ -18,12 +25,6 @@ Avatio はVRSNSユーザー向けのアバターセットアップ共有サー�
 
 現在、アバター・アイテムの情報はBOOTH（booth.pm）からのみ取得しています。<br>
 他のプラットフォームについてのアイデアがあれば、ぜひフィードバックをお願いいたします。
-
-## パブリックベータ
-
-サービスが開始されてからしばらくの期間はベータとして提供されます。<br>
-これは、機能追加の可能性があるのと、サービス全体がまだ不安定であるためです。<br>
-ベータ期間・正式サービスに関わらず、意図的にデータがリセットされることはありません。
 
 ## コントリビュート
 
