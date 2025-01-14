@@ -68,7 +68,7 @@ const modal_feedback = ref(false);
                     variant="link"
                 />
             </div>
-            <p class="text-zinc-500 text-sm">Copyright © 2024 Liria</p>
+            <p class="text-zinc-500 text-sm">Copyright © 2025 Liria</p>
         </div>
 
         <ModalFeedback v-model="modal_feedback" />
