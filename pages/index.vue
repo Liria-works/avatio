@@ -6,7 +6,7 @@ const setups = ref<SetupSimple[]>([]);
 const setupsPerPage: number = 20;
 const page = ref(0);
 const filter = ref<'all' | 'mine' | 'bookmark'>('all');
-const loading = ref(false);
+const loading = ref(true);
 
 const get = async (num: number): Promise<SetupSimple[]> => {
     loading.value = true;
@@ -110,12 +110,17 @@ watch(filter, async () => {
 </script>
 
 <template>
-    <div class="w-full flex flex-col gap-10">
-        <BannerHome v-if="!user" />
+    <div class="w-full flex flex-col gap-6">
+        <ClientOnly>
+            <div class="empty:hidden -mt-4 flex flex-col gap-2">
+                <BannerWelcome />
+                <BannerOwnerWarning />
+            </div>
+        </ClientOnly>
 
         <div v-if="setups" class="flex flex-col items-start gap-5 w-full">
             <UiTitle label="ホーム" size="lg" />
-            <div class="flex items-center gap-1">
+            <div class="flex flex-wrap items-center gap-1">
                 <UiButton
                     label="すべて"
                     variant="flat"
@@ -175,17 +180,18 @@ watch(filter, async () => {
 
             <div class="w-full flex flex-col items-center">
                 <UiButton
+                    v-if="setups.length"
                     :disabled="loading"
                     label="さらに読み込む"
                     :icon="loading ? 'svg-spinners:ring-resize' : ''"
                     class="h-10"
-                    @click="paginate()"
+                    @click="paginate"
                 />
             </div>
         </div>
 
         <div
-            v-if="!setups"
+            v-if="!loading && !setups.length"
             class="w-full my-5 font-medium text-center text-zinc-700 dark:text-zinc-300"
         >
             <p>セットアップが見つかりませんでした😢</p>
