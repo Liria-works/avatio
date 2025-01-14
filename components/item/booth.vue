@@ -217,8 +217,8 @@ onMounted(async () => {
                         <UiButton
                             :to="{ name: 'search', query: { item: props.id } }"
                             icon="lucide:search"
-                            tooltip="アイテムからセットアップを検索"
-                            aria-label="アイテムからセットアップを検索"
+                            tooltip="このアイテムを含むセットアップを検索"
+                            aria-label="このアイテムを含むセットアップを検索"
                             class="p-2"
                         />
                     </div>

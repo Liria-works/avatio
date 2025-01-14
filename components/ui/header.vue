@@ -2,11 +2,9 @@
 
 <template>
     <header class="flex items-start justify-between w-full">
-        <div
-            class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-shrink-0"
-        >
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
             <NuxtLink to="/" class="pt-1">
-                <LogoLiria class="w-48" aria-label="Avatio" />
+                <LogoLiria class="w-32 sm:w-48" aria-label="Avatio" />
             </NuxtLink>
             <BadgeHeader />
         </div>

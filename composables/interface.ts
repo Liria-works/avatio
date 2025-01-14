@@ -4,15 +4,12 @@ export const useAddToast = (title: string, description?: string) => {
     const toast = useToast();
     toast.add({ title: title, description: description, color: 'sky' });
 };
-export const useSentence = (text: string) => {
-    const parser = loadDefaultJapaneseParser();
-    return parser.parse(text).join('\u200b');
-    // return text.replace(/。/g, "。\u200b");
-};
 
-export const useLineBreak = (text: string) => {
-    return text.replace(/(\r\n){3,}|\r{3,}|\n{3,}/, '\n\n');
-};
+export const useSentence = (text: string) =>
+    loadDefaultJapaneseParser().parse(text).join('\u200b');
+
+export const useLineBreak = (text: string) =>
+    text.replace(/(\r\n){3,}|\r{3,}|\n{3,}/, '\n\n');
 
 export const useLocaledDate = (date: Date) => {
     return date.toLocaleDateString('ja-JP', {
@@ -22,9 +19,8 @@ export const useLocaledDate = (date: Date) => {
     });
 };
 
-export const useWriteClipboard = (text: string) => {
+export const useWriteClipboard = (text: string) =>
     navigator.clipboard.writeText(text);
-};
 
 export const useAvatarName = (text: string) => {
     return text

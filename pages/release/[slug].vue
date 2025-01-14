@@ -16,7 +16,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <LayoutArticle
+    <UiArticle
         v-if="data"
         :title="data.title"
         :created-at="data.created_at"

@@ -95,6 +95,7 @@ watch(
             <ItemBooth
                 v-if="resultItem"
                 :size="'lg'"
+                no-action
                 :id="resultItem.id"
                 :name="resultItem.name"
                 :thumbnail="resultItem.thumbnail"

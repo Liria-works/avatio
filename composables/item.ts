@@ -15,9 +15,9 @@ export const useFetchBooth = async (id: number): Promise<Item | null> => {
         const timeDifference =
             new Date().getTime() - new Date(itemData.updated_at).getTime();
 
-        if (timeDifference < 24 * 60 * 60 * 1000) {
+        if (timeDifference < 24 * 60 * 60 * 1000)
             return itemData as unknown as Item;
-        }
+
         console.log('Data is old, fetching from Booth');
     }
 
@@ -26,11 +26,7 @@ export const useFetchBooth = async (id: number): Promise<Item | null> => {
         query: { id: encodeURIComponent(id) },
     });
 
-    if (!response.data || response.data?.outdated) {
-        return null;
-    }
-
-    // AddItem(response.body.id, response.body);
+    if (!response.data || response.data?.outdated) return null;
 
     return {
         id: response.data.id,
