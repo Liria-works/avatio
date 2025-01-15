@@ -5,7 +5,7 @@ interface Props {
     disabled?: boolean;
     tabindex?: number;
     type?: 'button' | 'submit' | 'reset';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, vue/require-default-prop
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     to?: any;
     newTab?: boolean;
     icon?: string;
@@ -14,9 +14,7 @@ interface Props {
     ariaLabel?: string;
     variant?: 'outline' | 'flat' | 'link';
     tooltip?: string;
-    // eslint-disable-next-line vue/require-default-prop
     class?: string | string[];
-    // eslint-disable-next-line vue/require-default-prop
     iconClass?: string;
     wFull?: boolean;
 }

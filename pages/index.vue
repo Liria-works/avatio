@@ -178,7 +178,7 @@ watch(filter, async () => {
                 </template>
             </MasonryWall>
 
-            <div class="w-full flex flex-col items-center">
+            <!-- <div class="w-full flex flex-col items-center">
                 <ButtonBase
                     v-if="setups.length"
                     :disabled="loading"
@@ -187,7 +187,13 @@ watch(filter, async () => {
                     class="h-10"
                     @click="paginate"
                 />
-            </div>
+            </div> -->
+            <ButtonLoadMore
+                v-if="setups.length"
+                :loading="loading"
+                class="w-full"
+                @click="paginate"
+            />
         </div>
 
         <div

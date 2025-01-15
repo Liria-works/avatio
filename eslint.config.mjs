@@ -10,6 +10,7 @@ export default withNuxt(
             'vue/valid-v-for': 'off',
             'vue/first-attribute-linebreak': 'off',
             'vue/multi-word-component-names': 'off',
+            'vue/require-default-prop': 'off',
         },
     }
 );

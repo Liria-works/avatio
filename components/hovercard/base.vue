@@ -5,7 +5,6 @@ interface Props {
     side?: 'top' | 'bottom' | 'left' | 'right';
     sideOffset?: number;
     closeDelay?: number;
-    // eslint-disable-next-line vue/require-default-prop
     class?: string | string[];
 }
 const props = withDefaults(defineProps<Props>(), {
