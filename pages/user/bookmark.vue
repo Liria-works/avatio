@@ -1,12 +1,53 @@
 <script lang="ts" setup>
+const client = await useSBClient();
 const bookmarks = ref<Setup[]>([]);
+const loading = ref(false);
+const page = ref(0);
+const perPage = 20;
+
+const get = async () => {
+    const { data } = await client
+        .from('bookmarks')
+        .select(
+            `post(
+                id,
+                created_at,
+                author(id, name, avatar),
+                name,
+                description,
+                image,
+                items:setup_items(
+                    data:item_id(
+                        id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
+                    ),
+                    note,
+                    unsupported
+                )
+            )`
+        )
+        .order('created_at', { ascending: false })
+        .range(page.value * perPage, page.value * perPage + (perPage - 1))
+        .returns<{ post: Setup }[]>();
+
+    return data ? data.map((i) => i.post) : [];
+};
+
+const pagenate = async (options?: { initiate?: boolean }) => {
+    if (options?.initiate) {
+        page.value = 0;
+        bookmarks.value = [];
+    } else page.value++;
+
+    loading.value = true;
+    bookmarks.value = [...bookmarks.value, ...(await get())];
+    loading.value = false;
+};
 
 onMounted(async () => {
-    bookmarks.value = await useBookmarks();
-
     useOGP({
         title: 'ブックマーク',
     });
+    await pagenate({ initiate: true });
 });
 </script>
 
@@ -14,27 +55,27 @@ onMounted(async () => {
     <div class="flex flex-col gap-5">
         <UiTitle label="ブックマーク" icon="lucide:bookmark" size="lg" />
 
-        <div v-if="!bookmarks.length" class="w-full text-center my-7">
+        <p v-if="!bookmarks.length" class="w-full text-center my-7">
             ブックマークがありません
-        </div>
+        </p>
 
-        <div class="flex flex-col gap-3">
-            <NuxtLink
+        <div v-else class="flex flex-col gap-3">
+            <ItemSetupDetail
                 v-for="i in bookmarks"
-                :key="'user-setup-' + i.id"
-                :to="{ name: 'setup-id', params: { id: i.id } }"
+                :key="useId()"
+                :id="i.id"
+                :created-at="i.created_at"
+                :name="i.name"
+                :description="i.description"
+                :image="i.image"
+                :author="i.author"
+                :items="i.items.map((i) => i.data)"
+            />
+            <ButtonLoadMore
+                :loading="loading"
                 class="w-full"
-            >
-                <ItemSetupDetail
-                    :id="i.id"
-                    :created-at="i.created_at"
-                    :name="i.name"
-                    :description="i.description"
-                    :image="i.image"
-                    :author="i.author"
-                    :items="i.items.map((i) => i.data)"
-                />
-            </NuxtLink>
+                @click="pagenate"
+            />
         </div>
     </div>
 </template>

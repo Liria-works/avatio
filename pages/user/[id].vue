@@ -3,87 +3,83 @@ const route = useRoute();
 const client = await useSBClient();
 const user = useSupabaseUser();
 
+const setups = ref<Setup[]>([]);
+const page = ref(0);
+const perPage = 20;
+const loading = ref(false);
 const modalReport = ref(false);
-const loading = ref(true);
 
-const userId = ref<string>(route.params.id.toString());
-const userData = ref<User | null>(null);
-
-const linkIcons: { [key: string]: string } = {
-    'x.com': 'simple-icons:x',
-    'youtube.com': 'simple-icons:youtube',
-    'twitch.tv': 'simple-icons:twitch',
-    'discordapp.com': 'simple-icons:discord',
-    'discord.com': 'simple-icons:discord',
-    'instagram.com': 'simple-icons:instagram',
-    'github.com': 'simple-icons:github',
-    'steamcommunity.com': 'simple-icons:steam',
-    'pixiv.net': 'simple-icons:pixiv',
-    'artstation.com': 'simple-icons:artstation',
-    'booth.pm': 'avatio:booth',
-};
-
-const getIcon = (url: string) => {
-    try {
-        const hostname = new URL(url).hostname.replace('www.', '');
-        if (Object.keys(linkIcons).includes(hostname))
-            return linkIcons[hostname];
-        else return 'lucide:link';
-    } catch {
-        return '';
-    }
-};
-
-onMounted(async () => {
+const getSetups = async () => {
     const { data } = await client
-        .from('users')
+        .from('setups')
         .select(
             `
-            name,
-            avatar,
-            bio,
-            links,
+            id,
             created_at,
-            setups(
-                id,
-                created_at,
-                author(id, name, avatar),
-                name,
-                description,
-                image,
-                items:setup_items(
-                    data:item_id(
-                        id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
-                    ),
-                    note,
-                    unsupported
-                )
-            ),
-            badges(developer, contributor, translator, alpha_tester, shop_owner)
+            author(id, name, avatar),
+            name,
+            description,
+            image,
+            items:setup_items(
+                data:item_id(
+                    id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
+                ),
+                note,
+                unsupported
+            )
             `
         )
-        .eq('id', userId.value)
-        .order('created_at', { referencedTable: 'setups', ascending: false })
-        .maybeSingle();
+        .eq('author', route.params.id.toString())
+        .order('created_at', { ascending: false })
+        .range(page.value * perPage, page.value * perPage + (perPage - 1))
+        .returns<Setup[]>();
+    return data ?? [];
+};
 
-    if (!data) return (loading.value = false);
+const pagenate = async (options?: { initiate?: boolean }) => {
+    if (options?.initiate) {
+        page.value = 0;
+        setups.value = [];
+    } else page.value++;
 
-    userData.value = data as unknown as User;
-
-    useOGP({
-        title: userData.value.name,
-        description: userData.value.bio,
-        image: userData.value.avatar
-            ? useGetImage(userData.value.avatar)
-            : null,
-    });
-
+    loading.value = true;
+    setups.value = [...setups.value, ...(await getSetups())];
     loading.value = false;
+};
+
+const { data: userData } = await client
+    .from('users')
+    .select(
+        `
+        name,
+        avatar,
+        bio,
+        links,
+        created_at,
+        badges(developer, contributor, translator, alpha_tester, shop_owner)
+        `
+    )
+    .eq('id', route.params.id.toString())
+    .maybeSingle<User>();
+
+if (userData) await pagenate({ initiate: true });
+
+onMounted(async () => {
+    if (userData)
+        useOGP({
+            title: userData.name,
+            description: userData.bio,
+            image: userData.avatar ? useGetImage(userData.avatar) : null,
+        });
 });
 </script>
 
 <template>
-    <div v-if="userData && !loading" class="w-full flex flex-col px-2 gap-10">
+    <div v-if="!userData" class="w-full flex flex-col items-center">
+        <p class="text-zinc-400 mt-5">ユーザーデータの取得に失敗しました</p>
+    </div>
+
+    <div v-else class="w-full flex flex-col px-2 gap-10">
         <div class="w-full flex flex-col gap-3">
             <div class="w-full flex items-center justify-between">
                 <div class="flex gap-6 items-center">
@@ -129,7 +125,7 @@ onMounted(async () => {
                     </div>
                 </div>
                 <ButtonBase
-                    v-if="user && user.id === userId"
+                    v-if="user && user.id === route.params.id.toString()"
                     to="/user/setting"
                     icon="lucide:pen-line"
                     :icon-size="19"
@@ -147,7 +143,10 @@ onMounted(async () => {
                     @click="modalReport = true"
                 />
 
-                <ModalReportUser v-model="modalReport" :id="userId" />
+                <ModalReportUser
+                    v-model="modalReport"
+                    :id="route.params.id.toString()"
+                />
             </div>
 
             <div class="w-full flex flex-col gap-3 pl-2">
@@ -165,7 +164,7 @@ onMounted(async () => {
                         class="min-h-[38px] p-2 rounded-lg flex items-center justify-center hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     >
                         <Icon
-                            :name="getIcon(i)"
+                            :name="getLinkIcon(i)"
                             size="20"
                             class="bg-zinc-700 dark:bg-zinc-200"
                         />
@@ -189,15 +188,12 @@ onMounted(async () => {
             </div>
         </div>
 
-        <div
-            v-if="userData.setups.length"
-            class="w-full flex flex-col gap-5 pl-2"
-        >
+        <div v-if="setups.length" class="w-full flex flex-col gap-5 pl-2">
             <UiTitle label="セットアップ" icon="lucide:shirt" size="lg" />
 
             <div class="flex flex-col gap-3">
                 <ItemSetupDetail
-                    v-for="i in userData.setups"
+                    v-for="i in setups"
                     :key="useId()"
                     :id="Number(i.id)"
                     :created-at="i.created_at"
@@ -207,18 +203,12 @@ onMounted(async () => {
                     :author="i.author"
                     :items="i.items.map((i) => i.data)"
                 />
+                <ButtonLoadMore
+                    :loading="loading"
+                    class="w-full"
+                    @click="pagenate"
+                />
             </div>
         </div>
-    </div>
-
-    <div
-        v-else-if="loading"
-        class="w-full flex items-center justify-center pt-20"
-    >
-        <Icon name="svg-spinners:ring-resize" size="32" />
-    </div>
-
-    <div v-else-if="!userData" class="w-full flex flex-col items-center">
-        <p class="text-zinc-400 mt-5">ユーザーデータの取得に失敗しました</p>
     </div>
 </template>

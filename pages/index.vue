@@ -8,7 +8,7 @@ const page = ref(0);
 const filter = ref<'all' | 'mine' | 'bookmark'>('all');
 const loading = ref(true);
 
-const get = async (num: number): Promise<SetupSimple[]> => {
+const get = async () => {
     loading.value = true;
 
     try {
@@ -59,8 +59,8 @@ const get = async (num: number): Promise<SetupSimple[]> => {
 
         const { data } = await query
             .range(
-                num * setupsPerPage,
-                num * setupsPerPage + (setupsPerPage - 1)
+                page.value * setupsPerPage,
+                page.value * setupsPerPage + (setupsPerPage - 1)
             )
             .order('created_at', { ascending: false });
 
@@ -69,29 +69,28 @@ const get = async (num: number): Promise<SetupSimple[]> => {
                 (d) => d.post
             );
 
-        return (data as unknown as SetupSimple[]) ?? [];
+        if (!data) throw new Error();
+
+        setups.value = [
+            ...setups.value,
+            ...(data as unknown as SetupSimple[]).map((setup) => ({
+                ...setup,
+                avatars: setup.items.filter((i) => i.data).map((i) => i.data),
+            })),
+        ];
+
+        page.value++;
     } catch {
-        return [];
+        setups.value = [];
+        page.value = 0;
     } finally {
         loading.value = false;
     }
 };
 
-const paginate = async () => {
-    const newData = await get(page.value);
-    setups.value = [
-        ...setups.value,
-        ...newData.map((setup) => ({
-            ...setup,
-            avatars: setup.items.filter((i) => i.data).map((i) => i.data),
-        })),
-    ];
-    page.value++;
-};
+await get();
 
 onMounted(async () => {
-    await paginate();
-
     useOGP({
         url: 'https://avatio.me',
         type: 'website',
@@ -105,7 +104,7 @@ onMounted(async () => {
 watch(filter, async () => {
     page.value = 0;
     setups.value = [];
-    await paginate();
+    await get();
 });
 </script>
 
@@ -178,29 +177,19 @@ watch(filter, async () => {
                 </template>
             </MasonryWall>
 
-            <!-- <div class="w-full flex flex-col items-center">
-                <ButtonBase
-                    v-if="setups.length"
-                    :disabled="loading"
-                    label="さらに読み込む"
-                    :icon="loading ? 'svg-spinners:ring-resize' : ''"
-                    class="h-10"
-                    @click="paginate"
-                />
-            </div> -->
             <ButtonLoadMore
                 v-if="setups.length"
                 :loading="loading"
                 class="w-full"
-                @click="paginate"
+                @click="get"
             />
         </div>
 
-        <div
+        <p
             v-if="!loading && !setups.length"
             class="w-full my-5 font-medium text-center text-zinc-700 dark:text-zinc-300"
         >
-            <p>セットアップが見つかりませんでした😢</p>
-        </div>
+            セットアップが見つかりませんでした
+        </p>
     </div>
 </template>

@@ -70,33 +70,3 @@ export const useCheckBookmark = async (id: number) => {
 
     return Boolean(data.length);
 };
-
-export const useBookmarks = async (): Promise<Setup[]> => {
-    const client = await useSBClient();
-
-    const { data, error } = await client
-        .from('bookmarks')
-        .select(
-            `
-            post(
-                id,
-                created_at,
-                author(id, name, avatar),
-                name,
-                description,
-                image,
-                items:setup_items(
-                    data:item_id(
-                        id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
-                    ),
-                    note,
-                    unsupported
-                )
-            )
-            `
-        )
-        .order('created_at', { ascending: false });
-    if (error) throw error;
-
-    return data.map((i) => i.post as unknown as Setup);
-};
