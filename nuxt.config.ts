@@ -58,6 +58,7 @@ export default defineNuxtConfig({
 
     routeRules: {
         '/': { isr: true },
+        '/setup/edit': { ssr: false },
         '/faq': { prerender: true },
         '/terms': { prerender: true },
         '/privacy-policy': { prerender: true },
