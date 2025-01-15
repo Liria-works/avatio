@@ -168,7 +168,7 @@ onMounted(async () => {
                         </template>
                     </UInput>
                 </div>
-                <UiButton
+                <ButtonBase
                     :disabled="adding"
                     :icon="
                         !adding ? 'lucide:plus' : 'i-svg-spinners-ring-resize'
@@ -180,7 +180,7 @@ onMounted(async () => {
             </div>
 
             <div class="self-end gap-2 flex">
-                <UiButton
+                <ButtonBase
                     icon="lucide:search"
                     label="アバター・アイテムを検索"
                     class="h-9"
@@ -188,12 +188,12 @@ onMounted(async () => {
                 />
 
                 <div class="self-end gap-1 flex items-center">
-                    <UiButton
+                    <ButtonBase
                         icon="lucide:undo-2"
                         class="size-9"
                         @click="emit('undo')"
                     />
-                    <UiButton
+                    <ButtonBase
                         icon="lucide:redo-2"
                         class="size-9"
                         @click="emit('redo')"

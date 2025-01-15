@@ -117,7 +117,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                 <div
                     class="flex-shrink-0 w-fit h-full pt-2 gap-4 flex flex-col items-end justify-between"
                 >
-                    <UiButton
+                    <ButtonBase
                         icon="lucide:trash"
                         :icon-size="16"
                         tooltip="アイテム削除"

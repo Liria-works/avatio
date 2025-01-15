@@ -32,8 +32,8 @@ const save = async () => await storage.set('welcomeBanner', true);
             </p>
         </div>
         <div class="flex gap-1 items-center">
-            <UiButton label="ログイン" class="rounded-full" />
-            <UiButton
+            <ButtonBase label="ログイン" class="rounded-full" />
+            <ButtonBase
                 icon="lucide:x"
                 variant="flat"
                 class="flex-shrink-0 rounded-full p-2"

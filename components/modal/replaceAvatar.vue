@@ -81,14 +81,14 @@ const emit = defineEmits(['accept', 'close']);
 
         <template #footer>
             <div class="w-full flex gap-2 items-center justify-end">
-                <UiButton
+                <ButtonBase
                     label="置換"
                     @click="
                         emit('accept');
                         emit('close');
                     "
                 />
-                <UiButton label="キャンセル" @click="() => emit('close')" />
+                <ButtonBase label="キャンセル" @click="() => emit('close')" />
             </div>
         </template>
     </ModalBase>

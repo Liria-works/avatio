@@ -13,7 +13,7 @@ const modal_feedback = ref(false);
                 class="flex-wrap flex items-center justify-center gap-x-4 gap-y-2 text-zinc-700 dark:text-white"
             >
                 <div class="flex items-center gap-2">
-                    <UiButton
+                    <ButtonBase
                         to="https://x.com/liria_work"
                         new-tab
                         icon="simple-icons:x"
@@ -21,7 +21,7 @@ const modal_feedback = ref(false);
                         class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     />
 
-                    <UiButton
+                    <ButtonBase
                         to="https://github.com/Liria-works/avatio"
                         new-tab
                         icon="simple-icons:github"
@@ -29,7 +29,7 @@ const modal_feedback = ref(false);
                         class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                     />
 
-                    <UiButton
+                    <ButtonBase
                         to="https://liria.work"
                         new-tab
                         label="Liria"
@@ -39,9 +39,9 @@ const modal_feedback = ref(false);
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <UiButton to="/release" label="お知らせ" variant="link" />
+                    <ButtonBase to="/release" label="お知らせ" variant="link" />
 
-                    <UiButton
+                    <ButtonBase
                         label="フィードバック"
                         variant="link"
                         @click="modal_feedback = true"
@@ -51,18 +51,18 @@ const modal_feedback = ref(false);
             <div
                 class="items-center justify-center gap-x-4 gap-y-2 flex flex-wrap"
             >
-                <UiButton
+                <ButtonBase
                     disabled
                     tooltip="準備中"
                     label="Avatioについて"
                     variant="link"
                 />
 
-                <UiButton to="/faq" label="FAQ" variant="link" />
+                <ButtonBase to="/faq" label="FAQ" variant="link" />
 
-                <UiButton to="/terms" label="利用規約" variant="link" />
+                <ButtonBase to="/terms" label="利用規約" variant="link" />
 
-                <UiButton
+                <ButtonBase
                     to="/privacy-policy"
                     label="プライバシーポリシー"
                     variant="link"

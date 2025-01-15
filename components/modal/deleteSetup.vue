@@ -26,7 +26,7 @@ const emit = defineEmits(['close']);
 
         <template #footer>
             <div class="flex gap-2 items-center justify-end">
-                <UiButton
+                <ButtonBase
                     label="削除"
                     class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
                     @click="
@@ -34,7 +34,7 @@ const emit = defineEmits(['close']);
                         emit('close');
                     "
                 />
-                <UiButton label="キャンセル" @click="emit('close')" />
+                <ButtonBase label="キャンセル" @click="emit('close')" />
             </div>
         </template>
     </ModalBase>

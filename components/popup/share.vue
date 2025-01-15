@@ -18,7 +18,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
 
         <template #panel>
             <div class="flex flex-col gap-0.5 text-sm min-w-48">
-                <UiButton
+                <ButtonBase
                     :tabindex="0"
                     :to="tweet"
                     new-tab
@@ -27,7 +27,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                     label="ポスト"
                     class="w-full outline-0"
                 />
-                <UiButton
+                <ButtonBase
                     :tabindex="1"
                     icon="lucide:link"
                     :icon-size="18"
@@ -35,7 +35,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                     class="w-full outline-0"
                     @click="useWriteClipboard(useBrowserLocation().value.href!)"
                 />
-                <UiButton
+                <ButtonBase
                     :tabindex="2"
                     v-if="isSupported"
                     icon="lucide:share-2"

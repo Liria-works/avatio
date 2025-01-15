@@ -154,7 +154,7 @@ onMounted(async () => {
                         </div>
 
                         <div class="flex items-center gap-1">
-                            <UiButton
+                            <ButtonBase
                                 v-if="user?.id !== setup.author.id"
                                 :tooltip="
                                     bookmark
@@ -181,7 +181,7 @@ onMounted(async () => {
                                 @click="toggleBookmark"
                             />
 
-                            <UiButton
+                            <ButtonBase
                                 v-if="user?.id === setup.author.id"
                                 tooltip="削除"
                                 aria-label="削除"
@@ -200,7 +200,7 @@ onMounted(async () => {
                                 "
                                 :setup-author="setup.author.name"
                             >
-                                <UiButton
+                                <ButtonBase
                                     icon="lucide:share-2"
                                     :icon-size="18"
                                     tooltip="シェア"
@@ -240,7 +240,7 @@ onMounted(async () => {
                         v-if="setup.tags && setup.tags.length"
                         class="items-center gap-1.5 flex flex-row flex-wrap"
                     >
-                        <UiButton
+                        <ButtonBase
                             v-for="tag in setup.tags"
                             :key="useId()"
                             :label="tag.tag"
@@ -306,7 +306,7 @@ onMounted(async () => {
                     class="hidden xl:flex flex-wrap items-center gap-1.5"
                 >
                     <li v-for="tag in setup.tags" :key="useId()">
-                        <UiButton
+                        <ButtonBase
                             :label="tag.tag"
                             class="rounded-full"
                             @click="navigateTo(`/search?tag=${tag.tag}`)"
@@ -316,7 +316,7 @@ onMounted(async () => {
             </div>
         </div>
 
-        <UiButton
+        <ButtonBase
             label="セットアップを報告"
             icon="lucide:flag"
             :icon-size="16"

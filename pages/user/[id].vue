@@ -128,7 +128,7 @@ onMounted(async () => {
                         </p>
                     </div>
                 </div>
-                <UiButton
+                <ButtonBase
                     v-if="user && user.id === userId"
                     to="/user/setting"
                     icon="lucide:pen-line"
@@ -137,7 +137,7 @@ onMounted(async () => {
                     aria-label="プロフィールを編集"
                     variant="flat"
                 />
-                <UiButton
+                <ButtonBase
                     v-else
                     icon="lucide:flag"
                     :icon-size="19"
@@ -155,7 +155,7 @@ onMounted(async () => {
                     v-if="userData.links"
                     class="flex flex-wrap items-center gap-2"
                 >
-                    <UiButton
+                    <ButtonBase
                         v-for="i in userData.links"
                         :key="useId()"
                         :to="i"
@@ -169,7 +169,7 @@ onMounted(async () => {
                             size="20"
                             class="bg-zinc-700 dark:bg-zinc-200"
                         />
-                    </UiButton>
+                    </ButtonBase>
                 </div>
 
                 <div

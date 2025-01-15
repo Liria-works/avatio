@@ -230,7 +230,7 @@ onMounted(() => {
                                 ユーザー名は 1 ～ 16 文字である必要があります
                             </p>
                         </div>
-                        <UiButton
+                        <ButtonBase
                             label="保存"
                             class="px-3 py-2"
                             @click="useSaveUsername(username)"
@@ -248,7 +248,7 @@ onMounted(() => {
                     <h2 class="text-zinc-500 text-sm font-semibold select-none">
                         bio
                     </h2>
-                    <UiButton
+                    <ButtonBase
                         label="保存"
                         class="px-3 py-2"
                         @click="useSaveBio(bio)"
@@ -381,7 +381,7 @@ onMounted(() => {
                     <div class="flex flex-col gap-1">
                         <h3 class="text-sm font-semibold">パスワード変更</h3>
                     </div>
-                    <UiButton
+                    <ButtonBase
                         label="パスワード変更"
                         class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
                         @click="modalDeleteUser = true"
@@ -407,7 +407,7 @@ onMounted(() => {
                             削除したアカウントは復元できません。
                         </p>
                     </div>
-                    <UiButton
+                    <ButtonBase
                         label="アカウント削除"
                         class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
                         @click="modalDeleteUser = true"

@@ -201,7 +201,7 @@ onMounted(async () => {
                     </template>
                 </UPopover>
 
-                <UiButton
+                <ButtonBase
                     tooltip="破棄"
                     icon="lucide:trash"
                     :icon-size="18"

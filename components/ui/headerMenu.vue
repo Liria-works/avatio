@@ -39,16 +39,16 @@ onMounted(async () => {
 <template>
     <div class="items-center gap-2 flex">
         <div class="items-center gap-0.5 flex">
-            <UiButton
+            <ButtonBase
                 v-if="user && route.path !== '/login'"
                 to="/setup/edit"
                 class="p-3 md:pr-6 md:pl-5 md:mr-2 rounded-full whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 hover:dark:bg-zinc-300 hover:dark:text-zinc-800"
             >
                 <Icon name="lucide:plus" :size="18" />
                 <span class="hidden md:block">セットアップを投稿</span>
-            </UiButton>
+            </ButtonBase>
 
-            <UiButton
+            <ButtonBase
                 v-if="route.path !== '/login'"
                 to="/search"
                 tooltip="検索"
@@ -58,13 +58,13 @@ onMounted(async () => {
                 class="hidden sm:block p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
             />
 
-            <UiThemeButton />
+            <ButtonTheme />
 
             <!-- <UPopover :ui="{
                 rounded: 'rounded-xl',
                 ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
             }" class="flex">
-                <UiButton :icon-size="20" icon="lucide:languages" tooltip="Languages" />
+                <ButtonBase :icon-size="20" icon="lucide:languages" tooltip="Languages" />
 
                 <template #panel>
                     <div class="p-8">多言語未対応</div>
@@ -82,7 +82,7 @@ onMounted(async () => {
             </NuxtLink>
         </UTooltip>
 
-        <UiButton
+        <ButtonBase
             v-else-if="route.path !== '/login'"
             to="/login"
             label="ログイン"
@@ -92,18 +92,22 @@ onMounted(async () => {
 
         <PopupBase>
             <template #trigger>
-                <UiButton icon="lucide:menu" variant="flat" class="sm:hidden" />
+                <ButtonBase
+                    icon="lucide:menu"
+                    variant="flat"
+                    class="sm:hidden"
+                />
             </template>
             <template #panel>
                 <div class="flex flex-col items-center gap-1">
-                    <UiButton
+                    <ButtonBase
                         to="/search"
                         label="検索"
                         icon="lucide:search"
                         variant="flat"
                         class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                     />
-                    <UiThemeButton />
+                    <ButtonTheme />
                     <NuxtLink
                         v-if="user"
                         tabindex="0"
@@ -129,7 +133,7 @@ onMounted(async () => {
                         </div>
                     </NuxtLink>
 
-                    <UiButton
+                    <ButtonBase
                         v-else-if="route.path !== '/login'"
                         to="/login"
                         label="ログイン"

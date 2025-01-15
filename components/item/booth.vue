@@ -214,7 +214,7 @@ onMounted(async () => {
                         v-if="!props.noAction"
                         class="w-fit items-center gap-1 flex flex-row flex-shrink-0"
                     >
-                        <UiButton
+                        <ButtonBase
                             :to="{ name: 'search', query: { item: props.id } }"
                             icon="lucide:search"
                             tooltip="このアイテムを含むセットアップを検索"

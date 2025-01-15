@@ -121,7 +121,7 @@ watch(filter, async () => {
         <div v-if="setups" class="flex flex-col items-start gap-5 w-full">
             <UiTitle label="ホーム" size="lg" />
             <div class="flex flex-wrap items-center gap-1">
-                <UiButton
+                <ButtonBase
                     label="すべて"
                     variant="flat"
                     :class="[
@@ -130,7 +130,7 @@ watch(filter, async () => {
                     ]"
                     @click="filter = 'all'"
                 />
-                <UiButton
+                <ButtonBase
                     label="自分の投稿"
                     variant="flat"
                     :class="[
@@ -139,7 +139,7 @@ watch(filter, async () => {
                     ]"
                     @click="filter = 'mine'"
                 />
-                <UiButton
+                <ButtonBase
                     label="ブックマーク"
                     variant="flat"
                     :class="[
@@ -179,7 +179,7 @@ watch(filter, async () => {
             </MasonryWall>
 
             <div class="w-full flex flex-col items-center">
-                <UiButton
+                <ButtonBase
                     v-if="setups.length"
                     :disabled="loading"
                     label="さらに読み込む"

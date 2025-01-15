@@ -3,7 +3,7 @@ const colorMode = useColorMode();
 </script>
 
 <template>
-    <UiButton
+    <ButtonBase
         tooltip="テーマ"
         aria-label="テーマ"
         variant="flat"
@@ -33,5 +33,5 @@ const colorMode = useColorMode();
                 />
             </template>
         </ClientOnly>
-    </UiButton>
+    </ButtonBase>
 </template>
