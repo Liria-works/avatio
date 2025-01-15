@@ -122,28 +122,19 @@ const dateLocale = date.toLocaleString('ja-JP', {
                         </p>
                     </UiTooltip>
                     <HovercardUser v-if="!noUser" :user="props.author">
-                        <NuxtLink
-                            :to="{
-                                name: 'user-id',
-                                params: { id: props.author.id },
-                            }"
-                            :aria-label="props.author.name"
-                            class="flex flex-row gap-2 items-center"
-                        >
-                            <UiAvatar
-                                :url="
-                                    props.author.avatar
-                                        ? useGetImage(props.author.avatar, {
-                                              prefix: 'avatar',
-                                          })
-                                        : ''
-                                "
-                                :alt="props.author.name ?? ''"
-                                aria-hidden="true"
-                                :icon-size="12"
-                                class="size-5"
-                            />
-                        </NuxtLink>
+                        <UiAvatar
+                            :url="
+                                props.author.avatar
+                                    ? useGetImage(props.author.avatar, {
+                                          prefix: 'avatar',
+                                      })
+                                    : ''
+                            "
+                            :alt="props.author.name ?? ''"
+                            aria-hidden="true"
+                            :icon-size="12"
+                            class="size-5"
+                        />
                     </HovercardUser>
                 </div>
             </div>

@@ -97,26 +97,18 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                             </p>
                         </UiTooltip>
                         <HovercardUser :user="props.author">
-                            <NuxtLink
-                                :to="{
-                                    name: 'user-id',
-                                    params: { id: props.author.id },
-                                }"
-                                class="flex flex-row gap-2 items-center"
-                            >
-                                <UiAvatar
-                                    :url="
-                                        props.author.avatar
-                                            ? useGetImage(props.author.avatar, {
-                                                  prefix: 'avatar',
-                                              })
-                                            : ''
-                                    "
-                                    :alt="props.author.name ?? ''"
-                                    :icon-size="14"
-                                    class="size-6"
-                                />
-                            </NuxtLink>
+                            <UiAvatar
+                                :url="
+                                    props.author.avatar
+                                        ? useGetImage(props.author.avatar, {
+                                              prefix: 'avatar',
+                                          })
+                                        : ''
+                                "
+                                :alt="props.author.name ?? ''"
+                                :icon-size="14"
+                                class="size-6"
+                            />
                         </HovercardUser>
                     </div>
                 </div>

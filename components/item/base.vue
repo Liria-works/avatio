@@ -12,7 +12,6 @@ const props = defineProps<Props>();
 const emit = defineEmits(['click']);
 
 const customLink = defineNuxtLink({
-    componentName: 'customLink',
     prefetch: false,
 });
 </script>
