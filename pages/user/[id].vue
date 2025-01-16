@@ -172,7 +172,7 @@ onMounted(async () => {
                 </div>
 
                 <div
-                    class="w-full rounded-xl px-4 py-3 gap-1 flex flex-col border border-1 border-zinc-400 dark:border-zinc-600"
+                    class="w-full rounded-xl px-4 py-3 gap-1 flex flex-col border border-zinc-400 dark:border-zinc-600"
                 >
                     <span class="text-zinc-500 text-sm mt-[-2px]">bio</span>
                     <p v-if="!userData.bio" class="text-zinc-400">

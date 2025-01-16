@@ -101,30 +101,29 @@ onMounted(async () => {
                     props.size === 'lg' ? 'p-1.5 sm:p-2' : 'p-1.5',
                 ]"
             >
-                <div
+                <NuxtLink
+                    :to="booth_url + props.id"
+                    target="_blank"
                     :class="[
-                        'rounded-lg object-cover select-none overflow-hidden',
+                        'rounded-lg object-cover select-none overflow-hidden flex items-center',
                         props.size === 'lg' ? 'size-20 sm:size-32' : 'size-20',
                     ]"
                 >
-                    <NuxtLink
-                        :to="booth_url + props.id"
-                        target="_blank"
-                        class="size-full flex items-center"
-                    >
-                        <NuxtImg
-                            preload
-                            :src="item.thumbnail"
-                            :alt="item.name"
-                            format="webp"
-                            quality="70"
-                            :sizes="props.size === 'lg' ? '128px' : '80px'"
-                            :width="props.size === 'lg' ? 128 : 80"
-                            :height="props.size === 'lg' ? 128 : 80"
-                            :class="['rounded-lg', item.nsfw ? 'blur-md' : '']"
-                        />
-                    </NuxtLink>
-                </div>
+                    <NuxtImg
+                        preload
+                        :src="item.thumbnail"
+                        :alt="item.name"
+                        format="webp"
+                        quality="70"
+                        :sizes="props.size === 'lg' ? '128px' : '80px'"
+                        :width="props.size === 'lg' ? 128 : 80"
+                        :height="props.size === 'lg' ? 128 : 80"
+                        :class="[
+                            'rounded-lg text-xs',
+                            item.nsfw ? 'blur-md' : '',
+                        ]"
+                    />
+                </NuxtLink>
             </div>
         </template>
 

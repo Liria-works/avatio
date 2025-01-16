@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
     <div
         :class="
             twMerge(
-                'rounded-lg flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-400',
+                'rounded-lg flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600',
                 props.divider
                     ? 'divide-y divide-zinc-300 dark:divide-zinc-400'
                     : '',

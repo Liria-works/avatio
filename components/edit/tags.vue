@@ -77,13 +77,13 @@ watch(tags.value, () => {
     <div class="w-full flex flex-col gap-1">
         <TagsInputRoot
             v-model="tags"
-            class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-1 border-zinc-400 dark:border-zinc-600 bg-zinc-200 dark:bg-zinc-900"
+            class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-zinc-400 dark:border-zinc-600 bg-zinc-200 dark:bg-zinc-900"
         >
             <TagsInputItem
                 v-for="item in tags"
                 :key="item"
                 :value="item"
-                class="dark:text-white text-black flex items-center justify-center gap-1.5 rounded-full px-1 py-1 border border-1 border-zinc-300 dark:border-zinc-600"
+                class="dark:text-white text-black flex items-center justify-center gap-1.5 rounded-full px-1 py-1 border border-zinc-300 dark:border-zinc-600"
             >
                 <TagsInputItemText class="text-sm pl-2" />
                 <TagsInputItemDelete
@@ -102,7 +102,7 @@ watch(tags.value, () => {
         </TagsInputRoot>
         <div
             v-if="suggestion.length || loading"
-            class="w-full flex flex-wrap gap-1 rounded-lg p-2 border border-1 border-zinc-400 dark:border-zinc-600 bg-zinc-200 dark:bg-zinc-900"
+            class="w-full flex flex-wrap gap-1 rounded-lg p-2 border border-zinc-400 dark:border-zinc-600 bg-zinc-200 dark:bg-zinc-900"
         >
             <Icon
                 v-show="loading"
@@ -113,7 +113,7 @@ watch(tags.value, () => {
                 v-for="(i, index) in suggestion"
                 :key="'tagSuggest-' + index"
                 type="button"
-                class="gap-1.5 rounded-full px-3 py-1 text-sm border border-1 border-zinc-400 dark:border-zinc-600 hover:bg-zinc-300 hover:dark:bg-zinc-600 transition ease-in-out duration-100"
+                class="gap-1.5 rounded-full px-3 py-1 text-sm border border-zinc-400 dark:border-zinc-600 hover:bg-zinc-300 hover:dark:bg-zinc-600 transition ease-in-out duration-100"
                 @click="add(i)"
             >
                 {{ i }}
