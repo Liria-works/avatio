@@ -11,19 +11,9 @@ const username = ref<string>(props.initial);
         <template #header>
             <UiTitle label="ユーザー名" icon="lucide:pencil" is="h2" />
         </template>
-        <UInput
-            v-model="username"
-            id="name"
-            placeholder="ユーザー名を入力"
-            size="xl"
-            :padded="false"
-            variant="none"
-            :ui="{
-                size: { xl: 'text-2xl font-bold' },
-                rounded: 'rounded-none',
-            }"
-            class="w-full"
-        />
+
+        <UiTextinput v-model="username" placeholder="ユーザー名" />
+
         <template #footer>
             <p
                 :class="[
