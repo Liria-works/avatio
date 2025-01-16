@@ -3,36 +3,11 @@ const vis = defineModel<boolean>({
     default: false,
 });
 
-const props = defineProps<{
-    from: {
-        id: number;
-        name: string;
-        thumbnail: string;
-        shop: {
-            id: string;
-            name: string;
-            thumbnail: string;
-            verified: boolean;
-        };
-        price: string | null;
-        nsfw: boolean;
-        updated_at: string;
-    } | null;
-    to: {
-        id: number;
-        name: string;
-        thumbnail: string;
-        shop: {
-            id: string;
-            name: string;
-            thumbnail: string;
-            verified: boolean;
-        };
-        price: string | null;
-        nsfw: boolean;
-        updated_at: string;
-    } | null;
-}>();
+interface Props {
+    from: SetupItem | null;
+    to: SetupItem | null;
+}
+const props = defineProps<Props>();
 
 const emit = defineEmits(['accept', 'close']);
 </script>
@@ -49,7 +24,7 @@ const emit = defineEmits(['accept', 'close']);
         <div class="gap-4 flex flex-col items-center">
             <p>ベースアバターを置き換えますか？</p>
 
-            <div class="gap-2 flex flex-col items-center">
+            <div class="p-1 gap-2 flex flex-col items-center">
                 <ItemBooth
                     v-if="props.from"
                     no-action
@@ -66,7 +41,6 @@ const emit = defineEmits(['accept', 'close']);
                 <ItemBooth
                     v-if="props.to"
                     no-action
-                    size="lg"
                     :id="props.to.id"
                     :name="props.to.name"
                     :thumbnail="props.to.thumbnail"

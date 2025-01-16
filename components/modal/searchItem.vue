@@ -2,11 +2,37 @@
 const vis = defineModel<boolean>({
     default: false,
 });
+const emit = defineEmits(['close', 'add']);
 
 const router = useRouter();
-
-const emit = defineEmits(['close', 'add']);
 const client = await useSBClient();
+
+const categories = {
+    avatar: {
+        string: 'avatar',
+        id: 208,
+        name: 'ベースアバター',
+        icon: 'lucide:person-standing',
+    },
+    cloth: {
+        string: 'cloth',
+        id: 209,
+        name: '衣装',
+        icon: 'lucide:shirt',
+    },
+    accessory: {
+        string: 'accessory',
+        id: 217,
+        name: 'アクセサリー',
+        icon: 'lucide:star',
+    },
+    other: {
+        string: 'other',
+        id: null,
+        name: 'その他',
+        icon: 'lucide:package',
+    },
+};
 
 const searchWord = ref<string>('');
 const searchItems = ref<
@@ -18,61 +44,21 @@ const searchItems = ref<
         category: number;
     }[]
 >([]);
-
-const filter = ref<string[]>([]);
+const categoryFilter = ref<string[]>([]);
 const searching = ref<boolean>(false);
-
-onMounted(async () => {});
 
 const handleInputChange = useDebounceFn(
     async (value) => {
         searching.value = true;
 
-        if (!value.length) {
-            searching.value = false;
-            return;
-        }
+        if (!value.length) return (searching.value = false);
 
-        let query = client.rpc('search_items', {
-            keywords: value.toString(),
+        const { data } = await client.rpc('search_items', {
+            keyword: value.toString(),
+            exclude_categories: categoryFilter.value.length ? [208] : [],
+            num: 20,
         });
-
-        if (filter.value.length) {
-            if (filter.value.includes('other')) {
-                let ignore: { [key: string]: number } = {
-                    avatar: 208,
-                    cloth: 209,
-                    accessory: 217,
-                };
-                for (const i of filter.value) {
-                    ignore = Object.keys(ignore).reduce(
-                        (acc: { [key: string]: number }, key) => {
-                            if (key !== i) acc[key] = ignore[key];
-                            return acc;
-                        },
-                        {}
-                    );
-                }
-                query = query.not(
-                    'category',
-                    'in',
-                    `(${Object.values(ignore).join(',')})`
-                );
-            } else {
-                const categories = [];
-                if (filter.value.includes('avatar')) categories.push(208);
-                if (filter.value.includes('cloth')) categories.push(209);
-                if (filter.value.includes('accessory')) categories.push(217);
-
-                if (categories.length)
-                    query = query.or(
-                        categories.map((cat) => `category.eq.${cat}`).join(',')
-                    );
-            }
-        }
-
-        const { data } = await query.limit(10); // 取得数を制限しています;
-        searchItems.value = data;
+        searchItems.value = data ?? [];
 
         searching.value = false;
     },
@@ -83,7 +69,7 @@ const handleInputChange = useDebounceFn(
 watch(searchWord, (newValue) => {
     handleInputChange(newValue);
 });
-watch(filter.value, () => {
+watch(categoryFilter.value, () => {
     handleInputChange(searchWord.value);
 });
 </script>
@@ -119,7 +105,7 @@ watch(filter.value, () => {
             v-if="!searchWord.length"
             class="w-full flex flex-col items-center gap-6 p-3"
         >
-            <p class="text-sm text-500">
+            <p class="text-sm text-zinc-500">
                 アイテムの検索は、Avatio上に登録されているアイテムのみを検索します。<br />
                 BOOTHなどの外部サイトに登録されているアイテムすべてを検索することはできません。
             </p>
@@ -127,240 +113,83 @@ watch(filter.value, () => {
 
         <div
             v-if="searchWord.length"
-            class="w-full max-h-[60vh] overflow-auto flex flex-col gap-5"
+            class="w-full max-h-[60vh] flex flex-col gap-5"
         >
-            <div class="flex items-center gap-2">
-                <button
-                    type="button"
-                    :class="`py-1 px-3 rounded-full text-sm border border-1 border-400 ${
-                        filter.includes('avatar')
-                            ? 'text-white dark:text-black bg-500 hover:bg-400 dark:bg-400 hover:dark:bg-500'
-                            : 'hover:bg-200 dark:hover:bg-800'
-                    }`"
-                    @click="
-                        filter.includes('avatar')
-                            ? filter.splice(filter.indexOf('avatar'), 1)
-                            : filter.push('avatar')
-                    "
-                >
-                    ベースアバター
-                </button>
-                <button
-                    type="button"
-                    :class="`py-1 px-3 rounded-full text-sm border border-1 border-400 ${
-                        filter.includes('cloth')
-                            ? 'text-white dark:text-black bg-500 hover:bg-400 dark:bg-400 hover:dark:bg-500'
-                            : 'hover:bg-200 dark:hover:bg-800'
-                    }`"
-                    @click="
-                        filter.includes('cloth')
-                            ? filter.splice(filter.indexOf('cloth'), 1)
-                            : filter.push('cloth')
-                    "
-                >
-                    衣装
-                </button>
+            <!-- <div class="px-1 pt-1 flex items-center gap-1">
+                <ButtonBase
+                    v-for="c in categories"
+                    :label="c.name"
+                    :class="[
+                        'px-3 py-2 rounded-full',
+                        c.string
+                            ? categoryFilter.includes(c.string)
+                                ? 'bg-zinc-500 dark:bg-zinc-500'
+                                : ''
+                            : '',
+                    ]"
+                    @click="changeCategoryFilter(c.string)"
+                />
+            </div> -->
 
-                <button
-                    type="button"
-                    :class="`py-1 px-3 rounded-full text-sm border border-1 border-400 ${
-                        filter.includes('accessory')
-                            ? 'text-white dark:text-black bg-500 hover:bg-400 dark:bg-400 hover:dark:bg-500'
-                            : 'hover:bg-200 dark:hover:bg-800'
-                    }`"
-                    @click="
-                        filter.includes('accessory')
-                            ? filter.splice(filter.indexOf('accessory'), 1)
-                            : filter.push('accessory')
-                    "
-                >
-                    アクセサリー
-                </button>
-
-                <button
-                    type="button"
-                    :class="`py-1 px-3 rounded-full text-sm border border-1 border-400 ${
-                        filter.includes('other')
-                            ? 'text-white dark:text-black bg-500 hover:bg-400 dark:bg-400 hover:dark:bg-500'
-                            : 'hover:bg-200 dark:hover:bg-800'
-                    }`"
-                    @click="
-                        filter.includes('other')
-                            ? filter.splice(filter.indexOf('other'), 1)
-                            : filter.push('other')
-                    "
-                >
-                    その他
-                </button>
-            </div>
-
-            <div v-if="!searching" class="w-full flex flex-col gap-6">
-                <div
-                    v-if="
-                        searchItems &&
-                        searchItems.filter((item) => item.category === 208)
-                            .length
-                    "
-                    class="w-full flex flex-col gap-3"
-                >
-                    <UiTitle label="ベースアバター" icon="lucide:search" />
-                    <div class="w-full flex flex-col gap-2 px-3">
-                        <button
-                            v-for="i in searchItems.filter(
-                                (item) => item.category === 208
-                            )"
-                            :key="'search-result-' + i.id"
-                            type="button"
-                            class="w-full h-10 pr-3 flex gap-2 items-center justify-between rounded-xl bg-200 hover:bg-300 dark:bg-800 hover:dark:bg-700"
-                            @click="
-                                emit('add', i.id);
-                                emit('close');
+            <div
+                v-if="!searching"
+                class="w-full flex flex-col gap-6 overflow-auto"
+            >
+                <template v-if="searchItems.length">
+                    <div
+                        v-for="c in categories"
+                        :key="useId()"
+                        class="empty:hidden w-full flex flex-col gap-3"
+                    >
+                        <template
+                            v-if="
+                                searchItems.filter((item) =>
+                                    c.id
+                                        ? item.category === c.id
+                                        : !Object.values(categories)
+                                              .map((value) => value.id)
+                                              .includes(item.category)
+                                ).length
                             "
                         >
-                            <NuxtImg
-                                :src="i.thumbnail"
-                                :alt="i.name"
-                                class="size-10 rounded-lg"
-                            />
-                            <p
-                                class="grow text-left text-sm line-clamp-1 break-all text-800 dark:text-200"
-                            >
-                                {{ i.name }}
-                            </p>
-                            <p
-                                class="min-w-20 max-w-32 text-xs text-right line-clamp-1 break-all text-800 dark:text-200"
-                            >
-                                {{ i.shop }}
-                            </p>
-                        </button>
+                            <UiTitle :label="c.name" :icon="c.icon" />
+                            <div class="flex flex-col gap-2 px-3">
+                                <ButtonBase
+                                    v-for="i in searchItems.filter((item) =>
+                                        c.id
+                                            ? item.category === c.id
+                                            : !Object.values(categories)
+                                                  .map((value) => value.id)
+                                                  .includes(item.category)
+                                    )"
+                                    :key="useId()"
+                                    variant="flat"
+                                    class="w-full p-1 pr-2"
+                                    @click="
+                                        emit('add', i.id);
+                                        emit('close');
+                                    "
+                                >
+                                    <NuxtImg
+                                        :src="i.thumbnail"
+                                        :alt="i.name"
+                                        class="size-10 rounded-lg object-cover"
+                                    />
+                                    <p
+                                        class="grow text-left text-sm line-clamp-1 break-all text-zinc-800 dark:text-zinc-200"
+                                    >
+                                        {{ i.name }}
+                                    </p>
+                                    <p
+                                        class="min-w-20 max-w-32 text-xs text-right line-clamp-1 break-all text-zinc-600 dark:text-zinc-400"
+                                    >
+                                        {{ i.shop }}
+                                    </p>
+                                </ButtonBase>
+                            </div>
+                        </template>
                     </div>
-                </div>
-
-                <div
-                    v-if="
-                        searchItems &&
-                        searchItems.filter((item) => item.category === 209)
-                            .length
-                    "
-                    class="w-full flex flex-col gap-3"
-                >
-                    <UiTitle label="衣装" icon="lucide:search" />
-                    <div class="w-full flex flex-col gap-2 px-3">
-                        <button
-                            v-for="i in searchItems.filter(
-                                (item) => item.category === 209
-                            )"
-                            :key="'search-result-' + i.id"
-                            type="button"
-                            class="w-full h-10 pr-3 flex gap-2 items-center justify-between rounded-xl bg-200 hover:bg-300 dark:bg-800 hover:dark:bg-700"
-                            @click="
-                                emit('add', i.id);
-                                emit('close');
-                            "
-                        >
-                            <NuxtImg
-                                :src="i.thumbnail"
-                                :alt="i.name"
-                                class="size-10 rounded-lg"
-                            />
-                            <p
-                                class="grow text-left text-sm line-clamp-1 break-all text-800 dark:text-200"
-                            >
-                                {{ i.name }}
-                            </p>
-                            <p
-                                class="min-w-20 max-w-32 text-xs text-right line-clamp-1 break-all text-800 dark:text-200"
-                            >
-                                {{ i.shop }}
-                            </p>
-                        </button>
-                    </div>
-                </div>
-
-                <div
-                    v-if="
-                        searchItems &&
-                        searchItems.filter((item) => item.category === 217)
-                            .length
-                    "
-                    class="w-full flex flex-col gap-3"
-                >
-                    <UiTitle label="アクセサリー" icon="lucide:search" />
-                    <div class="w-full flex flex-col gap-2 px-3">
-                        <button
-                            v-for="i in searchItems.filter(
-                                (item) => item.category === 217
-                            )"
-                            :key="'search-result-' + i.id"
-                            type="button"
-                            class="w-full h-10 pr-3 flex gap-2 items-center justify-between rounded-xl bg-200 hover:bg-300 dark:bg-800 hover:dark:bg-700"
-                            @click="
-                                emit('add', i.id);
-                                emit('close');
-                            "
-                        >
-                            <NuxtImg
-                                :src="i.thumbnail"
-                                :alt="i.name"
-                                class="size-10 rounded-lg"
-                            />
-                            <p
-                                class="grow text-left text-sm line-clamp-1 break-all text-800 dark:text-200"
-                            >
-                                {{ i.name }}
-                            </p>
-                            <p
-                                class="min-w-20 max-w-32 text-xs text-right line-clamp-1 break-all text-800 dark:text-200"
-                            >
-                                {{ i.shop }}
-                            </p>
-                        </button>
-                    </div>
-                </div>
-
-                <div
-                    v-if="
-                        searchItems &&
-                        searchItems.filter((item) => item.category !== 217)
-                            .length
-                    "
-                    class="w-full flex flex-col gap-3"
-                >
-                    <UiTitle label="その他" icon="lucide:search" />
-                    <div class="w-full flex flex-col gap-2 px-3">
-                        <button
-                            v-for="i in searchItems.filter(
-                                (item) =>
-                                    item.category !== 208 &&
-                                    item.category !== 209 &&
-                                    item.category !== 217
-                            )"
-                            :key="'search-result-' + i.id"
-                            type="button"
-                            class="w-full h-10 pr-3 flex gap-2 items-center justify-between rounded-xl bg-200 hover:bg-300 dark:bg-800 hover:dark:bg-700"
-                            @click="
-                                emit('add', i.id);
-                                emit('close');
-                            "
-                        >
-                            <NuxtImg
-                                :src="i.thumbnail"
-                                :alt="i.name"
-                                class="size-10 rounded-lg"
-                            />
-                            <p
-                                class="grow text-left text-sm line-clamp-1 break-all text-800 dark:text-200"
-                            >
-                                {{ i.name }}
-                            </p>
-                            <p
-                                class="min-w-20 max-w-32 text-xs text-right line-clamp-1 break-all text-800 dark:text-200"
-                            >
-                                {{ i.shop }}
-                            </p>
-                        </button>
-                    </div>
-                </div>
+                </template>
             </div>
 
             <div

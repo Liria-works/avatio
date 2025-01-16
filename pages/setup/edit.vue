@@ -5,7 +5,12 @@ const client = await useSBClient();
 
 const publishing = ref(false);
 
-const items = ref<SetupItem[]>([]);
+const items = ref<{
+    avatar: SetupItem[];
+    cloth: SetupItem[];
+    accessory: SetupItem[];
+    other: SetupItem[];
+}>({ avatar: [], cloth: [], accessory: [], other: [] });
 const { undo, redo } = useRefHistory(items, { deep: true });
 
 const title = ref<string>('');
@@ -15,9 +20,15 @@ const image = ref<File | null>(null);
 
 const PublishSetup = async () => {
     publishing.value = true;
+    const itemsFlatten = [
+        ...items.value.avatar,
+        ...items.value.cloth,
+        ...items.value.accessory,
+        ...items.value.other,
+    ];
 
     try {
-        if (!items.value.filter((i) => i.category === 208).length)
+        if (!itemsFlatten.filter((i) => i.category === 208).length)
             return useAddToast(ERROR_MESSAGES.NO_AVATAR);
 
         let imagePath: string | null = null;
@@ -50,7 +61,7 @@ const PublishSetup = async () => {
         if (setupError) throw setupError;
 
         const { error: itemsError } = await client.from('setup_items').insert(
-            items.value.map((i) => {
+            itemsFlatten.map((i) => {
                 return {
                     setup_id: setupData.id,
                     item_id: i.id,
@@ -86,11 +97,18 @@ onBeforeRouteLeave(
     (to: unknown, from: unknown, next: (arg0: boolean | undefined) => void) => {
         if (skip_router_hook.value) return next(true);
 
+        const itemsFlatten = [
+            ...items.value.avatar,
+            ...items.value.cloth,
+            ...items.value.accessory,
+            ...items.value.other,
+        ];
+
         if (
             title.value ||
             description.value ||
             tags.value.length ||
-            items.value.length
+            itemsFlatten.length
         ) {
             const answer = window.confirm(
                 '入力された内容が破棄されます。よろしいですか？'
@@ -143,8 +161,12 @@ onMounted(async () => {
                         :disabled="
                             publishing ||
                             !title ||
-                            !items.filter((i) => i.category === 208).length ||
-                            !items.filter((i) => i.category !== 208).length
+                            !items.avatar.length ||
+                            !(
+                                items.cloth.length ||
+                                items.accessory.length ||
+                                items.other.length
+                            )
                         "
                         truncate
                         size="lg"
@@ -169,18 +191,14 @@ onMounted(async () => {
                             <p v-if="!title">
                                 {{ ERROR_MESSAGES.NO_TITLE }}
                             </p>
-                            <p
-                                v-if="
-                                    !items.filter((i) => i.category === 208)
-                                        .length
-                                "
-                            >
+                            <p v-if="!items.avatar.length">
                                 {{ ERROR_MESSAGES.NO_AVATAR }}
                             </p>
                             <p
                                 v-if="
-                                    !items.filter((i) => i.category !== 208)
-                                        .length
+                                    !items.cloth.length &&
+                                    !items.accessory.length &&
+                                    !items.other.length
                                 "
                             >
                                 {{ ERROR_MESSAGES.NO_ITEMS }}
@@ -189,10 +207,10 @@ onMounted(async () => {
                             <p
                                 v-if="
                                     title &&
-                                    items.filter((i) => i.category === 208)
-                                        .length &&
-                                    items.filter((i) => i.category !== 208)
-                                        .length
+                                    items.avatar.length &&
+                                    (items.cloth.length ||
+                                        items.accessory.length ||
+                                        items.other.length)
                                 "
                             >
                                 セットアップを投稿
@@ -225,7 +243,7 @@ onMounted(async () => {
                     <UiTitle label="説明" icon="lucide:text" />
                     <div class="w-full flex flex-col gap-1 items-end">
                         <div
-                            :class="`w-full p-3 rounded-lg border border-1 bg-zinc-200 dark:bg-zinc-900 ${
+                            :class="`w-full p-3 rounded-lg border bg-zinc-200 dark:bg-zinc-900 ${
                                 description.length < 141
                                     ? 'border-zinc-400 dark:border-zinc-600'
                                     : 'border-red-400 dark:border-red-600'

@@ -17,10 +17,7 @@ const props = withDefaults(
         name: string;
         thumbnail: string;
         price: string | null;
-        shop: string;
-        shopId: string;
-        shopThumbnail: string;
-        shopVerified: boolean;
+        shop: Shop;
         nsfw: boolean;
         updatedAt: string;
     }>(),
@@ -36,26 +33,34 @@ const booth_url = 'https://booth.pm/ja/items/';
     <ItemBase>
         <template #thumbnail>
             <div
-                :class="`flex-shrink-0 ${props.size === 'lg' ? 'p-4' : 'p-1.5 pr-4'}`"
+                :class="[
+                    'draggable flex-shrink-0 flex items-center gap-1.5',
+                    props.size === 'lg' ? 'p-4' : 'p-1.5 pr-4',
+                ]"
             >
-                <div
+                <Icon
+                    name="lucide:grip-vertical"
+                    :size="18"
+                    class="bg-zinc-400 cursor-move"
+                />
+                <NuxtLink
+                    :to="booth_url + props.id"
+                    target="_blank"
                     :class="[
                         'rounded-lg object-cover select-none overflow-hidden',
                         props.size === 'lg' ? 'size-32' : 'size-20',
                     ]"
                 >
-                    <NuxtLink :to="booth_url + props.id" target="_blank">
-                        <NuxtImg
-                            :src="props.thumbnail"
-                            :alt="props.name"
-                            :class="props.nsfw ? 'blur-md' : ''"
-                        />
-                    </NuxtLink>
-                </div>
+                    <NuxtImg
+                        :src="props.thumbnail"
+                        :alt="props.name"
+                        :class="props.nsfw ? 'blur-md' : ''"
+                    />
+                </NuxtLink>
             </div>
         </template>
         <template #main>
-            <div class="w-full flex gap-5 pr-4 justify-between">
+            <div class="draggable w-full flex gap-5 pr-4 justify-between">
                 <div
                     :class="`w-fit flex flex-col gap-3 items-start justify-center ${props.size === 'lg' ? 'h-32' : 'h-20'}`"
                 >
@@ -91,22 +96,22 @@ const booth_url = 'https://booth.pm/ja/items/';
                         </NuxtLink>
 
                         <NuxtLink
-                            :to="`https://${props.shopId}.booth.pm/`"
+                            :to="`https://${props.shop.id}.booth.pm/`"
                             target="_blank"
                             class="flex items-center gap-1.5 w-fit"
                         >
                             <NuxtImg
-                                :src="props.shopThumbnail"
-                                :alt="props.shop"
-                                class="size-5 rounded-md select-none border border-1 border-zinc-300"
+                                :src="props.shop.thumbnail"
+                                :alt="props.shop.name"
+                                class="size-5 rounded-md select-none border border-zinc-300"
                             />
                             <span
                                 class="text-xs font-semibold leading-none line-clamp-1 break-all text-zinc-700 dark:text-zinc-300 xs"
                             >
-                                {{ props.shop }}
+                                {{ props.shop.name }}
                             </span>
                             <Icon
-                                v-if="props.shopVerified"
+                                v-if="props.shop.verified"
                                 name="lucide:check"
                                 size="16"
                                 class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
@@ -142,7 +147,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                     :class="[
                         'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700',
                         {
-                            'border border-1 border-red-400 dark:border-red-400':
+                            'border border-red-400 dark:border-red-400':
                                 note.length > 140,
                         },
                     ]"

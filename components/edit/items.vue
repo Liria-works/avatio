@@ -1,33 +1,20 @@
 <script lang="ts" setup>
+import { VueDraggable } from 'vue-draggable-plus';
+
 const emit = defineEmits(['undo', 'redo']);
 
-const items = defineModel<SetupItem[]>({
-    default: [],
+const items = defineModel<{
+    avatar: SetupItem[];
+    cloth: SetupItem[];
+    accessory: SetupItem[];
+    other: SetupItem[];
+}>({
+    default: { avatar: [], cloth: [], accessory: [], other: [] },
 });
 
 const adding = ref(false);
 const modalSearchItem = ref(false);
 const modalReplaceAvatar = ref(false);
-
-const categorizedItems = computed(() => {
-    const categorized: { [key: string]: SetupItem[] } = {};
-
-    if (items.value.length) {
-        for (const item of items.value) {
-            let category: string;
-            if (item.category === 208) category = 'avatar';
-            else if (item.category === 209) category = 'cloth';
-            else if (item.category === 217) category = 'accessory';
-            else category = 'other';
-
-            if (!categorized[category]) categorized[category] = [];
-
-            categorized[category].push(item);
-        }
-    }
-
-    return categorized;
-});
 
 const categoryAttr: { [key: string]: { label: string; icon: string } } = {
     avatar: { label: 'ベースアバター', icon: 'lucide:person-standing' },
@@ -68,22 +55,36 @@ const addItem = async (id: number) => {
     const d = { ...data, note: '', unsupported: false };
 
     if (data.category === 208) {
-        if (items.value.some((i) => i.category === 208)) {
-            if (items.value.filter((i) => i.category === 208)[0].id === d.id)
+        if (items.value.avatar.length) {
+            if (items.value.avatar[0].id === id)
                 useAddToast(ERROR_MESSAGES.SAME_AVATAR);
             else {
                 replaceAvatar.value = d;
                 modalReplaceAvatar.value = true;
             }
         } else {
-            items.value.push(d);
+            items.value.avatar.push(d);
+            inputUrl.value = '';
+        }
+    } else if (data.category === 209) {
+        if (items.value.cloth.map((i) => i.id).includes(id))
+            useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
+        else {
+            items.value.cloth.push(d);
+            inputUrl.value = '';
+        }
+    } else if (data.category === 217) {
+        if (items.value.accessory.map((i) => i.id).includes(id))
+            useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
+        else {
+            items.value.accessory.push(d);
             inputUrl.value = '';
         }
     } else {
-        if (items.value.some((item) => item.id === data.id))
+        if (items.value.other.map((i) => i.id).includes(id))
             useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
         else {
-            items.value.push(d);
+            items.value.other.push(d);
             inputUrl.value = '';
         }
     }
@@ -96,18 +97,13 @@ const addItemFromURL = async () => {
 
     try {
         new URL(inputUrl.value);
-    } catch (e) {
-        console.error(e);
-        useAddToast(ERROR_MESSAGES.INVALID_URL);
-        return;
+    } catch {
+        return useAddToast(ERROR_MESSAGES.INVALID_URL);
     }
 
     const url = new URL(inputUrl.value);
 
-    if (
-        url.hostname.split('.').slice(-2)[1] !== 'pm' ||
-        url.hostname.split('.').slice(-2)[0] !== 'booth'
-    )
+    if (url.hostname.split('.').slice(-2).join('.') !== 'booth.pm')
         return useAddToast(ERROR_MESSAGES.INVALID_URL);
 
     const id = url.pathname.split('/').slice(-1)[0];
@@ -119,7 +115,12 @@ const addItemFromURL = async () => {
 };
 
 const removeItem = (id: number) => {
-    items.value = items.value.filter((item) => item.id !== id);
+    items.value.avatar = items.value.avatar.filter((item) => item.id !== id);
+    items.value.cloth = items.value.cloth.filter((item) => item.id !== id);
+    items.value.accessory = items.value.accessory.filter(
+        (item) => item.id !== id
+    );
+    items.value.other = items.value.other.filter((item) => item.id !== id);
 };
 
 onMounted(async () => {
@@ -131,43 +132,30 @@ onMounted(async () => {
     <div class="flex-col items-center gap-8 flex w-full">
         <div class="w-full flex flex-col gap-4 items-stretch">
             <div class="flex gap-1 items-center">
-                <div
-                    class="w-full p-1 rounded-lg border border-1 border-zinc-400 dark:border-zinc-500 bg-zinc-200 dark:bg-zinc-900"
+                <UiTextinput
+                    v-model="inputUrl"
+                    :disabled="adding"
+                    autocomplete="off"
+                    placeholder="BOOTH URLからアバター・アイテムを追加"
+                    @keyup.enter="addItemFromURL"
                 >
-                    <UInput
-                        v-model="inputUrl"
-                        :disabled="adding"
-                        autocomplete="off"
-                        variant="none"
-                        size="sm"
-                        placeholder="BOOTH URLからアバター・アイテムを追加"
-                        block
-                        :ui="{
-                            rounded: 'rounded-lg',
-                            icon: { trailing: { pointer: '' } },
-                        }"
-                        @keyup.enter="addItemFromURL"
-                    >
-                        <template #trailing>
-                            <UButton
-                                v-show="!inputUrl"
-                                color="gray"
-                                variant="link"
-                                icon="lucide:clipboard"
-                                :padded="false"
-                                @click="pasteFromClipboard"
-                            />
-                            <UButton
-                                v-show="inputUrl !== ''"
-                                color="gray"
-                                variant="link"
-                                icon="lucide:x"
-                                :padded="false"
-                                @click="inputUrl = ''"
-                            />
-                        </template>
-                    </UInput>
-                </div>
+                    <template #trailing>
+                        <ButtonBase
+                            v-if="!inputUrl"
+                            icon="lucide:clipboard"
+                            variant="flat"
+                            class="p-1.5"
+                            @click="pasteFromClipboard"
+                        />
+                        <ButtonBase
+                            v-if="inputUrl !== ''"
+                            icon="lucide:x"
+                            variant="flat"
+                            class="p-1.5"
+                            @click="inputUrl = ''"
+                        />
+                    </template>
+                </UiTextinput>
                 <ButtonBase
                     :disabled="adding"
                     :icon="
@@ -203,44 +191,54 @@ onMounted(async () => {
         </div>
 
         <div
-            v-if="!Object.keys(categorizedItems).length"
+            v-if="
+                !items.avatar.length &&
+                !items.cloth.length &&
+                !items.accessory.length &&
+                !items.other.length
+            "
             class="flex flex-col gap-3"
         >
             <p class="text-sm text-zinc-400">アイテムが登録されていません</p>
         </div>
 
-        <div
-            v-if="Object.keys(categorizedItems).length"
-            class="w-full flex flex-col gap-3"
-        >
+        <div v-else class="w-full flex flex-col gap-5">
             <div
-                v-for="i in Object.keys(categorizedItems)"
+                v-for="(value, key) in items"
                 :key="useId()"
-                class="w-full flex flex-col gap-3"
+                class="empty:hidden w-full flex flex-col gap-3"
             >
-                <UiTitle
-                    :label="categoryAttr[i].label"
-                    :icon="categoryAttr[i].icon"
-                />
+                <template v-if="value.length">
+                    <UiTitle
+                        :label="categoryAttr[key].label"
+                        :icon="categoryAttr[key].icon"
+                    />
 
-                <ItemBoothEdit
-                    v-for="item in categorizedItems[i]"
-                    v-model:note="item.note"
-                    v-model:unsupported="item.unsupported"
-                    :id="item.id"
-                    :key="'item-' + item.id"
-                    :size="item.category === 208 ? 'lg' : 'md'"
-                    :name="item.name"
-                    :thumbnail="item.thumbnail"
-                    :price="item.price"
-                    :shop="item.shop.name"
-                    :shop-id="item.shop.id"
-                    :shop-thumbnail="item.shop.thumbnail"
-                    :shop-verified="item.shop.verified"
-                    :nsfw="item.nsfw"
-                    :updated-at="item.updated_at"
-                    @remove="removeItem(item.id)"
-                />
+                    <VueDraggable
+                        v-model="items[key]"
+                        :animation="150"
+                        handle=".draggable"
+                        drag-class="opacity-100"
+                        ghost-class="opacity-0"
+                        class="flex flex-col gap-2"
+                    >
+                        <ItemBoothEdit
+                            v-for="item in value"
+                            v-model:note="item.note"
+                            v-model:unsupported="item.unsupported"
+                            :id="item.id"
+                            :key="'item-' + item.id"
+                            :size="item.category === 208 ? 'lg' : 'md'"
+                            :name="item.name"
+                            :thumbnail="item.thumbnail"
+                            :price="item.price"
+                            :shop="item.shop"
+                            :nsfw="item.nsfw"
+                            :updated-at="item.updated_at"
+                            @remove="removeItem(item.id)"
+                        />
+                    </VueDraggable>
+                </template>
             </div>
         </div>
     </div>
@@ -251,11 +249,12 @@ onMounted(async () => {
         @close="modalSearchItem = false"
     />
 
-    <!-- <ModalReplaceAvatar
+    <ModalReplaceAvatar
+        v-if="replaceAvatar"
         v-model="modalReplaceAvatar"
-        :from="items.avatar"
+        :from="items.avatar[0]"
         :to="replaceAvatar"
-        @accept="((inputUrl = ''), (items.avatar = replaceAvatar))"
+        @accept="((inputUrl = ''), (items.avatar[0] = replaceAvatar))"
         @close="modalReplaceAvatar = false"
-    /> -->
+    />
 </template>
