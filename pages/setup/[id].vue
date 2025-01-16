@@ -270,15 +270,7 @@ onMounted(async () => {
                             :id="i.id"
                             :key="useId()"
                             :size="i.category === 208 ? 'lg' : 'md'"
-                            :note="i.note"
-                            :unsupported="i.unsupported"
-                            :name="i.name"
-                            :thumbnail="i.thumbnail"
-                            :price="i.price"
-                            :shop="i.shop"
-                            :nsfw="i.nsfw"
-                            :updated-at="i.updated_at"
-                            :outdated="i.outdated"
+                            :item="i"
                         />
                     </div>
                 </div>

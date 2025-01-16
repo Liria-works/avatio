@@ -10,21 +10,13 @@ const unsupported = defineModel<boolean>('unsupported', {
 
 const emit = defineEmits(['remove']);
 
-const props = withDefaults(
-    defineProps<{
-        size?: 'md' | 'lg';
-        id: number;
-        name: string;
-        thumbnail: string;
-        price: string | null;
-        shop: Shop;
-        nsfw: boolean;
-        updatedAt: string;
-    }>(),
-    {
-        size: 'md',
-    }
-);
+interface Props {
+    size?: 'md' | 'lg';
+    item: Item;
+}
+const props = withDefaults(defineProps<Props>(), {
+    size: 'md',
+});
 
 const booth_url = 'https://booth.pm/ja/items/';
 </script>
@@ -44,7 +36,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                     class="bg-zinc-400 cursor-move"
                 />
                 <NuxtLink
-                    :to="booth_url + props.id"
+                    :to="booth_url + props.item.id"
                     target="_blank"
                     :class="[
                         'rounded-lg object-cover select-none overflow-hidden',
@@ -52,9 +44,9 @@ const booth_url = 'https://booth.pm/ja/items/';
                     ]"
                 >
                     <NuxtImg
-                        :src="props.thumbnail"
-                        :alt="props.name"
-                        :class="props.nsfw ? 'blur-md' : ''"
+                        :src="props.item.thumbnail"
+                        :alt="props.item.name"
+                        :class="props.item.nsfw ? 'blur-md' : ''"
                     />
                 </NuxtLink>
             </div>
@@ -66,18 +58,18 @@ const booth_url = 'https://booth.pm/ja/items/';
                 >
                     <div class="w-fit gap-2 flex items-center">
                         <NuxtLink
-                            :to="booth_url + props.id"
+                            :to="booth_url + props.item.id"
                             target="_blank"
                             class="w-fit gap-2"
                         >
                             <p
                                 class="w-fit text-sm font-medium leading-normal break-before-all line-clamp-2 text-black dark:text-white"
                             >
-                                {{ useSentence(props.name) }}
+                                {{ useSentence(props.item.name) }}
                             </p>
                         </NuxtLink>
 
-                        <UiTooltip v-if="props.nsfw" text="NSFW">
+                        <UiTooltip v-if="props.item.nsfw" text="NSFW">
                             <Icon
                                 name="lucide:heart"
                                 size="18"
@@ -88,30 +80,30 @@ const booth_url = 'https://booth.pm/ja/items/';
 
                     <div class="flex items-center gap-3">
                         <NuxtLink
-                            :to="booth_url + props.id"
+                            :to="booth_url + props.item.id"
                             target="_blank"
                             class="text-sm font-semibold leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
                         >
-                            {{ props.price }}
+                            {{ props.item.price }}
                         </NuxtLink>
 
                         <NuxtLink
-                            :to="`https://${props.shop.id}.booth.pm/`"
+                            :to="`https://${props.item.shop.id}.booth.pm/`"
                             target="_blank"
                             class="flex items-center gap-1.5 w-fit"
                         >
                             <NuxtImg
-                                :src="props.shop.thumbnail"
-                                :alt="props.shop.name"
+                                :src="props.item.shop.thumbnail"
+                                :alt="props.item.shop.name"
                                 class="size-5 rounded-md select-none border border-zinc-300"
                             />
                             <span
                                 class="text-xs font-semibold leading-none line-clamp-1 break-all text-zinc-700 dark:text-zinc-300 xs"
                             >
-                                {{ props.shop.name }}
+                                {{ props.item.shop.name }}
                             </span>
                             <Icon
-                                v-if="props.shop.verified"
+                                v-if="props.item.shop.verified"
                                 name="lucide:check"
                                 size="16"
                                 class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"

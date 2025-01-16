@@ -60,17 +60,7 @@ onMounted(async () => {
         </p>
 
         <div v-else class="flex flex-col gap-3">
-            <ItemSetupDetail
-                v-for="i in bookmarks"
-                :key="useId()"
-                :id="i.id"
-                :created-at="i.created_at"
-                :name="i.name"
-                :description="i.description"
-                :image="i.image"
-                :author="i.author"
-                :items="i.items.map((i) => i.data)"
-            />
+            <ItemSetupDetail v-for="i in bookmarks" :key="useId()" :setup="i" />
             <ButtonLoadMore
                 :loading="loading"
                 class="w-full"

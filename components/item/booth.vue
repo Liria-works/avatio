@@ -1,18 +1,11 @@
 <script lang="ts" setup>
+type OptionalKeys = 'note' | 'unsupported';
 const props = withDefaults(
     defineProps<{
         noAction?: boolean;
         size?: 'md' | 'lg';
-        note?: string | null;
-        unsupported?: boolean;
-        id: number;
-        name: string;
-        thumbnail: string;
-        shop: Shop;
-        price: string | null;
-        nsfw: boolean;
-        outdated: boolean;
-        updatedAt: string;
+        item: Partial<Pick<SetupItem, OptionalKeys>> &
+            Omit<SetupItem, OptionalKeys>;
     }>(),
     {
         noAction: false,
@@ -35,27 +28,27 @@ const item = ref<{
     nsfw: boolean;
     outdated: boolean;
 }>({
-    name: props.name,
-    thumbnail: props.thumbnail,
+    name: props.item.name,
+    thumbnail: props.item.thumbnail,
     shop: {
-        name: props.shop.name,
-        id: props.shop.id,
-        thumbnail: props.shop.thumbnail,
-        verified: props.shop.verified,
+        name: props.item.shop.name,
+        id: props.item.shop.id,
+        thumbnail: props.item.shop.thumbnail,
+        verified: props.item.shop.verified,
     },
-    price: props.price,
-    nsfw: props.nsfw,
-    outdated: props.outdated,
+    price: props.item.price,
+    nsfw: props.item.nsfw,
+    outdated: props.item.outdated,
 });
 
 onMounted(async () => {
     const timeDifference =
-        new Date().getTime() - new Date(props.updatedAt).getTime();
+        new Date().getTime() - new Date(props.item.updated_at).getTime();
 
     // 時間の差分が1日を超えている場合、処理継続する
     if (timeDifference > 24 * 60 * 60 * 1000) {
         const response = await $fetch('/api/item/booth', {
-            query: { id: encodeURIComponent(props.id) },
+            query: { id: encodeURIComponent(props.item.id) },
         });
 
         if (response.data)
@@ -102,7 +95,7 @@ onMounted(async () => {
                 ]"
             >
                 <NuxtLink
-                    :to="booth_url + props.id"
+                    :to="booth_url + props.item.id"
                     target="_blank"
                     :class="[
                         'rounded-lg object-cover select-none overflow-hidden flex items-center',
@@ -137,7 +130,7 @@ onMounted(async () => {
                 >
                     <div class="w-fit flex items-center gap-2">
                         <NuxtLink
-                            :to="booth_url + props.id"
+                            :to="booth_url + props.item.id"
                             target="_blank"
                             class="w-fit gap-2"
                         >
@@ -164,7 +157,7 @@ onMounted(async () => {
 
                     <div class="flex items-center gap-3">
                         <NuxtLink
-                            :to="booth_url + props.id"
+                            :to="booth_url + props.item.id"
                             target="_blank"
                             class="text-sm font-semibold leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
                         >
@@ -199,7 +192,7 @@ onMounted(async () => {
                 </div>
                 <div class="w-fit gap-3 flex flex-shrink-0 items-center">
                     <UiTooltip
-                        v-if="props.unsupported"
+                        v-if="props.item.unsupported"
                         text="ベースアバターに非対応"
                     >
                         <Icon
@@ -214,7 +207,10 @@ onMounted(async () => {
                         class="w-fit items-center gap-1 flex flex-row flex-shrink-0"
                     >
                         <ButtonBase
-                            :to="{ name: 'search', query: { item: props.id } }"
+                            :to="{
+                                name: 'search',
+                                query: { item: props.item.id },
+                            }"
                             icon="lucide:search"
                             tooltip="このアイテムを含むセットアップを検索"
                             aria-label="このアイテムを含むセットアップを検索"
@@ -226,7 +222,7 @@ onMounted(async () => {
         </template>
         <template #under>
             <div
-                v-if="props.note"
+                v-if="props.item.note"
                 class="w-full m-2 mt-0 px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700"
             >
                 <Icon
@@ -237,7 +233,7 @@ onMounted(async () => {
                 <p
                     class="text-xs/relaxed text-left break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                 >
-                    {{ props.note }}
+                    {{ props.item.note }}
                 </p>
             </div>
         </template>

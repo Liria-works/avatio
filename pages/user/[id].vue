@@ -195,13 +195,7 @@ onMounted(async () => {
                 <ItemSetupDetail
                     v-for="i in setups"
                     :key="useId()"
-                    :id="Number(i.id)"
-                    :created-at="i.created_at"
-                    :name="i.name"
-                    :description="i.description"
-                    :image="i.image"
-                    :author="i.author"
-                    :items="i.items.map((i) => i.data)"
+                    :setup="i"
                 />
                 <ButtonLoadMore
                     :loading="loading"

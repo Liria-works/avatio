@@ -1,14 +1,8 @@
 <script lang="ts" setup>
 interface Props {
     link?: boolean;
-    id: number;
-    createdAt: string;
-    name: string;
-    description: string | null;
-    image: string | null;
-    author: Author;
-    items: Item[];
     setupItems?: boolean;
+    setup: Setup;
 }
 const props = withDefaults(defineProps<Props>(), {
     link: true,
@@ -18,22 +12,24 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['click']);
 
-const date = new Date(props.createdAt);
+const date = new Date(props.setup.created_at);
 const dateLocale = date.toLocaleString('ja-JP', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
 });
 
-const avatar = props.items.filter((i) => i.category === 208)[0];
-const nonAvatarItems = props.items.filter((i) => i.category !== 208);
+const avatar = props.setup.items.filter((i) => i.data.category === 208)[0].data;
+const nonAvatarItems = props.setup.items
+    .filter((i) => i.data.category !== 208)
+    .map((i) => i.data);
 </script>
 
 <template>
     <ItemBase
         :to="
             props.link
-                ? { name: 'setup-id', params: { id: props.id } }
+                ? { name: 'setup-id', params: { id: props.setup.id } }
                 : undefined
         "
         :class="[
@@ -45,9 +41,9 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
         <template #thumbnail>
             <div class="p-2 flex-shrink-0">
                 <NuxtImg
-                    v-if="props.image"
-                    :src="useGetImage(props.image, { prefix: 'setup' })"
-                    :alt="props.name"
+                    v-if="props.setup.image"
+                    :src="useGetImage(props.setup.image, { prefix: 'setup' })"
+                    :alt="props.setup.name"
                     class="size-28 md:w-auto md:max-w-40 object-cover rounded-lg overflow-clip text-xs"
                 />
                 <NuxtImg
@@ -70,7 +66,7 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                     <p
                         class="text-lg font-medium text-zinc-700 dark:text-zinc-200 break-all line-clamp-1"
                     >
-                        {{ props.name }}
+                        {{ props.setup.name }}
                     </p>
                     <p
                         class="text-sm text-zinc-500 dark:text-zinc-400 break-keep line-clamp-1"
@@ -86,7 +82,11 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                     <p
                         class="text-sm text-zinc-600 dark:text-zinc-400 break-all line-clamp-1"
                     >
-                        {{ props.description ? props.description : '' }}
+                        {{
+                            props.setup.description
+                                ? props.setup.description
+                                : ''
+                        }}
                     </p>
                     <div class="flex items-center gap-2">
                         <UiTooltip :text="dateLocale">
@@ -96,16 +96,19 @@ const nonAvatarItems = props.items.filter((i) => i.category !== 208);
                                 {{ useDateElapsed(date) }}
                             </p>
                         </UiTooltip>
-                        <HovercardUser :user="props.author">
+                        <HovercardUser :user="props.setup.author">
                             <UiAvatar
                                 :url="
-                                    props.author.avatar
-                                        ? useGetImage(props.author.avatar, {
-                                              prefix: 'avatar',
-                                          })
+                                    props.setup.author.avatar
+                                        ? useGetImage(
+                                              props.setup.author.avatar,
+                                              {
+                                                  prefix: 'avatar',
+                                              }
+                                          )
                                         : ''
                                 "
-                                :alt="props.author.name ?? ''"
+                                :alt="props.setup.author.name ?? ''"
                                 :icon-size="14"
                                 class="size-6"
                             />

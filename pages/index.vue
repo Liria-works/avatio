@@ -162,17 +162,8 @@ watch(filter, async () => {
                 <template #default="{ item }">
                     <ItemSetup
                         :aria-label="item.name"
-                        :id="item.id"
-                        :name="item.name"
-                        :avatar="{
-                            name: item.avatars[0].name,
-                            thumbnail: item.avatars[0].thumbnail,
-                            outdated: item.avatars[0].outdated,
-                        }"
-                        :author="item.author"
-                        :created-at="item.created_at"
-                        :image="item.image"
                         :image-size="{ width: 16, height: 9 }"
+                        :setup="item"
                     />
                 </template>
             </MasonryWall>

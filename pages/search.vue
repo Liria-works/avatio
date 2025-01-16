@@ -114,14 +114,7 @@ watch(
             v-if="resultItem"
             :size="'lg'"
             no-action
-            :id="resultItem.id"
-            :name="resultItem.name"
-            :thumbnail="resultItem.thumbnail"
-            :shop="resultItem.shop"
-            :price="resultItem.price"
-            :nsfw="resultItem.nsfw"
-            :outdated="false"
-            :updated-at="resultItem.updated_at"
+            :item="resultItem"
         />
 
         <UiDivider class="mx-3 my-5" />
@@ -165,13 +158,7 @@ watch(
                 <ItemSetupDetail
                     v-for="i in resultSetups"
                     :aria-label="i.name"
-                    :id="i.id"
-                    :created-at="i.created_at"
-                    :name="i.name"
-                    :description="i.description"
-                    :image="i.image"
-                    :author="i.author"
-                    :items="i.items.map((i) => i.data)"
+                    :setup="i"
                 />
                 <ButtonLoadMore
                     :loading="loading"

@@ -226,15 +226,9 @@ onMounted(async () => {
                             v-for="item in value"
                             v-model:note="item.note"
                             v-model:unsupported="item.unsupported"
-                            :id="item.id"
                             :key="'item-' + item.id"
                             :size="item.category === 208 ? 'lg' : 'md'"
-                            :name="item.name"
-                            :thumbnail="item.thumbnail"
-                            :price="item.price"
-                            :shop="item.shop"
-                            :nsfw="item.nsfw"
-                            :updated-at="item.updated_at"
+                            :item="item"
                             @remove="removeItem(item.id)"
                         />
                     </VueDraggable>
