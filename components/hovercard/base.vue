@@ -2,12 +2,15 @@
 import { twMerge } from 'tailwind-merge';
 
 interface Props {
+    disabled?: boolean;
     side?: 'top' | 'bottom' | 'left' | 'right';
     sideOffset?: number;
     closeDelay?: number;
     class?: string | string[];
 }
 const props = withDefaults(defineProps<Props>(), {
+    disabled: false,
+    directContent: false,
     side: 'bottom',
     sideOffset: 5,
     closeDelay: 0,
@@ -21,6 +24,9 @@ const props = withDefaults(defineProps<Props>(), {
         </HoverCardTrigger>
         <HoverCardPortal>
             <HoverCardContent
+                v-if="!disabled"
+                :side="props.side"
+                :side-offset="props.sideOffset"
                 :class="
                     twMerge(
                         'rounded-xl bg-zinc-100 dark:bg-zinc-900 p-5 z-[200] shadow-lg shadow-black/10 border border-zinc-300 dark:border-zinc-700',
@@ -28,8 +34,6 @@ const props = withDefaults(defineProps<Props>(), {
                         props.class
                     )
                 "
-                :side="props.side"
-                :side-offset="props.sideOffset"
             >
                 <slot name="content" />
 
