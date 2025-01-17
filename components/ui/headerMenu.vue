@@ -72,7 +72,7 @@ onMounted(async () => {
             </UPopover> -->
         </div>
 
-        <UTooltip v-if="user" :text="name ?? ''">
+        <UiTooltip v-if="user" :text="name ?? ''">
             <NuxtLink
                 tabindex="0"
                 :to="`/@${user?.id}`"
@@ -80,7 +80,7 @@ onMounted(async () => {
             >
                 <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
             </NuxtLink>
-        </UTooltip>
+        </UiTooltip>
 
         <ButtonBase
             v-else-if="route.path !== '/login'"

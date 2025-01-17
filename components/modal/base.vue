@@ -34,7 +34,7 @@ const slots = useSlots() as Record<string, (() => VNode[]) | undefined>;
             >
                 <slot name="header" />
                 <UiDivider v-if="slots.header && slots.header().length" />
-                <div class="overflow-y-auto">
+                <div class="p-1 overflow-y-auto flex flex-col gap-2">
                     <slot />
                 </div>
                 <UiDivider v-if="slots.footer && slots.footer().length" />

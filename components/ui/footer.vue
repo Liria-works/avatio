@@ -18,7 +18,8 @@ const modal_feedback = ref(false);
                         new-tab
                         icon="simple-icons:x"
                         aria-label="X"
-                        class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
+                        variant="flat"
+                        class="p-2"
                     />
 
                     <ButtonBase
@@ -26,15 +27,8 @@ const modal_feedback = ref(false);
                         new-tab
                         icon="simple-icons:github"
                         aria-label="GitHub"
-                        class="outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
-                    />
-
-                    <ButtonBase
-                        to="https://liria.work"
-                        new-tab
-                        label="Liria"
-                        icon="avatio:liria"
-                        class="font-[Montserrat] font-semibold outline-0 p-2 hover:bg-zinc-300 hover:dark:bg-zinc-700"
+                        variant="flat"
+                        class="p-2"
                     />
                 </div>
 
@@ -68,7 +62,17 @@ const modal_feedback = ref(false);
                     variant="link"
                 />
             </div>
-            <p class="text-zinc-500 text-sm">Copyright © 2025 Liria</p>
+            <p class="text-zinc-500 text-sm flex gap-1 items-center">
+                Copyright © 2025
+                <ButtonBase
+                    to="https://liria.work"
+                    new-tab
+                    label="Liria"
+                    icon="avatio:liria"
+                    variant="link"
+                    class="gap-1 text-sm font-[Montserrat] font-semibold"
+                />
+            </p>
         </div>
 
         <ModalFeedback v-model="modal_feedback" />
