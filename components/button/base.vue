@@ -64,9 +64,12 @@ const variantClass = {
                     props.icon.length ? 'p-3' : 'px-4 py-3',
                     props.wFull ? 'w-full' : 'w-fit',
                     'rounded-lg flex gap-2 items-center justify-center',
-                    'bg-transparent dark:bg-transparent hover:bg-zinc-200 dark:hover:bg-zinc-600',
                     'text-sm font-semibold align-middle leading-none',
+                    'bg-transparent dark:bg-transparent',
                     'text-zinc-800 dark:text-zinc-200',
+                    props.disabled
+                        ? 'text-zinc-400 dark:text-zinc-600'
+                        : 'hover:bg-zinc-200 dark:hover:bg-zinc-600',
                     'transition duration-50 delay-0 ease-in-out',
                     variantClass[props.variant],
                     props.class
