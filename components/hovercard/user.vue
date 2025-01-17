@@ -11,7 +11,10 @@ const props = defineProps<Props>();
             <slot />
         </template>
         <template #content>
-            <div class="flex items-center gap-3">
+            <NuxtLink
+                :to="`/@${props.user.id}`"
+                class="flex items-center gap-3"
+            >
                 <UiAvatar
                     :url="
                         props.user.avatar
@@ -29,7 +32,7 @@ const props = defineProps<Props>();
                 >
                     {{ props.user.name }}
                 </span>
-            </div>
+            </NuxtLink>
         </template>
     </HovercardBase>
 </template>

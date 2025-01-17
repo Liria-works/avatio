@@ -8,6 +8,7 @@ const page = ref(0);
 const perPage = 20;
 const loading = ref(false);
 const modalReport = ref(false);
+const modalLogin = ref(false);
 
 const getSetups = async () => {
     const { data } = await client
@@ -124,29 +125,27 @@ onMounted(async () => {
                         </p>
                     </div>
                 </div>
-                <ButtonBase
+                <div
                     v-if="user && user.id === route.params.id.toString()"
-                    to="/user/setting"
-                    icon="lucide:pen-line"
-                    :icon-size="19"
-                    tooltip="プロフィールを編集"
-                    aria-label="プロフィールを編集"
-                    variant="flat"
-                />
-                <ButtonBase
-                    v-else
-                    icon="lucide:flag"
-                    :icon-size="19"
-                    tooltip="ユーザーを報告"
-                    aria-label="ユーザーを報告"
-                    variant="flat"
-                    @click="modalReport = true"
-                />
-
-                <ModalReportUser
-                    v-model="modalReport"
-                    :id="route.params.id.toString()"
-                />
+                    class="flex items-center gap-1"
+                >
+                    <ButtonBase
+                        to="/settings"
+                        icon="lucide:pen-line"
+                        :icon-size="19"
+                        tooltip="プロフィールを編集"
+                        aria-label="プロフィールを編集"
+                        variant="flat"
+                    />
+                    <ButtonBase
+                        to="/bookmarks"
+                        icon="lucide:bookmark"
+                        :icon-size="19"
+                        tooltip="ブックマーク"
+                        aria-label="ブックマーク"
+                        variant="flat"
+                    />
+                </div>
             </div>
 
             <div class="w-full flex flex-col gap-3 pl-2">
@@ -186,6 +185,33 @@ onMounted(async () => {
                     </p>
                 </div>
             </div>
+
+            <ButtonBase
+                v-if="!user || user.id !== route.params.id.toString()"
+                label="セットアップを報告"
+                icon="lucide:flag"
+                :icon-size="16"
+                variant="flat"
+                class="px-3 py-2 mt-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-300 hover:dark:bg-zinc-700"
+                icon-class="text-red-400 dark:text-red-400"
+                @click="
+                    if (user) modalReport = true;
+                    else modalLogin = true;
+                "
+            />
+            <ModalReportUser
+                v-model="modalReport"
+                :id="route.params.id.toString()"
+            />
+            <ModalBase v-model="modalLogin">
+                <UiLogin
+                    :redirect="`/@${route.params.id}`"
+                    @login-success="
+                        modalLogin = false;
+                        modalReport = true;
+                    "
+                />
+            </ModalBase>
         </div>
 
         <div v-if="setups.length" class="w-full flex flex-col gap-5 pl-2">

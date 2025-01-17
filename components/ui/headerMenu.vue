@@ -75,7 +75,7 @@ onMounted(async () => {
         <UTooltip v-if="user" :text="name ?? ''">
             <NuxtLink
                 tabindex="0"
-                :to="`/user/${user?.id}`"
+                :to="`/@${user?.id}`"
                 class="hidden sm:flex select-none rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
             >
                 <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
@@ -111,7 +111,7 @@ onMounted(async () => {
                     <NuxtLink
                         v-if="user"
                         tabindex="0"
-                        :to="`/user/${user?.id}`"
+                        :to="`/@${user?.id}`"
                         class="hidden sm:flex rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
                     >
                         <UAvatar

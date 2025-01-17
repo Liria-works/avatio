@@ -31,8 +31,6 @@ const handleSignUp = async () => {
                 signUp.value.password,
                 token.value
             );
-            // emit('success');
-            // navigateTo('/user/setting');
         } catch (error) {
             console.error(error);
         } finally {

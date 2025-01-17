@@ -100,7 +100,7 @@ export default defineNuxtConfig({
         redirectOptions: {
             login: '/login',
             callback: '/confirm',
-            include: ['/setup/edit', '/user/settings', '/user/bookmark'],
+            include: ['/setup/edit', '/settings', '/bookmarks'],
             exclude: [],
             cookieRedirect: false,
         },
@@ -177,9 +177,8 @@ export default defineNuxtConfig({
             '/login',
             '/search',
             '/setup/edit',
-            '/user',
-            '/user/setting',
-            '/user/bookmark',
+            '/settings',
+            '/bookmarks',
         ],
         urls: async () => {
             const permament = [
@@ -248,7 +247,7 @@ export default defineNuxtConfig({
             const users = usersError
                 ? []
                 : usersData.map((user) => {
-                      return { loc: `/user/${user.id}` };
+                      return { loc: `/@${user.id}` };
                   });
 
             return [...permament, ...setups, ...users];
