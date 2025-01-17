@@ -8,7 +8,6 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
     link: true,
-    image: null,
     imageSize: null,
     noHero: false,
 });
@@ -38,22 +37,35 @@ const dateLocale = date.toLocaleString('ja-JP', {
     >
         <template #hero>
             <div
-                v-if="props.setup.image && !props.noHero"
-                class="w-full p-1.5 aspect-video"
+                v-if="props.setup.images.length && !props.noHero"
+                class="w-full p-1.5"
             >
                 <NuxtImg
-                    :src="useGetImage(props.setup.image, { prefix: 'setup' })"
+                    :src="
+                        useGetImage(props.setup.images[0].name, {
+                            prefix: 'setup',
+                        })
+                    "
                     :alt="props.setup.name"
                     preset="thumbnail"
-                    :placeholder="[50, 25, 75, 5]"
+                    :width="props.setup.images[0].width ?? 192"
+                    :height="props.setup.images[0].height ?? 108"
+                    :placeholder="[
+                        props.setup.images[0].width ?? 192,
+                        props.setup.images[0].height ?? 108,
+                        75,
+                        5,
+                    ]"
                     class="size-full max-h-[420px] rounded-lg object-cover"
                 />
             </div>
         </template>
         <template #thumbnail>
             <NuxtImg
-                v-if="props.setup.image && props.noHero"
-                :src="useGetImage(props.setup.image, { prefix: 'setup' })"
+                v-if="props.setup.images.length && props.noHero"
+                :src="
+                    useGetImage(props.setup.images[0].name, { prefix: 'setup' })
+                "
                 :alt="props.setup.name"
                 preset="avatarThumbnail"
                 :placeholder="[30, 30, 75, 5]"
@@ -61,7 +73,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
             />
 
             <NuxtImg
-                v-if="!props.setup.image"
+                v-if="!props.setup.images.length"
                 :src="props.setup.avatars[0].thumbnail"
                 :alt="props.setup.name"
                 preset="avatarThumbnail"

@@ -51,7 +51,7 @@ export interface Setup {
     description: string | null;
     tags: { tag: string }[];
     author: Author;
-    image: string | null;
+    images: { name: string; width: number; height: number }[];
     items: {
         data: Item;
         note: string;
@@ -64,6 +64,7 @@ export interface SetupSimple {
     created_at: string;
     name: string;
     author: Author;
+    images: { name: string; width: number; height: number }[];
     avatars: {
         name: string;
         thumbnail: string;
@@ -72,7 +73,6 @@ export interface SetupSimple {
     }[];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     items: { data: any }[];
-    image: string | null;
 }
 
 export interface CategoryAttr {

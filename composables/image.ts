@@ -9,7 +9,7 @@ export const useGetImage = (name: string, options?: { prefix: string }) => {
     return `${runtime.public.r2.domain}${options?.prefix ? `/${options.prefix}` : ''}/${img}`;
 };
 
-export const usePostImage = async (
+export const usePutImage = async (
     file: File,
     options: { res: number; size: number; prefix?: string }
 ) => {
@@ -25,7 +25,12 @@ export const usePostImage = async (
             body: formData,
         });
         if (!response.success) throw new Error();
-        return { name: response.path, prefix: response.prefix };
+        return {
+            name: response.path,
+            prefix: response.prefix,
+            width: response.width,
+            height: response.height,
+        };
     } catch (error) {
         console.error('Failed to upload image:', error);
         return null;
@@ -33,9 +38,11 @@ export const usePostImage = async (
 };
 
 export interface PutImage {
+    success: boolean;
     path: string;
     prefix: string;
-    success: boolean;
+    width: number;
+    height: number;
 }
 
 export const useDeleteImage = (name: string, options?: { prefix?: string }) => {

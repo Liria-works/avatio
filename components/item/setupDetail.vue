@@ -41,8 +41,12 @@ const nonAvatarItems = props.setup.items
         <template #thumbnail>
             <div class="p-2 flex-shrink-0">
                 <NuxtImg
-                    v-if="props.setup.image"
-                    :src="useGetImage(props.setup.image, { prefix: 'setup' })"
+                    v-if="props.setup.images.length"
+                    :src="
+                        useGetImage(props.setup.images[0].name, {
+                            prefix: 'setup',
+                        })
+                    "
                     :alt="props.setup.name"
                     class="size-28 md:w-auto md:max-w-40 object-cover rounded-lg overflow-clip text-xs"
                 />
@@ -68,15 +72,23 @@ const nonAvatarItems = props.setup.items
                     >
                         {{ props.setup.name }}
                     </p>
-                    <p
-                        class="text-sm text-zinc-500 dark:text-zinc-400 break-keep line-clamp-1"
-                    >
-                        {{
-                            !avatar.outdated
-                                ? useSentence(useAvatarName(avatar.name))
-                                : '不明なベースアバター'
-                        }}
-                    </p>
+
+                    <div class="flex items-center gap-1">
+                        <Icon
+                            name="lucide:person-standing"
+                            size="15"
+                            class="bg-zinc-500 dark:bg-zinc-400"
+                        />
+                        <span
+                            class="text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"
+                        >
+                            {{
+                                !avatar.outdated
+                                    ? useAvatarName(avatar.name)
+                                    : '不明なベースアバター'
+                            }}
+                        </span>
+                    </div>
                 </div>
                 <div class="gap-4 flex justify-between items-center">
                     <p

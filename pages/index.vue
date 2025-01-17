@@ -3,7 +3,7 @@ const user = useSupabaseUser();
 const client = await useSBClient();
 
 const setups = ref<SetupSimple[]>([]);
-const setupsPerPage: number = 20;
+const setupsPerPage: number = 50;
 const page = ref(0);
 const filter = ref<'all' | 'mine' | 'bookmark'>('all');
 const loading = ref(true);
@@ -43,7 +43,7 @@ const get = async () => {
                     created_at,
                     name,
                     author(id, name, avatar),
-                    image,
+                    images:setup_images(name, width, height),
                     items:setup_items(
                         data:item_id(
                             id, outdated, category, name, thumbnail, nsfw
@@ -88,8 +88,6 @@ const get = async () => {
     }
 };
 
-await get();
-
 onMounted(async () => {
     useOGP({
         url: 'https://avatio.me',
@@ -99,6 +97,8 @@ onMounted(async () => {
         description: 'アバターセットアップ共有サービス',
         twitterCard: 'summary_large_image',
     });
+
+    await get();
 });
 
 watch(filter, async () => {

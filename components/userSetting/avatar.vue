@@ -31,7 +31,7 @@ const changeAvatar = async () => {
 
         loading.value = true;
 
-        const uploaded = await usePostImage(file, {
+        const uploaded = await usePutImage(file, {
             res: 512,
             size: 300,
             prefix: 'avatar',

@@ -31,22 +31,27 @@ const PublishSetup = async () => {
         if (!itemsFlatten.filter((i) => i.category === 208).length)
             return useAddToast(ERROR_MESSAGES.NO_AVATAR);
 
-        let imagePath: string | null = null;
+        let imageUploadResult: {
+            name: string;
+            prefix: string;
+            width: number;
+            height: number;
+        } | null = null;
 
         if (image.value) {
-            const uploadResult = await usePostImage(image.value, {
+            imageUploadResult = await usePutImage(image.value, {
                 res: 1920,
                 size: 1500,
                 prefix: 'setup',
             });
 
-            if (!uploadResult) {
+            if (!imageUploadResult) {
                 useAddToast(
                     '画像のアップロードに失敗したため、投稿をキャンセルしました。',
                     '画像の形式が非対応の可能性があります。'
                 );
                 throw new Error();
-            } else imagePath = uploadResult.name;
+            }
         }
 
         const { data: setupData, error: setupError } = await client
@@ -54,7 +59,7 @@ const PublishSetup = async () => {
             .insert({
                 name: title.value,
                 description: description.value,
-                image: imagePath,
+                image: imageUploadResult!.name ?? null,
             })
             .select('id')
             .single();
@@ -81,6 +86,14 @@ const PublishSetup = async () => {
             })
         );
         if (tagsError) throw tagsError;
+
+        const { error: imageError } = await client.from('setup_images').insert({
+            name: imageUploadResult!.name,
+            setup_id: setupData.id,
+            width: imageUploadResult!.width,
+            height: imageUploadResult!.height,
+        });
+        if (imageError) throw imageError;
 
         useAddToast('セットアップを公開しました。');
         skip_router_hook.value = true;

@@ -62,8 +62,9 @@ export default defineEventHandler(async (event) => {
             .toFormat('jpeg')
             .toBuffer();
 
+        const metadata = await sharp(compressed).metadata();
+
         const unixTime = Math.floor(Date.now());
-        console.log('unixTime', unixTime);
         let base64UnixTime = Buffer.from(unixTime.toString()).toString(
             'base64'
         );
@@ -76,9 +77,11 @@ export default defineEventHandler(async (event) => {
         const success = await storage.has(fileNamePrefixed);
 
         return Response.json({
+            success: success,
             path: fileName,
             prefix: path,
-            success: success,
+            width: metadata.width,
+            height: metadata.height,
         });
     } catch (error) {
         console.error(error);

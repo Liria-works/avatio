@@ -50,7 +50,7 @@ onMounted(async () => {
             name,
             description,
             author(id, name, avatar),
-            image,
+            images:setup_images(name, width, height),
             items:setup_items(
                 data:item_id(
                     id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
@@ -92,10 +92,12 @@ onMounted(async () => {
     useOGP({
         title: setup.value.name,
         description: setup.value.description,
-        image: setup.value.image
-            ? useGetImage(setup.value.image, { prefix: 'setup' })
+        image: setup.value.images.length
+            ? useGetImage(setup.value.images[0].name, { prefix: 'setup' })
             : '/ogp.png',
-        twitterCard: setup.value.image ? 'summary_large_image' : 'summary',
+        twitterCard: setup.value.images.length
+            ? 'summary_large_image'
+            : 'summary',
     });
 });
 </script>
@@ -116,10 +118,7 @@ onMounted(async () => {
                             class="grow flex flex-wrap items-center gap-x-5 gap-y-2"
                         >
                             <NuxtLink
-                                :to="{
-                                    name: 'user-id',
-                                    params: { id: setup.author.id },
-                                }"
+                                :to="`/@${setup.author.id}`"
                                 class="flex flex-row gap-3 items-center"
                             >
                                 <UiAvatar
@@ -215,8 +214,10 @@ onMounted(async () => {
                 </div>
 
                 <UiImage
-                    v-if="setup.image"
-                    :src="useGetImage(setup.image, { prefix: 'setup' })"
+                    v-if="setup.images.length"
+                    :src="
+                        useGetImage(setup.images[0].name, { prefix: 'setup' })
+                    "
                     :alt="setup.name"
                     class="w-full max-h-[70vh]"
                 />
@@ -339,7 +340,7 @@ onMounted(async () => {
         <ModalDeleteSetup
             v-model="modalDelete"
             :id="Number(setup?.id)"
-            :image="setup?.image"
+            :image="setup?.images.length ? setup?.images[0].name : null"
         />
     </div>
 </template>
