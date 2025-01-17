@@ -1,5 +1,4 @@
 import { loadDefaultJapaneseParser } from 'budoux';
-import { parseURL } from 'ufo';
 
 export const useAddToast = (title: string, description?: string) => {
     const toast = useToast();
@@ -55,30 +54,6 @@ export const useDateElapsed = (date: Date) => {
     if (diffInDays < 30) return `${diffInDays}日前`;
     if (diffInMonths < 12) return `${diffInMonths}ヶ月前`;
     return `${diffInYears}年前`;
-};
-
-const linkIcons: { [key: string]: string } = {
-    'x.com': 'simple-icons:x',
-    'youtube.com': 'simple-icons:youtube',
-    'twitch.tv': 'simple-icons:twitch',
-    'discordapp.com': 'simple-icons:discord',
-    'discord.com': 'simple-icons:discord',
-    'instagram.com': 'simple-icons:instagram',
-    'github.com': 'simple-icons:github',
-    'steamcommunity.com': 'simple-icons:steam',
-    'pixiv.net': 'simple-icons:pixiv',
-    'artstation.com': 'simple-icons:artstation',
-    'booth.pm': 'avatio:booth',
-};
-
-export const getLinkIcon = (url: string) => {
-    const parsed = parseURL(url);
-    if (!parsed.host) return 'lucide:link';
-
-    const host = parsed.host.split('.').slice(-2).join('.').replace('www.', '');
-
-    if (Object.keys(linkIcons).includes(host)) return linkIcons[host];
-    else return 'lucide:link';
 };
 
 export const ERROR_MESSAGES = {
