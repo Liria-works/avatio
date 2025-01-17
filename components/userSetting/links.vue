@@ -69,7 +69,7 @@ const pasteFromClipboard = async () =>
                     class="flex-shrink-0 text-zinc-500 dark:text-zinc-400 cursor-move"
                 />
                 <Icon
-                    :name="getLinkIcon(i)"
+                    :name="getLinkInfo(i).icon"
                     size="18"
                     class="flex-shrink-0 text-zinc-500 dark:text-zinc-300"
                 />

@@ -80,7 +80,7 @@ onMounted(async () => {
         <p class="text-zinc-400 mt-5">ユーザーデータの取得に失敗しました</p>
     </div>
 
-    <div v-else class="w-full flex flex-col px-2 gap-10">
+    <div v-else class="w-full flex flex-col px-2 gap-6">
         <div class="w-full flex flex-col gap-3">
             <div class="w-full flex items-center justify-between">
                 <div class="flex gap-6 items-center">
@@ -150,24 +150,10 @@ onMounted(async () => {
 
             <div class="w-full flex flex-col gap-3 pl-2">
                 <div
-                    v-if="userData.links"
+                    v-if="userData.links && userData.links.length"
                     class="flex flex-wrap items-center gap-2"
                 >
-                    <ButtonBase
-                        v-for="i in userData.links"
-                        :key="useId()"
-                        :to="i"
-                        :tooltip="i"
-                        :aria-label="i"
-                        variant="flat"
-                        class="min-h-[38px] p-2 rounded-lg flex items-center justify-center hover:bg-zinc-300 hover:dark:bg-zinc-700"
-                    >
-                        <Icon
-                            :name="getLinkIcon(i)"
-                            size="20"
-                            class="bg-zinc-700 dark:bg-zinc-200"
-                        />
-                    </ButtonBase>
+                    <ButtonLink v-for="i in userData.links" :link="i" />
                 </div>
 
                 <div
@@ -188,11 +174,11 @@ onMounted(async () => {
 
             <ButtonBase
                 v-if="!user || user.id !== route.params.id.toString()"
-                label="セットアップを報告"
+                label="ユーザーを報告"
                 icon="lucide:flag"
                 :icon-size="16"
                 variant="flat"
-                class="px-3 py-2 mt-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-300 hover:dark:bg-zinc-700"
+                class="self-end px-3 py-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-300 hover:dark:bg-zinc-700"
                 icon-class="text-red-400 dark:text-red-400"
                 @click="
                     if (user) modalReport = true;
