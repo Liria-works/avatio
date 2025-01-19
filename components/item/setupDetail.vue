@@ -77,7 +77,7 @@ const nonAvatarItems = props.setup.items
                         <Icon
                             name="lucide:person-standing"
                             size="15"
-                            class="bg-zinc-500 dark:bg-zinc-400"
+                            class="flex-shrink-0 bg-zinc-500 dark:bg-zinc-400"
                         />
                         <span
                             class="text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"

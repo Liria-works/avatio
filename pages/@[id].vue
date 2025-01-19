@@ -20,7 +20,7 @@ const getSetups = async () => {
             author(id, name, avatar),
             name,
             description,
-            image,
+            images:setup_images(name, width, height),
             items:setup_items(
                 data:item_id(
                     id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw

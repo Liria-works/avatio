@@ -107,7 +107,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     <Icon
                         name="lucide:person-standing"
                         size="15"
-                        class="bg-zinc-500 dark:bg-zinc-400"
+                        class="flex-shrink-0 bg-zinc-500 dark:bg-zinc-400"
                     />
                     <span
                         class="text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"
@@ -120,14 +120,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     </span>
                 </div>
 
-                <div class="self-end flex items-center gap-2">
-                    <UiTooltip :text="dateLocale">
-                        <p
-                            class="text-xs text-zinc-600 dark:text-zinc-400 whitespace-nowrap"
-                        >
-                            {{ useDateElapsed(date) }}
-                        </p>
-                    </UiTooltip>
+                <div class="flex items-center gap-2">
                     <HovercardUser v-if="!noUser" :user="props.setup.author">
                         <UiAvatar
                             :url="
@@ -143,6 +136,13 @@ const dateLocale = date.toLocaleString('ja-JP', {
                             class="size-5"
                         />
                     </HovercardUser>
+                    <UiTooltip :text="dateLocale">
+                        <p
+                            class="text-xs text-zinc-600 dark:text-zinc-400 whitespace-nowrap"
+                        >
+                            {{ useDateElapsed(date) }}
+                        </p>
+                    </UiTooltip>
                 </div>
             </div>
         </template>

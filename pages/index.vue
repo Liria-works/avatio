@@ -152,11 +152,11 @@ watch(filter, async () => {
             </div>
             <MasonryWall
                 :items="setups"
-                :column-width="200"
+                :column-width="240"
                 :gap="20"
-                :min-columns="1"
-                :max-columns="4"
-                :ssr-columns="4"
+                :min-columns="2"
+                :max-columns="5"
+                :ssr-columns="3"
                 class="p-1"
             >
                 <template #default="{ item }">

@@ -61,7 +61,7 @@ const pagenate = async (options?: { initiate?: boolean }) => {
 };
 
 onMounted(async () => {
-    const { data } = await client.rpc('popular_avatars').limit(24);
+    const { data, error } = await client.rpc('popular_avatars').limit(24);
     if (data) popularAvatars.value = data;
 });
 

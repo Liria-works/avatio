@@ -24,7 +24,7 @@ const customLink = defineNuxtLink({
         type="button"
         :class="
             twMerge(
-                'w-full flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600 rounded-lg overflow-clip',
+                'w-full flex flex-col ring-0 ring-zinc-300 dark:ring-zinc-600 rounded-lg overflow-clip',
                 props.class
             )
         "
