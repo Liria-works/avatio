@@ -9,6 +9,7 @@ const client = await useSBClient();
 const query = ref<Query>(route.query);
 
 const loading = ref(false);
+const hasMore = ref(false);
 const searchWord = ref<string>((route.query.q as string) ?? '');
 const resultSetups = ref<Setup[]>([]);
 const resultItem = ref<Item | null>(null);
@@ -32,15 +33,20 @@ const search = async ({
 }) => {
     loading.value = true;
 
-    const { data } = await client.rpc('search_setups', {
-        word: word,
-        items: items,
-        tags: tags,
-        page: page,
-        per_page: perPage,
-    });
+    const { data } = await client
+        .rpc('search_setups', {
+            word: word,
+            items: items,
+            tags: tags,
+            page: page,
+            per_page: perPage,
+        })
+        .returns<{ results: Setup[]; has_more: boolean }>();
 
-    if (data) resultSetups.value = [...resultSetups.value, ...data];
+    if (data) {
+        resultSetups.value = [...resultSetups.value, ...data.results];
+        hasMore.value = data.has_more;
+    }
     loading.value = false;
 };
 
@@ -61,7 +67,7 @@ const pagenate = async (options?: { initiate?: boolean }) => {
 };
 
 onMounted(async () => {
-    const { data, error } = await client.rpc('popular_avatars').limit(24);
+    const { data } = await client.rpc('popular_avatars').limit(24);
     if (data) popularAvatars.value = data;
 });
 
@@ -98,7 +104,6 @@ watch(
                 /> -->
             <UInput
                 v-model="searchWord"
-                autofocus
                 icon="lucide:search"
                 size="xl"
                 :trailing="false"
@@ -153,14 +158,11 @@ watch(
         <template v-if="Object.keys(query).length">
             <div
                 v-if="resultSetups.length"
-                class="flex flex-col lg:grid lg:grid-cols-1 gap-5"
+                class="flex flex-col lg:grid lg:grid-cols-1 gap-2"
             >
-                <ItemSetupDetail
-                    v-for="i in resultSetups"
-                    :aria-label="i.name"
-                    :setup="i"
-                />
+                <SetupsListBase :setups="resultSetups" />
                 <ButtonLoadMore
+                    v-if="hasMore"
                     :loading="loading"
                     class="w-full"
                     @click="pagenate()"

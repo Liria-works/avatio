@@ -1,92 +1,7 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
-const client = await useSBClient();
 
-const setups = ref<SetupSimple[]>([]);
-const setupsPerPage: number = 50;
-const page = ref(0);
-const filter = ref<'all' | 'mine' | 'bookmark'>('all');
-const loading = ref(true);
-
-const get = async () => {
-    loading.value = true;
-
-    try {
-        let query;
-
-        if (filter.value === 'bookmark')
-            query = client
-                .from('bookmarks')
-                .select(
-                    `
-                    post(
-                        id,
-                        created_at,
-                        name,
-                        author(id, name, avatar),
-                        image,
-                        items:setup_items(
-                            data:item_id(
-                                id, outdated, category, name, thumbnail, nsfw
-                            )
-                        )
-                    )
-                    `
-                )
-                .eq('post.setup_items.item_id.category', '208');
-        else {
-            query = client
-                .from('setups')
-                .select(
-                    `
-                    id,
-                    created_at,
-                    name,
-                    author(id, name, avatar),
-                    images:setup_images(name, width, height),
-                    items:setup_items(
-                        data:item_id(
-                            id, outdated, category, name, thumbnail, nsfw
-                        )
-                    )
-                    `
-                )
-                .eq('setup_items.item_id.category', '208');
-
-            if (filter.value === 'mine')
-                query = query.eq('author', user.value.id);
-        }
-
-        const { data } = await query
-            .range(
-                page.value * setupsPerPage,
-                page.value * setupsPerPage + (setupsPerPage - 1)
-            )
-            .order('created_at', { ascending: false });
-
-        if (filter.value === 'bookmark')
-            return (data as unknown as { post: SetupSimple }[]).map(
-                (d) => d.post
-            );
-
-        if (!data) throw new Error();
-
-        setups.value = [
-            ...setups.value,
-            ...(data as unknown as SetupSimple[]).map((setup) => ({
-                ...setup,
-                avatars: setup.items.filter((i) => i.data).map((i) => i.data),
-            })),
-        ];
-
-        page.value++;
-    } catch {
-        setups.value = [];
-        page.value = 0;
-    } finally {
-        loading.value = false;
-    }
-};
+const mode = ref<'all' | 'mine' | 'bookmark'>('all');
 
 onMounted(async () => {
     useOGP({
@@ -97,14 +12,6 @@ onMounted(async () => {
         description: 'アバターセットアップ共有サービス',
         twitterCard: 'summary_large_image',
     });
-
-    await get();
-});
-
-watch(filter, async () => {
-    page.value = 0;
-    setups.value = [];
-    await get();
 });
 </script>
 
@@ -117,7 +24,7 @@ watch(filter, async () => {
             </div>
         </ClientOnly>
 
-        <div v-if="setups" class="flex flex-col items-start gap-5 w-full">
+        <div class="flex flex-col items-start gap-5 w-full">
             <UiTitle label="ホーム" size="lg" />
             <div class="flex flex-wrap items-center gap-1">
                 <ButtonBase
@@ -125,62 +32,35 @@ watch(filter, async () => {
                     variant="flat"
                     :class="[
                         'text-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-700',
-                        filter === 'all' ? 'bg-zinc-200 dark:bg-zinc-700' : '',
+                        mode === 'all' ? 'bg-zinc-200 dark:bg-zinc-700' : '',
                     ]"
-                    @click="filter = 'all'"
+                    @click="mode = 'all'"
                 />
                 <ButtonBase
                     label="自分の投稿"
                     variant="flat"
                     :class="[
                         'text-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-700',
-                        filter === 'mine' ? 'bg-zinc-200 dark:bg-zinc-700' : '',
+                        mode === 'mine' ? 'bg-zinc-200 dark:bg-zinc-700' : '',
                     ]"
-                    @click="filter = 'mine'"
+                    @click="mode = 'mine'"
                 />
                 <ButtonBase
                     label="ブックマーク"
                     variant="flat"
                     :class="[
                         'text-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-700',
-                        filter === 'bookmark'
+                        mode === 'bookmark'
                             ? 'bg-zinc-200 dark:bg-zinc-700'
                             : '',
                     ]"
-                    @click="filter = 'bookmark'"
+                    @click="mode = 'bookmark'"
                 />
             </div>
-            <MasonryWall
-                :items="setups"
-                :column-width="240"
-                :gap="20"
-                :min-columns="2"
-                :max-columns="5"
-                :ssr-columns="3"
-                class="p-1"
-            >
-                <template #default="{ item }">
-                    <ItemSetup
-                        :aria-label="item.name"
-                        :image-size="{ width: 16, height: 9 }"
-                        :setup="item"
-                    />
-                </template>
-            </MasonryWall>
 
-            <ButtonLoadMore
-                v-if="setups.length"
-                :loading="loading"
-                class="w-full"
-                @click="get"
-            />
+            <SetupsListHome v-if="mode === 'all'" />
+            <SetupsListUser v-else-if="mode === 'mine'" :user-id="user.id" />
+            <SetupsListBookmarks v-else-if="mode === 'bookmark'" />
         </div>
-
-        <p
-            v-if="!loading && !setups.length"
-            class="w-full my-5 font-medium text-center text-zinc-700 dark:text-zinc-300"
-        >
-            セットアップが見つかりませんでした
-        </p>
     </div>
 </template>

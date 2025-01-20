@@ -59,22 +59,6 @@ export interface Setup {
     }[];
 }
 
-export interface SetupSimple {
-    id: number;
-    created_at: string;
-    name: string;
-    author: Author;
-    images: { name: string; width: number; height: number }[];
-    avatars: {
-        name: string;
-        thumbnail: string;
-        nsfw: boolean;
-        outdated: boolean;
-    }[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    items: { data: any }[];
-}
-
 export interface CategoryAttr {
     label: string;
     icon: string;

@@ -3,55 +3,14 @@ const route = useRoute();
 const client = await useSBClient();
 const user = useSupabaseUser();
 
-const setups = ref<Setup[]>([]);
-const page = ref(0);
-const perPage = 20;
-const loading = ref(false);
 const modalReport = ref(false);
 const modalLogin = ref(false);
-
-const getSetups = async () => {
-    const { data } = await client
-        .from('setups')
-        .select(
-            `
-            id,
-            created_at,
-            author(id, name, avatar),
-            name,
-            description,
-            images:setup_images(name, width, height),
-            items:setup_items(
-                data:item_id(
-                    id, updated_at, outdated, category, name, thumbnail, price, shop:shop_id(id, name, thumbnail, verified), nsfw
-                ),
-                note,
-                unsupported
-            )
-            `
-        )
-        .eq('author', route.params.id.toString())
-        .order('created_at', { ascending: false })
-        .range(page.value * perPage, page.value * perPage + (perPage - 1))
-        .returns<Setup[]>();
-    return data ?? [];
-};
-
-const pagenate = async (options?: { initiate?: boolean }) => {
-    if (options?.initiate) {
-        page.value = 0;
-        setups.value = [];
-    } else page.value++;
-
-    loading.value = true;
-    setups.value = [...setups.value, ...(await getSetups())];
-    loading.value = false;
-};
 
 const { data: userData } = await client
     .from('users')
     .select(
         `
+        id,
         name,
         avatar,
         bio,
@@ -62,8 +21,6 @@ const { data: userData } = await client
     )
     .eq('id', route.params.id.toString())
     .maybeSingle<User>();
-
-if (userData) await pagenate({ initiate: true });
 
 onMounted(async () => {
     if (userData)
@@ -126,7 +83,7 @@ onMounted(async () => {
                     </div>
                 </div>
                 <div
-                    v-if="user && user.id === route.params.id.toString()"
+                    v-if="user && user.id === userData.id"
                     class="flex items-center gap-1"
                 >
                     <ButtonBase
@@ -173,7 +130,7 @@ onMounted(async () => {
             </div>
 
             <ButtonBase
-                v-if="!user || user.id !== route.params.id.toString()"
+                v-if="!user || user.id !== userData.id"
                 label="ユーザーを報告"
                 icon="lucide:flag"
                 :icon-size="16"
@@ -185,13 +142,10 @@ onMounted(async () => {
                     else modalLogin = true;
                 "
             />
-            <ModalReportUser
-                v-model="modalReport"
-                :id="route.params.id.toString()"
-            />
+            <ModalReportUser v-model="modalReport" :id="userData.id" />
             <ModalBase v-model="modalLogin">
                 <UiLogin
-                    :redirect="`/@${route.params.id}`"
+                    :redirect="`/@${userData.id}`"
                     @login-success="
                         modalLogin = false;
                         modalReport = true;
@@ -200,21 +154,10 @@ onMounted(async () => {
             </ModalBase>
         </div>
 
-        <div v-if="setups.length" class="w-full flex flex-col gap-5 pl-2">
+        <div class="w-full flex flex-col gap-5 pl-2">
             <UiTitle label="セットアップ" icon="lucide:shirt" size="lg" />
 
-            <div class="flex flex-col gap-3">
-                <ItemSetupDetail
-                    v-for="i in setups"
-                    :key="useId()"
-                    :setup="i"
-                />
-                <ButtonLoadMore
-                    :loading="loading"
-                    class="w-full"
-                    @click="pagenate"
-                />
-            </div>
+            <SetupsListUser :user-id="userData.id" />
         </div>
     </div>
 </template>
