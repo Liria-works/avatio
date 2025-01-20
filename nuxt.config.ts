@@ -22,7 +22,7 @@ export default defineNuxtConfig({
                 {
                     hid: 'description',
                     name: 'description',
-                    content: 'アバターセットアップ共有サービス',
+                    content: 'あなたのアバター改変を共有しよう',
                 },
                 {
                     hid: 'icon',

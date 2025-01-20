@@ -59,7 +59,6 @@ const PublishSetup = async () => {
             .insert({
                 name: title.value,
                 description: description.value,
-                image: imageUploadResult!.name ?? null,
             })
             .select('id')
             .single();
@@ -87,13 +86,17 @@ const PublishSetup = async () => {
         );
         if (tagsError) throw tagsError;
 
-        const { error: imageError } = await client.from('setup_images').insert({
-            name: imageUploadResult!.name,
-            setup_id: setupData.id,
-            width: imageUploadResult!.width,
-            height: imageUploadResult!.height,
-        });
-        if (imageError) throw imageError;
+        if (image.value) {
+            const { error: imageError } = await client
+                .from('setup_images')
+                .insert({
+                    name: imageUploadResult!.name,
+                    setup_id: setupData.id,
+                    width: imageUploadResult!.width,
+                    height: imageUploadResult!.height,
+                });
+            if (imageError) throw imageError;
+        }
 
         useAddToast('セットアップを公開しました。');
         skip_router_hook.value = true;
@@ -161,43 +164,28 @@ onMounted(async () => {
                 />
             </div>
             <div class="flex gap-2 items-center">
-                <UPopover
-                    mode="hover"
-                    :popper="{ placement: 'top' }"
-                    :ui="{
-                        rounded: 'rounded-xl',
-                        ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                    }"
-                    class="flex"
+                <ButtonBase
+                    :disabled="
+                        publishing ||
+                        !title ||
+                        !items.avatar.length ||
+                        !(
+                            items.cloth.length ||
+                            items.accessory.length ||
+                            items.other.length
+                        )
+                    "
+                    :label="!publishing ? '公開' : '処理中'"
+                    :icon="
+                        !publishing
+                            ? 'lucide:upload'
+                            : 'i-svg-spinners-ring-resize'
+                    "
+                    :icon-size="18"
+                    class="rounded-full px-4"
+                    @click="PublishSetup"
                 >
-                    <UButton
-                        :disabled="
-                            publishing ||
-                            !title ||
-                            !items.avatar.length ||
-                            !(
-                                items.cloth.length ||
-                                items.accessory.length ||
-                                items.other.length
-                            )
-                        "
-                        truncate
-                        size="lg"
-                        label="公開"
-                        :icon="
-                            !publishing
-                                ? 'lucide:upload'
-                                : 'i-svg-spinners-ring-resize'
-                        "
-                        :ui="{
-                            rounded: 'rounded-full',
-                            inline: 'pr-4',
-                            truncate: 'whitespace-nowrap',
-                        }"
-                        @click="PublishSetup"
-                    />
-
-                    <template #panel>
+                    <template #tooltip>
                         <div
                             class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-zinc-900 dark:text-zinc-100"
                         >
@@ -230,13 +218,13 @@ onMounted(async () => {
                             </p>
                         </div>
                     </template>
-                </UPopover>
+                </ButtonBase>
 
                 <ButtonBase
                     tooltip="破棄"
                     icon="lucide:trash"
                     :icon-size="18"
-                    class="outline-0"
+                    variant="flat"
                     @click="router.back()"
                 />
             </div>
@@ -255,22 +243,14 @@ onMounted(async () => {
                 <div class="w-full flex flex-col items-start gap-3">
                     <UiTitle label="説明" icon="lucide:text" />
                     <div class="w-full flex flex-col gap-1 items-end">
-                        <div
-                            :class="`w-full p-3 rounded-lg border bg-zinc-200 dark:bg-zinc-900 ${
-                                description.length < 141
-                                    ? 'border-zinc-400 dark:border-zinc-600'
-                                    : 'border-red-400 dark:border-red-600'
+                        <UiTextarea
+                            v-model="description"
+                            placeholder="説明を入力"
+                            :class="`w-full p-3 rounded-lg ${
+                                description.length < 141 ||
+                                'ring-red-400 dark:ring-red-400'
                             }`"
-                        >
-                            <UTextarea
-                                v-model="description"
-                                autoresize
-                                placeholder="説明を入力"
-                                :padded="false"
-                                variant="none"
-                                class="w-full"
-                            />
-                        </div>
+                        />
 
                         <span
                             :class="`text-sm pr-1 ${

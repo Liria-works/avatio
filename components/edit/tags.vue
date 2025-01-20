@@ -77,7 +77,10 @@ watch(tags.value, () => {
     <div class="w-full flex flex-col gap-1">
         <TagsInputRoot
             v-model="tags"
-            class="flex gap-2 items-center p-2 rounded-lg w-full flex-wrap border border-zinc-400 dark:border-zinc-600 bg-zinc-200 dark:bg-zinc-900"
+            :class="[
+                'flex gap-2 items-center p-2 rounded-lg w-full flex-wrap',
+                'ring-inset ring-1 hover:ring-2 focus-within:ring-2 ring-zinc-400 dark:ring-zinc-700 focus-within:ring-zinc-700',
+            ]"
         >
             <TagsInputItem
                 v-for="item in tags"
@@ -87,7 +90,11 @@ watch(tags.value, () => {
             >
                 <TagsInputItemText class="text-sm pl-2" />
                 <TagsInputItemDelete
-                    class="p-1 rounded-full hover:bg-zinc-300 hover:dark:bg-zinc-700 flex items-center justify-center"
+                    :class="[
+                        'p-1 rounded-full flex items-center justify-center',
+                        'hover:bg-zinc-300 hover:dark:bg-zinc-700',
+                        'transition ease-in-out duration-100',
+                    ]"
                 >
                     <Icon name="lucide:x" />
                 </TagsInputItemDelete>
@@ -102,7 +109,7 @@ watch(tags.value, () => {
         </TagsInputRoot>
         <div
             v-if="suggestion.length || loading"
-            class="w-full flex flex-wrap gap-1 rounded-lg p-2 border border-zinc-400 dark:border-zinc-600 bg-zinc-200 dark:bg-zinc-900"
+            class="w-full flex flex-wrap gap-1 rounded-lg p-2 border border-zinc-400 dark:border-zinc-600"
         >
             <Icon
                 v-show="loading"

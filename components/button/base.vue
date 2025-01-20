@@ -16,7 +16,6 @@ interface Props {
     tooltip?: string;
     class?: string | string[];
     iconClass?: string;
-    wFull?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
     disabled: false,
@@ -29,7 +28,6 @@ const props = withDefaults(defineProps<Props>(), {
     ariaLabel: '',
     variant: 'outline',
     tooltip: '',
-    wFull: false,
 });
 
 const emit = defineEmits(['click']);
@@ -48,7 +46,7 @@ const variantClass = {
 </script>
 
 <template>
-    <UiTooltip :text="props.tooltip" :class="[props.wFull && 'w-full']">
+    <UiTooltip :text="props.tooltip">
         <component
             :tabindex="props.tabindex"
             :is="props.to ? Link : 'button'"
@@ -62,7 +60,6 @@ const variantClass = {
                 twMerge(
                     props.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
                     props.icon.length ? 'p-3' : 'px-4 py-3',
-                    props.wFull ? 'w-full' : 'w-fit',
                     'rounded-lg flex gap-2 items-center justify-center',
                     'text-sm font-semibold align-middle leading-none',
                     'bg-transparent dark:bg-transparent',

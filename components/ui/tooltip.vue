@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
                 ]"
             >
                 <slot name="content">
-                    <span class="text-xs whitespace-nowrap">
+                    <span class="empty:hidden text-xs whitespace-nowrap">
                         {{ props.text }}
                     </span>
                 </slot>

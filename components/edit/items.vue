@@ -137,6 +137,7 @@ onMounted(async () => {
                     :disabled="adding"
                     autocomplete="off"
                     placeholder="BOOTH URLからアバター・アイテムを追加"
+                    class="w-full"
                     @keyup.enter="addItemFromURL"
                 >
                     <template #trailing>

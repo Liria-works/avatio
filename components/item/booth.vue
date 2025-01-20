@@ -86,7 +86,10 @@ onMounted(async () => {
         </template>
     </ItemBase>
 
-    <ItemBase v-else-if="!item.outdated">
+    <ItemBase
+        v-else-if="!item.outdated"
+        class="ring-2 ring-zinc-300 dark:ring-zinc-700"
+    >
         <template #thumbnail>
             <div
                 :class="[
@@ -239,7 +242,7 @@ onMounted(async () => {
         </template>
     </ItemBase>
 
-    <ItemBase v-else>
+    <ItemBase v-else class="ring-2 ring-zinc-300 dark:ring-zinc-700">
         <template #main>
             <div class="h-20 flex items-center gap-2">
                 <Icon

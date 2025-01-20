@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { twMerge } from 'tailwind-merge';
+
 const input = defineModel<string>({
     default: '',
 });
@@ -7,13 +9,21 @@ interface Prop {
     placeholder?: string;
     disabled?: boolean;
     autocomplete?: string;
+    class?: string | string[];
 }
 const props = defineProps<Prop>();
 </script>
 
 <template>
     <div
-        class="w-full p-1 rounded-lg flex items-center border border-zinc-400 dark:border-zinc-500 bg-zinc-100 dark:bg-zinc-900"
+        :class="
+            twMerge(
+                'p-1 rounded-lg flex items-center',
+                'ring-inset ring-1 hover:ring-2 focus-within:ring-2 ring-zinc-400 dark:ring-zinc-700 focus-within:ring-zinc-700',
+                'transition-all duration-100 ease-in-out',
+                props.class
+            )
+        "
     >
         <UInput
             v-model="input"

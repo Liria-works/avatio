@@ -22,7 +22,7 @@ const booth_url = 'https://booth.pm/ja/items/';
 </script>
 
 <template>
-    <ItemBase>
+    <ItemBase class="ring-2 ring-zinc-300 dark:ring-zinc-700">
         <template #thumbnail>
             <div
                 :class="[
@@ -30,11 +30,13 @@ const booth_url = 'https://booth.pm/ja/items/';
                     props.size === 'lg' ? 'p-4' : 'p-1.5 pr-4',
                 ]"
             >
-                <Icon
-                    name="lucide:grip-vertical"
-                    :size="18"
-                    class="bg-zinc-400 cursor-move"
-                />
+                <div class="draggable cursor-move flex h-full">
+                    <Icon
+                        name="lucide:grip-vertical"
+                        :size="18"
+                        class="bg-zinc-400"
+                    />
+                </div>
                 <NuxtLink
                     :to="booth_url + props.item.id"
                     target="_blank"
@@ -52,7 +54,7 @@ const booth_url = 'https://booth.pm/ja/items/';
             </div>
         </template>
         <template #main>
-            <div class="draggable w-full flex gap-5 pr-4 justify-between">
+            <div class="w-full flex gap-5 pr-4 justify-between">
                 <div
                     :class="`w-fit flex flex-col gap-3 items-start justify-center ${props.size === 'lg' ? 'h-32' : 'h-20'}`"
                 >
