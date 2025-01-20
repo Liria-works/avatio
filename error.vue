@@ -1,17 +1,28 @@
 <script setup lang="ts">
-const error = useError();
+import type { NuxtError } from 'nuxt/app';
+
+const props = defineProps({
+    error: Object as () => NuxtError,
+});
 </script>
 
 <template>
     <NuxtLayout>
-        <h1
-            class="flex text-9xl font-extrabold font-['Montserrat'] text-zinc-500 dark:text-zinc-400"
-        >
-            {{ error && error.statusCode }}
-        </h1>
-        <h2 class="text-xl font-bold text-zinc-500 dark:text-zinc-400">
-            {{ error && error.message }}
-        </h2>
-        <NuxtLink to="/">ホーム</NuxtLink>
+        <div class="flex flex-col gap-4 items-center">
+            <h1
+                class="flex text-9xl font-extrabold font-['Montserrat'] text-zinc-500 dark:text-zinc-400"
+            >
+                {{ props.error?.statusCode || 500 }}
+            </h1>
+            <p class="text-xl font-bold text-zinc-500 dark:text-zinc-400">
+                {{ props.error?.message || 'Unknown Error' }}
+            </p>
+            <ButtonBase
+                to="/"
+                label="ホーム"
+                icon="lucide:arrow-left"
+                variant="flat"
+            />
+        </div>
     </NuxtLayout>
 </template>
