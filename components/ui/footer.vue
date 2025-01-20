@@ -62,8 +62,8 @@ const modal_feedback = ref(false);
                     variant="link"
                 />
             </div>
-            <p class="text-zinc-500 text-sm flex gap-1 items-center">
-                Copyright © 2025
+            <div class="flex gap-1 items-center">
+                <p class="text-zinc-500 text-sm">Copyright © 2025</p>
                 <ButtonBase
                     to="https://liria.work"
                     new-tab
@@ -72,7 +72,7 @@ const modal_feedback = ref(false);
                     variant="link"
                     class="gap-1 text-sm font-[Montserrat] font-semibold"
                 />
-            </p>
+            </div>
         </div>
 
         <ModalFeedback v-model="modal_feedback" />
