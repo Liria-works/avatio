@@ -1,13 +1,18 @@
 <script lang="ts" setup>
+interface Props {
+    label?: boolean;
+}
+const props = defineProps<Props>();
+
 const colorMode = useColorMode();
 </script>
 
 <template>
     <ButtonBase
-        tooltip="テーマ"
+        :tooltip="props.label ? '' : 'テーマ'"
         aria-label="テーマ"
         variant="flat"
-        class="hidden sm:block p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
+        class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
         @click="
             colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
         "
@@ -33,5 +38,7 @@ const colorMode = useColorMode();
                 />
             </template>
         </ClientOnly>
+
+        <span v-if="props.label">テーマ</span>
     </ButtonBase>
 </template>

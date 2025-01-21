@@ -102,6 +102,15 @@ onMounted(async () => {
                         aria-label="ブックマーク"
                         variant="flat"
                     />
+                    <ButtonBase
+                        icon="lucide:log-out"
+                        :icon-size="19"
+                        tooltip="ログアウト"
+                        aria-label="ログアウト"
+                        variant="flat"
+                        icon-class="bg-red-500 dark:bg-red-400"
+                        @click="useSignOut"
+                    />
                 </div>
             </div>
 

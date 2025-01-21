@@ -27,7 +27,7 @@ const handleError = (error: any) => {
 <template>
     <NuxtErrorBoundary @error="handleError">
         <UContainer
-            class="flex flex-col gap-12 items-center"
+            class="flex flex-col gap-6 md:gap-12 items-center"
             :ui="{ padding: 'pt-6 px-6 ' }"
         >
             <UiHeader />
