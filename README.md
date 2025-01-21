@@ -32,7 +32,20 @@ VRSNSユーザー向けのアバターセットアップ共有サービス。<br
 
 Avatioはオープンソースプロジェクトです。
 
-バグの報告、新機能の提案、コードの改善など、あらゆるコントリビュートを歓迎します。
+バグの報告、新機能の提案、コードの改善など、あらゆる規模・スキルレベルのコントリビュートを歓迎します。
+
+> [!TIP]
+> コントリビュートのための手順は以下の通りです。
+>
+> 1. このリポジトリをフォーク
+> 1. 新規ブランチを作成
+> 1. 以下のインストール : `node@^22.13.0` `bun@^1.1.45`<br>
+> Moonrepo Protoをご利用の場合 : `proto install`
+> 1. `bun install`
+> 1. 変更をコミット
+> 1. プルリクエストを作成
+
+### Contributors
 
 [![Contributors][contributors-image]][contributors]
 
@@ -50,6 +63,8 @@ Copylight © 2025 **[Liria][liria]**
 
 <!-- links -->
 
+[banner]: /public/ogp.png
+[avatio]: https://avatio.me
 [avatio-terms]: https://avatio.me/terms
 [avatio-privacy]: https://avatio.me/privacy-policy
 [liria]: https://liria.work
