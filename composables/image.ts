@@ -1,3 +1,14 @@
+import type { ResponseData } from '@UI/server/api/image.put';
+
+const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+    });
+};
+
 export const useGetImage = (name: string, options?: { prefix: string }) => {
     const runtime = useRuntimeConfig();
 
@@ -11,25 +22,24 @@ export const useGetImage = (name: string, options?: { prefix: string }) => {
 
 export const usePutImage = async (
     file: File,
-    options: { res: number; size: number; prefix?: string }
+    options: { resolution: number; size: number; prefix?: string }
 ) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('res', options.res.toString());
-    formData.append('size', options.size.toString());
-    formData.append('path', options.prefix ?? '');
-
     try {
-        const response: PutImage = await useAuthFetch('/api/image', {
+        const response = await $fetch<ResponseData>('/api/image', {
             method: 'PUT',
-            body: formData,
+            body: {
+                image: convertFileToBase64(file),
+                resolution: options.resolution,
+                size: options.size,
+                prefix: options.prefix ?? '',
+            },
         });
-        if (!response.success) throw new Error();
+        if (!response.data) throw new Error();
         return {
-            name: response.path,
-            prefix: response.prefix,
-            width: response.width,
-            height: response.height,
+            name: response.data.path,
+            prefix: response.data.prefix,
+            width: response.data.width,
+            height: response.data.height,
         };
     } catch (error) {
         console.error('Failed to upload image:', error);
@@ -37,20 +47,12 @@ export const usePutImage = async (
     }
 };
 
-export interface PutImage {
-    success: boolean;
-    path: string;
-    prefix: string;
-    width: number;
-    height: number;
-}
-
 export const useDeleteImage = (name: string, options?: { prefix?: string }) => {
     const path = options?.prefix
         ? `${options.prefix}:${encodeURIComponent(name)}`
         : encodeURIComponent(name);
 
-    return useAuthFetch(`/api/image?path=${path}`, {
+    return $fetch(`/api/image?path=${path}`, {
         method: 'DELETE',
     });
 };

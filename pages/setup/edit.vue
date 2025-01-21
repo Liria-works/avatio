@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { ResponseData as SetupResponseData } from '@UI/server/api/setup.put';
+
 const router = useRouter();
 const skip_router_hook = ref(false);
-const client = await useSBClient();
 
 const publishing = ref(false);
 
@@ -18,95 +19,61 @@ const description = ref<string>('');
 const tags = ref<string[]>([]);
 const image = ref<File | null>(null);
 
+const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+    });
+};
+
 const PublishSetup = async () => {
     publishing.value = true;
+
     const itemsFlatten = [
         ...items.value.avatar,
         ...items.value.cloth,
         ...items.value.accessory,
         ...items.value.other,
     ];
+    if (!itemsFlatten.filter((i) => i.category === 208).length)
+        return useAddToast(ERROR_MESSAGES.NO_AVATAR);
 
-    try {
-        if (!itemsFlatten.filter((i) => i.category === 208).length)
-            return useAddToast(ERROR_MESSAGES.NO_AVATAR);
+    const response = await $fetch<SetupResponseData>('/api/setup', {
+        method: 'PUT',
+        body: {
+            name: title.value,
+            description: description.value,
+            tags: tags.value,
+            items: itemsFlatten.map((i) => ({
+                id: i.id,
+                note: i.note,
+                unsupported: i.unsupported,
+            })),
+            image: image.value ? await convertFileToBase64(image.value) : null,
+        },
+    });
 
-        let imageUploadResult: {
-            name: string;
-            prefix: string;
-            width: number;
-            height: number;
-        } | null = null;
-
-        if (image.value) {
-            imageUploadResult = await usePutImage(image.value, {
-                res: 1920,
-                size: 1500,
-                prefix: 'setup',
-            });
-
-            if (!imageUploadResult) {
-                useAddToast(
-                    '画像のアップロードに失敗したため、投稿をキャンセルしました。',
-                    '画像の形式が非対応の可能性があります。'
-                );
-                throw new Error();
-            }
-        }
-
-        const { data: setupData, error: setupError } = await client
-            .from('setups')
-            .insert({
-                name: title.value,
-                description: description.value,
-            })
-            .select('id')
-            .single();
-        if (setupError) throw setupError;
-
-        const { error: itemsError } = await client.from('setup_items').insert(
-            itemsFlatten.map((i) => {
-                return {
-                    setup_id: setupData.id,
-                    item_id: i.id,
-                    note: i.note,
-                    unsupported: i.unsupported,
-                };
-            })
-        );
-        if (itemsError) throw itemsError;
-
-        const { error: tagsError } = await client.from('setup_tags').insert(
-            tags.value.map((i) => {
-                return {
-                    setup_id: setupData.id,
-                    tag: i,
-                };
-            })
-        );
-        if (tagsError) throw tagsError;
-
-        if (image.value) {
-            const { error: imageError } = await client
-                .from('setup_images')
-                .insert({
-                    name: imageUploadResult!.name,
-                    setup_id: setupData.id,
-                    width: imageUploadResult!.width,
-                    height: imageUploadResult!.height,
-                });
-            if (imageError) throw imageError;
-        }
-
-        useAddToast('セットアップを公開しました。');
-        skip_router_hook.value = true;
-        navigateTo(`/setup/${setupData.id}`);
-    } catch (error) {
-        console.error(error);
-        useAddToast('セットアップの公開に失敗しました。');
-    } finally {
+    if (!response.data) {
         publishing.value = false;
+        if (response.error!.status === 1)
+            useAddToast(
+                '画像のアップロードに失敗したため、投稿をキャンセルしました。',
+                '画像の形式が非対応の可能性があります。'
+            );
+        else
+            useAddToast(
+                'セットアップの公開に失敗しました。',
+                `エラーコード : ${response.error!.status}`
+            );
+        return;
     }
+
+    publishing.value = false;
+    useAddToast('セットアップを公開しました。');
+    skip_router_hook.value = true;
+    navigateTo(`/setup/${response.data.id}`);
 };
 
 onBeforeRouteLeave(

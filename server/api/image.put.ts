@@ -1,7 +1,31 @@
 import sharp from 'sharp';
 import { createStorage } from 'unstorage';
 import s3Driver from 'unstorage/drivers/s3';
-import authMiddleware from './auth';
+import { serverSupabaseUser } from '#supabase/server';
+
+export interface RequestBody {
+    image: string;
+    size: number;
+    resolution: number;
+    prefix: string;
+}
+
+export interface ResponseData {
+    error: { status: number; message: string } | null;
+    data: {
+        path: string;
+        prefix: string;
+        width?: number;
+        height?: number;
+    } | null;
+}
+
+const result = (params: ResponseData) => {
+    return Response.json({
+        error: params.error,
+        data: params.data,
+    });
+};
 
 const runtime = useRuntimeConfig();
 
@@ -16,45 +40,53 @@ const storage = createStorage({
 });
 
 export default defineEventHandler(async (event) => {
-    const authenticated = await authMiddleware(event);
-    if (!authenticated)
-        return sendError(
-            event,
-            createError({ statusCode: 403, statusMessage: 'Forbidden' })
-        );
+    try {
+        const user = await serverSupabaseUser(event);
+        if (!user) throw new Error();
+    } catch {
+        return result({
+            error: { status: 403, message: 'Forbidden.' },
+            data: null,
+        });
+    }
 
-    const formData = await readFormData(event);
-    const file = formData.get('file') as File;
-    const size = formData.get('size') as string;
-    const res = formData.get('res') as string;
-    const path = (formData.get('path') as string) ?? '';
+    const body: RequestBody = await readBody(event);
 
-    if (!file || !file.size)
-        throw createError({ statusCode: 400, message: 'No file provided' });
+    if (!body.image || !body.image.length)
+        return result({
+            error: { status: 400, message: 'No file provided.' },
+            data: null,
+        });
 
-    if (!size || !res)
-        throw createError({
-            statusCode: 400,
-            message: "Query parameter 'size' and 'res' are required",
+    if (!body.size || !body.resolution)
+        return result({
+            error: {
+                status: 400,
+                message:
+                    "Query parameter 'size' and 'resolution' are required.",
+            },
+            data: null,
         });
 
     try {
-        const input = await file.arrayBuffer();
+        const input = Buffer.from(
+            body.image.split(',')[1] || body.image,
+            'base64'
+        );
         const image = sharp(input);
 
-        const maxRes = parseInt(res, 10);
-        if (isNaN(maxRes) || maxRes <= 0)
-            throw createError({
-                statusCode: 400,
-                message: 'Invalid size parameter',
+        if (isNaN(body.resolution) || body.resolution <= 0)
+            return result({
+                error: { status: 400, message: 'Invalid size parameter.' },
+                data: null,
             });
 
-        let resolution = maxRes;
+        let resolution = body.resolution;
         const width = (await image.metadata()).width;
         const height = (await image.metadata()).height;
 
         if (width && height)
-            if (Math.max(width, height) < maxRes)
+            if (Math.max(width, height) < body.resolution)
                 resolution = Math.max(width, height);
 
         const compressed = await image
@@ -71,23 +103,32 @@ export default defineEventHandler(async (event) => {
         base64UnixTime = base64UnixTime.replace(/[\\/:*?"<>|]/g, '');
 
         const fileName = `${base64UnixTime}.jpg`;
-        const fileNamePrefixed = `${path.length ? `${path}:` : ''}${fileName}`;
+        const fileNamePrefixed = `${body.prefix.length ? `${body.prefix}:` : ''}${fileName}`;
 
         await storage.setItemRaw(fileNamePrefixed, compressed);
-        const success = await storage.has(fileNamePrefixed);
+        if (!(await storage.has(fileNamePrefixed)))
+            return result({
+                error: { status: 500, message: 'Upload to R2 failed.' },
+                data: null,
+            });
 
-        return Response.json({
-            success: success,
-            path: fileName,
-            prefix: path,
-            width: metadata.width,
-            height: metadata.height,
+        return result({
+            error: null,
+            data: {
+                path: fileName,
+                prefix: body.prefix,
+                width: metadata.width,
+                height: metadata.height,
+            },
         });
     } catch (error) {
         console.error(error);
-        throw createError({
-            statusCode: 400,
-            message: 'Faild to upload image',
+        return Response.json({
+            error: {
+                status: 500,
+                message: "Unknown error. Couldn't upload image.",
+            },
+            data: null,
         });
     }
 });
