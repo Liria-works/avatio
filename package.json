@@ -44,6 +44,7 @@
         "@nuxtjs/tailwindcss": "^6.13.1",
         "@supabase/ssr": "^0.5.2",
         "@supabase/supabase-js": "^2.47.16",
+        "@vercel/analytics": "^1.4.1",
         "@vercel/edge-config": "^1.4.0",
         "@yeger/vue-masonry-wall": "^5.0.17",
         "aws4fetch": "^1.0.20",
