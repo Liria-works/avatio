@@ -6,6 +6,56 @@ const supabase = createClient(
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    compatibilityDate: '2024-08-21',
+    devtools: {
+        enabled: true,
+
+        timeline: {
+            enabled: true,
+        },
+    },
+    modules: [
+        'radix-vue/nuxt',
+        '@nuxt/ui',
+        '@nuxtjs/tailwindcss',
+        '@vueuse/nuxt',
+        '@nuxt/image',
+        '@nuxt/fonts',
+        '@nuxtjs/color-mode',
+        '@nuxtjs/supabase',
+        '@nuxt/eslint',
+        '@nuxt/scripts',
+        '@nuxtjs/turnstile',
+        '@nuxtjs/robots',
+        '@nuxtjs/sitemap',
+    ],
+    imports: {
+        dirs: ['types'],
+    },
+    routeRules: {
+        '/': { isr: true },
+        '/setup/edit': { ssr: false },
+        '/faq': { prerender: true },
+        '/terms': { prerender: true },
+        '/privacy-policy': { prerender: true },
+    },
+    nitro: {
+        preset: 'vercel',
+    },
+    runtimeConfig: {
+        public: {
+            r2: { domain: '' },
+        },
+        turnstile: {
+            siteKey: '',
+            secretKey: '',
+        },
+        r2: {
+            endpoint: '',
+            accessKey: '',
+            secretKey: '',
+        },
+    },
     app: {
         head: {
             htmlAttrs: {
@@ -55,58 +105,30 @@ export default defineNuxtConfig({
             ],
         },
     },
-
-    routeRules: {
-        '/': { isr: true },
-        '/setup/edit': { ssr: false },
-        '/faq': { prerender: true },
-        '/terms': { prerender: true },
-        '/privacy-policy': { prerender: true },
+    fonts: {
+        families: [{ name: 'Murecho', provider: 'google' }],
     },
+    icon: {
+        customCollections: [
+            {
+                prefix: 'avatio',
+                dir: './public/icons/avatio',
+            },
+        ],
 
-    nitro: {
-        preset: 'vercel',
-    },
-
-    devtools: {
-        enabled: true,
-
-        timeline: {
-            enabled: true,
+        clientBundle: {
+            icons: [
+                'lucide:search',
+                'lucide:settings',
+                'lucide:plus',
+                'lucide:x',
+                'lucide:check',
+                'svg-spinners:ring-resize',
+            ],
+            scan: true,
+            includeCustomCollections: true,
         },
     },
-    modules: [
-        'radix-vue/nuxt',
-        '@nuxt/ui',
-        '@nuxtjs/tailwindcss',
-        '@vueuse/nuxt',
-        '@nuxt/image',
-        '@nuxt/fonts',
-        '@nuxtjs/color-mode',
-        '@nuxtjs/supabase',
-        '@nuxt/eslint',
-        '@nuxt/scripts',
-        '@nuxtjs/turnstile',
-        '@nuxtjs/robots',
-        '@nuxtjs/sitemap',
-    ],
-    compatibilityDate: '2024-08-21',
-
-    supabase: {
-        url: import.meta.env.SUPABASE_URL,
-        key: import.meta.env.SUPABASE_ANON_KEY,
-        serviceKey: import.meta.env.SUPABASE_SERVICE_ROLE_KEY,
-        redirect: true,
-        redirectOptions: {
-            login: '/login',
-            callback: '/confirm',
-            include: ['/setup/edit', '/settings', '/bookmarks'],
-            exclude: [],
-            cookieRedirect: false,
-        },
-        types: './database.types.ts',
-    },
-
     image: {
         domains: [
             'booth.pximg.net', // booth
@@ -133,43 +155,11 @@ export default defineNuxtConfig({
             },
         },
     },
-
-    fonts: {
-        families: [{ name: 'Murecho', provider: 'google' }],
-    },
-
-    icon: {
-        customCollections: [
-            {
-                prefix: 'avatio',
-                dir: './public/icons/avatio',
-            },
-        ],
-
-        clientBundle: {
-            icons: [
-                'lucide:search',
-                'lucide:settings',
-                'lucide:plus',
-                'lucide:x',
-                'lucide:check',
-                'svg-spinners:ring-resize',
-            ],
-            scan: true,
-            includeCustomCollections: true,
-        },
-    },
-
-    turnstile: {
-        siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY,
-    },
-
     robots: {
         allow: ['Twitterbot', 'facebookexternalhit'],
         blockNonSeoBots: true,
         blockAiBots: true,
     },
-
     sitemap: {
         sitemaps: true,
         exclude: [
@@ -253,20 +243,22 @@ export default defineNuxtConfig({
             return [...permament, ...setups, ...users];
         },
     },
-
-    runtimeConfig: {
-        public: {
-            r2: { domain: '' },
+    supabase: {
+        url: import.meta.env.SUPABASE_URL,
+        key: import.meta.env.SUPABASE_ANON_KEY,
+        serviceKey: import.meta.env.SUPABASE_SERVICE_ROLE_KEY,
+        redirect: true,
+        redirectOptions: {
+            login: '/login',
+            callback: '/confirm',
+            include: ['/setup/edit', '/settings', '/bookmarks'],
+            exclude: [],
+            cookieRedirect: false,
         },
-        turnstile: {
-            siteKey: '',
-            secretKey: '',
-        },
-        r2: {
-            endpoint: '',
-            accessKey: '',
-            secretKey: '',
-        },
+        types: './types/database.ts',
+    },
+    turnstile: {
+        siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY,
     },
 });
 
