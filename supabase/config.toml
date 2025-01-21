@@ -48,7 +48,7 @@ enabled = false
 
 [auth]
 enabled = true
-site_url = "http://avatio.me"
+site_url = "https://avatio.me"
 additional_redirect_urls = ["https://avatio-liria.vercel.app/", "https://avatio-liria.vercel.app/**", "https://avatio-*-liria.vercel.app", "https://avatio-*-liria.vercel.app/**"]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
