@@ -13,7 +13,7 @@ const props = defineProps<Props>();
         <template #content>
             <div class="flex items-center gap-3">
                 <NuxtImg
-                    :src="props.shop.thumbnail"
+                    :src="props.shop.thumbnail ?? ''"
                     class="size-10 rounded-lg"
                 />
                 <div class="flex flex-col gap-1.5">

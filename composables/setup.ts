@@ -1,33 +1,19 @@
-export const useDeleteSetup = async (id: number, image: string | null) => {
-    const client = await useSBClient();
+import type { ApiResponse } from '@UI/types/types';
 
-    const { error: errorDeleteSetup } = await client
-        .from('setups')
-        .delete()
-        .eq('id', id);
+export const useDeleteSetup = async (id: number) => {
+    const { error } = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {
+        method: 'DELETE',
+        body: { id: id },
+    });
 
-    if (errorDeleteSetup) {
-        useAddToast('セットアップの削除に失敗しました');
-        return new Error('Faild to delete setup');
-    }
-
-    if (image) await useDeleteImage(`setup:${image}`);
+    if (error)
+        return useAddToast(
+            'セットアップの削除に失敗しました',
+            `エラーコード : ${error.status}`
+        );
 
     useAddToast('セットアップを削除しました');
     navigateTo('/');
-};
-
-export const useGetPopularTags = async () => {
-    const client = await useSBClient();
-
-    const { data, error } = await client.rpc('tags_order_by_count');
-
-    if (!error) {
-        return data.map((obj: { tag: string }) => obj.tag);
-    } else {
-        console.error(error);
-        return null;
-    }
 };
 
 export const useAddBookmark = async (id: number) => {

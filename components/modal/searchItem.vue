@@ -7,33 +7,6 @@ const emit = defineEmits(['close', 'add']);
 const router = useRouter();
 const client = await useSBClient();
 
-const categories = {
-    avatar: {
-        string: 'avatar',
-        id: 208,
-        name: 'ベースアバター',
-        icon: 'lucide:person-standing',
-    },
-    cloth: {
-        string: 'cloth',
-        id: 209,
-        name: '衣装',
-        icon: 'lucide:shirt',
-    },
-    accessory: {
-        string: 'accessory',
-        id: 217,
-        name: 'アクセサリー',
-        icon: 'lucide:star',
-    },
-    other: {
-        string: 'other',
-        id: null,
-        name: 'その他',
-        icon: 'lucide:package',
-    },
-};
-
 const searchWord = ref<string>('');
 const searchItems = ref<
     {
@@ -41,7 +14,7 @@ const searchItems = ref<
         name: string;
         thumbnail: string;
         shop: string;
-        category: number;
+        category: string;
     }[]
 >([]);
 const categoryFilter = ref<string[]>([]);
@@ -55,7 +28,7 @@ const handleInputChange = useDebounceFn(
 
         const { data } = await client.rpc('search_items', {
             keyword: value.toString(),
-            exclude_categories: categoryFilter.value.length ? [208] : [],
+            exclude_categories: categoryFilter.value,
             num: 20,
         });
         searchItems.value = data ?? [];
@@ -69,7 +42,7 @@ const handleInputChange = useDebounceFn(
 watch(searchWord, (newValue) => {
     handleInputChange(newValue);
 });
-watch(categoryFilter.value, () => {
+watch(categoryFilter, () => {
     handleInputChange(searchWord.value);
 });
 </script>
@@ -115,21 +88,29 @@ watch(categoryFilter.value, () => {
             v-if="searchWord.length"
             class="w-full max-h-[60vh] flex flex-col gap-5"
         >
-            <!-- <div class="px-1 pt-1 flex items-center gap-1">
+            <div class="px-1 pt-1 flex items-center gap-1">
                 <ButtonBase
-                    v-for="c in categories"
-                    :label="c.name"
+                    v-for="c in Object.values(itemCategories())"
+                    :label="c.label"
                     :class="[
                         'px-3 py-2 rounded-full',
-                        c.string
-                            ? categoryFilter.includes(c.string)
+                        c.id
+                            ? categoryFilter.includes(c.id)
                                 ? 'bg-zinc-500 dark:bg-zinc-500'
                                 : ''
                             : '',
                     ]"
-                    @click="changeCategoryFilter(c.string)"
+                    @click="
+                        () => {
+                            if (categoryFilter.includes(c.id))
+                                categoryFilter = categoryFilter.filter(
+                                    (v) => v !== c.id
+                                );
+                            else categoryFilter = [...categoryFilter, c.id];
+                        }
+                    "
                 />
-            </div> -->
+            </div>
 
             <div
                 v-if="!searching"
@@ -137,7 +118,7 @@ watch(categoryFilter.value, () => {
             >
                 <template v-if="searchItems.length">
                     <div
-                        v-for="c in categories"
+                        v-for="c in Object.values(itemCategories())"
                         :key="useId()"
                         class="empty:hidden w-full flex flex-col gap-3"
                     >
@@ -146,19 +127,19 @@ watch(categoryFilter.value, () => {
                                 searchItems.filter((item) =>
                                     c.id
                                         ? item.category === c.id
-                                        : !Object.values(categories)
+                                        : !Object.values(itemCategories())
                                               .map((value) => value.id)
                                               .includes(item.category)
                                 ).length
                             "
                         >
-                            <UiTitle :label="c.name" :icon="c.icon" />
+                            <UiTitle :label="c.label" :icon="c.icon" />
                             <div class="flex flex-col gap-2 px-3">
                                 <ButtonBase
                                     v-for="i in searchItems.filter((item) =>
                                         c.id
                                             ? item.category === c.id
-                                            : !Object.values(categories)
+                                            : !Object.values(itemCategories())
                                                   .map((value) => value.id)
                                                   .includes(item.category)
                                     )"

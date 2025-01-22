@@ -16,13 +16,6 @@ const adding = ref(false);
 const modalSearchItem = ref(false);
 const modalReplaceAvatar = ref(false);
 
-const categoryAttr: { [key: string]: { label: string; icon: string } } = {
-    avatar: { label: 'ベースアバター', icon: 'lucide:person-standing' },
-    cloth: { label: '衣装', icon: 'lucide:shirt' },
-    accessory: { label: 'アクセサリー', icon: 'lucide:star' },
-    other: { label: 'その他', icon: 'lucide:package' },
-};
-
 const quickAvatarsOwned = ref<
     { id: number; name: string; thumbnail: string }[] | null
 >(null);
@@ -54,7 +47,7 @@ const addItem = async (id: number) => {
 
     const d = { ...data, note: '', unsupported: false };
 
-    if (data.category === 208) {
+    if (data.category === 'avatar') {
         if (items.value.avatar.length) {
             if (items.value.avatar[0].id === id)
                 useAddToast(ERROR_MESSAGES.SAME_AVATAR);
@@ -66,14 +59,14 @@ const addItem = async (id: number) => {
             items.value.avatar.push(d);
             inputUrl.value = '';
         }
-    } else if (data.category === 209) {
+    } else if (data.category === 'cloth') {
         if (items.value.cloth.map((i) => i.id).includes(id))
             useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
         else {
             items.value.cloth.push(d);
             inputUrl.value = '';
         }
-    } else if (data.category === 217) {
+    } else if (data.category === 'accessory') {
         if (items.value.accessory.map((i) => i.id).includes(id))
             useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
         else {
@@ -123,9 +116,44 @@ const removeItem = (id: number) => {
     items.value.other = items.value.other.filter((item) => item.id !== id);
 };
 
-onMounted(async () => {
-    quickAvatarsOwned.value = await useGetOwnedAvatars();
-});
+const getOwnedAvatars = async () => {
+    const client = await useSBClient();
+    const user = useSupabaseUser();
+
+    if (!user.value) return null;
+
+    const { data } = await client
+        .from('setups')
+        .select(
+            `
+            items:setup_items(
+                data:item_id(
+                    id, outdated, category, name, thumbnail, nsfw
+                )
+            )
+            `
+        )
+        .eq('author', user.value.id)
+        .eq('setup_items.item_id.category', 'avatar')
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+    if (!data) return null;
+
+    const avatars = [
+        ...new Map(
+            data
+                .map((s) => s.items.filter((i) => i.data).map((i) => i.data))
+                .flat()
+                .flat()
+                .map((obj) => [obj.id, obj])
+        ).values(),
+    ].slice(0, 6);
+
+    return avatars;
+};
+
+quickAvatarsOwned.value = await getOwnedAvatars();
 </script>
 
 <template>
@@ -198,9 +226,26 @@ onMounted(async () => {
                 !items.accessory.length &&
                 !items.other.length
             "
-            class="flex flex-col gap-3"
+            class="flex flex-col gap-6 items-center"
         >
-            <p class="text-sm text-zinc-400">アイテムが登録されていません</p>
+            <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                アイテムが登録されていません
+            </p>
+            <div class="flex flex-wrap gap-2 items-center justify-center">
+                <ButtonBase
+                    v-for="i in quickAvatarsOwned"
+                    class="p-1 pr-2.5"
+                    @click="addItem(i.id)"
+                >
+                    <NuxtImg
+                        :src="i.thumbnail"
+                        width="40"
+                        height="40"
+                        class="rounded-lg"
+                    />
+                    <span>{{ useAvatarName(i.name) }}</span>
+                </ButtonBase>
+            </div>
         </div>
 
         <div v-else class="w-full flex flex-col gap-5">
@@ -211,8 +256,8 @@ onMounted(async () => {
             >
                 <template v-if="value.length">
                     <UiTitle
-                        :label="categoryAttr[key].label"
-                        :icon="categoryAttr[key].icon"
+                        :label="itemCategories()[key].label"
+                        :icon="itemCategories()[key].icon"
                     />
 
                     <VueDraggable
@@ -228,7 +273,7 @@ onMounted(async () => {
                             v-model:note="item.note"
                             v-model:unsupported="item.unsupported"
                             :key="'item-' + item.id"
-                            :size="item.category === 208 ? 'lg' : 'md'"
+                            :size="item.category === 'avatar' ? 'lg' : 'md'"
                             :item="item"
                             @remove="removeItem(item.id)"
                         />

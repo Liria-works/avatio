@@ -1,218 +1,209 @@
 <script lang="ts" setup>
 import { twMerge } from 'tailwind-merge';
 
+type OptionalKeys = 'note' | 'unsupported';
 interface Props {
-    noHero?: boolean;
-    noUser?: boolean;
-    setup: Setup;
-    class?: string;
+    size?: 'lg' | 'md';
+    noAction?: boolean;
+    item: Partial<Pick<SetupItem, OptionalKeys>> &
+        Omit<SetupItem, OptionalKeys>;
+    class?: string | string[];
 }
 const props = withDefaults(defineProps<Props>(), {
-    noHero: false,
+    size: 'md',
+    noAction: false,
 });
 
-const emit = defineEmits(['click']);
+const loading = ref(false);
 
-const date = new Date(props.setup.created_at);
-const dateLocale = date.toLocaleString('ja-JP', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
+const sourceInfo = {
+    booth: {
+        id: 'booth',
+        generateUrl: (id: number) => `https://booth.pm/ja/items/${id}`,
+    },
+};
+
+const url = sourceInfo.booth.generateUrl(props.item.id);
+const item = ref<SetupItem>({
+    ...props.item,
+    note: props.item.note ?? '',
+    unsupported: props.item.unsupported ?? false,
 });
-const avatars = props.setup.items
-    .filter((i) => i.data.category === 208)
-    .map((i) => i.data);
+
+onMounted(async () => {
+    const timeDifference =
+        new Date().getTime() - new Date(props.item.updated_at).getTime();
+
+    // 時間の差分が1日を超えている場合、処理継続する
+    if (timeDifference > 24 * 60 * 60 * 1000) {
+        const response = await $fetch('/api/item/booth', {
+            query: { id: props.item.id },
+        });
+
+        if (response.data) item.value = response.data;
+        if (!response.data) item.value.outdated = true;
+    }
+
+    loading.value = false;
+});
 </script>
 
 <template>
-    <ItemBase
-        :to="{ name: 'setup-id', params: { id: props.setup.id } }"
+    <div
+        v-if="loading"
         :class="
             twMerge(
-                'group',
-                'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:shadow-xl shadow-black dark:shadow-white/10',
-                'transition duration-50 ease-in-out',
+                'flex items-center px-6 ring-1 ring-zinc-300 dark:ring-zinc-600 rounded-lg overflow-clip',
                 props.class
             )
         "
-        @click="emit('click')"
     >
-        <template #hero>
-            <div
-                v-if="props.setup.images.length && !props.noHero"
-                class="relative w-full p-1.5"
+        <Icon
+            name="svg-spinners:ring-resize"
+            size="24"
+            :class="props.size === 'lg' ? 'h-20 sm:h-32' : 'h-20'"
+        />
+    </div>
+
+    <div
+        v-else
+        :class="
+            twMerge(
+                'flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600 rounded-lg overflow-clip',
+                props.class
+            )
+        "
+    >
+        <div class="flex items-center">
+            <NuxtLink
+                :to="url"
+                target="_blank"
+                :class="[
+                    'flex-shrink-0 pr-4 rounded-lg object-cover select-none overflow-hidden flex items-center',
+                    props.size === 'lg' ? 'p-1.5 sm:p-2' : 'p-1.5',
+                ]"
             >
                 <NuxtImg
-                    :src="
-                        useGetImage(props.setup.images[0].name, {
-                            prefix: 'setup',
-                        })
-                    "
-                    :alt="props.setup.name"
-                    preset="thumbnail"
-                    :width="props.setup.images[0].width ?? 640"
-                    :height="props.setup.images[0].height ?? 360"
-                    :placeholder="[
-                        props.setup.images[0].width ?? 192,
-                        props.setup.images[0].height ?? 108,
-                        75,
-                        5,
+                    preload
+                    :src="item.thumbnail"
+                    :alt="item.name"
+                    format="webp"
+                    quality="70"
+                    :sizes="props.size === 'lg' ? '128px' : '80px'"
+                    :width="props.size === 'lg' ? 128 : 80"
+                    :height="props.size === 'lg' ? 128 : 80"
+                    :class="[
+                        'rounded-lg text-xs',
+                        props.size === 'lg' ? 'size-20 sm:size-32' : 'size-20',
+                        item.nsfw ? 'blur-md' : '',
                     ]"
-                    class="size-full max-h-[420px] rounded-lg object-cover"
                 />
+            </NuxtLink>
+
+            <div class="grow flex gap-5 pr-4 justify-between items-center">
                 <div
                     :class="[
-                        'absolute inset-1.5 p-2 rounded-lg',
-                        'flex flex-col items-start justify-end gap-1',
-                        'bg-gradient-to-t from-black/60 to-transparent',
-                        'opacity-0 group-hover:opacity-100',
-                        'transition duration-100 ease-in-out',
+                        'w-fit flex flex-col gap-3 items-start justify-center',
+                        props.size === 'lg' ? 'h-20 sm:h-32 pl-1.5' : 'h-20',
                     ]"
                 >
-                    <span
-                        :class="[
-                            'text-md font-medium text-white dark:text-white break-all',
-                            noHero
-                                ? 'line-clamp-1 leading-none'
-                                : 'line-clamp-2 leading-1',
-                        ]"
-                    >
-                        {{ props.setup.name }}
-                    </span>
+                    <div class="flex items-center gap-2">
+                        <UiTooltip v-if="item.nsfw" text="NSFW">
+                            <Icon
+                                name="lucide:heart"
+                                :size="18"
+                                class="text-pink-400"
+                            />
+                        </UiTooltip>
+                        <NuxtLink :to="url" target="_blank" class="w-fit gap-2">
+                            <p
+                                :class="[
+                                    'w-fit font-medium text-sm sm:text-base text-left break-keep text-black dark:text-white',
+                                    props.size === 'lg'
+                                        ? 'line-clamp-2'
+                                        : 'line-clamp-2 sm:line-clamp-1',
+                                ]"
+                            >
+                                {{ useSentence(item.name) }}
+                            </p>
+                        </NuxtLink>
+                    </div>
 
-                    <div class="flex items-center gap-1">
-                        <Icon
-                            name="lucide:person-standing"
-                            size="15"
-                            class="flex-shrink-0 bg-zinc-300 dark:bg-zinc-300"
-                        />
-                        <span
-                            class="text-xs text-zinc-300 dark:text-zinc-300 break-all line-clamp-1 leading-none"
+                    <div class="flex items-center gap-3">
+                        <NuxtLink
+                            :to="url"
+                            target="_blank"
+                            class="text-sm font-semibold leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
                         >
-                            {{
-                                !avatars[0].outdated
-                                    ? useAvatarName(avatars[0].name)
-                                    : '不明なベースアバター'
-                            }}
-                        </span>
+                            {{ item.price ? item.price : '価格不明' }}
+                        </NuxtLink>
+
+                        <HovercardShop :shop="item.shop">
+                            <NuxtLink
+                                :to="`https://${item.shop.id}.booth.pm/`"
+                                target="_blank"
+                                class="flex items-center gap-1.5 w-fit"
+                            >
+                                <NuxtImg
+                                    :src="item.shop.thumbnail ?? ''"
+                                    :alt="item.shop.name"
+                                    class="size-5 rounded-md border border-zinc-300"
+                                />
+                                <span
+                                    class="font-semibold text-xs line-clamp-1 break-all leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
+                                >
+                                    {{ item.shop.name }}
+                                </span>
+                                <Icon
+                                    v-if="item.shop.verified"
+                                    name="lucide:check"
+                                    :size="16"
+                                    class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
+                                />
+                            </NuxtLink>
+                        </HovercardShop>
                     </div>
                 </div>
-            </div>
-        </template>
-        <template #thumbnail>
-            <NuxtImg
-                v-if="props.setup.images.length && props.noHero"
-                :src="
-                    useGetImage(props.setup.images[0].name, { prefix: 'setup' })
-                "
-                :alt="props.setup.name"
-                preset="avatarThumbnail"
-                :placeholder="[30, 30, 75, 5]"
-                class="max-w-20 h-20 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0 object-cover"
-            />
-
-            <NuxtImg
-                v-if="!props.setup.images.length"
-                :src="avatars[0].thumbnail"
-                :alt="props.setup.name"
-                preset="avatarThumbnail"
-                :placeholder="[30, 30, 75, 5]"
-                class="h-20 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0 object-cover"
-            />
-
-            <div
-                v-else-if="avatars[0].outdated"
-                class="size-14 my-1.5 ml-1.5 rounded-lg flex flex-shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
-            >
-                ?
-            </div>
-        </template>
-        <template #main>
-            <div
-                v-if="!props.setup.images.length || props.noHero"
-                class="w-full pb-2 pr-2 pl-3 flex flex-col items-start justify-center gap-1"
-            >
-                <span
-                    :class="[
-                        'text-md font-medium text-zinc-700 dark:text-zinc-200 break-all',
-                        noHero
-                            ? 'line-clamp-1 leading-none'
-                            : 'line-clamp-2 leading-1',
-                    ]"
-                >
-                    {{ props.setup.name }}
-                </span>
-
-                <div class="flex items-center gap-1">
-                    <Icon
-                        name="lucide:person-standing"
-                        size="15"
-                        class="flex-shrink-0 bg-zinc-500 dark:bg-zinc-400"
-                    />
-                    <span
-                        class="text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"
+                <div class="w-fit gap-3 flex flex-shrink-0 items-center">
+                    <UiTooltip
+                        v-if="props.item.unsupported"
+                        text="ベースアバターに非対応"
                     >
-                        {{
-                            !avatars[0].outdated
-                                ? useAvatarName(avatars[0].name)
-                                : '不明なベースアバター'
-                        }}
-                    </span>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <HovercardUser v-if="!noUser" :user="props.setup.author">
-                        <UiAvatar
-                            :url="
-                                props.setup.author.avatar
-                                    ? useGetImage(props.setup.author.avatar, {
-                                          prefix: 'avatar',
-                                      })
-                                    : ''
-                            "
-                            :alt="props.setup.author.name ?? ''"
-                            aria-hidden="true"
-                            :icon-size="12"
-                            class="size-5"
+                        <Icon
+                            name="lucide:user-x"
+                            :size="18"
+                            class="text-zinc-600 dark:text-zinc-200"
                         />
-                    </HovercardUser>
-                    <UiTooltip :text="dateLocale">
-                        <p
-                            class="text-xs text-zinc-600 dark:text-zinc-400 whitespace-nowrap"
-                        >
-                            {{ useDateElapsed(date) }}
-                        </p>
                     </UiTooltip>
+
+                    <ButtonBase
+                        v-if="!props.noAction"
+                        :to="{
+                            name: 'search',
+                            query: { item: props.item.id },
+                        }"
+                        icon="lucide:search"
+                        tooltip="このアイテムを含むセットアップを検索"
+                        aria-label="このアイテムを含むセットアップを検索"
+                        class="p-2"
+                    />
                 </div>
             </div>
-
-            <div
-                v-else
-                class="w-full pb-2 px-2 flex items-center justify-end gap-2"
+        </div>
+        <div
+            v-if="props.item.note"
+            class="m-2 mt-0 px-3 py-2 gap-2 flex items-start rounded-lg bg-zinc-100 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700"
+        >
+            <Icon
+                name="lucide:pen-line"
+                :size="15"
+                class="flex-shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
+            />
+            <p
+                class="text-xs/relaxed text-left break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
             >
-                <UiTooltip :text="dateLocale">
-                    <p
-                        class="text-xs text-zinc-600 dark:text-zinc-400 whitespace-nowrap"
-                    >
-                        {{ useDateElapsed(date) }}
-                    </p>
-                </UiTooltip>
-                <HovercardUser v-if="!noUser" :user="props.setup.author">
-                    <UiAvatar
-                        :url="
-                            props.setup.author.avatar
-                                ? useGetImage(props.setup.author.avatar, {
-                                      prefix: 'avatar',
-                                  })
-                                : ''
-                        "
-                        :alt="props.setup.author.name ?? ''"
-                        aria-hidden="true"
-                        :icon-size="12"
-                        class="size-5"
-                    />
-                </HovercardUser>
-            </div>
-        </template>
-    </ItemBase>
+                {{ props.item.note }}
+            </p>
+        </div>
+    </div>
 </template>

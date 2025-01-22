@@ -11,7 +11,7 @@ const query = ref<Query>(route.query);
 const loading = ref(false);
 const hasMore = ref(false);
 const searchWord = ref<string>((route.query.q as string) ?? '');
-const resultSetups = ref<Setup[]>([]);
+const resultSetups = ref<SetupClient[]>([]);
 const resultItem = ref<Item | null>(null);
 const page = ref<number>(0);
 const perPage = 20;
@@ -19,6 +19,8 @@ const perPage = 20;
 const popularAvatars = ref<{ id: number; name: string; thumbnail: string }[]>(
     []
 );
+const { data } = await client.rpc('popular_avatars').limit(24);
+if (data) popularAvatars.value = data;
 
 const search = async ({
     word,
@@ -41,10 +43,19 @@ const search = async ({
             page: page,
             per_page: perPage,
         })
-        .returns<{ results: Setup[]; has_more: boolean }>();
+        .returns<{
+            results: (Omit<SetupDB, 'tags'> & { tags: string[] })[];
+            has_more: boolean;
+        }>();
 
     if (data) {
-        resultSetups.value = [...resultSetups.value, ...data.results];
+        resultSetups.value = [
+            ...resultSetups.value,
+            ...data.results.map((s) => {
+                const setup = { ...s, tags: s.tags.map((t) => ({ tag: t })) };
+                return setupMoldingClient(setup);
+            }),
+        ];
         hasMore.value = data.has_more;
     }
     loading.value = false;
@@ -65,11 +76,6 @@ const pagenate = async (options?: { initiate?: boolean }) => {
         page: page.value,
     });
 };
-
-onMounted(async () => {
-    const { data } = await client.rpc('popular_avatars').limit(24);
-    if (data) popularAvatars.value = data;
-});
 
 // クエリパラメータの変更を監視
 watch(
@@ -115,7 +121,7 @@ watch(
             />
         </div>
 
-        <ItemBooth
+        <SetupsItem
             v-if="resultItem"
             :size="'lg'"
             no-action

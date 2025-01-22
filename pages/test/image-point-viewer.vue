@@ -18,7 +18,7 @@ const points = ref<Point[]>([
             id: 2535492,
             updated_at: '2026-01-16 03:54:30.597549+00',
             outdated: false,
-            category: 209,
+            category: 'cloth',
             name: '【3Dモデルウェア】JUCKET_GADGET20',
             thumbnail:
                 'https://booth.pximg.net/3923a6a5-7600-4cc2-9240-d92591e77ceb/i/2535492/80921332-44c9-4081-8616-e3fbbebf9599_base_resized.jpg',
@@ -33,6 +33,7 @@ const points = ref<Point[]>([
             nsfw: false,
             note: 'this is note',
             unsupported: true,
+            source: 'booth',
         },
     },
     {
@@ -81,7 +82,7 @@ const getDisplayPoint = (point: Point): Point => {
                     />
                 </template>
                 <template #content>
-                    <ItemBooth v-if="point.item" :item="point.item" />
+                    <SetupsItem v-if="point.item" :item="point.item" />
                 </template>
             </HovercardBase>
         </div>

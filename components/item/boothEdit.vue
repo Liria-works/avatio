@@ -95,7 +95,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                             class="flex items-center gap-1.5 w-fit"
                         >
                             <NuxtImg
-                                :src="props.item.shop.thumbnail"
+                                :src="props.item.shop.thumbnail ?? ''"
                                 :alt="props.item.shop.name"
                                 class="size-5 rounded-md select-none border border-zinc-300"
                             />

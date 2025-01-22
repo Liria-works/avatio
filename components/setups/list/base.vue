@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 interface Porps {
-    setups: Setup[];
+    setups: SetupClient[];
     minColumns?: number;
     maxColumns?: number;
     ssrColumns?: number;
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Porps>(), {
         :ssr-columns="props.ssrColumns"
     >
         <template #default="{ item }">
-            <SetupsItem
+            <SetupsLink
                 :aria-label="item.name"
                 :image-size="{ width: 16, height: 9 }"
                 :setup="item"

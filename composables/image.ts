@@ -1,5 +1,3 @@
-import type { ResponseData } from '@UI/server/api/image.put';
-
 const convertFileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -25,7 +23,14 @@ export const usePutImage = async (
     options: { resolution: number; size: number; prefix?: string }
 ) => {
     try {
-        const response = await $fetch<ResponseData>('/api/image', {
+        const response = await $fetch<
+            ApiResponse<{
+                path: string;
+                prefix: string;
+                width?: number;
+                height?: number;
+            }>
+        >('/api/image', {
             method: 'PUT',
             body: {
                 image: convertFileToBase64(file),

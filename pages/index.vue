@@ -28,7 +28,7 @@ onMounted(async () => {
             <UiTitle label="ホーム" size="lg" />
             <div class="flex flex-wrap items-center gap-1">
                 <ButtonBase
-                    label="すべて"
+                    label="最新"
                     variant="flat"
                     :class="[
                         'text-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-700',

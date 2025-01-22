@@ -168,7 +168,7 @@ export type Database = {
             };
             items: {
                 Row: {
-                    category: number;
+                    category: Database['public']['Enums']['item_category'];
                     created_at: string;
                     id: number;
                     name: string;
@@ -176,11 +176,12 @@ export type Database = {
                     outdated: boolean;
                     price: string | null;
                     shop_id: string;
+                    source: string | null;
                     thumbnail: string;
                     updated_at: string;
                 };
                 Insert: {
-                    category: number;
+                    category?: Database['public']['Enums']['item_category'];
                     created_at?: string;
                     id: number;
                     name: string;
@@ -188,11 +189,12 @@ export type Database = {
                     outdated?: boolean;
                     price?: string | null;
                     shop_id: string;
+                    source?: string | null;
                     thumbnail: string;
                     updated_at?: string;
                 };
                 Update: {
-                    category?: number;
+                    category?: Database['public']['Enums']['item_category'];
                     created_at?: string;
                     id?: number;
                     name?: string;
@@ -200,6 +202,7 @@ export type Database = {
                     outdated?: boolean;
                     price?: string | null;
                     shop_id?: string;
+                    source?: string | null;
                     thumbnail?: string;
                     updated_at?: string;
                 };
@@ -532,7 +535,7 @@ export type Database = {
             popular_avatars: {
                 Args: Record<PropertyKey, never>;
                 Returns: {
-                    category: number;
+                    category: Database['public']['Enums']['item_category'];
                     created_at: string;
                     id: number;
                     name: string;
@@ -540,18 +543,28 @@ export type Database = {
                     outdated: boolean;
                     price: string | null;
                     shop_id: string;
+                    source: string | null;
                     thumbnail: string;
                     updated_at: string;
                 }[];
             };
-            search_items: {
-                Args: {
-                    keyword: string;
-                    exclude_categories: number[];
-                    num: number;
-                };
-                Returns: Json;
-            };
+            search_items:
+                | {
+                      Args: {
+                          keyword: string;
+                          exclude_categories: number[];
+                          num: number;
+                      };
+                      Returns: Json;
+                  }
+                | {
+                      Args: {
+                          keyword: string;
+                          exclude_categories: string[];
+                          num: number;
+                      };
+                      Returns: Json;
+                  };
             search_setups:
                 | {
                       Args: {
@@ -602,7 +615,7 @@ export type Database = {
             };
         };
         Enums: {
-            [_ in never]: never;
+            item_category: 'avatar' | 'cloth' | 'accessory' | 'other';
         };
         CompositeTypes: {
             setup_with_details: {

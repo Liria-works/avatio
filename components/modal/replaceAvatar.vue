@@ -25,9 +25,9 @@ const emit = defineEmits(['accept', 'close']);
             <p>ベースアバターを置き換えますか？</p>
 
             <div class="p-1 gap-2 flex flex-col items-center">
-                <ItemBooth v-if="props.from" no-action :item="props.from" />
+                <SetupsItem v-if="props.from" no-action :item="props.from" />
                 <Icon name="lucide:arrow-down" size="24" class="bg-zinc-300" />
-                <ItemBooth v-if="props.to" no-action :item="props.to" />
+                <SetupsItem v-if="props.to" no-action :item="props.to" />
             </div>
         </div>
 

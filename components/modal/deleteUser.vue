@@ -14,14 +14,14 @@ const deleteUser = async () => {
     error.value = '';
 
     try {
-        const res = await useAuthFetch('/api/user', {
+        const res = await $fetch('/api/user', {
             method: 'DELETE',
-            body: JSON.stringify({ plainPassword: password.value }),
+            body: { plainPassword: password.value },
         });
         console.log(res);
         if (!res) throw new Error('Failed to delete user');
 
-        useSignOut();
+        await useSignOut();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
         console.error(e);

@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 const props = defineProps<{
     id: number;
-    image: string | null;
 }>();
 
 const vis = defineModel<boolean>({
     default: false,
 });
-
-const emit = defineEmits(['close']);
 </script>
 
 <template>
@@ -30,11 +27,11 @@ const emit = defineEmits(['close']);
                     label="削除"
                     class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
                     @click="
-                        useDeleteSetup(props.id, props.image);
-                        emit('close');
+                        useDeleteSetup(props.id);
+                        vis = false;
                     "
                 />
-                <ButtonBase label="キャンセル" @click="emit('close')" />
+                <ButtonBase label="キャンセル" @click="vis = false" />
             </div>
         </template>
     </ModalBase>

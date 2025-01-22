@@ -1,27 +1,9 @@
 import { serverSupabaseClient } from '#supabase/server';
 import type { H3Event } from 'h3';
+import type { Item, ApiResponse } from '~/types/types';
 
-interface Item {
-    outdated: boolean;
-    link: string;
-    id: number;
-    name: string;
-    thumbnail: string;
-    price: string;
-    category: number;
-    shop: {
-        id: string;
-        name: string;
-        thumbnail: string;
-        verified: boolean;
-    };
-    nsfw: boolean;
+interface fetchedItem extends Omit<Item, 'updated_at'> {
     tags: string[];
-}
-
-interface Response {
-    data: Item | null;
-    error: string | null;
 }
 
 const logDuration = (startTime: number, source: string, itemName: string) => {
@@ -30,10 +12,52 @@ const logDuration = (startTime: number, source: string, itemName: string) => {
     console.log(`Fetch Done : ${source} : ${duration}ms : ${itemName}`);
 };
 
-async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
+const GetBoothItem = async (
+    event: H3Event,
+    id: number
+): Promise<ApiResponse<Item>> => {
     const client = await serverSupabaseClient(event);
 
     const startTime = Date.now(); // 処理開始時刻を記録
+
+    const { data: itemData } = await client
+        .from('items')
+        .select(
+            `
+            id,
+            updated_at,
+            name,
+            thumbnail,
+            price,
+            category,
+            shop:shop_id(
+                id,
+                name,
+                thumbnail,
+                verified
+            ),
+            nsfw,
+            outdated,
+            source
+            `
+        )
+        .eq('id', id)
+        .maybeSingle();
+
+    // 時間の差分が1日を超えている場合、処理継続する
+    if (itemData) {
+        const timeDifference =
+            new Date().getTime() - new Date(itemData.updated_at).getTime();
+
+        if (timeDifference < 24 * 60 * 60 * 1000)
+            return {
+                data: itemData,
+                error: null,
+            };
+
+        console.log('Data is old, fetching from Booth', id);
+    }
+
     const urlBase = 'https://booth.pm/ja/items/';
 
     try {
@@ -72,13 +96,17 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
                 break;
             }
 
-        const item: Item = {
+        let category: 'avatar' | 'cloth' | 'accessory' | 'other' = 'other';
+        if (response.category.id === 208) category = 'avatar';
+        else if (response.category.id === 209) category = 'cloth';
+        else if (response.category.id === 217) category = 'accessory';
+
+        const item: fetchedItem = {
             id: Number(response.id),
-            link: urlBase + response.id.toString(),
             name: response.name.toString(),
             thumbnail: response.images[0].original.toString(),
             price: price,
-            category: Number(response.category.id),
+            category: category,
             shop: {
                 name: response.shop.name.toString(),
                 id: response.shop.subdomain.toString(),
@@ -88,6 +116,7 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
             nsfw: Boolean(response.is_adult),
             tags: response.tags.map((tag: { name: string }) => tag.name),
             outdated: false,
+            source: 'booth',
         };
 
         // カテゴリIDをチェック
@@ -121,7 +150,10 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
             if (config.status !== 200 || !config.value)
                 return {
                     data: null,
-                    error: 'Error in vercel edge config.',
+                    error: {
+                        status: 500,
+                        message: 'Error in vercel edge config.',
+                    },
                 };
 
             const allowed_category_id: number[] = config.value as number[];
@@ -130,17 +162,20 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
                 if (!item.tags.map((t: string) => t).includes('VRChat'))
                     return {
                         data: null,
-                        error: 'Invalid category ID',
+                        error: { status: 400, message: 'Invalid category ID' },
                     };
         } catch (e) {
             console.log(e);
             return {
                 data: null,
-                error: 'Failed to get allowed tag data.',
+                error: {
+                    status: 500,
+                    message: 'Failed to get allowed tag data.',
+                },
             };
         }
 
-        await client
+        const { data: insertShop } = await client
             .from('shops')
             .upsert({
                 id: item.shop.id,
@@ -148,9 +183,11 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
                 thumbnail: item.shop.thumbnail,
                 verified: item.shop.verified,
             } as never)
-            .eq('id', item.shop.id);
+            .eq('id', item.shop.id)
+            .select()
+            .maybeSingle();
 
-        await client
+        const { data: insertItem } = await client
             .from('items')
             .upsert({
                 id: item.id,
@@ -161,25 +198,50 @@ async function GetBoothItem(event: H3Event, id: number): Promise<Response> {
                 shop_id: item.shop.id,
                 nsfw: item.nsfw,
                 outdated: false,
+                source: 'booth',
             } as never)
-            .eq('id', id);
+            .eq('id', id)
+            .select()
+            .maybeSingle();
+
+        if (!insertItem || !insertShop)
+            return {
+                data: null,
+                error: { status: 500, message: 'Failed to insert data.' },
+            };
 
         logDuration(startTime, 'Booth', item.name);
 
         return {
-            data: item,
+            data: {
+                id: insertItem.id,
+                updated_at: insertItem.updated_at,
+                category: insertItem.category,
+                name: insertItem.name,
+                thumbnail: insertItem.thumbnail,
+                price: insertItem.price,
+                shop: {
+                    name: insertShop.name,
+                    id: insertShop.id,
+                    thumbnail: insertShop.thumbnail,
+                    verified: insertShop.verified,
+                },
+                nsfw: insertItem.nsfw,
+                outdated: false,
+                source: 'booth',
+            },
             error: null,
         };
     } catch (error) {
         console.log(error);
         return {
             data: null,
-            error: 'Failed to fetch data',
+            error: { status: 500, message: 'Failed to fetch data' },
         };
     }
-}
+};
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<Item>> => {
     const query = getQuery(event);
     const id = Number(query.id);
 
@@ -187,6 +249,6 @@ export default defineEventHandler(async (event) => {
     else
         return {
             data: null,
-            error: 'No ID or URL provided',
+            error: { status: 400, message: 'No ID or URL provided' },
         };
 });

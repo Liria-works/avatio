@@ -1,7 +1,7 @@
 export interface Author {
     id: string;
     name: string;
-    avatar: string;
+    avatar?: string | null;
 }
 
 export interface Badges {
@@ -17,26 +17,27 @@ export interface User extends Author {
     bio: string;
     links: string[];
     badges: Badges;
-    setups: Setup[];
+    setups: SetupClient[];
 }
 
 export interface Shop {
     id: string;
     name: string;
-    thumbnail: string;
+    thumbnail: string | null;
     verified: boolean;
 }
 
 export interface Item {
     id: number;
     updated_at: string;
-    category: number;
+    category: 'avatar' | 'cloth' | 'accessory' | 'other';
     name: string;
     thumbnail: string;
     price: string | null;
     shop: Shop;
     nsfw: boolean;
     outdated: boolean;
+    source: string | null;
 }
 
 export interface SetupItem extends Item {
@@ -44,19 +45,38 @@ export interface SetupItem extends Item {
     unsupported: boolean;
 }
 
-export interface Setup {
+export interface SetupImages {
+    name: string;
+    width?: number | null;
+    height?: number | null;
+}
+
+export interface SetupBase {
     id: number;
     created_at: string;
     name: string;
     description: string | null;
-    tags: { tag: string }[];
     author: Author;
-    images: { name: string; width: number; height: number }[];
+    images: SetupImages[];
+}
+
+export interface SetupDB extends SetupBase {
+    tags: { tag: string }[];
     items: {
         data: Item;
         note: string;
         unsupported: boolean;
     }[];
+}
+
+export interface SetupClient extends SetupBase {
+    tags: string[];
+    items: {
+        avatar: SetupItem[];
+        cloth: SetupItem[];
+        accessory: SetupItem[];
+        other: SetupItem[];
+    };
 }
 
 export interface CategoryAttr {
@@ -70,4 +90,9 @@ export interface CategorizedSetupItems {
     cloth: CategoryAttr;
     accessory: CategoryAttr;
     other: CategoryAttr;
+}
+
+export interface ApiResponse<Data> {
+    error: { status: number; message: string } | null;
+    data: Data | null;
 }

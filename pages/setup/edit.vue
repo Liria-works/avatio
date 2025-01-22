@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ResponseData as SetupResponseData } from '@UI/server/api/setup.put';
-
 const router = useRouter();
 const skip_router_hook = ref(false);
 
@@ -19,15 +17,6 @@ const description = ref<string>('');
 const tags = ref<string[]>([]);
 const image = ref<File | null>(null);
 
-const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
-};
-
 const PublishSetup = async () => {
     publishing.value = true;
 
@@ -37,10 +26,10 @@ const PublishSetup = async () => {
         ...items.value.accessory,
         ...items.value.other,
     ];
-    if (!itemsFlatten.filter((i) => i.category === 208).length)
+    if (!itemsFlatten.filter((i) => i.category === 'avatar').length)
         return useAddToast(ERROR_MESSAGES.NO_AVATAR);
 
-    const response = await $fetch<SetupResponseData>('/api/setup', {
+    const response = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {
         method: 'PUT',
         body: {
             name: title.value,
