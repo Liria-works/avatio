@@ -18,7 +18,7 @@ onMounted(async () => {
 <template>
     <div class="w-full flex flex-col gap-6">
         <ClientOnly>
-            <div class="empty:hidden -mt-4 flex flex-col gap-2">
+            <div class="empty:hidden -mt-2 flex flex-col gap-2">
                 <BannerWelcome />
                 <BannerOwnerWarning />
             </div>
@@ -59,7 +59,10 @@ onMounted(async () => {
             </div>
 
             <SetupsListHome v-if="mode === 'all'" />
-            <SetupsListUser v-else-if="mode === 'mine'" :user-id="user.id" />
+            <SetupsListUser
+                v-else-if="mode === 'mine'"
+                :user-id="user ? user.id : null"
+            />
             <SetupsListBookmarks v-else-if="mode === 'bookmark'" />
         </div>
     </div>

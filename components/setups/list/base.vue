@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 interface Porps {
+    loading?: boolean;
     setups: SetupClient[];
     minColumns?: number;
     maxColumns?: number;
@@ -13,7 +14,22 @@ const props = withDefaults(defineProps<Porps>(), {
 </script>
 
 <template>
+    <Icon
+        v-if="props.loading"
+        name="svg-spinners:ring-resize"
+        size="24"
+        class="self-center mt-4 bg-zinc-500"
+    />
+
+    <p
+        v-else-if="!props.setups || !props.setups.length"
+        class="self-center mt-4 text-center text-sm text-zinc-500 dark:text-zinc-400"
+    >
+        セットアップが見つかりませんでした
+    </p>
+
     <MasonryWall
+        v-else
         :items="props.setups"
         :column-width="240"
         :gap="6"

@@ -4,7 +4,7 @@ const modalDeleteUser = ref<boolean>(false);
 
 <template>
     <div class="flex flex-col gap-3">
-        <div
+        <!-- <div
             class="gap-3 p-3 mt-6 rounded-lg flex flex-col border border-zinc-300 dark:border-zinc-400"
         >
             <UiTitle
@@ -22,7 +22,7 @@ const modalDeleteUser = ref<boolean>(false);
                     @click="modalDeleteUser = true"
                 />
             </div>
-        </div>
+        </div> -->
 
         <div
             class="gap-3 p-3 rounded-lg flex flex-col border border-red-300 dark:border-red-400"

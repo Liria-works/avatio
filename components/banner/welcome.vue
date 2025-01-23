@@ -32,7 +32,7 @@ const save = async () => await storage.set('welcomeBanner', true);
             </p>
         </div>
         <div class="flex gap-1 items-center">
-            <ButtonBase label="ログイン" class="rounded-full" />
+            <ButtonBase to="/login" label="ログイン" class="rounded-full" />
             <ButtonBase
                 icon="lucide:x"
                 variant="flat"

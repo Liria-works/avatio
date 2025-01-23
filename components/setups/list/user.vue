@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 interface Props {
-    userId: string;
+    userId: string | null;
 }
 const props = defineProps<Props>();
 
@@ -12,6 +12,7 @@ const loading = ref(true);
 
 const get = async () => {
     loading.value = true;
+    if (!props.userId) return (loading.value = false);
 
     const { data } = await $fetch<
         ApiResponse<{ setups: SetupClient[]; hasMore: boolean }>
@@ -36,7 +37,7 @@ await get();
 </script>
 
 <template>
-    <div class="flex flex-col gap-3">
+    <div class="self-center flex flex-col gap-3">
         <SetupsListBase :setups="setups" />
         <ButtonLoadMore
             v-if="hasMore"

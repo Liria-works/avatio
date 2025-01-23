@@ -8,7 +8,6 @@ const props = defineProps<Props>();
 const links = ref<string[]>(props.initial);
 
 const linkInput = ref<string>('');
-const linkAdding = ref<boolean>(false);
 
 const addLink = async () => {
     if (linkInput.value === '') return;
@@ -24,18 +23,7 @@ const addLink = async () => {
         return;
     }
 
-    linkAdding.value = true;
     links.value.push(linkInput.value);
-
-    try {
-        await useSaveLink(links.value);
-    } catch (e) {
-        console.error(e);
-        links.value = links.value.filter((i) => i !== linkInput.value);
-    }
-
-    linkInput.value = '';
-    linkAdding.value = false;
 };
 
 const removeLink = async (link: string) => {
@@ -48,15 +36,48 @@ const pasteFromClipboard = async () =>
 </script>
 
 <template>
-    <UiCard :divider="false">
+    <UiCard :divider="false" footer-class="flex gap-4 items-center justify-end">
         <template #header>
             <UiTitle label="リンク" icon="lucide:link" is="h2" />
         </template>
 
+        <div class="flex gap-1 items-center w-full mt-1">
+            <UiTextinput
+                v-model="linkInput"
+                autocomplete="off"
+                placeholder="リンクを入力"
+                class="grow"
+                @keyup.enter="addLink"
+            >
+                <template #trailing>
+                    <ButtonBase
+                        v-if="!linkInput"
+                        variant="flat"
+                        icon="lucide:clipboard"
+                        class="p-1"
+                        @click="pasteFromClipboard"
+                    />
+                    <ButtonBase
+                        v-if="linkInput !== ''"
+                        variant="flat"
+                        icon="lucide:x"
+                        class="p-1"
+                        @click="linkInput = ''"
+                    />
+                </template>
+            </UiTextinput>
+            <ButtonBase
+                label="追加"
+                size="sm"
+                class="pr-3 h-[40px]"
+                @click="addLink"
+            />
+        </div>
+
         <VueDraggable
             v-model="links"
             :animation="150"
-            class="w-full rounded-xl flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600 divide-y divide-zinc-300 dark:divide-zinc-600"
+            class="w-full mt-2 rounded-xl flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600 divide-y divide-zinc-300 dark:divide-zinc-600"
         >
             <div
                 v-for="i in links"
@@ -88,60 +109,7 @@ const pasteFromClipboard = async () =>
         </VueDraggable>
 
         <template #footer>
-            <div class="flex gap-1 items-center w-full mt-1">
-                <div
-                    class="w-full px-1 rounded-xl bg-zinc-200 dark:bg-zinc-800 ring-1 ring-zinc-300 dark:ring-zinc-700"
-                >
-                    <UInput
-                        v-model="linkInput"
-                        :disabled="linkAdding"
-                        autocomplete="off"
-                        variant="none"
-                        size="sm"
-                        placeholder="リンクを入力"
-                        class="w-full"
-                        :ui="{
-                            rounded: 'rounded-xl',
-                            icon: { trailing: { pointer: '' } },
-                        }"
-                        @keyup.enter="addLink"
-                    >
-                        <template #trailing>
-                            <UButton
-                                v-show="!linkInput"
-                                color="gray"
-                                variant="link"
-                                icon="lucide:clipboard"
-                                :padded="false"
-                                @click="pasteFromClipboard"
-                            />
-                            <UButton
-                                v-show="linkInput !== ''"
-                                color="gray"
-                                variant="link"
-                                icon="lucide:x"
-                                :padded="false"
-                                @click="linkInput = ''"
-                            />
-                        </template>
-                    </UInput>
-                </div>
-                <UButton
-                    :icon="
-                        !linkAdding
-                            ? 'lucide:plus'
-                            : 'i-svg-spinners-ring-resize'
-                    "
-                    :disabled="linkAdding"
-                    label="追加"
-                    size="sm"
-                    :ui="{
-                        rounded: 'rounded-xl',
-                    }"
-                    class="pr-3 h-[34px]"
-                    @click="addLink"
-                />
-            </div>
+            <ButtonBase label="保存" @click="useSaveLink(links)" />
         </template>
     </UiCard>
 </template>

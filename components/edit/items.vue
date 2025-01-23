@@ -40,7 +40,7 @@ const addItem = async (id: number) => {
     // ユーザーが何回も追加を試さなくてもよくなりそう
 
     if (!data) {
-        useAddToast(ERROR_MESSAGES.ADD_ITEM_FAILED);
+        useAddToast(getErrors().editSetup.addItemFailed.clientMessage);
         adding.value = false;
         return;
     }
@@ -50,7 +50,7 @@ const addItem = async (id: number) => {
     if (data.category === 'avatar') {
         if (items.value.avatar.length) {
             if (items.value.avatar[0].id === id)
-                useAddToast(ERROR_MESSAGES.SAME_AVATAR);
+                useAddToast(getErrors().publishSetup.sameAvatars.clientMessage);
             else {
                 replaceAvatar.value = d;
                 modalReplaceAvatar.value = true;
@@ -61,21 +61,21 @@ const addItem = async (id: number) => {
         }
     } else if (data.category === 'cloth') {
         if (items.value.cloth.map((i) => i.id).includes(id))
-            useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
+            useAddToast(getErrors().publishSetup.sameItems.clientMessage);
         else {
             items.value.cloth.push(d);
             inputUrl.value = '';
         }
     } else if (data.category === 'accessory') {
         if (items.value.accessory.map((i) => i.id).includes(id))
-            useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
+            useAddToast(getErrors().publishSetup.sameItems.clientMessage);
         else {
             items.value.accessory.push(d);
             inputUrl.value = '';
         }
     } else {
         if (items.value.other.map((i) => i.id).includes(id))
-            useAddToast(ERROR_MESSAGES.MULTIPLE_ITEM);
+            useAddToast(getErrors().publishSetup.sameItems.clientMessage);
         else {
             items.value.other.push(d);
             inputUrl.value = '';
@@ -86,23 +86,24 @@ const addItem = async (id: number) => {
 };
 
 const addItemFromURL = async () => {
-    if (!inputUrl.value) return useAddToast(ERROR_MESSAGES.EMPTY_URL);
+    if (!inputUrl.value)
+        return useAddToast(getErrors().editSetup.emptyUrl.clientMessage);
 
     try {
         new URL(inputUrl.value);
     } catch {
-        return useAddToast(ERROR_MESSAGES.INVALID_URL);
+        return useAddToast(getErrors().editSetup.invalidUrl.clientMessage);
     }
 
     const url = new URL(inputUrl.value);
 
     if (url.hostname.split('.').slice(-2).join('.') !== 'booth.pm')
-        return useAddToast(ERROR_MESSAGES.INVALID_URL);
+        return useAddToast(getErrors().editSetup.invalidUrl.clientMessage);
 
     const id = url.pathname.split('/').slice(-1)[0];
 
     if (!Number.isInteger(Number(id)))
-        return useAddToast(ERROR_MESSAGES.INVALID_URL);
+        return useAddToast(getErrors().editSetup.invalidUrl.clientMessage);
 
     addItem(Number(id));
 };
@@ -196,7 +197,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                 />
             </div>
 
-            <div class="gap-2 flex items-center justify-between">
+            <div class="gap-2 flex flex-wrap items-center justify-between">
                 <div class="self-end gap-1 flex items-center">
                     <ButtonBase
                         icon="lucide:undo-2"
@@ -215,28 +216,46 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         <Icon
                             name="lucide:person-standing"
                             size="16"
-                            class="bg-zinc-600 dark:bg-zinc-400"
+                            class="flex-shrink-0 bg-zinc-600 dark:bg-zinc-400"
                         />
-                        <span class="text-xs leading-none">
+                        <span class="text-xs leading-none whitespace-nowrap">
                             {{ items.avatar.length }} / 1
                         </span>
                     </div>
 
                     <div
-                        class="ml-1 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1 ring-zinc-500"
+                        :class="[
+                            'ml-1 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1',
+                            useSum(
+                                items.cloth.length,
+                                items.accessory.length,
+                                items.other.length
+                            ).value > 32
+                                ? 'ring-red-500'
+                                : 'ring-zinc-500',
+                        ]"
                     >
                         <Icon
                             name="lucide:box"
                             size="16"
-                            class="bg-zinc-600 dark:bg-zinc-400"
+                            class="flex-shrink-0 bg-zinc-600 dark:bg-zinc-400"
                         />
-                        <span class="text-xs leading-none">
-                            {{
+                        <span class="text-xs leading-none whitespace-nowrap">
+                            <span>{{
                                 items.cloth.length +
                                 items.accessory.length +
                                 items.other.length
-                            }}
-                            / 32
+                            }}</span>
+                            <span
+                                v-if="
+                                    useSum(
+                                        items.cloth.length,
+                                        items.accessory.length,
+                                        items.other.length
+                                    ).value > 32
+                                "
+                                >/ 32</span
+                            >
                         </span>
                     </div>
                 </div>

@@ -7,7 +7,8 @@ const emit = defineEmits(['accept', 'close']);
 
 const status = ref<'idle' | 'loading' | 'error'>('idle');
 const error = ref<string>('');
-const password = ref<string>('');
+// const password = ref<string>('');
+const deletable = ref<boolean>(false);
 
 const deleteUser = async () => {
     status.value = 'loading';
@@ -16,7 +17,7 @@ const deleteUser = async () => {
     try {
         const res = await $fetch('/api/user', {
             method: 'DELETE',
-            body: { plainPassword: password.value },
+            // body: { plainPassword: password.value },
         });
         console.log(res);
         if (!res) throw new Error('Failed to delete user');
@@ -38,8 +39,13 @@ const deleteUser = async () => {
 
 watch(vis, () => {
     status.value = 'idle';
-    password.value = '';
+    // password.value = '';
     error.value = '';
+    deletable.value = false;
+
+    setTimeout(() => {
+        deletable.value = true;
+    }, 3000);
 });
 </script>
 
@@ -58,7 +64,7 @@ watch(vis, () => {
                 </p>
             </div>
 
-            <div class="gap-2 flex flex-col">
+            <!-- <div class="gap-2 flex flex-col">
                 <p class="text-sm">
                     続行するにはパスワードを入力してください。
                 </p>
@@ -67,7 +73,7 @@ watch(vis, () => {
                     type="password"
                     placeholder="パスワード"
                 />
-            </div>
+            </div> -->
         </div>
 
         <div v-else-if="status === 'loading'" class="gap-6 px-3 flex flex-col">
@@ -79,21 +85,23 @@ watch(vis, () => {
         </div>
 
         <template #footer>
-            <div class="w-full flex gap-2 items-center justify-end">
-                <ButtonBase
-                    v-if="status === 'idle'"
-                    :disabled="!password"
-                    label="削除"
-                    class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
-                    @click="deleteUser"
-                />
+            <div class="w-full flex gap-2 items-center justify-between">
                 <ButtonBase
                     v-if="status !== 'loading'"
                     label="キャンセル"
+                    variant="flat"
                     @click="
                         status = 'idle';
                         emit('close');
                     "
+                />
+
+                <ButtonBase
+                    v-if="status === 'idle'"
+                    :disabled="!deletable"
+                    label="削除"
+                    class="text-red-500 dark:text-red-400 hover:text-white disabled:text-red-200 hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 disabled:hover:bg-transparent hover:outline-red-400 hover:dark:outline-red-700"
+                    @click="deleteUser"
                 />
             </div>
         </template>

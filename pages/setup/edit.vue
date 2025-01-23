@@ -25,7 +25,7 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     };
 
     if (!title.value || !title.value.length)
-        return returnError(getErrors().putSetup.noTitle.ja);
+        return returnError(getErrors().publishSetup.noTitle.clientMessage);
 
     const itemsFlatten = [
         ...items.value.avatar,
@@ -35,13 +35,15 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     ];
 
     if (!itemsFlatten.filter((i) => i.category === 'avatar').length)
-        return returnError(getErrors().putSetup.noAvatar.ja);
+        return returnError(getErrors().publishSetup.noAvatar.clientMessage);
     if (itemsFlatten.filter((i) => i.category === 'avatar').length > 1)
-        return returnError(getErrors().putSetup.tooManyAvatars.ja);
+        return returnError(
+            getErrors().publishSetup.tooManyAvatars.clientMessage
+        );
     if (!itemsFlatten.filter((i) => i.category !== 'avatar').length)
-        return returnError(getErrors().putSetup.noItems.ja);
+        return returnError(getErrors().publishSetup.noItems.clientMessage);
     if (itemsFlatten.filter((i) => i.category !== 'avatar').length > 32)
-        return returnError(getErrors().putSetup.tooManyItems.ja);
+        return returnError(getErrors().publishSetup.tooManyItems.clientMessage);
 
     return false;
 };
@@ -76,7 +78,7 @@ const PublishSetup = async () => {
         publishing.value = false;
         return useAddToast(
             '投稿に失敗しました',
-            response.error!.ja || '不明なエラー'
+            response.error!.clientMessage || '不明なエラー'
         );
     }
 
@@ -121,8 +123,10 @@ onMounted(async () => {
 
 <template>
     <div class="flex-col justify-start items-start gap-8 flex w-full px-3">
-        <div class="flex flex-row gap-10 items-center justify-between w-full">
-            <div class="w-full flex flex-col gap-2 pt-1">
+        <div
+            class="flex flex-wrap-reverse md:flex-row gap-x-10 gap-y-3 items-center justify-between w-full"
+        >
+            <div class="grow flex flex-col gap-2 pt-1">
                 <UInput
                     v-model="title"
                     placeholder="セットアップ名を入力"
@@ -140,7 +144,7 @@ onMounted(async () => {
                     "
                 />
             </div>
-            <div class="flex gap-2 items-center">
+            <div class="w-full md:w-fit flex gap-2 items-center">
                 <ButtonBase
                     :disabled="errorCheck({ toast: false })"
                     :label="!publishing ? '公開' : '処理中'"
@@ -150,7 +154,7 @@ onMounted(async () => {
                             : 'i-svg-spinners-ring-resize'
                     "
                     :icon-size="18"
-                    class="rounded-full px-4"
+                    class="grow md:grow-0 rounded-full px-4"
                     @click="PublishSetup"
                 >
                     <template #tooltip>
@@ -158,10 +162,16 @@ onMounted(async () => {
                             class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-zinc-900 dark:text-zinc-100"
                         >
                             <p v-if="!title">
-                                {{ ERROR_MESSAGES.NO_TITLE }}
+                                {{
+                                    getErrors().publishSetup.noTitle
+                                        .clientMessage
+                                }}
                             </p>
                             <p v-if="!items.avatar.length">
-                                {{ ERROR_MESSAGES.NO_AVATAR }}
+                                {{
+                                    getErrors().publishSetup.noAvatar
+                                        .clientMessage
+                                }}
                             </p>
                             <p
                                 v-if="
@@ -170,7 +180,10 @@ onMounted(async () => {
                                     !items.other.length
                                 "
                             >
-                                {{ ERROR_MESSAGES.NO_ITEMS }}
+                                {{
+                                    getErrors().publishSetup.noItems
+                                        .clientMessage
+                                }}
                             </p>
 
                             <p

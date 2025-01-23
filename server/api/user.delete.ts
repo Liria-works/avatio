@@ -18,33 +18,33 @@ export default defineEventHandler(async (event) => {
 
     const supabase = serverSupabaseServiceRole(event);
 
-    const body = await readBody(event);
-    const plainPassword = body.plainPassword;
+    // const body = await readBody(event);
+    // const plainPassword = body.plainPassword;
 
-    const { data: checkPasswordResult, error: checkPasswordError } =
-        await supabase.rpc('check_password', {
-            user_id: user.id,
-            plain_password: plainPassword,
-        });
+    // const { data: checkPasswordResult, error: checkPasswordError } =
+    //     await supabase.rpc('check_password', {
+    //         user_id: user.id,
+    //         plain_password: plainPassword,
+    //     });
 
-    if (checkPasswordError) {
-        console.error(checkPasswordError);
-        return sendError(
-            event,
-            createError({
-                statusCode: 500,
-                statusMessage: 'Error on checking password.',
-            })
-        );
-    }
+    // if (checkPasswordError) {
+    //     console.error(checkPasswordError);
+    //     return sendError(
+    //         event,
+    //         createError({
+    //             statusCode: 500,
+    //             statusMessage: 'Error on checking password.',
+    //         })
+    //     );
+    // }
 
-    if (!checkPasswordResult) {
-        console.error('Invalid password');
-        return sendError(
-            event,
-            createError({ statusCode: 401, statusMessage: 'Invalid password' })
-        );
-    }
+    // if (!checkPasswordResult) {
+    //     console.error('Invalid password');
+    //     return sendError(
+    //         event,
+    //         createError({ statusCode: 401, statusMessage: 'Invalid password' })
+    //     );
+    // }
 
     const { data, error } = await supabase.auth.admin.deleteUser(user.id);
 

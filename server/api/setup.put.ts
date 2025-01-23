@@ -30,7 +30,7 @@ export default defineEventHandler(
         const body: RequestBody = await readBody(event);
 
         if (!body.name || !body.name.length)
-            return returnError(getErrors().putSetup.noTitle);
+            return returnError(getErrors().publishSetup.noTitle);
 
         const { data: itemsDB } = await supabase
             .from('items')
@@ -39,20 +39,21 @@ export default defineEventHandler(
                 'id',
                 body.items.map((i) => i.id)
             );
-        if (!itemsDB) return returnError(getErrors().putSetup.itemCheckFailed);
+        if (!itemsDB)
+            return returnError(getErrors().publishSetup.itemCheckFailed);
         const itemsInfo = itemsDB.reduce(
             (acc, item) => ({ ...acc, [item.id]: item.category }),
             {} as Record<number, 'avatar' | 'cloth' | 'accessory' | 'other'>
         );
 
         if (!body.items.filter((i) => itemsInfo[i.id] === 'avatar').length)
-            return returnError(getErrors().putSetup.noAvatar);
+            return returnError(getErrors().publishSetup.noAvatar);
         if (body.items.filter((i) => itemsInfo[i.id] === 'avatar').length > 1)
-            return returnError(getErrors().putSetup.tooManyAvatars);
+            return returnError(getErrors().publishSetup.tooManyAvatars);
         if (!body.items.filter((i) => itemsInfo[i.id] !== 'avatar').length)
-            return returnError(getErrors().putSetup.noItems);
+            return returnError(getErrors().publishSetup.noItems);
         if (body.items.filter((i) => itemsInfo[i.id] !== 'avatar').length > 32)
-            return returnError(getErrors().putSetup.tooManyItems);
+            return returnError(getErrors().publishSetup.tooManyItems);
 
         let image: {
             path: string;
@@ -80,7 +81,7 @@ export default defineEventHandler(
             });
 
             if (!response.data)
-                return returnError(getErrors().putSetup.uploadImage);
+                return returnError(getErrors().publishSetup.uploadImage);
 
             image = response.data;
         }
@@ -94,7 +95,8 @@ export default defineEventHandler(
             .select('id')
             .single();
 
-        if (setupError) return returnError(getErrors().putSetup.insertSetup);
+        if (setupError)
+            return returnError(getErrors().publishSetup.insertSetup);
 
         const { error: itemsError } = await supabase.from('setup_items').insert(
             body.items.map((i) => {
@@ -107,7 +109,8 @@ export default defineEventHandler(
             })
         );
 
-        if (itemsError) return returnError(getErrors().putSetup.insertItems);
+        if (itemsError)
+            return returnError(getErrors().publishSetup.insertItems);
 
         const { error: tagsError } = await supabase.from('setup_tags').insert(
             body.tags.map((i) => {
@@ -118,7 +121,7 @@ export default defineEventHandler(
             })
         );
 
-        if (tagsError) return returnError(getErrors().putSetup.insertTags);
+        if (tagsError) return returnError(getErrors().publishSetup.insertTags);
 
         if (image) {
             const { error: imageError } = await supabase
@@ -131,7 +134,7 @@ export default defineEventHandler(
                 });
 
             if (imageError)
-                return returnError(getErrors().putSetup.insertImages);
+                return returnError(getErrors().publishSetup.insertImages);
         }
 
         return {

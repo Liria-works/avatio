@@ -45,12 +45,10 @@ const modal_feedback = ref(false);
             <div
                 class="items-center justify-center gap-x-4 gap-y-2 flex flex-wrap"
             >
-                <ButtonBase
-                    disabled
-                    tooltip="準備中"
+                <!-- <ButtonBase
                     label="Avatioについて"
                     variant="link"
-                />
+                /> -->
 
                 <ButtonBase to="/faq" label="FAQ" variant="link" />
 

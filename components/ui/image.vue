@@ -4,6 +4,8 @@ import { twMerge } from 'tailwind-merge';
 interface Props {
     src: string;
     alt: string;
+    width?: number;
+    height?: number;
     class?: string | string[];
 }
 const props = defineProps<Props>();
@@ -26,6 +28,9 @@ const openImage = ref(false);
         <NuxtImg
             :src="props.src"
             :alt="props.alt"
+            :width="props.width"
+            :height="props.height"
+            :placeholder="[props.width, props.height, 70, 5]"
             :class="
                 twMerge(
                     'rounded-xl flex items-center justify-center',

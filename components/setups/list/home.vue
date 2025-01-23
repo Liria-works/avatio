@@ -30,7 +30,7 @@ await get();
 </script>
 
 <template>
-    <div class="flex flex-col gap-3">
+    <div class="self-center flex flex-col gap-3">
         <SetupsListBase :setups="setups" />
         <ButtonLoadMore
             v-if="hasMore"

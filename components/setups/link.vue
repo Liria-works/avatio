@@ -2,14 +2,11 @@
 import { twMerge } from 'tailwind-merge';
 
 interface Props {
-    noHero?: boolean;
     noUser?: boolean;
     setup: SetupClient;
     class?: string;
 }
-const props = withDefaults(defineProps<Props>(), {
-    noHero: false,
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits(['click']);
 
@@ -35,10 +32,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
         @click="emit('click')"
     >
         <template #hero>
-            <div
-                v-if="props.setup.images.length && !props.noHero"
-                class="relative w-full p-1.5"
-            >
+            <div v-if="props.setup.images.length" class="relative w-full p-1.5">
                 <NuxtImg
                     :src="
                         useGetImage(props.setup.images[0].name, {
@@ -67,12 +61,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     ]"
                 >
                     <span
-                        :class="[
-                            'text-md font-medium text-white dark:text-white break-all',
-                            noHero
-                                ? 'line-clamp-1 leading-none'
-                                : 'line-clamp-2 leading-1',
-                        ]"
+                        class="text-sm md:text-md font-medium text-white dark:text-white break-all line-clamp-2 leading-1"
                     >
                         {{ props.setup.name }}
                     </span>
@@ -100,23 +89,12 @@ const dateLocale = date.toLocaleString('ja-JP', {
         </template>
         <template #thumbnail>
             <NuxtImg
-                v-if="props.setup.images.length && props.noHero"
-                :src="
-                    useGetImage(props.setup.images[0].name, { prefix: 'setup' })
-                "
-                :alt="props.setup.name"
-                preset="avatarThumbnail"
-                :placeholder="[30, 30, 75, 5]"
-                class="max-w-20 h-20 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0 object-cover"
-            />
-
-            <NuxtImg
                 v-if="!props.setup.images.length"
                 :src="props.setup.items.avatar[0].thumbnail"
                 :alt="props.setup.name"
                 preset="avatarThumbnail"
                 :placeholder="[30, 30, 75, 5]"
-                class="h-20 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0 object-cover"
+                class="h-14 md:h-20 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0 object-cover"
             />
 
             <div
@@ -128,16 +106,11 @@ const dateLocale = date.toLocaleString('ja-JP', {
         </template>
         <template #main>
             <div
-                v-if="!props.setup.images.length || props.noHero"
+                v-if="!props.setup.images.length"
                 class="w-full pb-2 pr-2 pl-3 flex flex-col items-start justify-center gap-1"
             >
                 <span
-                    :class="[
-                        'text-md font-medium text-zinc-700 dark:text-zinc-200 break-all',
-                        noHero
-                            ? 'line-clamp-1 leading-none'
-                            : 'line-clamp-2 leading-1',
-                    ]"
+                    class="text-sm md:text-md font-medium text-zinc-700 dark:text-zinc-200 break-all line-clamp-2 leading-1"
                 >
                     {{ props.setup.name }}
                 </span>
