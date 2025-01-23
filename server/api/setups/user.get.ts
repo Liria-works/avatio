@@ -9,12 +9,14 @@ interface RequestQuery {
 }
 
 export default defineEventHandler(
-    async (event): Promise<ApiResponse<SetupClient[]>> => {
+    async (
+        event
+    ): Promise<ApiResponse<{ setups: SetupClient[]; hasMore: boolean }>> => {
         const query: RequestQuery = await getQuery(event);
 
         const supabase = await serverSupabaseClient(event);
 
-        const { data } = await supabase
+        const { data, count } = await supabase
             .from('setups')
             .select(
                 `
@@ -54,7 +56,8 @@ export default defineEventHandler(
                     unsupported
                 ),
                 tags:setup_tags(tag)
-                `
+                `,
+                { count: 'estimated' }
             )
             .eq('author', query.userId)
             .range(
@@ -63,7 +66,7 @@ export default defineEventHandler(
             )
             .order('created_at', { ascending: false });
 
-        if (!data)
+        if (!data || !count)
             return {
                 data: null,
                 error: {
@@ -73,7 +76,10 @@ export default defineEventHandler(
             };
 
         return {
-            data: data.map((setup) => setupMoldingClient(setup)),
+            data: {
+                setups: data.map((setup) => setupMoldingClient(setup)),
+                hasMore: count > query.page * query.perPage + query.perPage,
+            },
             error: null,
         };
     }

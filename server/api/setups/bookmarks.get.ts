@@ -9,7 +9,9 @@ interface RequestQuery {
 }
 
 export default defineEventHandler(
-    async (event): Promise<ApiResponse<SetupClient[]>> => {
+    async (
+        event
+    ): Promise<ApiResponse<{ setups: SetupClient[]; hasMore: boolean }>> => {
         try {
             const user = await serverSupabaseUser(event);
             if (!user) throw new Error();
@@ -24,7 +26,7 @@ export default defineEventHandler(
 
         const supabase = await serverSupabaseClient(event);
 
-        const { data } = await supabase
+        const { data, count } = await supabase
             .from('bookmarks')
             .select(
                 `
@@ -66,7 +68,8 @@ export default defineEventHandler(
                     ),
                     tags:setup_tags(tag)
                 )
-                `
+                `,
+                { count: 'estimated' }
             )
             .range(
                 query.page * query.perPage,
@@ -75,7 +78,7 @@ export default defineEventHandler(
             .order('created_at', { ascending: false })
             .returns<{ post: SetupDB }[]>();
 
-        if (!data)
+        if (!data || !count)
             return {
                 data: null,
                 error: {
@@ -85,9 +88,13 @@ export default defineEventHandler(
             };
 
         return {
-            data: data
-                .map((post) => post.post)
-                .map((setup) => setupMoldingClient(setup)),
+            data: {
+                setups: data
+                    .map((post) => post.post)
+                    .map((setup) => setupMoldingClient(setup)),
+                hasMore:
+                    count > query.page * query.perPage + (query.perPage - 1),
+            },
             error: null,
         };
     }
