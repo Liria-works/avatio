@@ -196,14 +196,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                 />
             </div>
 
-            <div class="self-end gap-2 flex">
-                <ButtonBase
-                    icon="lucide:search"
-                    label="アバター・アイテムを検索"
-                    class="h-9"
-                    @click="modalSearchItem = true"
-                />
-
+            <div class="gap-2 flex items-center justify-between">
                 <div class="self-end gap-1 flex items-center">
                     <ButtonBase
                         icon="lucide:undo-2"
@@ -215,7 +208,45 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         class="size-9"
                         @click="emit('redo')"
                     />
+
+                    <div
+                        class="ml-2 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1 ring-zinc-500"
+                    >
+                        <Icon
+                            name="lucide:person-standing"
+                            size="16"
+                            class="bg-zinc-600 dark:bg-zinc-400"
+                        />
+                        <span class="text-xs leading-none">
+                            {{ items.avatar.length }} / 1
+                        </span>
+                    </div>
+
+                    <div
+                        class="ml-1 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1 ring-zinc-500"
+                    >
+                        <Icon
+                            name="lucide:box"
+                            size="16"
+                            class="bg-zinc-600 dark:bg-zinc-400"
+                        />
+                        <span class="text-xs leading-none">
+                            {{
+                                items.cloth.length +
+                                items.accessory.length +
+                                items.other.length
+                            }}
+                            / 32
+                        </span>
+                    </div>
                 </div>
+
+                <ButtonBase
+                    icon="lucide:search"
+                    label="アバター・アイテムを検索"
+                    class="h-9"
+                    @click="modalSearchItem = true"
+                />
             </div>
         </div>
 

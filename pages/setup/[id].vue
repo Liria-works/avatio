@@ -93,7 +93,7 @@ onMounted(async () => {
                                 <p
                                     class="text-black dark:text-white pb-0.5 text-left font-normal"
                                 >
-                                    {{ data.name }}
+                                    {{ data.author.name }}
                                 </p>
                             </NuxtLink>
 

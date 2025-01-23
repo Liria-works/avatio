@@ -17,6 +17,35 @@ const description = ref<string>('');
 const tags = ref<string[]>([]);
 const image = ref<File | null>(null);
 
+const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
+    const returnError = (message: string) => {
+        publishing.value = false;
+        if (options.toast) useAddToast(message);
+        return true;
+    };
+
+    if (!title.value || !title.value.length)
+        return returnError(getErrors().putSetup.noTitle.ja);
+
+    const itemsFlatten = [
+        ...items.value.avatar,
+        ...items.value.cloth,
+        ...items.value.accessory,
+        ...items.value.other,
+    ];
+
+    if (!itemsFlatten.filter((i) => i.category === 'avatar').length)
+        return returnError(getErrors().putSetup.noAvatar.ja);
+    if (itemsFlatten.filter((i) => i.category === 'avatar').length > 1)
+        return returnError(getErrors().putSetup.tooManyAvatars.ja);
+    if (!itemsFlatten.filter((i) => i.category !== 'avatar').length)
+        return returnError(getErrors().putSetup.noItems.ja);
+    if (itemsFlatten.filter((i) => i.category !== 'avatar').length > 32)
+        return returnError(getErrors().putSetup.tooManyItems.ja);
+
+    return false;
+};
+
 const PublishSetup = async () => {
     publishing.value = true;
 
@@ -26,8 +55,7 @@ const PublishSetup = async () => {
         ...items.value.accessory,
         ...items.value.other,
     ];
-    if (!itemsFlatten.filter((i) => i.category === 'avatar').length)
-        return useAddToast(ERROR_MESSAGES.NO_AVATAR);
+    if (errorCheck()) return;
 
     const response = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {
         method: 'PUT',
@@ -46,17 +74,10 @@ const PublishSetup = async () => {
 
     if (!response.data) {
         publishing.value = false;
-        if (response.error!.status === 1)
-            useAddToast(
-                '画像のアップロードに失敗したため、投稿をキャンセルしました。',
-                '画像の形式が非対応の可能性があります。'
-            );
-        else
-            useAddToast(
-                'セットアップの公開に失敗しました。',
-                `エラーコード : ${response.error!.status}`
-            );
-        return;
+        return useAddToast(
+            '投稿に失敗しました',
+            response.error!.ja || '不明なエラー'
+        );
     }
 
     publishing.value = false;
@@ -121,16 +142,7 @@ onMounted(async () => {
             </div>
             <div class="flex gap-2 items-center">
                 <ButtonBase
-                    :disabled="
-                        publishing ||
-                        !title ||
-                        !items.avatar.length ||
-                        !(
-                            items.cloth.length ||
-                            items.accessory.length ||
-                            items.other.length
-                        )
-                    "
+                    :disabled="errorCheck({ toast: false })"
                     :label="!publishing ? '公開' : '処理中'"
                     :icon="
                         !publishing

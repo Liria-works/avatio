@@ -93,6 +93,6 @@ export interface CategorizedSetupItems {
 }
 
 export interface ApiResponse<Data> {
-    error: { status: number; message: string } | null;
+    error: ErrorType | null;
     data: Data | null;
 }

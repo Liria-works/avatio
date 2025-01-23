@@ -1,5 +1,6 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import type { ApiResponse } from '~/types/types';
+import getErrors, { type ErrorType } from '~/utils/getErrors';
 
 export interface RequestBody {
     name: string;
@@ -9,13 +10,12 @@ export interface RequestBody {
     items: { id: number; note: string; unsupported: boolean }[];
 }
 
-// Error Codes:
-// 1: Failed to upload image.
-// 2: DB insert error. Table: setups
-// 3: DB insert error. Table: setup_items
-// 4: DB insert error. Table: setup_tags
-// 5: DB insert error. Table: setup_images
-// 403: User is not authenticated.
+const returnError = (error: ErrorType) => {
+    return {
+        error: error,
+        data: null,
+    };
+};
 
 export default defineEventHandler(
     async (event): Promise<ApiResponse<{ id: number }>> => {
@@ -23,13 +23,36 @@ export default defineEventHandler(
             const user = await serverSupabaseUser(event);
             if (!user) throw new Error();
         } catch {
-            return {
-                error: { status: 403, message: 'Forbidden.' },
-                data: null,
-            };
+            return { error: getErrors().general.forbidden, data: null };
         }
 
+        const supabase = await serverSupabaseClient(event);
         const body: RequestBody = await readBody(event);
+
+        if (!body.name || !body.name.length)
+            return returnError(getErrors().putSetup.noTitle);
+
+        const { data: itemsDB } = await supabase
+            .from('items')
+            .select('id, category')
+            .in(
+                'id',
+                body.items.map((i) => i.id)
+            );
+        if (!itemsDB) return returnError(getErrors().putSetup.itemCheckFailed);
+        const itemsInfo = itemsDB.reduce(
+            (acc, item) => ({ ...acc, [item.id]: item.category }),
+            {} as Record<number, 'avatar' | 'cloth' | 'accessory' | 'other'>
+        );
+
+        if (!body.items.filter((i) => itemsInfo[i.id] === 'avatar').length)
+            return returnError(getErrors().putSetup.noAvatar);
+        if (body.items.filter((i) => itemsInfo[i.id] === 'avatar').length > 1)
+            return returnError(getErrors().putSetup.tooManyAvatars);
+        if (!body.items.filter((i) => itemsInfo[i.id] !== 'avatar').length)
+            return returnError(getErrors().putSetup.noItems);
+        if (body.items.filter((i) => itemsInfo[i.id] !== 'avatar').length > 32)
+            return returnError(getErrors().putSetup.tooManyItems);
 
         let image: {
             path: string;
@@ -55,15 +78,12 @@ export default defineEventHandler(
                     prefix: 'setup',
                 },
             });
+
             if (!response.data)
-                return {
-                    error: { status: 1, message: 'Failed to upload image.' },
-                    data: null,
-                };
+                return returnError(getErrors().putSetup.uploadImage);
+
             image = response.data;
         }
-
-        const supabase = await serverSupabaseClient(event);
 
         const { data: setupData, error: setupError } = await supabase
             .from('setups')
@@ -73,11 +93,8 @@ export default defineEventHandler(
             })
             .select('id')
             .single();
-        if (setupError)
-            return {
-                error: { status: 2, message: 'Failed to insert on DB.' },
-                data: null,
-            };
+
+        if (setupError) return returnError(getErrors().putSetup.insertSetup);
 
         const { error: itemsError } = await supabase.from('setup_items').insert(
             body.items.map((i) => {
@@ -89,11 +106,8 @@ export default defineEventHandler(
                 };
             })
         );
-        if (itemsError)
-            return {
-                error: { status: 3, message: 'Failed to insert on DB.' },
-                data: null,
-            };
+
+        if (itemsError) return returnError(getErrors().putSetup.insertItems);
 
         const { error: tagsError } = await supabase.from('setup_tags').insert(
             body.tags.map((i) => {
@@ -103,11 +117,8 @@ export default defineEventHandler(
                 };
             })
         );
-        if (tagsError)
-            return {
-                error: { status: 4, message: 'Failed to insert on DB.' },
-                data: null,
-            };
+
+        if (tagsError) return returnError(getErrors().putSetup.insertTags);
 
         if (image) {
             const { error: imageError } = await supabase
@@ -118,18 +129,14 @@ export default defineEventHandler(
                     width: image.width,
                     height: image.height,
                 });
+
             if (imageError)
-                return {
-                    error: { status: 5, message: 'Failed to insert on DB.' },
-                    data: null,
-                };
+                return returnError(getErrors().putSetup.insertImages);
         }
 
         return {
             error: null,
-            data: {
-                id: setupData.id,
-            },
+            data: { id: setupData.id },
         };
     }
 );
