@@ -1,7 +1,12 @@
 <script setup lang="ts">
 const token = ref();
 
-const env = process?.env?.NODE_ENV;
+let env: string | undefined;
+try {
+    env = process?.env?.NODE_ENV;
+} catch {
+    env = 'production';
+}
 const mailAddressLogin = ref({ email: '', password: '' });
 const handleLogin = async () => {
     try {

@@ -13,12 +13,10 @@ try {
 </script>
 
 <template>
-    <NuxtLink v-if="badge?.value" :to="badge.value.link" class="rounded-full">
-        <UBadge
-            :label="badge.value.label"
-            size="sm"
-            :ui="{ rounded: 'rounded-full' }"
-            class="px-3 hover:bg-zinc-400 hover:dark:bg-zinc-500"
-        />
-    </NuxtLink>
+    <ButtonBase
+        v-if="badge?.value"
+        :to="badge.value.link"
+        :label="badge.value.label"
+        class="rounded-full py-2"
+    />
 </template>
