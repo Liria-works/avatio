@@ -6,6 +6,7 @@ const input = defineModel<string>({
 });
 
 interface Prop {
+    type?: string;
     placeholder?: string;
     disabled?: boolean;
     autocomplete?: string;
@@ -27,6 +28,7 @@ const props = defineProps<Prop>();
     >
         <UInput
             v-model="input"
+            :type="props.type ?? 'text'"
             :disabled="props.disabled"
             :autocomplete="props.autocomplete"
             variant="none"

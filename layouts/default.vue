@@ -27,13 +27,13 @@ const handleError = (error: any) => {
 <template>
     <NuxtErrorBoundary @error="handleError">
         <UContainer
-            class="flex flex-col gap-6 md:gap-12 items-center"
+            class="min-h-screen flex flex-col gap-6 md:gap-12 items-center"
             :ui="{ padding: 'pt-6 px-6 ' }"
         >
             <UiHeader />
             <div
                 :class="[
-                    'w-full',
+                    'w-full grow',
                     paddingExclude.includes(route.path)
                         ? 'px-4'
                         : 'md:px-20 lg:px-32',
