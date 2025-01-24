@@ -56,36 +56,27 @@ onMounted(async () => {
             />
 
             <ButtonTheme class="hidden sm:block" />
-
-            <!-- <UPopover :ui="{
-                rounded: 'rounded-xl',
-                ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-            }" class="flex">
-                <ButtonBase :icon-size="20" icon="lucide:languages" tooltip="Languages" />
-
-                <template #panel>
-                    <div class="p-8">多言語未対応</div>
-                </template>
-            </UPopover> -->
         </div>
 
-        <UiTooltip v-if="user" :text="name ?? ''">
-            <NuxtLink
-                tabindex="0"
-                :to="`/@${user?.id}`"
-                class="hidden sm:flex select-none rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
-            >
-                <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
-            </NuxtLink>
-        </UiTooltip>
+        <template v-if="route.path !== '/login'">
+            <UiTooltip v-if="user" :text="name ?? ''">
+                <NuxtLink
+                    tabindex="0"
+                    :to="`/@${user?.id}`"
+                    class="hidden sm:flex select-none rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
+                >
+                    <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
+                </NuxtLink>
+            </UiTooltip>
 
-        <ButtonBase
-            v-else-if="route.path !== '/login'"
-            to="/login"
-            label="ログイン"
-            variant="flat"
-            class="hidden sm:block px-4 py-3 rounded-lg text-zinc-100 bg-zinc-500 dark:bg-zinc-600 hover:bg-zinc-600 hover:dark:bg-zinc-500"
-        />
+            <ButtonBase
+                v-else
+                to="/login"
+                label="ログイン"
+                variant="flat"
+                class="hidden sm:block px-4 py-3 rounded-lg text-zinc-100 bg-zinc-500 dark:bg-zinc-600 hover:bg-zinc-600 hover:dark:bg-zinc-500"
+            />
+        </template>
 
         <PopupBase>
             <template #trigger>

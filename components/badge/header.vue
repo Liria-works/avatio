@@ -17,6 +17,6 @@ try {
         v-if="badge?.value"
         :to="badge.value.link"
         :label="badge.value.label"
-        class="rounded-full py-2"
+        class="rounded-full py-2 text-xs"
     />
 </template>
