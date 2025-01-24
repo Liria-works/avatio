@@ -148,12 +148,29 @@ watch(
                     class="w-32 p-4 gap-2 flex flex-col items-center rounded-lg border border-zinc-500 hover:bg-zinc-200 hover:dark:bg-zinc-600"
                 >
                     <NuxtImg
+                        v-slot="{ src, isLoaded }"
                         :src="i.thumbnail"
                         :alt="i.name"
-                        sizes="128px"
+                        :width="256"
+                        :height="256"
+                        format="webp"
+                        fit="cover"
                         loading="lazy"
-                        class="rounded-lg flex-shrink-0"
-                    />
+                        class="rounded-lg flex-shrink-0 overflow-hidden"
+                    >
+                        <img
+                            v-if="isLoaded"
+                            :src="src"
+                            :width="256"
+                            :height="256"
+                        />
+                        <Icon
+                            v-else
+                            name="svg-spinners:ring-resize"
+                            size="36"
+                            class="text-zinc-600 dark:text-zinc-300"
+                        />
+                    </NuxtImg>
                     <p class="text-sm line-clamp-1 break-all">
                         {{ useAvatarName(i.name) }}
                     </p>

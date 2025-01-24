@@ -88,6 +88,7 @@ onMounted(async () => {
                     :src="item.thumbnail"
                     :alt="item.name"
                     format="webp"
+                    fit="cover"
                     quality="70"
                     :sizes="props.size === 'lg' ? '128px' : '80px'"
                     :width="props.size === 'lg' ? 128 : 80"
@@ -147,6 +148,10 @@ onMounted(async () => {
                                 <NuxtImg
                                     :src="item.shop.thumbnail ?? ''"
                                     :alt="item.shop.name"
+                                    :width="20"
+                                    :height="20"
+                                    format="webp"
+                                    fit="cover"
                                     class="size-5 rounded-md border border-zinc-300"
                                 />
                                 <span

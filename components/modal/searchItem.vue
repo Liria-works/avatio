@@ -28,7 +28,11 @@ const handleInputChange = useDebounceFn(
 
         const { data } = await client.rpc('search_items', {
             keyword: value.toString(),
-            exclude_categories: categoryFilter.value,
+            exclude_categories: categoryFilter.value.length
+                ? Object.values(itemCategories())
+                      .map((c) => c.id)
+                      .filter((id) => !categoryFilter.value.includes(id))
+                : [],
             num: 20,
         });
         searchItems.value = data ?? [];
@@ -98,8 +102,8 @@ watch(categoryFilter, () => {
                         'px-3 py-2 rounded-full',
                         c.id
                             ? categoryFilter.includes(c.id)
-                                ? 'bg-zinc-500 dark:bg-zinc-500'
-                                : ''
+                                ? 'bg-zinc-700 dark:bg-zinc-300 hover:bg-zinc-500 hover:dark:bg-zinc-400 text-zinc-100 dark:text-zinc-900'
+                                : 'hover:bg-zinc-200 hover:dark:bg-zinc-600'
                             : '',
                     ]"
                     @click="
@@ -156,6 +160,10 @@ watch(categoryFilter, () => {
                                     <NuxtImg
                                         :src="i.thumbnail"
                                         :alt="i.name"
+                                        :width="40"
+                                        :height="40"
+                                        format="webp"
+                                        fit="cover"
                                         class="size-10 rounded-lg object-cover"
                                     />
                                     <p

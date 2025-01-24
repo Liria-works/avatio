@@ -14,6 +14,11 @@ const props = defineProps<Props>();
             <div class="flex items-center gap-3">
                 <NuxtImg
                     :src="props.shop.thumbnail ?? ''"
+                    :alt="props.shop.name"
+                    :width="40"
+                    :height="40"
+                    format="webp"
+                    fit="cover"
                     class="size-10 rounded-lg"
                 />
                 <div class="flex flex-col gap-1.5">
