@@ -60,7 +60,7 @@ const changeAvatar = async () => {
 </script>
 
 <template>
-    <UiCard :divider="false" content-class="pb-4">
+    <UiCard :divider="false" content-class="pb-4 flex justify-center">
         <template #header>
             <UiTitle label="アバター" icon="lucide:smile" is="h2" />
         </template>

@@ -1,22 +1,17 @@
 <script lang="ts" setup>
-interface Props {
-    initial: string;
-}
-const props = defineProps<Props>();
-const bio = ref<string>(props.initial);
+const bio = defineModel<string>({
+    default: '',
+});
 </script>
 
 <template>
-    <UiCard :divider="false" footer-class="flex gap-4 items-center justify-end">
+    <UiCard
+        :divider="false"
+        class="pb-4"
+        header-class="flex gap-4 items-center justify-between"
+    >
         <template #header>
             <UiTitle label="bio" icon="lucide:text" is="h2" />
-        </template>
-        <UiTextarea
-            v-model="bio"
-            placeholder="簡単な自己紹介をしてみましょう"
-            class="w-full p-3"
-        />
-        <template #footer>
             <p
                 :class="[
                     'text-sm font-medium whitespace-nowrap',
@@ -27,7 +22,11 @@ const bio = ref<string>(props.initial);
             >
                 {{ bio ? bio.length : 0 }} / 140
             </p>
-            <ButtonBase label="保存" @click="useSaveBio(bio)" />
         </template>
+        <UiTextarea
+            v-model="bio"
+            placeholder="簡単な自己紹介をしてみましょう"
+            class="w-full p-3"
+        />
     </UiCard>
 </template>

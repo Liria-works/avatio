@@ -1,20 +1,17 @@
 <script lang="ts" setup>
-interface Props {
-    initial: string;
-}
-const props = defineProps<Props>();
-const username = ref<string>(props.initial);
+const username = defineModel<string>({
+    default: '',
+});
 </script>
 
 <template>
-    <UiCard :divider="false" footer-class="flex gap-4 items-center justify-end">
+    <UiCard
+        :divider="false"
+        class="pb-4"
+        header-class="flex gap-4 items-center justify-between"
+    >
         <template #header>
             <UiTitle label="ユーザー名" icon="lucide:pencil" is="h2" />
-        </template>
-
-        <UiTextinput v-model="username" placeholder="ユーザー名" />
-
-        <template #footer>
             <p
                 :class="[
                     'text-sm font-medium whitespace-nowrap',
@@ -25,7 +22,8 @@ const username = ref<string>(props.initial);
             >
                 {{ username ? username.length : 0 }} / 16
             </p>
-            <ButtonBase label="保存" @click="useSaveUsername(username)" />
         </template>
+
+        <UiTextinput v-model="username" placeholder="ユーザー名" />
     </UiCard>
 </template>

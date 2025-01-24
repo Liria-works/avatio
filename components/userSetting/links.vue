@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { VueDraggable } from 'vue-draggable-plus';
 
-interface Props {
-    initial: string[];
-}
-const props = defineProps<Props>();
-const links = ref<string[]>(props.initial);
+const links = defineModel<string[]>({
+    default: [],
+});
 
 const linkInput = ref<string>('');
 
@@ -17,10 +15,8 @@ const addLink = async () => {
 
     try {
         new URL(linkInput.value);
-    } catch (e) {
-        useAddToast('URL が不正です');
-        console.error(e);
-        return;
+    } catch {
+        return useAddToast('URL が不正です');
     }
 
     links.value.push(linkInput.value);
@@ -36,7 +32,11 @@ const pasteFromClipboard = async () =>
 </script>
 
 <template>
-    <UiCard :divider="false" footer-class="flex gap-4 items-center justify-end">
+    <UiCard
+        :divider="false"
+        class="pb-4"
+        header-class="flex gap-4 items-center justify-between"
+    >
         <template #header>
             <UiTitle label="リンク" icon="lucide:link" is="h2" />
         </template>
@@ -77,7 +77,7 @@ const pasteFromClipboard = async () =>
         <VueDraggable
             v-model="links"
             :animation="150"
-            class="w-full mt-2 rounded-xl flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600 divide-y divide-zinc-300 dark:divide-zinc-600"
+            class="empty:hidden w-full mt-2 rounded-xl flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600 divide-y divide-zinc-300 dark:divide-zinc-600"
         >
             <div
                 v-for="i in links"
@@ -107,9 +107,5 @@ const pasteFromClipboard = async () =>
                 />
             </div>
         </VueDraggable>
-
-        <template #footer>
-            <ButtonBase label="保存" @click="useSaveLink(links)" />
-        </template>
     </UiCard>
 </template>
