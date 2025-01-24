@@ -53,11 +53,8 @@ export const usePutImage = async (
 };
 
 export const useDeleteImage = (name: string, options?: { prefix?: string }) => {
-    const path = options?.prefix
-        ? `${options.prefix}:${encodeURIComponent(name)}`
-        : encodeURIComponent(name);
-
-    return $fetch(`/api/image?path=${path}`, {
+    return $fetch(`/api/image`, {
         method: 'DELETE',
+        query: { name, prefix: options?.prefix },
     });
 };

@@ -51,7 +51,7 @@ export default defineEventHandler(
                 `/api/image`,
                 {
                     method: 'DELETE',
-                    query: { path: image.name },
+                    query: { name: image.name, prefix: 'setup' },
                 }
             );
             if (res.error) failed.push(image.name);
