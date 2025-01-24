@@ -1,89 +1,133 @@
 import sharp from 'sharp';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import authMiddleware from './Auth';
+import { createStorage } from 'unstorage';
+import s3Driver from 'unstorage/drivers/s3';
+import { serverSupabaseUser } from '#supabase/server';
+import type { ApiResponse } from '~/types/types';
 
-export default defineEventHandler(async (event) => {
-    await authMiddleware(event);
+export interface RequestBody {
+    image: string;
+    size: number;
+    resolution: number;
+    prefix: string;
+}
 
-    const runtime = useRuntimeConfig();
+const runtime = useRuntimeConfig();
 
-    const formData = await readFormData(event);
-    const file = formData.get('file') as File;
-    const size = formData.get('size') as string;
-    const res = formData.get('res') as string;
-    const path = formData.get('path') as string;
+const storage = createStorage({
+    driver: s3Driver({
+        accessKeyId: runtime.r2.accessKey,
+        secretAccessKey: runtime.r2.secretKey,
+        endpoint: runtime.r2.endpoint,
+        bucket: 'avatio',
+        region: 'auto',
+    }),
+});
 
-    if (!file || !file.size)
-        throw createError({ statusCode: 400, message: 'No file provided' });
-
-    if (!size || !res)
-        throw createError({
-            statusCode: 400,
-            message: "Query parameter 'size' and 'res' are required",
-        });
-
-    try {
-        const input = await file.arrayBuffer();
-        const image = sharp(input);
-
-        const maxRes = parseInt(res, 10);
-        if (isNaN(maxRes) || maxRes <= 0)
-            throw createError({
-                statusCode: 400,
-                message: 'Invalid size parameter',
-            });
-
-        let resolution = maxRes;
-        const width = (await image.metadata()).width;
-        const height = (await image.metadata()).height;
-
-        if (width && height) {
-            if (Math.max(width, height) < maxRes) {
-                resolution = Math.max(width, height);
-            }
+export default defineEventHandler(
+    async (
+        event
+    ): Promise<
+        ApiResponse<{
+            path: string;
+            prefix: string;
+            width?: number;
+            height?: number;
+        }>
+    > => {
+        try {
+            const user = await serverSupabaseUser(event);
+            if (!user) throw new Error();
+        } catch {
+            return {
+                error: { status: 403, message: 'Forbidden.' },
+                data: null,
+            };
         }
 
-        const compressed = await image
-            .resize({ width: resolution, height: resolution, fit: 'inside' })
-            .toFormat('jpeg')
-            .toBuffer();
+        const body: RequestBody = await readBody(event);
 
-        const unixTime = Math.floor(Date.now());
-        console.log('unixTime', unixTime);
-        let base64UnixTime = Buffer.from(unixTime.toString()).toString(
-            'base64'
-        );
-        base64UnixTime = base64UnixTime.replace(/[\\/:*?"<>|]/g, '');
+        if (!body.image || !body.image.length)
+            return {
+                error: { status: 400, message: 'No file provided.' },
+                data: null,
+            };
 
-        const fileName = path
-            ? `${path}/${base64UnixTime}.jpg`
-            : `${base64UnixTime}.jpg`;
+        if (!body.size || !body.resolution)
+            return {
+                error: {
+                    status: 400,
+                    message:
+                        "Query parameter 'size' and 'resolution' are required.",
+                },
+                data: null,
+            };
 
-        const S3 = new S3Client({
-            region: 'auto',
-            endpoint: runtime.r2Endpoint,
-            credentials: {
-                accessKeyId: runtime.r2AccessKey,
-                secretAccessKey: runtime.r2SecretKey,
-            },
-        });
+        try {
+            const input = Buffer.from(
+                body.image.split(',')[1] || body.image,
+                'base64'
+            );
+            const image = sharp(input);
 
-        const put = new PutObjectCommand({
-            ACL: 'public-read',
-            Body: compressed,
-            ContentType: 'image/jpeg',
-            Bucket: 'avatio',
-            Key: fileName,
-        });
+            if (isNaN(body.resolution) || body.resolution <= 0)
+                return {
+                    error: { status: 400, message: 'Invalid size parameter.' },
+                    data: null,
+                };
 
-        const result = await S3.send(put);
+            let resolution = body.resolution;
+            const width = (await image.metadata()).width;
+            const height = (await image.metadata()).height;
 
-        return Response.json({ path: fileName, result: result });
-    } catch (error) {
-        console.error(error);
-        throw createError({
-            statusCode: 400,
-            message: 'Faild to upload image',
-        });
+            if (width && height)
+                if (Math.max(width, height) < body.resolution)
+                    resolution = Math.max(width, height);
+
+            const compressed = await image
+                .resize({
+                    width: resolution,
+                    height: resolution,
+                    fit: 'inside',
+                })
+                .toFormat('jpeg')
+                .toBuffer();
+
+            const metadata = await sharp(compressed).metadata();
+
+            const unixTime = Math.floor(Date.now());
+            let base64UnixTime = Buffer.from(unixTime.toString()).toString(
+                'base64'
+            );
+            base64UnixTime = base64UnixTime.replace(/[\\/:*?"<>|]/g, '');
+
+            const fileName = `${base64UnixTime}.jpg`;
+            const fileNamePrefixed = `${body.prefix.length ? `${body.prefix}:` : ''}${fileName}`;
+
+            await storage.setItemRaw(fileNamePrefixed, compressed);
+            if (!(await storage.has(fileNamePrefixed)))
+                return {
+                    error: { status: 500, message: 'Upload to R2 failed.' },
+                    data: null,
+                };
+
+            return {
+                error: null,
+                data: {
+                    path: fileName,
+                    prefix: body.prefix,
+                    width: metadata.width,
+                    height: metadata.height,
+                },
+            };
+        } catch (error) {
+            console.error(error);
+            return {
+                error: {
+                    status: 500,
+                    message: "Unknown error. Couldn't upload image.",
+                },
+                data: null,
+            };
+        }
     }
-});
+);

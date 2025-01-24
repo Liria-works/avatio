@@ -7,10 +7,17 @@ const { data } = await client
     .select('*')
     .eq('slug', route.params.slug.toString())
     .maybeSingle();
+
+onMounted(() => {
+    if (data)
+        useOGP({
+            title: data.title,
+        });
+});
 </script>
 
 <template>
-    <LayoutArticle
+    <UiArticle
         v-if="data"
         :title="data.title"
         :created-at="data.created_at"
@@ -20,11 +27,11 @@ const { data } = await client
 
     <div v-else class="flex flex-col items-center gap-10 pt-10">
         <h2
-            class="flex text-9xl font-extrabold font-['Montserrat'] text-neutral-500 dark:text-neutral-400"
+            class="flex text-9xl font-extrabold font-['Montserrat'] text-zinc-500 dark:text-zinc-400"
         >
             404
         </h2>
-        <div class="text-xl font-bold text-neutral-500 dark:text-neutral-400">
+        <div class="text-xl font-bold text-zinc-500 dark:text-zinc-400">
             ページが見つかりませんでした。
         </div>
     </div>

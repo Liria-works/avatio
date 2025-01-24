@@ -1,72 +1,60 @@
-export const useGetImage = (path: string) => {
-    const runtime = useRuntimeConfig();
-    return `${runtime.public.r2Domain}/${encodeURIComponent(path)}`;
+const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+    });
 };
 
-export const useUploadAvatar = async (file: File) => {
+export const useGetImage = (name: string, options?: { prefix: string }) => {
     const runtime = useRuntimeConfig();
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('res', '512'); // 512x512
-    formData.append('size', '300'); // 300KB
-    formData.append('path', 'avatar');
+    const img = name
+        .split('/')
+        .map((p) => encodeURIComponent(p))
+        .join('/');
 
+    return `${runtime.public.r2.domain}${options?.prefix ? `/${options.prefix}` : ''}/${img}`;
+};
+
+export const usePutImage = async (
+    file: File,
+    options: { resolution: number; size: number; prefix?: string }
+) => {
     try {
-        const response: PutImage = await $fetch('/api/image', {
+        const response = await $fetch<
+            ApiResponse<{
+                path: string;
+                prefix: string;
+                width?: number;
+                height?: number;
+            }>
+        >('/api/image', {
             method: 'PUT',
-            headers: {
-                Authorization: runtime.public.token,
+            body: {
+                image: convertFileToBase64(file),
+                resolution: options.resolution,
+                size: options.size,
+                prefix: options.prefix ?? '',
             },
-            body: formData,
         });
-        if (!response.result) {
-            throw new Error();
-        }
-        return response.path;
+        if (!response.data) throw new Error();
+        return {
+            name: response.data.path,
+            prefix: response.data.prefix,
+            width: response.data.width,
+            height: response.data.height,
+        };
     } catch (error) {
         console.error('Failed to upload image:', error);
         return null;
     }
 };
 
-export const usePostImage = async (file: File) => {
-    const runtime = useRuntimeConfig();
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('res', '1920'); // 1920x1920
-    formData.append('size', '1500'); // 1.5MB
-
-    try {
-        const response: PutImage = await $fetch('/api/image', {
-            method: 'PUT',
-            headers: {
-                Authorization: runtime.public.token,
-            },
-            body: formData,
-        });
-        if (!response.result) {
-            throw new Error();
-        }
-        return response.path;
-    } catch (error) {
-        console.error('Failed to upload image:', error);
-        return null;
-    }
-};
-
-export interface PutImage {
-    path: string;
-    result: unknown;
-}
-
-export const useDeleteImage = (path: string) => {
-    const runtimeConfig = useRuntimeConfig();
-    return $fetch(`/api/image?path=${encodeURIComponent(path)}`, {
+export const useDeleteImage = (name: string, options?: { prefix?: string }) => {
+    return $fetch(`/api/image`, {
         method: 'DELETE',
-        headers: {
-            Authorization: runtimeConfig.public.token,
-        },
+        query: { name, prefix: options?.prefix },
     });
 };

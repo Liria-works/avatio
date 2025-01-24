@@ -1,5 +1,61 @@
+import { createClient } from '@supabase/supabase-js';
+const supabase = createClient(
+    import.meta.env.SUPABASE_URL,
+    import.meta.env.SUPABASE_ANON_KEY
+);
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    compatibilityDate: '2024-08-21',
+    devtools: {
+        enabled: true,
+
+        timeline: {
+            enabled: true,
+        },
+    },
+    modules: [
+        'radix-vue/nuxt',
+        '@nuxt/ui',
+        '@nuxtjs/tailwindcss',
+        '@vueuse/nuxt',
+        '@nuxt/image',
+        '@nuxt/fonts',
+        '@nuxtjs/color-mode',
+        '@nuxtjs/supabase',
+        '@nuxt/eslint',
+        '@nuxt/scripts',
+        '@nuxtjs/turnstile',
+        '@nuxtjs/robots',
+        '@nuxtjs/sitemap',
+    ],
+    imports: {
+        dirs: ['types'],
+    },
+    routeRules: {
+        '/': { isr: true },
+        '/setup/edit': { ssr: false },
+        '/faq': { prerender: true },
+        '/terms': { prerender: true },
+        '/privacy-policy': { prerender: true },
+    },
+    nitro: {
+        preset: 'vercel',
+    },
+    runtimeConfig: {
+        public: {
+            r2: { domain: '' },
+        },
+        turnstile: {
+            siteKey: '',
+            secretKey: '',
+        },
+        r2: {
+            endpoint: '',
+            accessKey: '',
+            secretKey: '',
+        },
+    },
     app: {
         head: {
             htmlAttrs: {
@@ -16,7 +72,7 @@ export default defineNuxtConfig({
                 {
                     hid: 'description',
                     name: 'description',
-                    content: 'アバターセットアップ共有サービス',
+                    content: 'あなたのアバター改変を共有しよう',
                 },
                 {
                     hid: 'icon',
@@ -49,66 +105,9 @@ export default defineNuxtConfig({
             ],
         },
     },
-
-    routeRules: {
-        '/': { isr: true },
-        '/faq': { prerender: true },
-        '/terms': { prerender: true },
-        '/privacy-policy': { prerender: true },
-    },
-
-    nitro: {
-        preset: 'vercel',
-    },
-
-    devtools: {
-        enabled: true,
-
-        timeline: {
-            enabled: true,
-        },
-    },
-    modules: [
-        '@nuxt/ui',
-        '@vueuse/nuxt',
-        '@nuxt/image',
-        '@nuxt/fonts',
-        '@nuxtjs/color-mode',
-        '@nuxtjs/supabase',
-        '@nuxt/eslint',
-    ],
-    compatibilityDate: '2024-08-21',
-
-    components: [
-        {
-            path: '~/components',
-        },
-    ],
-
-    supabase: {
-        url: import.meta.env.SUPABASE_URL,
-        key: import.meta.env.SUPABASE_ANON_KEY,
-        redirect: true,
-        redirectOptions: {
-            login: '/login',
-            callback: '/confirm',
-            include: ['/setup/edit'],
-            exclude: [],
-            cookieRedirect: false,
-        },
-    },
-
-    image: {
-        domains: [
-            // "booth.pximg.net", // 何故かたまに読み込まないので一旦off
-            import.meta.env.SUPABASE_URL.replace('https://', ''),
-        ],
-    },
-
     fonts: {
         families: [{ name: 'Murecho', provider: 'google' }],
     },
-
     icon: {
         customCollections: [
             {
@@ -130,15 +129,136 @@ export default defineNuxtConfig({
             includeCustomCollections: true,
         },
     },
-
-    runtimeConfig: {
-        public: {
-            token: '',
-            r2Domain: '',
+    image: {
+        domains: [
+            'booth.pximg.net', // booth
+            import.meta.env.NUXT_PUBLIC_R2_DOMAIN.replace('https://', ''), // R2
+        ],
+        presets: {
+            thumbnail: {
+                modifiers: {
+                    format: 'webp',
+                    sizes: '300px',
+                    quality: 85,
+                    loading: 'lazy',
+                    fit: 'cover',
+                },
+            },
+            avatarThumbnail: {
+                modifiers: {
+                    format: 'webp',
+                    sizes: '80px',
+                    quality: 80,
+                    loading: 'lazy',
+                    fit: 'cover',
+                },
+            },
         },
-        r2Endpoint: '',
-        r2AccessKey: '',
-        r2SecretKey: '',
+    },
+    robots: {
+        allow: ['Twitterbot', 'facebookexternalhit'],
+        blockNonSeoBots: true,
+        blockAiBots: true,
+    },
+    sitemap: {
+        sitemaps: true,
+        exclude: [
+            '/confirm',
+            '/login',
+            '/search',
+            '/setup/edit',
+            '/settings',
+            '/bookmarks',
+        ],
+        urls: async () => {
+            const permament = [
+                {
+                    loc: '/',
+                    images: [
+                        {
+                            loc: '/ogp.png',
+                            changefreq: 'never',
+                            title: 'Avatio',
+                        },
+                    ],
+                },
+                {
+                    loc: '/faq',
+                    images: [
+                        { loc: '/ogp.png', changefreq: 'never', title: 'FAQ' },
+                    ],
+                },
+                {
+                    loc: '/terms',
+                    images: [
+                        {
+                            loc: '/ogp.png',
+                            changefreq: 'never',
+                            title: '利用規約',
+                        },
+                    ],
+                },
+                {
+                    loc: '/privacy-policy',
+                    images: [
+                        {
+                            loc: '/ogp.png',
+                            changefreq: 'never',
+                            title: 'プライバシーポリシー',
+                        },
+                    ],
+                },
+            ];
+
+            const { data: setupsData, error: setupsError } = await supabase
+                .from('setups')
+                .select('id, created_at, name, image')
+                .order('created_at', { ascending: true });
+
+            const setups = setupsError
+                ? []
+                : setupsData.map((setup) => {
+                      const image = setup.image;
+
+                      return {
+                          loc: `/setup/${setup.id}`,
+                          lastmod: setup.created_at,
+                          images: image
+                              ? [{ loc: image, title: setup.name }]
+                              : [],
+                          changefreq: 'never',
+                      };
+                  });
+
+            const { data: usersData, error: usersError } = await supabase
+                .from('users')
+                .select('id');
+
+            const users = usersError
+                ? []
+                : usersData.map((user) => {
+                      return { loc: `/@${user.id}` };
+                  });
+
+            return [...permament, ...setups, ...users];
+        },
+    },
+    supabase: {
+        url: import.meta.env.SUPABASE_URL,
+        key: import.meta.env.SUPABASE_ANON_KEY,
+        serviceKey: import.meta.env.SUPABASE_SERVICE_ROLE_KEY,
+        redirect: true,
+        redirectOptions: {
+            login: '/login',
+            callback: '/confirm',
+            include: ['/setup/edit', '/settings', '/bookmarks'],
+            exclude: [],
+            cookieRedirect: false,
+        },
+        types: './types/database.ts',
+    },
+    turnstile: {
+        siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY,
     },
 });
 

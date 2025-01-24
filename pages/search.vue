@@ -1,185 +1,200 @@
 <script lang="ts" setup>
+interface Query {
+    q?: string;
+    item?: string;
+    tag?: string | string[];
+}
 const route = useRoute();
 const client = await useSBClient();
-// const user = useSupabaseUser();
-const query = ref(route.query);
+const query = ref<Query>(route.query);
 
-const searchWord = ref<string>();
-const resultSetups = ref<Setup[]>([]);
+const loading = ref(false);
+const hasMore = ref(false);
+const searchWord = ref<string>((route.query.q as string) ?? '');
+const resultSetups = ref<SetupClient[]>([]);
 const resultItem = ref<Item | null>(null);
+const page = ref<number>(0);
+const perPage = 20;
 
 const popularAvatars = ref<{ id: number; name: string; thumbnail: string }[]>(
     []
 );
+const { data } = await client.rpc('popular_avatars').limit(24);
+if (data) popularAvatars.value = data;
 
-const Search = async (method: string, query: string[] | number[]) => {
-    if (method === "item") {
-        resultItem.value = await useFetchBooth(query[0] as number);
-    } else {
-        resultItem.value = null;
-    }
+const search = async ({
+    word,
+    items,
+    tags,
+    page,
+}: {
+    word: string;
+    items: number[];
+    tags: string[];
+    page: number;
+}) => {
+    loading.value = true;
 
-    const { data, error } = await client.rpc("search_setups", {
-        method: method,
-        query: query,
-    });
-
-    if (error) console.error(error);
-
-    resultSetups.value = data.map(
-        (i: {
-            id: number;
-            created_at: string;
-            name: string;
-            description: string;
-            image: string | null;
-            author: { id: string; name: string; avatar: string | null };
-            avatar: { id: number; name: string; thumbnail: string };
-        }) => ({
-            id: i.id,
-            created_at: i.created_at,
-            name: i.name,
-            description: i.description,
-            image: i.image,
-            author: {
-                id: i.author.id,
-                name: i.author.name,
-                avatar: i.author.avatar,
-            },
-            avatar: {
-                id: i.avatar.id,
-                name: i.avatar.name,
-                thumbnail: i.avatar.thumbnail,
-            },
+    const { data } = await client
+        .rpc('search_setups', {
+            word: word,
+            items: items,
+            tags: tags,
+            page: page,
+            per_page: perPage,
         })
-    );
+        .returns<{
+            results: (Omit<SetupDB, 'tags'> & { tags: string[] })[];
+            has_more: boolean;
+        }>();
+
+    if (data) {
+        resultSetups.value = [
+            ...resultSetups.value,
+            ...data.results.map((s) => {
+                const setup = { ...s, tags: s.tags.map((t) => ({ tag: t })) };
+                return setupMoldingClient(setup);
+            }),
+        ];
+        hasMore.value = data.has_more;
+    }
+    loading.value = false;
 };
 
-onMounted(async () => {
-    if (!Object.keys(route.query).length) {
-        const { data } = await client.rpc("popular_avatars").limit(20);
-        if (data) {
-            popularAvatars.value = data;
-        } else {
-            popularAvatars.value = [];
-        }
-    }
-});
+const pagenate = async (options?: { initiate?: boolean }) => {
+    if (options?.initiate) page.value = 0;
+    else page.value++;
+
+    await search({
+        word: searchWord.value,
+        items: query.value.item ? [parseInt(query.value.item)] : [],
+        tags: query.value.tag
+            ? Array.isArray(query.value.tag)
+                ? query.value.tag
+                : [query.value.tag]
+            : [],
+        page: page.value,
+    });
+};
 
 // クエリパラメータの変更を監視
 watch(
     () => route.query,
-    async (newQuery) => {
+    async (newQuery: Query) => {
         query.value = newQuery;
-        resultSetups.value = [];
+        searchWord.value = newQuery.q ?? '';
         resultItem.value = null;
+        resultSetups.value = [];
 
-        const tag: string | string[] = newQuery.tag as string | string[];
-        const item = newQuery.item as string;
-        const word = newQuery.q as string;
+        if (newQuery.item)
+            resultItem.value = await useFetchBooth(parseInt(newQuery.item));
 
-        if (tag && tag.length) {
-            Search("tag", Array.isArray(tag) ? tag : [tag]);
-        } else if (item) {
-            Search("item", [item]);
-        } else if (word) {
-            Search("word", [word]);
-        } else {
-            searchWord.value = "";
-        }
+        return pagenate({ initiate: true });
     },
     { immediate: true }
 );
 </script>
 
 <template>
-    <div class="w-full flex">
-        <aside v-if="false" class="hidden w-80 sm:flex flex-col gap-1 px-2">
+    <!-- <div class="w-full flex">
+        <div v-if="false" class="hidden w-80 sm:flex flex-col gap-1 px-2">
             <UiTitle label="検索オプション" icon="lucide:menu" />
-        </aside>
-        <div class="flex flex-col w-full gap-5">
-            <div class="w-full flex flex-col gap-3 pt-4">
-                <!-- <UiTitle
+        </div>
+    </div> -->
+    <div class="w-full flex flex-col items-stretch gap-5">
+        <div class="w-full flex flex-col gap-3 pt-4">
+            <!-- <UiTitle
                     label="セットアップ検索"
                     icon="lucide:search"
                     size="lg"
                 /> -->
-                <UInput
-                    v-model="searchWord"
-                    autofocus
-                    icon="i-heroicons-magnifying-glass-20-solid"
-                    size="xl"
-                    :trailing="false"
-                    placeholder="キーワード検索"
-                    :ui="{ rounded: 'rounded-xl' }"
-                    class="mt-1"
-                    @keyup.enter="navigateTo('/search?q=' + searchWord)"
-                />
-            </div>
-
-            <ItemBooth
-                v-if="resultItem"
-                :size="'lg'"
-                :id="resultItem.id"
-                :name="resultItem.name"
-                :thumbnail="resultItem.thumbnail"
-                :shop="resultItem.shop_id.name"
-                :shop-id="resultItem.shop_id.id"
-                :shop-thumbnail="resultItem.shop_id.thumbnail"
-                :shop-verified="resultItem.shop_id.verified"
-                :price="resultItem.price"
-                :nsfw="resultItem.nsfw"
-                :outdated="false"
-                :updated-at="resultItem.updated_at"
+            <UInput
+                v-model="searchWord"
+                icon="lucide:search"
+                size="xl"
+                :trailing="false"
+                placeholder="キーワード検索"
+                aria-label="キーワード検索"
+                :ui="{ rounded: 'rounded-xl' }"
+                class="mt-1"
+                @keyup.enter="navigateTo('/search?q=' + searchWord)"
             />
+        </div>
 
-            <UDivider
-                :ui="{
-                    border: {
-                        base: 'border-neutral-300 dark:border-neutral-600 mx-3 my-5',
-                    },
-                }"
+        <SetupsItem
+            v-if="resultItem"
+            :size="'lg'"
+            no-action
+            :item="resultItem"
+        />
+
+        <UiDivider class="mx-3 my-5" />
+
+        <div
+            v-if="!Object.keys(query).length && popularAvatars.length"
+            class="flex flex-col gap-6"
+        >
+            <UiTitle
+                label="人気のアバターから検索"
+                icon="lucide:user-round"
+                size="lg"
             />
-
-            <div
-                v-if="!Object.keys(query).length && popularAvatars.length"
-                class="flex flex-wrap gap-5 items-center justify-center"
-            >
+            <div class="flex flex-wrap gap-5 items-center justify-center">
                 <NuxtLink
                     v-for="i in popularAvatars"
-                    :key="useId"
+                    :key="useId()"
                     :to="`/search?item=${i.id}`"
-                    :class="[
-                        'w-32 p-4 gap-2 flex flex-col items-center rounded-lg',
-                        'border border-1 border-neutral-500 hover:bg-neutral-600',
-                    ]"
+                    :aria-label="i.name"
+                    class="w-32 p-4 gap-2 flex flex-col items-center rounded-lg border border-zinc-500 hover:bg-zinc-200 hover:dark:bg-zinc-600"
                 >
-                    <NuxtImg :src="i.thumbnail" class="rounded-lg" />
+                    <NuxtImg
+                        v-slot="{ src, isLoaded }"
+                        :src="i.thumbnail"
+                        :alt="i.name"
+                        :width="256"
+                        :height="256"
+                        format="webp"
+                        fit="cover"
+                        loading="lazy"
+                        class="rounded-lg flex-shrink-0 overflow-hidden"
+                    >
+                        <img
+                            v-if="isLoaded"
+                            :src="src"
+                            :width="256"
+                            :height="256"
+                        />
+                        <Icon
+                            v-else
+                            name="svg-spinners:ring-resize"
+                            size="36"
+                            class="text-zinc-600 dark:text-zinc-300"
+                        />
+                    </NuxtImg>
                     <p class="text-sm line-clamp-1 break-all">
                         {{ useAvatarName(i.name) }}
                     </p>
                 </NuxtLink>
             </div>
-
-            <div class="flex flex-col lg:grid lg:grid-cols-1 gap-5">
-                <NuxtLink
-                    v-for="i in resultSetups"
-                    :to="{ name: 'setup-id', params: { id: i.id } }"
-                >
-                    <ItemSetupDetail
-                        :name="i.name"
-                        :description="i.description"
-                        :avatar-name="i.avatar.name"
-                        :avatar-thumbnail="i.avatar.thumbnail"
-                        :author-id="i.author.id"
-                        :author-name="i.author.name"
-                        :author-avatar="i.author.avatar"
-                        :created-at="i.created_at"
-                        :image="i.image"
-                        class="hover:bg-neutral-200 dark:hover:bg-neutral-700"
-                    />
-                </NuxtLink>
-            </div>
         </div>
+
+        <template v-if="Object.keys(query).length">
+            <div
+                v-if="resultSetups.length"
+                class="flex flex-col lg:grid lg:grid-cols-1 gap-2"
+            >
+                <SetupsListBase :setups="resultSetups" />
+                <ButtonLoadMore
+                    v-if="hasMore"
+                    :loading="loading"
+                    class="w-full"
+                    @click="pagenate()"
+                />
+            </div>
+
+            <p v-else class="text-center text-zinc-700 dark:text-zinc-300">
+                セットアップが見つかりませんでした
+            </p>
+        </template>
     </div>
 </template>

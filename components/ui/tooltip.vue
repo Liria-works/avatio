@@ -1,23 +1,41 @@
 <script setup lang="ts">
-const props = withDefaults(
-    defineProps<{
-        text: string;
-    }>(),
-    {
-        text: "",
-    }
-);
+interface Props {
+    text: string;
+    side?: 'top' | 'right' | 'bottom' | 'left';
+    align?: 'start' | 'center' | 'end';
+}
+const props = withDefaults(defineProps<Props>(), {
+    text: '',
+});
 </script>
 
 <template>
-    <UTooltip
-        :text="props.text"
-        :prevent="!props.text.length"
-        :popper="{ placement: 'top' }"
-        :ui="{
-            ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-        }"
-    >
-        <slot />
-    </UTooltip>
+    <TooltipProvider>
+        <TooltipRoot
+            :disabled="
+                !props.text.length &&
+                (!$slots.content || !$slots.content({}).length)
+            "
+            :delay-duration="0"
+        >
+            <TooltipTrigger as-child>
+                <slot />
+            </TooltipTrigger>
+            <TooltipContent
+                :side="props.side"
+                :align="props.align"
+                :class="[
+                    'm-1 px-2.5 pt-1 pb-1.5 rounded-lg leading-none',
+                    'shadow-lg shadow-black/10 ring-1 ring-zinc-300 dark:ring-zinc-700 bg-zinc-100 dark:bg-zinc-900',
+                    'animate-in fade-in data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1',
+                ]"
+            >
+                <slot name="content">
+                    <span class="empty:hidden text-xs whitespace-nowrap">
+                        {{ props.text }}
+                    </span>
+                </slot>
+            </TooltipContent>
+        </TooltipRoot>
+    </TooltipProvider>
 </template>

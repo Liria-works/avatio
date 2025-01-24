@@ -1,26 +1,28 @@
 <script setup lang="ts">
-const error = useError();
+import type { NuxtError } from 'nuxt/app';
 
-clearError();
+const props = defineProps({
+    error: Object as () => NuxtError,
+});
 </script>
 
 <template>
-    <UContainer
-        class="flex flex-col items-center gap-10 pt-10"
-        :ui="{ padding: 'px-8 sm:px-10 lg:px-16' }"
-    >
-        <UiHeader />
-
-        <h1
-            class="flex text-9xl font-extrabold font-['Montserrat'] text-neutral-500 dark:text-neutral-400"
-        >
-            {{ error && error.statusCode }}
-        </h1>
-        <div class="text-xl font-bold text-neutral-500 dark:text-neutral-400">
-            {{ error && error.message }}
+    <NuxtLayout>
+        <div class="flex flex-col gap-4 items-center">
+            <h1
+                class="flex text-9xl font-extrabold font-['Montserrat'] text-zinc-500 dark:text-zinc-400"
+            >
+                {{ props.error?.statusCode || 500 }}
+            </h1>
+            <p class="text-xl font-bold text-zinc-500 dark:text-zinc-400">
+                {{ props.error?.message || 'Unknown Error' }}
+            </p>
+            <ButtonBase
+                to="/"
+                label="ホーム"
+                icon="lucide:arrow-left"
+                variant="flat"
+            />
         </div>
-        <NuxtLink to="/">ホーム</NuxtLink>
-
-        <UiFooter />
-    </UContainer>
+    </NuxtLayout>
 </template>

@@ -1,4 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const user = useSupabaseUser();
+if (user.value) navigateTo('/');
+
+onMounted(() => {
+    useOGP({
+        title: 'ログイン',
+    });
+});
+</script>
 
 <template>
     <div class="w-full flex flex-col items-center gap-5 my-10">

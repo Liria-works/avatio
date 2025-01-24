@@ -1,7 +1,8 @@
 <script setup lang="ts">
 const props = withDefaults(
     defineProps<{
-        size?: "md" | "lg";
+        is?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span';
+        size?: 'md' | 'lg';
         label: string;
         icon?: string;
         trailing?: string;
@@ -9,38 +10,62 @@ const props = withDefaults(
         infomation?: string;
     }>(),
     {
-        size: "md",
-        icon: "lucide:circle",
-        trailing: "",
-        trailingIcon: "lucide:arrow-right",
-        infomation: "",
+        is: 'h1',
+        size: 'md',
+        icon: '',
+        trailing: '',
+        trailingIcon: 'lucide:arrow-right',
+        infomation: '',
     }
 );
 </script>
 
 <template>
-    <div class="flex items-center justify-between w-full">
+    <div class="flex items-center justify-between">
         <div class="items-center gap-1.5 inline-flex">
-            <Icon :name="props.icon" :size="props.size === 'md' ? 20 : 24"
-                class="text-neutral-500 dark:text-neutral-400" />
-            <div :class="props.size === 'md'
-                    ? 'text-black dark:text-white text-[15px] font-medium'
-                    : 'text-black dark:text-white text-xl font-medium'
-                ">
+            <Icon
+                v-if="props.icon.length"
+                :name="props.icon"
+                :size="props.size === 'md' ? 20 : 24"
+                class="flex-shrink-0 text-zinc-500 dark:text-zinc-400"
+            />
+            <component
+                :is="props.is"
+                :class="[
+                    'text-black dark:text-white whitespace-nowrap',
+                    props.size === 'md'
+                        ? 'text-[15px] font-medium'
+                        : 'text-xl font-bold',
+                ]"
+            >
                 {{ props.label }}
-            </div>
-            <UTooltip v-if="props.infomation" :prevent="props.infomation ? false : true" :text="props.infomation"
-                :popper="{ placement: 'top' }" :ui="{
+            </component>
+            <UTooltip
+                v-if="props.infomation"
+                :prevent="props.infomation ? false : true"
+                :text="props.infomation"
+                :popper="{ placement: 'top' }"
+                :ui="{
                     ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                }" class="rounded-full">
-                <Icon name="lucide:info" size="15" class="ml-1 text-neutral-500 dark:text-neutral-400" />
+                }"
+                class="rounded-full"
+            >
+                <Icon
+                    name="lucide:info"
+                    size="15"
+                    class="flex-shrink-0 ml-1 text-zinc-500 dark:text-zinc-400"
+                />
             </UTooltip>
         </div>
         <button v-if="props.trailing" class="items-center gap-1 inline-flex">
-            <div class="text-black dark:text-neutral-400 text-sm">
+            <div class="text-black dark:text-zinc-400 text-sm">
                 {{ props.trailing }}
             </div>
-            <Icon :name="props.trailingIcon" :size="18" class="text-neutral-600 dark:text-neutral-400" />
+            <Icon
+                :name="props.trailingIcon"
+                :size="18"
+                class="text-zinc-600 dark:text-zinc-400"
+            />
         </button>
     </div>
 </template>
