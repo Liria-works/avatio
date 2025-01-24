@@ -318,7 +318,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         ghost-class="opacity-0"
                         class="flex flex-col gap-2"
                     >
-                        <ItemBoothEdit
+                        <EditItem
                             v-for="item in value"
                             v-model:note="item.note"
                             v-model:unsupported="item.unsupported"

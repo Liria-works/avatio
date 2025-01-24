@@ -22,8 +22,10 @@ const booth_url = 'https://booth.pm/ja/items/';
 </script>
 
 <template>
-    <ItemBase class="ring-2 ring-zinc-300 dark:ring-zinc-700">
-        <template #thumbnail>
+    <div
+        class="w-full flex flex-col ring-2 ring-zinc-300 dark:ring-zinc-700 rounded-lg overflow-clip"
+    >
+        <div class="w-full flex items-center">
             <div
                 :class="[
                     'draggable flex-shrink-0 flex items-center gap-1.5',
@@ -52,8 +54,6 @@ const booth_url = 'https://booth.pm/ja/items/';
                     />
                 </NuxtLink>
             </div>
-        </template>
-        <template #main>
             <div class="w-full flex gap-5 pr-4 justify-between">
                 <div
                     :class="`w-fit flex flex-col gap-3 items-start justify-center ${props.size === 'lg' ? 'h-32' : 'h-20'}`"
@@ -132,8 +132,8 @@ const booth_url = 'https://booth.pm/ja/items/';
                     />
                 </div>
             </div>
-        </template>
-        <template #under>
+        </div>
+        <div class="empty:hidden w-full flex">
             <div
                 :class="`w-full flex flex-col items-end gap-2 ${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-1 pb-2'}`"
             >
@@ -171,6 +171,6 @@ const booth_url = 'https://booth.pm/ja/items/';
                     {{ note.length }} / 140
                 </p>
             </div>
-        </template>
-    </ItemBase>
+        </div>
+    </div>
 </template>

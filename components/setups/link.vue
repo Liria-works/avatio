@@ -19,11 +19,12 @@ const dateLocale = date.toLocaleString('ja-JP', {
 </script>
 
 <template>
-    <ItemBase
+    <NuxtLink
+        tabindex="0"
         :to="{ name: 'setup-id', params: { id: props.setup.id } }"
         :class="
             twMerge(
-                'group',
+                'group flex flex-col rounded-lg overflow-clip',
                 'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:shadow-xl shadow-black dark:shadow-white/10',
                 'transition duration-50 ease-in-out',
                 props.class
@@ -31,63 +32,63 @@ const dateLocale = date.toLocaleString('ja-JP', {
         "
         @click="emit('click')"
     >
-        <template #hero>
-            <div v-if="props.setup.images.length" class="relative w-full p-1.5">
-                <NuxtImg
-                    :src="
-                        useGetImage(props.setup.images[0].name, {
-                            prefix: 'setup',
-                        })
-                    "
-                    :alt="props.setup.name"
-                    preset="thumbnail"
-                    :width="props.setup.images[0].width ?? 640"
-                    :height="props.setup.images[0].height ?? 360"
-                    :placeholder="[
-                        props.setup.images[0].width ?? 192,
-                        props.setup.images[0].height ?? 108,
-                        75,
-                        5,
-                    ]"
-                    class="size-full max-h-[420px] rounded-lg object-cover"
-                />
-                <div
-                    :class="[
-                        'absolute inset-1.5 p-2 rounded-lg',
-                        'flex flex-col items-start justify-end gap-1',
-                        'bg-gradient-to-t from-black/60 to-transparent',
-                        'opacity-0 group-hover:opacity-100',
-                        'transition duration-100 ease-in-out',
-                    ]"
+        <div v-if="props.setup.images.length" class="relative w-full p-1.5">
+            <NuxtImg
+                :src="
+                    useGetImage(props.setup.images[0].name, {
+                        prefix: 'setup',
+                    })
+                "
+                :alt="props.setup.name"
+                preset="thumbnail"
+                format="webp"
+                :width="props.setup.images[0].width ?? 640"
+                :height="props.setup.images[0].height ?? 360"
+                :placeholder="[
+                    props.setup.images[0].width ?? 192,
+                    props.setup.images[0].height ?? 108,
+                    75,
+                    5,
+                ]"
+                class="size-full max-h-[420px] rounded-lg object-cover"
+            />
+            <div
+                :class="[
+                    'absolute inset-1.5 p-2 rounded-lg',
+                    'flex flex-col items-start justify-end gap-1',
+                    'bg-gradient-to-t from-black/60 to-transparent',
+                    'opacity-0 group-hover:opacity-100',
+                    'transition duration-100 ease-in-out',
+                ]"
+            >
+                <span
+                    class="text-sm md:text-md font-medium text-white dark:text-white break-all line-clamp-2 leading-1"
                 >
-                    <span
-                        class="text-sm md:text-md font-medium text-white dark:text-white break-all line-clamp-2 leading-1"
-                    >
-                        {{ props.setup.name }}
-                    </span>
+                    {{ props.setup.name }}
+                </span>
 
-                    <div class="flex items-center gap-1">
-                        <Icon
-                            name="lucide:person-standing"
-                            size="15"
-                            class="flex-shrink-0 bg-zinc-300 dark:bg-zinc-300"
-                        />
-                        <span
-                            class="text-xs text-zinc-300 dark:text-zinc-300 break-all line-clamp-1 leading-none"
-                        >
-                            {{
-                                !props.setup.items.avatar[0].outdated
-                                    ? useAvatarName(
-                                          props.setup.items.avatar[0].name
-                                      )
-                                    : '不明なベースアバター'
-                            }}
-                        </span>
-                    </div>
+                <div class="flex items-center gap-1">
+                    <Icon
+                        name="lucide:person-standing"
+                        size="15"
+                        class="flex-shrink-0 bg-zinc-300 dark:bg-zinc-300"
+                    />
+                    <span
+                        class="text-xs text-zinc-300 dark:text-zinc-300 break-all line-clamp-1 leading-none"
+                    >
+                        {{
+                            !props.setup.items.avatar[0].outdated
+                                ? useAvatarName(
+                                      props.setup.items.avatar[0].name
+                                  )
+                                : '不明なベースアバター'
+                        }}
+                    </span>
                 </div>
             </div>
-        </template>
-        <template #thumbnail>
+        </div>
+
+        <div class="w-full flex items-center">
             <NuxtImg
                 v-if="!props.setup.images.length"
                 :src="props.setup.items.avatar[0].thumbnail"
@@ -103,8 +104,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
             >
                 ?
             </div>
-        </template>
-        <template #main>
+
             <div
                 v-if="!props.setup.images.length"
                 class="w-full pb-2 pr-2 pl-3 flex flex-col items-start justify-center gap-1"
@@ -187,6 +187,6 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     />
                 </HovercardUser>
             </div>
-        </template>
-    </ItemBase>
+        </div>
+    </NuxtLink>
 </template>
