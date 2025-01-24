@@ -2,6 +2,7 @@
 import { twMerge } from 'tailwind-merge';
 
 interface Props {
+    id?: string;
     disabled?: boolean;
     tabindex?: number;
     type?: 'button' | 'submit' | 'reset';
@@ -48,6 +49,7 @@ const variantClass = {
 <template>
     <UiTooltip :text="props.tooltip">
         <component
+            :id="props.id"
             :tabindex="props.tabindex"
             :is="props.to ? Link : 'button'"
             :type="props.type"
