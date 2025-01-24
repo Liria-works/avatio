@@ -8,6 +8,7 @@ VRSNSユーザー向けのアバターセットアップ共有サービス。<br
 「セットアップ」を作成し、ユーザーが使用しているアバター・衣装・装飾品・ツールなどをリストできます。
 
 [![Vercel badge][badge-vercel]][vercel]
+[![Cloudflare badge][badge-cloudflare]][cloudflare]
 [![Supabase badge][badge-supabase]][supabase]
 [![Nuxt badge][badge-nuxt]][nuxt]
 [![Tailwind badge][badge-tailwind]][tailwind]
@@ -39,7 +40,7 @@ Avatioはオープンソースプロジェクトです。
 >
 > 1. このリポジトリをフォーク
 > 1. 新規ブランチを作成
-> 1. 以下のインストール : `node@^22.13.0` `bun@^1.1.45`<br>
+> 1. 以下のインストール : `node@^22.13.0` `bun@^1.2.0`<br>
 > Moonrepo Protoをご利用の場合 : `proto install`
 > 1. `bun install`
 > 1. 変更をコミット
@@ -69,10 +70,12 @@ Copylight © 2025 **[Liria][liria]**
 [avatio-privacy]: https://avatio.me/privacy-policy
 [liria]: https://liria.work
 [vercel]: https://vercel.com
+[cloudflare]: https://cloudflare.com
 [supabase]: https://supabase.com
 [nuxt]: https://nuxt.com
 [tailwind]: https://tailwindcss.com
 [badge-vercel]: https://svgl-badge.vercel.app/api/Hosting/Vercel?theme=dark
+[badge-cloudflare]: https://svgl-badge.vercel.app/api/Software/Cloudflare?theme=dark
 [badge-supabase]: https://svgl-badge.vercel.app/api/Database/Supabase?theme=dark
 [badge-nuxt]: https://svgl-badge.vercel.app/api/Framework/Nuxt?theme=dark
 [badge-tailwind]: https://svgl-badge.vercel.app/api/Framework/Tailwind%20CSS?theme=dark
