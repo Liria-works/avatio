@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     compatibilityDate: '2024-08-21',
     devtools: {
         enabled: true,
-
         timeline: {
             enabled: true,
         },
@@ -33,7 +32,7 @@ export default defineNuxtConfig({
         dirs: ['types'],
     },
     routeRules: {
-        '/': { isr: true },
+        '/': { isr: 60 },
         '/setup/edit': { ssr: false },
         '/faq': { prerender: true },
         '/terms': { prerender: true },
@@ -63,6 +62,7 @@ export default defineNuxtConfig({
                 prefix: 'og: https://ogp.me/ns#',
             },
             title: 'Avatio',
+            link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.svg' }],
             meta: [
                 { charset: 'utf-8' },
                 {
@@ -77,7 +77,7 @@ export default defineNuxtConfig({
                 {
                     hid: 'icon',
                     name: 'icon',
-                    content: '/favicon.ico',
+                    content: '/favicon.svg',
                 },
                 {
                     hid: 'og:site_name',
@@ -98,9 +98,29 @@ export default defineNuxtConfig({
                 {
                     hid: 'og:description',
                     property: 'og:description',
-                    content: 'アバターセットアップ共有サービス',
+                    content: 'あなたのアバター改変を共有しよう',
                 },
-                { hid: 'og:image', property: 'og:image', content: '/ogp.png' },
+                {
+                    hid: 'og:image',
+                    property: 'og:image',
+                    content: '/ogp_2.png',
+                },
+                {
+                    hid: 'twitter:title',
+                    property: 'twitter:title',
+                    content: 'Avatio',
+                },
+                {
+                    hid: 'twitter:description',
+                    property: 'twitter:description',
+                    content: 'あなたのアバター改変を共有しよう',
+                },
+                {
+                    hid: 'twitter:image',
+                    property: 'twitter:image',
+                    content: '/ogp_2.png',
+                },
+                { name: 'twitter:site', content: '@liria_work' },
                 { name: 'twitter:card', content: 'summary_large_image' },
             ],
         },

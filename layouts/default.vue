@@ -11,8 +11,8 @@ useHead({
     link: [
         {
             rel: 'icon',
-            type: 'image/png',
-            href: '/favicon.ico',
+            type: 'image/svg+xml',
+            href: '/favicon.svg',
         },
     ],
     meta: [{ name: 'lang', content: 'ja' }],
