@@ -33,7 +33,7 @@ export default defineNuxtConfig({
         dirs: ['types'],
     },
     routeRules: {
-        '/': { isr: true },
+        '/': { isr: 60 },
         '/setup/edit': { ssr: false },
         '/faq': { prerender: true },
         '/terms': { prerender: true },
