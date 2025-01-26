@@ -74,6 +74,11 @@ enable_confirmations = false
 template = "Your code is {{ .Code }}"
 max_frequency = "5s"
 
+[auth.external.twitter]
+enabled = true
+client_id = "env(DEV_TWITTER_CLIENT_ID)"
+secret = "env(DEV_TWITTER_SECRET)"
+
 [auth.mfa]
 # Control how many MFA factors can be enrolled at once per user.
 max_enrolled_factors = 10

@@ -145,8 +145,17 @@ watch(
                     :key="useId()"
                     :to="`/search?item=${i.id}`"
                     :aria-label="i.name"
-                    class="w-32 p-4 gap-2 flex flex-col items-center rounded-lg border border-zinc-500 hover:bg-zinc-200 hover:dark:bg-zinc-600"
+                    class="group relative size-32 rounded-lg overflow-hidden"
                 >
+                    <div
+                        class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-200"
+                    >
+                        <span
+                            class="p-1 text-sm text-center font-semibold text-white"
+                        >
+                            {{ useAvatarName(i.name) }}
+                        </span>
+                    </div>
                     <NuxtImg
                         v-slot="{ src, isLoaded }"
                         :src="i.thumbnail"
@@ -171,9 +180,6 @@ watch(
                             class="text-zinc-600 dark:text-zinc-300"
                         />
                     </NuxtImg>
-                    <p class="text-sm line-clamp-1 break-all">
-                        {{ useAvatarName(i.name) }}
-                    </p>
                 </NuxtLink>
             </div>
         </div>

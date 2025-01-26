@@ -7,21 +7,48 @@ const { data } = await client
     .from('users')
     .select('name, avatar, bio, links')
     .eq('id', user.value.id)
-    .maybeSingle();
+    .maybeSingle<{
+        name: string;
+        avatar: string;
+        bio: string;
+        links: string[];
+    }>();
+console.log(data);
 
 const name = ref<string>(data?.name ?? '');
+const avatar = ref<string>(data?.avatar ?? '');
 const bio = ref<string>(data?.bio ?? '');
 const links = ref<string[]>(data?.links ?? []);
 
+const checkSame = () =>
+    name.value === data?.name &&
+    bio.value === data?.bio &&
+    links.value === data?.links;
+
 const save = async () => {
-    await useSaveUsername(name.value);
-    await useSaveBio(bio.value);
-    await useSaveLink(links.value);
+    if (name.value === '') return useAddToast('ユーザー名を入力してください');
+
+    const { error } = await client
+        .from('users')
+        .update({
+            name: name.value,
+            bio: useLineBreak(bio.value),
+            links: links,
+        })
+        .eq('id', user.value.id);
+
+    if (error) return useAddToast('ユーザー情報の保存に失敗しました');
 };
 
 onMounted(() => {
     useOGP({
         title: 'ユーザー設定',
+    });
+    console.log({
+        name: name.value,
+        avatar: avatar.value,
+        bio: bio.value,
+        links: links.value,
     });
 });
 </script>
@@ -39,7 +66,7 @@ onMounted(() => {
                 size="lg"
                 is="h1"
             />
-            <ButtonBase label="保存" @click="save" />
+            <ButtonBase :disabled="checkSame()" label="保存" @click="save" />
         </div>
         <UserSettingName v-model="name" />
         <UserSettingAvatar :initial="data.avatar" />

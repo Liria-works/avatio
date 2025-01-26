@@ -59,25 +59,27 @@ onMounted(async () => {
         </div>
 
         <template v-if="route.path !== '/login'">
-            <UiTooltip v-if="user" :text="name ?? ''">
-                <NuxtLink
-                    id="user"
-                    tabindex="0"
-                    :to="`/@${user?.id}`"
-                    class="hidden sm:flex select-none rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
-                >
-                    <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
-                </NuxtLink>
-            </UiTooltip>
+            <ClientOnly>
+                <UiTooltip v-if="user" :text="name ?? ''">
+                    <NuxtLink
+                        id="user"
+                        tabindex="0"
+                        :to="`/@${user?.id}`"
+                        class="hidden sm:flex select-none rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
+                    >
+                        <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
+                    </NuxtLink>
+                </UiTooltip>
 
-            <ButtonBase
-                v-else
-                id="login"
-                to="/login"
-                label="ログイン"
-                variant="flat"
-                class="hidden sm:block px-4 py-3 rounded-lg text-zinc-100 bg-zinc-500 dark:bg-zinc-600 hover:bg-zinc-600 hover:dark:bg-zinc-500"
-            />
+                <ButtonBase
+                    v-else
+                    id="login"
+                    to="/login"
+                    label="ログイン"
+                    variant="flat"
+                    class="hidden sm:block px-4 py-3 rounded-lg text-zinc-100 bg-zinc-500 dark:bg-zinc-600 hover:bg-zinc-600 hover:dark:bg-zinc-500"
+                />
+            </ClientOnly>
         </template>
 
         <PopupBase>

@@ -24,7 +24,6 @@ const addLink = async () => {
 
 const removeLink = async (link: string) => {
     links.value = links.value.filter((i) => i !== link);
-    await useSaveLink(links.value);
 };
 
 const pasteFromClipboard = async () =>
