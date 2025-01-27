@@ -47,7 +47,7 @@ const Submit = async () => {
         return useAddToast('"その他"を選択した場合は、理由を入力してください');
 
     const { error } = await client.from('report_user').insert({
-        user_id: props.id,
+        reportee: props.id,
         spam: choices.value.spam.value,
         hate: choices.value.hate.value,
         infringement: choices.value.infringement.value,
