@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
-import type { ApiResponse, SetupClient } from '~/types/types';
+import type { ApiResponse, SetupClient } from '~/types';
 
 export interface RequestQuery {
     id: number;

@@ -1,4 +1,4 @@
-import type { ApiResponse } from '@UI/types/types';
+import type { ApiResponse } from '#types';
 
 export const useDeleteSetup = async (id: number) => {
     const { error } = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {

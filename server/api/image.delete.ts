@@ -1,7 +1,7 @@
 import { serverSupabaseUser } from '#supabase/server';
 import { createStorage } from 'unstorage';
 import s3Driver from 'unstorage/drivers/s3';
-import type { ApiResponse } from '~/types/types';
+import type { ApiResponse } from '~/types';
 
 const runtime = useRuntimeConfig();
 
