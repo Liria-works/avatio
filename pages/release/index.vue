@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const client = await useSBClient();
+const client = await useSupabaseClient();
 
 const { data: articles } = await client
     .from('articles')

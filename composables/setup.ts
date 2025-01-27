@@ -1,5 +1,7 @@
 import type { ApiResponse } from '#types';
 
+const client = await useSupabaseClient();
+
 export const useDeleteSetup = async (id: number) => {
     const { error } = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {
         method: 'DELETE',
@@ -17,8 +19,6 @@ export const useDeleteSetup = async (id: number) => {
 };
 
 export const useAddBookmark = async (id: number) => {
-    const client = await useSBClient();
-
     const { data, error } = await client
         .from('bookmarks')
         .insert({ post: id } as never);
@@ -29,8 +29,6 @@ export const useAddBookmark = async (id: number) => {
 };
 
 export const useRemoveBookmark = async (id: number) => {
-    const client = await useSBClient();
-
     const { data, error } = await client
         .from('bookmarks')
         .delete()
@@ -42,7 +40,6 @@ export const useRemoveBookmark = async (id: number) => {
 };
 
 export const useCheckBookmark = async (id: number) => {
-    const client = await useSBClient();
     const user = useSupabaseUser();
 
     if (!user.value) return false;

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute();
-const client = await useSBClient();
+const client = await useSupabaseClient();
 const user = useSupabaseUser();
 
 const modalReport = ref(false);

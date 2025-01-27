@@ -5,7 +5,7 @@ interface Query {
     tag?: string | string[];
 }
 const route = useRoute();
-const client = await useSBClient();
+const client = await useSupabaseClient();
 const query = ref<Query>(route.query);
 
 const loading = ref(false);

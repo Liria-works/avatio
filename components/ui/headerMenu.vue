@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const route = useRoute();
 const user = useSupabaseUser();
-const client = await useSBClient();
+const client = await useSupabaseClient();
 
 const name = ref<string | null>(null);
 const avatar = ref<string | null>(null);

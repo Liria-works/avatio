@@ -5,7 +5,7 @@ const vis = defineModel<boolean>({
 const emit = defineEmits(['close', 'add']);
 
 const router = useRouter();
-const client = await useSBClient();
+const client = await useSupabaseClient();
 
 const searchWord = ref<string>('');
 const searchItems = ref<

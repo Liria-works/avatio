@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const client = await useSBClient();
+const client = await useSupabaseClient();
 const user = useSupabaseUser();
 if (!user.value) showError('ログインしてください');
 

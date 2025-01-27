@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute();
-const client = await useSBClient();
+const client = await useSupabaseClient();
 
 const { data } = await client
     .from('articles')
