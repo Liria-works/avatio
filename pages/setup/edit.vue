@@ -59,6 +59,14 @@ const PublishSetup = async () => {
     ];
     if (errorCheck()) return;
 
+    if (image.value && image.value.size > 3.5 * 1024 * 1024) {
+        publishing.value = false;
+        return useAddToast(
+            '画像サイズが大きすぎます',
+            '3.5MB以下の画像を選択してください'
+        );
+    }
+
     const response = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {
         method: 'PUT',
         body: {

@@ -84,21 +84,11 @@ export const useOGP = ({
             property: 'og:title',
             content: title,
         },
-        // {
-        //     hid: 'twitter:title',
-        //     name: 'twitter:title',
-        //     content: title,
-        // },
         {
             hid: 'og:image',
             property: 'og:image',
             content: image ?? 'https://avatio.me/ogp.png',
         },
-        // {
-        //     hid: 'twitter:image',
-        //     name: 'twitter:image',
-        //     content: image ?? '/ogp.png',
-        // },
         { name: 'twitter:card', content: twitterCard ?? 'summary' },
         { name: 'twitter:site', content: '@liria_work' },
         { hid: 'og:type', property: 'og:type', content: type ?? 'article' },
@@ -115,11 +105,6 @@ export const useOGP = ({
             property: 'og:description',
             content: description,
         });
-        // meta.push({
-        //     hid: 'twitter:description',
-        //     name: 'twitter:description',
-        //     content: description,
-        // });
     }
 
     return useHead({
