@@ -73,58 +73,21 @@ export const useOGP = ({
     image?: '/ogp.png' | string | null;
     twitterCard?: 'summary' | 'summary_large_image' | null;
 }) => {
-    const meta: object[] = [
-        {
-            hid: 'og:url',
-            property: 'og:url',
-            content: url ?? useBrowserLocation().value.href!,
-        },
-        {
-            hid: 'og:title',
-            property: 'og:title',
-            content: title,
-        },
-        {
-            hid: 'twitter:title',
-            property: 'twitter:title',
-            content: title,
-        },
-        {
-            hid: 'og:image',
-            property: 'og:image',
-            content: image ?? '/ogp.png',
-        },
-        {
-            hid: 'twitter:image',
-            property: 'twitter:image',
-            content: image ?? '/ogp.png',
-        },
-        { name: 'twitter:card', content: twitterCard ?? 'summary' },
-        { name: 'twitter:site', content: '@liria_work' },
-        { hid: 'og:type', property: 'og:type', content: type ?? 'article' },
-    ];
-
-    if (description && description.length) {
-        meta.push({
-            hid: 'description',
-            name: 'description',
-            content: description,
-        });
-        meta.push({
-            hid: 'og:description',
-            property: 'og:description',
-            content: description,
-        });
-        meta.push({
-            hid: 'twitter:description',
-            property: 'twitter:description',
-            content: description,
-        });
-    }
-
-    return useHead({
+    return useSeoMeta({
+        ogType: type ?? 'article',
+        ogUrl: url ?? useBrowserLocation().value.href!,
         title: title,
         titleTemplate: titleTemplate ?? '%s | Avatio',
-        meta: meta,
+        ogTitle: title,
+        twitterTitle: title,
+        description: description,
+        ogDescription: description,
+        twitterDescription: description,
+        ogImage: image ?? '/ogp.png',
+        twitterImage: image ?? '/ogp.png',
+        ogImageAlt: title,
+        twitterImageAlt: title,
+        twitterCard: twitterCard ?? 'summary',
+        twitterSite: 'liria_work',
     });
 };
