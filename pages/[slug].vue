@@ -7,15 +7,18 @@ if (!route.params.slug)
 
 const { data } = await client
     .from('info')
-    .select('slug, created_at, updated_at, title, content, published')
+    .select(
+        'slug, created_at, updated_at, title, content, thumbnail, published'
+    )
     .eq('published', true)
     .eq('slug', route.params.slug.toString())
-    .maybeSingle();
+    .maybeSingle<DocumentData>();
 
 onMounted(() => {
     if (data)
         useOGP({
             title: data.title,
+            image: data.thumbnail,
         });
 });
 </script>

@@ -11,13 +11,16 @@ const { data } = await client
         'slug, created_at, updated_at, title, description, thumbnail, content, published'
     )
     .eq('slug', route.params.slug.toString())
-    .maybeSingle();
-console.log(data);
+    .maybeSingle<DocumentData>();
 
 onMounted(() => {
-    useOGP({
-        title: data.title,
-    });
+    if (data)
+        useOGP({
+            title: data.title,
+            description: data.description,
+            image: data.thumbnail,
+            twitterCard: 'summary_large_image',
+        });
 });
 </script>
 
