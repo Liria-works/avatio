@@ -2,6 +2,11 @@
 const route = useRoute();
 const client = await useSupabaseClient();
 const user = useSupabaseUser();
+const id = route.params.id
+    ? route.params.id.toString()
+    : user.value
+      ? user.value.id
+      : null;
 
 const modalReport = ref(false);
 const modalLogin = ref(false);
@@ -19,7 +24,7 @@ const { data: userData } = await client
         badges(developer, contributor, translator, alpha_tester, shop_owner)
         `
     )
-    .eq('id', route.params.id.toString())
+    .eq('id', id)
     .maybeSingle<User>();
 
 onMounted(async () => {
@@ -27,7 +32,9 @@ onMounted(async () => {
         useOGP({
             title: userData.name,
             description: userData.bio,
-            image: userData.avatar ? useGetImage(userData.avatar) : null,
+            image: userData.avatar
+                ? useGetImage(userData.avatar, { prefix: 'avatar' })
+                : null,
         });
 });
 </script>
