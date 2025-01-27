@@ -10,7 +10,7 @@ onMounted(async () => {
         title: 'Avatio',
         titleTemplate: '%s',
         description: 'あなたのアバター改変を共有しよう',
-        image: '/ogp_2.png',
+        image: 'https://avatio.me/ogp_2.png',
         twitterCard: 'summary_large_image',
     });
 });

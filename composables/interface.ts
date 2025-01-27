@@ -70,24 +70,61 @@ export const useOGP = ({
     title: string;
     titleTemplate?: string | null;
     description?: string | null;
-    image?: '/ogp.png' | string | null;
+    image?: 'https://avatio.me/ogp.png' | string | null;
     twitterCard?: 'summary' | 'summary_large_image' | null;
 }) => {
-    return useSeoMeta({
-        ogType: type ?? 'article',
-        ogUrl: url ?? useBrowserLocation().value.href!,
+    const meta: object[] = [
+        {
+            hid: 'og:url',
+            property: 'og:url',
+            content: url ?? useBrowserLocation().value.href!,
+        },
+        {
+            hid: 'og:title',
+            property: 'og:title',
+            content: title,
+        },
+        // {
+        //     hid: 'twitter:title',
+        //     name: 'twitter:title',
+        //     content: title,
+        // },
+        {
+            hid: 'og:image',
+            property: 'og:image',
+            content: image ?? 'https://avatio.me/ogp.png',
+        },
+        // {
+        //     hid: 'twitter:image',
+        //     name: 'twitter:image',
+        //     content: image ?? '/ogp.png',
+        // },
+        { name: 'twitter:card', content: twitterCard ?? 'summary' },
+        { name: 'twitter:site', content: '@liria_work' },
+        { hid: 'og:type', property: 'og:type', content: type ?? 'article' },
+    ];
+
+    if (description && description.length) {
+        meta.push({
+            hid: 'description',
+            name: 'description',
+            content: description,
+        });
+        meta.push({
+            hid: 'og:description',
+            property: 'og:description',
+            content: description,
+        });
+        // meta.push({
+        //     hid: 'twitter:description',
+        //     name: 'twitter:description',
+        //     content: description,
+        // });
+    }
+
+    return useHead({
         title: title,
         titleTemplate: titleTemplate ?? '%s | Avatio',
-        ogTitle: title,
-        twitterTitle: title,
-        description: description,
-        ogDescription: description,
-        twitterDescription: description,
-        ogImage: `https://avatio.me${image ?? '/ogp.png'}`,
-        twitterImage: `https://avatio.me${image ?? '/ogp.png'}`,
-        ogImageAlt: title,
-        twitterImageAlt: title,
-        twitterCard: twitterCard ?? 'summary',
-        twitterSite: 'liria_work',
+        meta: meta,
     });
 };

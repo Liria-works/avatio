@@ -105,23 +105,23 @@ export default defineNuxtConfig({
                 {
                     hid: 'og:image',
                     property: 'og:image',
-                    content: '/ogp_2.png',
+                    content: 'https://avatio.me/ogp_2.png',
                 },
-                {
-                    hid: 'twitter:title',
-                    property: 'twitter:title',
-                    content: 'Avatio',
-                },
-                {
-                    hid: 'twitter:description',
-                    property: 'twitter:description',
-                    content: 'あなたのアバター改変を共有しよう',
-                },
-                {
-                    hid: 'twitter:image',
-                    property: 'twitter:image',
-                    content: '/ogp_2.png',
-                },
+                // {
+                //     hid: 'twitter:title',
+                //     property: 'twitter:title',
+                //     content: 'Avatio',
+                // },
+                // {
+                //     hid: 'twitter:description',
+                //     property: 'twitter:description',
+                //     content: 'あなたのアバター改変を共有しよう',
+                // },
+                // {
+                //     hid: 'twitter:image',
+                //     property: 'twitter:image',
+                //     content: 'https://avatio.me/ogp_2.png',
+                // },
                 { name: 'twitter:site', content: '@liria_work' },
                 { name: 'twitter:card', content: 'summary_large_image' },
             ],

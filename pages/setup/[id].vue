@@ -55,7 +55,7 @@ onMounted(async () => {
         description: data!.description,
         image: data!.images.length
             ? useGetImage(data!.images[0]!.name, { prefix: 'setup' })
-            : '/ogp.png',
+            : 'https://avatio.me/ogp.png',
         twitterCard: data!.images.length ? 'summary_large_image' : 'summary',
     });
 });
