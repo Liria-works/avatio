@@ -92,12 +92,12 @@ export const useOGP = ({
         {
             hid: 'og:image',
             property: 'og:image',
-            content: image ?? '/ogp_2.png',
+            content: image ?? '/ogp.png',
         },
         {
             hid: 'twitter:image',
             property: 'twitter:image',
-            content: image ?? '/ogp_2.png',
+            content: image ?? '/ogp.png',
         },
         { name: 'twitter:card', content: twitterCard ?? 'summary' },
         { name: 'twitter:site', content: '@liria_work' },

@@ -51,10 +51,10 @@ onMounted(async () => {
     bookmark.value = await useCheckBookmark(id);
 
     useOGP({
-        title: data!.name,
+        title: `${data!.name} @${data!.author.name}`,
         description: data!.description,
         image: data!.images.length
-            ? useGetImage(data!.images[0].name, { prefix: 'setup' })
+            ? useGetImage(data!.images[0]!.name, { prefix: 'setup' })
             : '/ogp.png',
         twitterCard: data!.images.length ? 'summary_large_image' : 'summary',
     });
@@ -172,10 +172,12 @@ onMounted(async () => {
 
                 <UiImage
                     v-if="data.images.length"
-                    :src="useGetImage(data.images[0].name, { prefix: 'setup' })"
+                    :src="
+                        useGetImage(data.images[0]!.name, { prefix: 'setup' })
+                    "
                     :alt="data.name"
-                    :width="data.images[0].width ?? 640"
-                    :height="data.images[0].height ?? 320"
+                    :width="data.images[0]!.width ?? 640"
+                    :height="data.images[0]!.height ?? 320"
                     class="w-full max-h-[70vh]"
                 />
 
