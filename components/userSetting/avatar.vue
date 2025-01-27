@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const image = defineModel<File | null>({
+const image = defineModel<{ oldName: string | null; new: File | null }>({
     default: null,
 });
 // interface Props {
@@ -22,7 +22,7 @@ const { open, onChange } = useFileDialog({
 onChange((files) => {
     if (files?.length) {
         const file = files[0];
-        image.value = file;
+        image.value.new = file;
 
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -31,7 +31,7 @@ onChange((files) => {
         };
         reader.readAsDataURL(file);
     } else {
-        image.value = null;
+        image.value.new = null;
         imagePreview.value = null;
     }
 });
@@ -108,6 +108,27 @@ onChange((files) => {
         >
             <NuxtImg
                 :src="imagePreview.toString()"
+                alt="アバター"
+                width="80"
+                height="80"
+                format="webp"
+                fit="cover"
+                loading="lazy"
+                class="flex-shrink-0"
+            />
+            <button
+                type="button"
+                class="absolute inset-0 hover:bg-black/20 rounded-full"
+                @click="open()"
+            />
+        </div>
+
+        <div
+            v-else-if="image.oldName?.length"
+            class="flex items-center justify-center size-20 rounded-full overflow-hidden flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
+        >
+            <NuxtImg
+                :src="useGetImage(image.oldName, { prefix: 'avatar' })"
                 alt="アバター"
                 width="80"
                 height="80"

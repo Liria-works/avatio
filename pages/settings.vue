@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-const client = await useSBClient();
 const client = await useSupabaseClient();
 const user = useSupabaseUser();
 if (!user.value) showError('ログインしてください');
@@ -14,31 +13,74 @@ const { data } = await client
         bio: string;
         links: string[];
     }>();
-console.log(data);
 
-const name = ref<string>(data?.name ?? '');
-const avatar = ref<string>(data?.avatar ?? '');
-const bio = ref<string>(data?.bio ?? '');
-const links = ref<string[]>(data?.links ?? []);
+const old = ref({
+    name: data?.name ?? '',
+    avatar: data?.avatar ?? null,
+    bio: data?.bio ?? '',
+    links: data?.links ?? [],
+});
+
+const name = ref<string>(old.value.name);
+const avatar = ref<{ oldName: string | null; new: File | null }>({
+    oldName: old.value.avatar,
+    new: null,
+});
+const bio = ref<string>(old.value.bio);
+const links = ref<string[]>(old.value.links);
 
 const checkSame = () =>
-    name.value === data?.name &&
-    bio.value === data?.bio &&
-    links.value === data?.links;
+    name.value === old.value.name &&
+    bio.value === old.value.bio &&
+    avatar.value.new === null &&
+    links.value === old.value.links;
 
 const save = async () => {
     if (name.value === '') return useAddToast('ユーザー名を入力してください');
+
+    let avatarName = old.value.avatar;
+    if (avatar.value.new) {
+        const uploaded = await usePutImage(avatar.value.new, {
+            prefix: 'avatar',
+            resolution: 512,
+            size: 300,
+        });
+
+        if (!uploaded)
+            return useAddToast(
+                'ユーザー情報の保存に失敗しました',
+                'アバターのアップロードでエラーが発生しました'
+            );
+
+        if (old.value.avatar)
+            await useDeleteImage(old.value.avatar, { prefix: 'avatar' });
+
+        avatarName = uploaded.name;
+    }
 
     const { error } = await client
         .from('users')
         .update({
             name: name.value,
-            bio: useLineBreak(bio.value),
-            links: links,
+            bio: bio.value,
+            avatar: avatarName,
+            links: links.value,
         })
         .eq('id', user.value.id);
 
     if (error) return useAddToast('ユーザー情報の保存に失敗しました');
+
+    old.value = {
+        name: name.value,
+        avatar: avatarName,
+        bio: bio.value,
+        links: links.value,
+    };
+    userProfile.value.name = name.value;
+    userProfile.value.avatar = avatarName
+        ? useGetImage(avatarName, { prefix: 'avatar' })
+        : null;
+    return useAddToast('ユーザー情報を保存しました');
 };
 
 onMounted(() => {
@@ -70,7 +112,7 @@ onMounted(() => {
             <ButtonBase :disabled="checkSame()" label="保存" @click="save" />
         </div>
         <UserSettingName v-model="name" />
-        <UserSettingAvatar :initial="data.avatar" />
+        <UserSettingAvatar v-model="avatar" />
         <UserSettingBio v-model="bio" />
         <UserSettingLinks v-model="links" />
 

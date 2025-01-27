@@ -1,3 +1,8 @@
+export const userProfile = ref<{ name: string | null; avatar: string | null }>({
+    name: '',
+    avatar: '',
+});
+
 export const useSignOut = async () => {
     const supabase = await useSupabaseClient();
     await supabase.auth.signOut();

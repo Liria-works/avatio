@@ -10,6 +10,9 @@ const linkInput = ref<string>('');
 const addLink = async () => {
     if (linkInput.value === '') return;
 
+    if (links.value.includes(linkInput.value))
+        return useAddToast('リンクが重複しています');
+
     if (links.value.length >= 8)
         return useAddToast('リンクは最大 8 つまでです');
 

@@ -3,11 +3,8 @@ const route = useRoute();
 const user = useSupabaseUser();
 const client = await useSupabaseClient();
 
-const name = ref<string | null>(null);
-const avatar = ref<string | null>(null);
-
 const userRefresh = async () => {
-    if (!user.value) return (avatar.value = null);
+    if (!user.value) return (userProfile.value.avatar = null);
 
     try {
         const { data } = await client
@@ -16,13 +13,13 @@ const userRefresh = async () => {
             .eq('id', user.value.id)
             .maybeSingle();
 
-        name.value = data?.name ?? null;
-        avatar.value = data?.avatar?.length
+        userProfile.value.name = data?.name ?? null;
+        userProfile.value.avatar = data?.avatar?.length
             ? useGetImage(data.avatar, { prefix: 'avatar' })
             : null;
     } catch {
-        name.value = null;
-        avatar.value = null;
+        userProfile.value.name = null;
+        userProfile.value.avatar = null;
     }
 };
 
@@ -60,14 +57,17 @@ onMounted(async () => {
 
         <template v-if="route.path !== '/login'">
             <ClientOnly>
-                <UiTooltip v-if="user" :text="name ?? ''">
+                <UiTooltip v-if="user" :text="userProfile.name ?? ''">
                     <NuxtLink
                         id="user"
                         tabindex="0"
                         :to="`/@${user?.id}`"
                         class="hidden sm:flex select-none rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
                     >
-                        <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
+                        <UiAvatar
+                            :url="userProfile.avatar ?? ''"
+                            :alt="userProfile.name ?? ''"
+                        />
                     </NuxtLink>
                 </UiTooltip>
 
@@ -102,23 +102,30 @@ onMounted(async () => {
 
                     <ButtonTheme :label="true" />
 
-                    <ButtonBase
-                        v-if="user"
-                        :to="`/@${user?.id}`"
-                        variant="flat"
-                        class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
-                    >
-                        <UiAvatar :url="avatar ?? ''" :alt="name ?? ''" />
-                        <span>{{ name }}</span>
-                    </ButtonBase>
+                    <template v-if="route.path !== '/login'">
+                        <ClientOnly>
+                            <ButtonBase
+                                v-if="user"
+                                :to="`/@${user?.id}`"
+                                variant="flat"
+                                class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
+                            >
+                                <UiAvatar
+                                    :url="userProfile.avatar ?? ''"
+                                    :alt="userProfile.name ?? ''"
+                                />
+                                <span>{{ userProfile.name }}</span>
+                            </ButtonBase>
 
-                    <ButtonBase
-                        v-else-if="route.path !== '/login'"
-                        to="/login"
-                        label="ログイン"
-                        variant="flat"
-                        class="px-4 py-3 rounded-lg text-zinc-100 bg-zinc-500 dark:bg-zinc-600 hover:bg-zinc-600 hover:dark:bg-zinc-500"
-                    />
+                            <ButtonBase
+                                v-else-if="route.path !== '/login'"
+                                to="/login"
+                                label="ログイン"
+                                variant="flat"
+                                class="px-4 py-3 rounded-lg text-zinc-100 bg-zinc-500 dark:bg-zinc-600 hover:bg-zinc-600 hover:dark:bg-zinc-500"
+                            />
+                        </ClientOnly>
+                    </template>
                 </div>
             </template>
         </PopupBase>
