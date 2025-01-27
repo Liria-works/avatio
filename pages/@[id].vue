@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute();
-const client = await useSupabaseClient();
+const client = useSupabaseClient();
 const user = useSupabaseUser();
 const id = route.params.id
     ? route.params.id.toString()

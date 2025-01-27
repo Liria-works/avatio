@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute();
-const client = await useSupabaseClient();
+const client = useSupabaseClient();
 
 if (!route.params.slug)
     throw showError({ statusCode: 404, message: 'Page Not Found' });

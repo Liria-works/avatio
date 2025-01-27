@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const route = useRoute();
 const user = useSupabaseUser();
-const client = await useSupabaseClient();
+const client = useSupabaseClient();
 
 const userRefresh = async () => {
     if (!user.value) return (userProfile.value.avatar = null);

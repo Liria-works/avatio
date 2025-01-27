@@ -118,7 +118,7 @@ const removeItem = (id: number) => {
 };
 
 const getOwnedAvatars = async () => {
-    const client = await useSupabaseClient();
+    const client = useSupabaseClient();
     const user = useSupabaseUser();
 
     if (!user.value) return null;

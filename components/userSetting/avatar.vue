@@ -9,7 +9,7 @@ const image = defineModel<{ oldName: string | null; new: File | null }>({
 // const avatar = ref<string>(props.initial);
 const imagePreview = ref<string | ArrayBuffer | null>(null);
 
-// const client = await useSupabaseClient();
+// const client = useSupabaseClient();
 // const user = useSupabaseUser();
 
 const loading = ref(false);

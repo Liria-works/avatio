@@ -1,6 +1,6 @@
 import type { ApiResponse } from '#types';
 
-const client = await useSupabaseClient();
+const client = useSupabaseClient();
 
 export const useDeleteSetup = async (id: number) => {
     const { error } = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {

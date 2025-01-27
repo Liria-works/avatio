@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const client = await useSupabaseClient();
+const client = useSupabaseClient();
 
 const { data: releases } = await client
     .from('releases')

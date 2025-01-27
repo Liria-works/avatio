@@ -7,7 +7,7 @@ import {
     TagsInputRoot,
 } from 'radix-vue';
 
-const client = await useSupabaseClient();
+const client = useSupabaseClient();
 
 const tags = defineModel<string[]>({
     default: [],
