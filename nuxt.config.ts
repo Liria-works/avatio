@@ -62,7 +62,6 @@ export default defineNuxtConfig({
                 prefix: 'og: https://ogp.me/ns#',
             },
             title: 'Avatio',
-            link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.svg' }],
             meta: [
                 { charset: 'utf-8' },
                 {
