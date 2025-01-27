@@ -2,7 +2,10 @@
 import sanitizeHtml from 'sanitize-html';
 import { marked } from 'marked';
 
-const props = defineProps<{ data: DocumentData }>();
+const props = defineProps<{
+    data: DocumentData;
+    type?: 'release' | 'info';
+}>();
 
 const main = sanitizeHtml(
     await marked.parse(props.data.content, { breaks: true })
@@ -15,6 +18,34 @@ const updatedAt = new Date(props.data.updated_at);
 <template>
     <article class="w-full my-3 flex flex-col gap-10">
         <div class="markdown flex flex-col gap-4">
+            <div class="flex items-center gap-1">
+                <template v-if="props.type === 'release'">
+                    <ButtonBase
+                        to="/release"
+                        icon="lucide:arrow-left"
+                        label="お知らせ一覧へ"
+                        variant="flat"
+                        class="text-zinc-500 dark:text-zinc-400"
+                    />
+                    <ButtonBase
+                        to="/"
+                        icon="lucide:house"
+                        tooltip="ホーム"
+                        variant="flat"
+                        class="text-zinc-500 dark:text-zinc-400"
+                    />
+                </template>
+                <template v-else>
+                    <ButtonBase
+                        to="/"
+                        icon="lucide:house"
+                        label="ホーム"
+                        variant="flat"
+                        class="text-zinc-500 dark:text-zinc-400"
+                    />
+                </template>
+            </div>
+
             <NuxtImg
                 v-if="props.data.thumbnail && props.data.thumbnail.length"
                 :src="

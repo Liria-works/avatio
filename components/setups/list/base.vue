@@ -8,8 +8,8 @@ interface Porps {
 }
 const props = withDefaults(defineProps<Porps>(), {
     minColumns: 2,
-    maxColumns: 5,
-    ssrColumns: 3,
+    maxColumns: 4,
+    ssrColumns: 2,
 });
 </script>
 

@@ -25,7 +25,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <UiArticle v-if="data" :data="data" />
+    <UiArticle v-if="data" :data="data" type="release" />
 
     <div v-else class="flex flex-col items-center gap-10 pt-10">
         <h2
