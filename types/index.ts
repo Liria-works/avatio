@@ -92,6 +92,17 @@ export interface CategorizedSetupItems {
     other: CategoryAttr;
 }
 
+export interface DocumentData {
+    slug: string;
+    created_at: string;
+    updated_at: string;
+    title: string;
+    description?: string;
+    thumbnail?: string | null;
+    content: string;
+    published: boolean;
+}
+
 export interface ApiResponse<Data> {
     error: ErrorType | null;
     data: Data | null;
