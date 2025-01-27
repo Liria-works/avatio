@@ -4,7 +4,7 @@ const modal_feedback = ref(false);
 
 <template>
     <footer class="self-stretch flex flex-col gap-10">
-        <UiDivider icon="avatio:liria" />
+        <UiDivider icon="avatio:avatio" />
 
         <div
             class="flex flex-wrap gap-x-6 gap-y-2 pb-10 items-center justify-center"

@@ -1,5 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { ApiResponse, SetupClient, SetupDB } from '~/types/types';
+import type { ApiResponse, SetupClient, SetupDB } from '~/types';
 import setupMoldingClient from '~/utils/setupMoldingClient';
 
 interface RequestQuery {

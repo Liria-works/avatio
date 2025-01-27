@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const client = await useSBClient();
+const client = useSupabaseClient();
 const user = useSupabaseUser();
 if (!user.value) showError('ログインしてください');
 
@@ -7,21 +7,91 @@ const { data } = await client
     .from('users')
     .select('name, avatar, bio, links')
     .eq('id', user.value.id)
-    .maybeSingle();
+    .maybeSingle<{
+        name: string;
+        avatar: string;
+        bio: string;
+        links: string[];
+    }>();
 
-const name = ref<string>(data?.name ?? '');
-const bio = ref<string>(data?.bio ?? '');
-const links = ref<string[]>(data?.links ?? []);
+const old = ref({
+    name: data?.name ?? '',
+    avatar: data?.avatar ?? null,
+    bio: data?.bio ?? '',
+    links: data?.links ?? [],
+});
+
+const name = ref<string>(old.value.name);
+const avatar = ref<{ oldName: string | null; new: File | null }>({
+    oldName: old.value.avatar,
+    new: null,
+});
+const bio = ref<string>(old.value.bio);
+const links = ref<string[]>(old.value.links);
+
+const checkSame = () =>
+    name.value === old.value.name &&
+    bio.value === old.value.bio &&
+    avatar.value.new === null &&
+    links.value === old.value.links;
 
 const save = async () => {
-    await useSaveUsername(name.value);
-    await useSaveBio(bio.value);
-    await useSaveLink(links.value);
+    if (name.value === '') return useAddToast('ユーザー名を入力してください');
+
+    let avatarName = old.value.avatar;
+    if (avatar.value.new) {
+        const uploaded = await usePutImage(avatar.value.new, {
+            prefix: 'avatar',
+            resolution: 512,
+            size: 300,
+        });
+
+        if (!uploaded)
+            return useAddToast(
+                'ユーザー情報の保存に失敗しました',
+                'アバターのアップロードでエラーが発生しました'
+            );
+
+        if (old.value.avatar)
+            await useDeleteImage(old.value.avatar, { prefix: 'avatar' });
+
+        avatarName = uploaded.name;
+    }
+
+    const { error } = await client
+        .from('users')
+        .update({
+            name: name.value,
+            bio: bio.value,
+            avatar: avatarName,
+            links: links.value,
+        })
+        .eq('id', user.value.id);
+
+    if (error) return useAddToast('ユーザー情報の保存に失敗しました');
+
+    old.value = {
+        name: name.value,
+        avatar: avatarName,
+        bio: bio.value,
+        links: links.value,
+    };
+    userProfile.value.name = name.value;
+    userProfile.value.avatar = avatarName
+        ? useGetImage(avatarName, { prefix: 'avatar' })
+        : null;
+    return useAddToast('ユーザー情報を保存しました');
 };
 
 onMounted(() => {
     useOGP({
         title: 'ユーザー設定',
+    });
+    console.log({
+        name: name.value,
+        avatar: avatar.value,
+        bio: bio.value,
+        links: links.value,
     });
 });
 </script>
@@ -39,10 +109,10 @@ onMounted(() => {
                 size="lg"
                 is="h1"
             />
-            <ButtonBase label="保存" @click="save" />
+            <ButtonBase :disabled="checkSame()" label="保存" @click="save" />
         </div>
         <UserSettingName v-model="name" />
-        <UserSettingAvatar :initial="data.avatar" />
+        <UserSettingAvatar v-model="avatar" />
         <UserSettingBio v-model="bio" />
         <UserSettingLinks v-model="links" />
 

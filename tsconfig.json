@@ -2,7 +2,7 @@
     // https://nuxt.com/docs/guide/concepts/typescript
     "extends": "./.nuxt/tsconfig.json",
     "compilerOptions": {
-        "paths": { "@UI/*": ["./*"] },
+        "paths": { "#types": ["./types"] },
 
         "lib": ["ESNext", "DOM"],
         "target": "ESNext",

@@ -100,6 +100,7 @@ export const useOGP = ({
             content: image ?? '/ogp.png',
         },
         { name: 'twitter:card', content: twitterCard ?? 'summary' },
+        { name: 'twitter:site', content: '@liria_work' },
         { hid: 'og:type', property: 'og:type', content: type ?? 'article' },
     ];
 

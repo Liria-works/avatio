@@ -2,7 +2,7 @@
 const vis = defineModel<boolean>({
     default: false,
 });
-const client = await useSBClient();
+const client = useSupabaseClient();
 
 const feedback = ref<string>('');
 

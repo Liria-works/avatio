@@ -1,5 +1,10 @@
+export const userProfile = ref<{ name: string | null; avatar: string | null }>({
+    name: '',
+    avatar: '',
+});
+
 export const useSignOut = async () => {
-    const supabase = await useSBClient();
+    const supabase = await useSupabaseClient();
     await supabase.auth.signOut();
     navigateTo('/');
 };
@@ -23,7 +28,7 @@ export const useSignUp = async (
     password: string,
     token: string
 ) => {
-    const supabase = await useSBClient();
+    const supabase = await useSupabaseClient();
 
     const { error } = await supabase.auth.signUp({
         email: email,
@@ -36,7 +41,7 @@ export const useSignUp = async (
 };
 
 export const useLoginWithTwitter = async () => {
-    const supabase = await useSBClient();
+    const supabase = await useSupabaseClient();
 
     const { error } = await supabase.auth.signInWithOAuth({
         provider: 'twitter',
@@ -46,57 +51,4 @@ export const useLoginWithTwitter = async () => {
         navigateTo('/login');
         useAddToast('ログインに失敗しました。');
     }
-};
-
-export const useSaveUsername = async (username: string) => {
-    const client = await useSBClient();
-    const user = useSupabaseUser();
-
-    if (username === '') return useAddToast('ユーザー名を入力してください');
-
-    const { error } = await client
-        .from('users')
-        .update({ name: username } as never)
-        .eq('id', user.value.id);
-
-    if (error) {
-        useAddToast('ユーザー名の変更に失敗しました');
-        throw error;
-    }
-
-    useAddToast('ユーザー名を変更しました');
-};
-
-export const useSaveBio = async (bio: string) => {
-    const client = await useSBClient();
-    const user = useSupabaseUser();
-
-    const { error } = await client
-        .from('users')
-        .update({ bio: useLineBreak(bio) } as never)
-        .eq('id', user.value.id);
-
-    if (error) {
-        useAddToast('bioの変更に失敗しました');
-        throw error;
-    }
-
-    useAddToast('bioを変更しました');
-};
-
-export const useSaveLink = async (links: string[]) => {
-    const client = await useSBClient();
-    const user = useSupabaseUser();
-
-    const { error } = await client
-        .from('users')
-        .update({ links: links } as never)
-        .eq('id', user.value.id);
-
-    if (error) {
-        useAddToast('リンクの変更に失敗しました');
-        throw error;
-    }
-
-    useAddToast('リンクを変更しました');
 };

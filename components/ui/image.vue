@@ -26,8 +26,6 @@ const openImage = ref(false);
         ]"
     >
         <NuxtImg
-            v-slot="{ src: optimized, isLoaded, imgAttrs }"
-            custom
             :src="props.src"
             :alt="props.alt"
             :width="props.width"
@@ -39,23 +37,7 @@ const openImage = ref(false);
                     props.class
                 )
             "
-        >
-            <img
-                v-if="isLoaded"
-                :src="optimized"
-                v-bind="imgAttrs"
-                :width="imgAttrs.width"
-                :height="imgAttrs.height"
-                format="webp"
-            />
-            <USkeleton
-                v-else
-                :style="{
-                    width: `${imgAttrs.width}px`,
-                    height: `${imgAttrs.height}px`,
-                }"
-            />
-        </NuxtImg>
+        />
     </button>
 
     <DialogRoot v-model:open="openImage">

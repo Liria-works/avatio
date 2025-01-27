@@ -6,10 +6,12 @@ const supabase = createClient(
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    future: {
+        compatibilityVersion: 4,
+    },
     compatibilityDate: '2024-08-21',
     devtools: {
         enabled: true,
-
         timeline: {
             enabled: true,
         },
@@ -77,7 +79,7 @@ export default defineNuxtConfig({
                 {
                     hid: 'icon',
                     name: 'icon',
-                    content: '/favicon.ico',
+                    content: '/favicon.svg',
                 },
                 {
                     hid: 'og:site_name',
@@ -98,9 +100,29 @@ export default defineNuxtConfig({
                 {
                     hid: 'og:description',
                     property: 'og:description',
-                    content: 'アバターセットアップ共有サービス',
+                    content: 'あなたのアバター改変を共有しよう',
                 },
-                { hid: 'og:image', property: 'og:image', content: '/ogp.png' },
+                {
+                    hid: 'og:image',
+                    property: 'og:image',
+                    content: '/ogp_2.png',
+                },
+                {
+                    hid: 'twitter:title',
+                    property: 'twitter:title',
+                    content: 'Avatio',
+                },
+                {
+                    hid: 'twitter:description',
+                    property: 'twitter:description',
+                    content: 'あなたのアバター改変を共有しよう',
+                },
+                {
+                    hid: 'twitter:image',
+                    property: 'twitter:image',
+                    content: '/ogp_2.png',
+                },
+                { name: 'twitter:site', content: '@liria_work' },
                 { name: 'twitter:card', content: 'summary_large_image' },
             ],
         },

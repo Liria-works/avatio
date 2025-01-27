@@ -1,5 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { ApiResponse } from '~/types/types';
+import type { ApiResponse } from '~/types';
 import getErrors, { type ErrorType } from '~/utils/getErrors';
 
 export interface RequestBody {

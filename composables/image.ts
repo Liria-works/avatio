@@ -33,13 +33,16 @@ export const usePutImage = async (
         >('/api/image', {
             method: 'PUT',
             body: {
-                image: convertFileToBase64(file),
+                image: await convertFileToBase64(file),
                 resolution: options.resolution,
                 size: options.size,
                 prefix: options.prefix ?? '',
             },
         });
-        if (!response.data) throw new Error();
+        if (!response.data) {
+            console.error(response.error);
+            throw new Error();
+        }
         return {
             name: response.data.path,
             prefix: response.data.prefix,

@@ -64,7 +64,7 @@ Copylight © 2025 **[Liria][liria]**
 
 <!-- links -->
 
-[banner]: /public/ogp.png
+[banner]: /public/ogp_2.png
 [avatio]: https://avatio.me
 [avatio-terms]: https://avatio.me/terms
 [avatio-privacy]: https://avatio.me/privacy-policy

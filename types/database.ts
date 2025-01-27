@@ -34,36 +34,6 @@ export type Database = {
     };
     public: {
         Tables: {
-            articles: {
-                Row: {
-                    category: string | null;
-                    content: string;
-                    created_at: string;
-                    published: boolean;
-                    slug: string;
-                    title: string;
-                    updated_at: string;
-                };
-                Insert: {
-                    category?: string | null;
-                    content: string;
-                    created_at?: string;
-                    published?: boolean;
-                    slug: string;
-                    title: string;
-                    updated_at?: string;
-                };
-                Update: {
-                    category?: string | null;
-                    content?: string;
-                    created_at?: string;
-                    published?: boolean;
-                    slug?: string;
-                    title?: string;
-                    updated_at?: string;
-                };
-                Relationships: [];
-            };
             badges: {
                 Row: {
                     alpha_tester: boolean;
@@ -166,6 +136,39 @@ export type Database = {
                     },
                 ];
             };
+            info: {
+                Row: {
+                    category: string | null;
+                    content: string;
+                    created_at: string;
+                    published: boolean;
+                    slug: string;
+                    thumbnail: string | null;
+                    title: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    category?: string | null;
+                    content: string;
+                    created_at?: string;
+                    published?: boolean;
+                    slug: string;
+                    thumbnail?: string | null;
+                    title: string;
+                    updated_at?: string;
+                };
+                Update: {
+                    category?: string | null;
+                    content?: string;
+                    created_at?: string;
+                    published?: boolean;
+                    slug?: string;
+                    thumbnail?: string | null;
+                    title?: string;
+                    updated_at?: string;
+                };
+                Relationships: [];
+            };
             items: {
                 Row: {
                     category: Database['public']['Enums']['item_category'];
@@ -215,6 +218,39 @@ export type Database = {
                         referencedColumns: ['id'];
                     },
                 ];
+            };
+            releases: {
+                Row: {
+                    content: string;
+                    created_at: string;
+                    description: string;
+                    published: boolean;
+                    slug: string;
+                    thumbnail: string | null;
+                    title: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    content?: string;
+                    created_at?: string;
+                    description?: string;
+                    published?: boolean;
+                    slug: string;
+                    thumbnail?: string | null;
+                    title: string;
+                    updated_at?: string;
+                };
+                Update: {
+                    content?: string;
+                    created_at?: string;
+                    description?: string;
+                    published?: boolean;
+                    slug?: string;
+                    thumbnail?: string | null;
+                    title?: string;
+                    updated_at?: string;
+                };
+                Relationships: [];
             };
             report_setup: {
                 Row: {
@@ -548,23 +584,14 @@ export type Database = {
                     updated_at: string;
                 }[];
             };
-            search_items:
-                | {
-                      Args: {
-                          keyword: string;
-                          exclude_categories: number[];
-                          num: number;
-                      };
-                      Returns: Json;
-                  }
-                | {
-                      Args: {
-                          keyword: string;
-                          exclude_categories: string[];
-                          num: number;
-                      };
-                      Returns: Json;
-                  };
+            search_items: {
+                Args: {
+                    keyword: string;
+                    exclude_categories: string[];
+                    num: number;
+                };
+                Returns: Json;
+            };
             search_setups:
                 | {
                       Args: {

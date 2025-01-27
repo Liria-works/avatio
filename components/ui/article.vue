@@ -2,39 +2,71 @@
 import sanitizeHtml from 'sanitize-html';
 import { marked } from 'marked';
 
-const props = defineProps<{
-    title: string;
-    createdAt: string;
-    updatedAt: string;
-    content: string;
-}>();
+const props = defineProps<{ data: DocumentData }>();
 
-const error = ref<boolean>(false);
+const main = sanitizeHtml(
+    await marked.parse(props.data.content, { breaks: true })
+);
 
-const main = await marked.parse(props.content, { breaks: true });
+const createdAt = new Date(props.data.created_at);
+const updatedAt = new Date(props.data.updated_at);
 </script>
 
 <template>
-    <article v-if="!error" class="w-full my-3 flex flex-col gap-10">
+    <article class="w-full my-3 flex flex-col gap-10">
         <div class="markdown flex flex-col gap-4">
+            <NuxtImg
+                v-if="props.data.thumbnail && props.data.thumbnail.length"
+                :src="
+                    useGetImage(props.data.thumbnail, { prefix: 'permanent' })
+                "
+                class="mb-2 rounded-lg"
+            />
+
             <h1 class="text-4xl font-[900]">
-                {{ props.title }}
+                {{ props.data.title }}
             </h1>
-            <span class="text-zinc-500">
+
+            <span v-if="createdAt < updatedAt" class="text-sm text-zinc-500">
                 {{
-                    new Date(props.createdAt).toLocaleString('ja-JP', {
+                    updatedAt.toLocaleString('ja-JP', {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit',
                         timeZoneName: 'short',
                     })
                 }}
+                に最終更新
             </span>
+            <span v-else class="text-sm text-zinc-500">
+                {{
+                    createdAt.toLocaleString('ja-JP', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        timeZoneName: 'short',
+                    })
+                }}
+                に公開
+            </span>
+
+            <p
+                v-if="props.data.description && props.data.description.length"
+                class="text-zinc-400"
+            >
+                {{ props.data.description }}
+            </p>
         </div>
+
         <!-- eslint-disable vue/no-v-html -->
         <div
-            v-html="sanitizeHtml(main)"
-            class="prose prose-zinc dark:prose-invert max-w-none"
+            v-html="main"
+            :class="[
+                'max-w-none',
+                'prose prose-zinc dark:prose-invert',
+                '[&_p]:prose-blockquote:not-italic [&_p]:prose-blockquote:before:content-[none] [&_p]:prose-blockquote:after:content-[none] [&_p]:prose-blockquote:text-zinc-500 [&_p]:prose-blockquote:dark:text-zinc-400',
+                'prose-img:rounded-md first:prose-img:mt-0 last:prose-img:mb-0',
+            ]"
         ></div>
     </article>
 </template>

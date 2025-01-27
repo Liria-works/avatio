@@ -9,7 +9,8 @@ onMounted(async () => {
         type: 'website',
         title: 'Avatio',
         titleTemplate: '%s',
-        description: 'アバターセットアップ共有サービス',
+        description: 'あなたのアバター改変を共有しよう',
+        image: '/ogp_2.png',
         twitterCard: 'summary_large_image',
     });
 });

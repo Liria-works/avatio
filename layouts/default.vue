@@ -1,7 +1,13 @@
 <script lang="ts" setup>
 const route = useRoute();
-
 const paddingExclude = ['/', '/setup/edit'];
+
+const env = ref<string | undefined>(undefined);
+try {
+    env.value = process?.env?.NODE_ENV;
+} catch {
+    env.value = undefined;
+}
 
 useHead({
     bodyAttrs: {
@@ -11,8 +17,8 @@ useHead({
     link: [
         {
             rel: 'icon',
-            type: 'image/png',
-            href: '/favicon.ico',
+            type: 'image/svg+xml',
+            href: '/favicon.svg',
         },
     ],
     meta: [{ name: 'lang', content: 'ja' }],
@@ -30,6 +36,10 @@ const handleError = (error: any) => {
             class="min-h-screen flex flex-col gap-6 md:gap-12 items-center"
             :ui="{ padding: 'pt-6 px-6 ' }"
         >
+            <UiIsMaintenance
+                v-if="env === 'development'"
+                class="empty:hidden fixed bottom-0 right-0 m-2 opacity-40"
+            />
             <UiHeader />
             <div
                 :class="[

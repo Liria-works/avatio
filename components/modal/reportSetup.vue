@@ -41,7 +41,7 @@ const choices = ref({
 const additional = ref<string>('');
 
 const Submit = async () => {
-    const client = await useSBClient();
+    const client = useSupabaseClient();
 
     if (
         !choices.value.spam.value &&

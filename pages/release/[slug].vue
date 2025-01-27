@@ -1,12 +1,18 @@
 <script setup lang="ts">
 const route = useRoute();
-const client = await useSBClient();
+const client = useSupabaseClient();
+
+if (!route.params.slug)
+    throw showError({ statusCode: 404, message: 'Page Not Found' });
 
 const { data } = await client
-    .from('articles')
-    .select('*')
+    .from('releases')
+    .select(
+        'slug, created_at, updated_at, title, description, thumbnail, content, published'
+    )
     .eq('slug', route.params.slug.toString())
     .maybeSingle();
+console.log(data);
 
 onMounted(() => {
     useOGP({
@@ -16,13 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <UiArticle
-        v-if="data"
-        :title="data.title"
-        :created-at="data.created_at"
-        :updated-at="data.updated_at"
-        :content="data.content"
-    />
+    <UiArticle v-if="data" :data="data" />
 
     <div v-else class="flex flex-col items-center gap-10 pt-10">
         <h2
