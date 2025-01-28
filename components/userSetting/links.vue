@@ -23,6 +23,7 @@ const addLink = async () => {
     }
 
     links.value.push(linkInput.value);
+    linkInput.value = '';
 };
 
 const removeLink = async (link: string) => {

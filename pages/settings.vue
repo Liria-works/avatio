@@ -109,7 +109,7 @@ onMounted(() => {
                 size="lg"
                 is="h1"
             />
-            <ButtonBase :disabled="checkSame()" label="保存" @click="save" />
+            <ButtonBase label="保存" @click="save" />
         </div>
         <UserSettingName v-model="name" />
         <UserSettingAvatar v-model="avatar" />

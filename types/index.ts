@@ -103,6 +103,11 @@ export interface DocumentData {
     published: boolean;
 }
 
+export interface HeaderBadge {
+    label: string;
+    link: string;
+}
+
 export interface ApiResponse<Data> {
     error: ErrorType | null;
     data: Data | null;
