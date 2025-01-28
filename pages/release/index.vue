@@ -6,12 +6,9 @@ const { data: releases } = await client
     .select('slug, created_at, title, description, thumbnail, published')
     .eq('published', true)
     .order('created_at', { ascending: false });
-console.log(releases);
 
-onMounted(() => {
-    useOGP({
-        title: 'お知らせ',
-    });
+useOGP({
+    title: 'お知らせ',
 });
 </script>
 

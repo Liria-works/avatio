@@ -14,13 +14,11 @@ const { data } = await client
     .eq('slug', route.params.slug.toString())
     .maybeSingle<DocumentData>();
 
-onMounted(() => {
-    if (data)
-        useOGP({
-            title: data.title,
-            image: data.thumbnail,
-        });
-});
+if (data)
+    useOGP({
+        title: data.title,
+        image: data.thumbnail,
+    });
 </script>
 
 <template>

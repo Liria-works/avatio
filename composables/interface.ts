@@ -24,18 +24,10 @@ export const useWriteClipboard = (text: string) =>
 
 export const useAvatarName = (text: string) => {
     return text
-        .replace(/オリジナル/g, '')
-        .replace(/3Dモデル/g, '')
-        .replace(/\//g, ' ')
-        .replace(/「/g, ' ')
-        .replace(/」/g, ' ')
-        .replace(/【/g, ' ')
-        .replace(/】/g, ' ')
-        .replace(/『/g, ' ')
-        .replace(/』/g, ' ')
-        .replace(/【/g, ' ')
-        .replace(/】/g, ' ')
-        .replace(/ {2}/g, ' ')
+        .replace(
+            /(オリジナル|3Dモデル|ギミック搭載|アバター|◆|\/|「|」|【|】|『|』){1,}| {2,}/g,
+            ' '
+        )
         .trim();
 };
 

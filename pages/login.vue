@@ -2,10 +2,8 @@
 const user = useSupabaseUser();
 if (user.value) navigateTo('/');
 
-onMounted(() => {
-    useOGP({
-        title: 'ログイン',
-    });
+useOGP({
+    title: 'ログイン',
 });
 </script>
 

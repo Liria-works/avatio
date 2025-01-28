@@ -83,16 +83,8 @@ const save = async () => {
     return useAddToast('ユーザー情報を保存しました');
 };
 
-onMounted(() => {
-    useOGP({
-        title: 'ユーザー設定',
-    });
-    console.log({
-        name: name.value,
-        avatar: avatar.value,
-        bio: bio.value,
-        links: links.value,
-    });
+useOGP({
+    title: 'ユーザー設定',
 });
 </script>
 

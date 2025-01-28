@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-onMounted(async () => {
-    useOGP({
-        title: 'ブックマーク',
-    });
+useOGP({
+    title: 'ブックマーク',
 });
 </script>
 

@@ -122,10 +122,8 @@ onBeforeRouteLeave(
     }
 );
 
-onMounted(async () => {
-    useOGP({
-        title: 'セットアップ作成',
-    });
+useOGP({
+    title: 'セットアップ作成',
 });
 </script>
 

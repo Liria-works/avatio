@@ -27,16 +27,14 @@ const { data: userData } = await client
     .eq('id', id)
     .maybeSingle<User>();
 
-onMounted(async () => {
-    if (userData)
-        useOGP({
-            title: userData.name,
-            description: userData.bio,
-            image: userData.avatar
-                ? useGetImage(userData.avatar, { prefix: 'avatar' })
-                : null,
-        });
-});
+if (userData)
+    useOGP({
+        title: userData.name,
+        description: userData.bio,
+        image: userData.avatar
+            ? useGetImage(userData.avatar, { prefix: 'avatar' })
+            : null,
+    });
 </script>
 
 <template>

@@ -94,10 +94,8 @@ watch(
     { immediate: true }
 );
 
-onMounted(() => {
-    useOGP({
-        title: 'セットアップ検索',
-    });
+useOGP({
+    title: 'セットアップ検索',
 });
 </script>
 

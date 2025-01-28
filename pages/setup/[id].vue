@@ -41,23 +41,17 @@ if (error)
         message: 'セットアップの取得に失敗しました',
     });
 
+useOGP({
+    title: `${data!.name} @${data!.author.name}`,
+    description: data!.description,
+    image: data!.images.length
+        ? useGetImage(data!.images[0]!.name, { prefix: 'setup' })
+        : 'https://avatio.me/ogp.png',
+    twitterCard: data!.images.length ? 'summary_large_image' : 'summary',
+});
+
 onMounted(async () => {
-    if (!id)
-        return showError({
-            statusCode: 404,
-            message: 'IDが無効です',
-        });
-
     bookmark.value = await useCheckBookmark(id);
-
-    useOGP({
-        title: `${data!.name} @${data!.author.name}`,
-        description: data!.description,
-        image: data!.images.length
-            ? useGetImage(data!.images[0]!.name, { prefix: 'setup' })
-            : 'https://avatio.me/ogp.png',
-        twitterCard: data!.images.length ? 'summary_large_image' : 'summary',
-    });
 });
 </script>
 
