@@ -124,12 +124,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                         @click="emit('remove')"
                     />
 
-                    <UCheckbox
-                        v-model="unsupported"
-                        name="unsupported"
-                        :ui="{ label: 'text-xs' }"
-                        label="アバター非対応"
-                    />
+                    <UiCheckbox v-model="unsupported" label="アバター非対応" />
                 </div>
             </div>
         </div>
@@ -152,15 +147,12 @@ const booth_url = 'https://booth.pm/ja/items/';
                         :height="15"
                         class="self-start flex-shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
                     />
-                    <UTextarea
+                    <UiTextarea
                         v-model="note"
                         autoresize
                         placeholder="ノートを追加"
-                        :padded="false"
-                        variant="none"
-                        size="sm"
                         :rows="1"
-                        :ui="{ rounded: 'rounded-none' }"
+                        unstyled
                         class="w-full"
                     />
                 </div>

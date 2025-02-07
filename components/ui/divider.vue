@@ -10,17 +10,40 @@ const props = defineProps<{
 </script>
 
 <template>
-    <UDivider
-        :label="props.label"
-        :icon="props.icon"
-        :ui="{
-            border: {
-                base: twMerge(
-                    'border-zinc-300 dark:border-zinc-700',
+    <div class="flex items-center align-center text-center">
+        <div
+            :class="
+                twMerge(
+                    'w-full flex border border-zinc-200 dark:border-zinc-800',
                     props.borderClass
-                ),
-            },
-        }"
-        :class="props.class"
-    />
+                )
+            "
+        />
+
+        <template v-if="props.label || props.icon || $slots.default">
+            <div
+                class="mx-3 whitespace-nowrap font-medium text-zinc-700 dark:text-zinc-200 flex"
+            >
+                <slot>
+                    <span v-if="props.label" class="text-sm">
+                        {{ props.label }}
+                    </span>
+                    <Icon
+                        v-else-if="props.icon"
+                        :name="props.icon"
+                        class="flex-shrink-0 w-5 h-5"
+                    />
+                </slot>
+            </div>
+
+            <div
+                :class="
+                    twMerge(
+                        'w-full flex border border-zinc-200 dark:border-zinc-800',
+                        props.borderClass
+                    )
+                "
+            />
+        </template>
+    </div>
 </template>

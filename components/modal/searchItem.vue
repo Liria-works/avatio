@@ -54,14 +54,12 @@ watch(categoryFilter, () => {
 <template>
     <ModalBase v-model="vis">
         <template #header>
-            <UInput
+            <UiTextinput
                 v-model="searchWord"
+                unstyled
                 autofocus
                 icon="lucide:search"
-                size="lg"
-                variant="none"
                 :trailing="false"
-                :padded="false"
                 placeholder="アイテム名検索"
                 class="mt-1"
                 @keyup.enter="
@@ -75,7 +73,7 @@ watch(categoryFilter, () => {
                         class="size-5 text-500 dark:text-500"
                     />
                 </template>
-            </UInput>
+            </UiTextinput>
         </template>
 
         <div

@@ -112,14 +112,11 @@ useOGP({
                     icon="lucide:search"
                     size="lg"
                 /> -->
-            <UInput
+            <UiTextinput
                 v-model="searchWord"
                 icon="lucide:search"
-                size="xl"
-                :trailing="false"
                 placeholder="キーワード検索"
                 aria-label="キーワード検索"
-                :ui="{ rounded: 'rounded-xl' }"
                 class="mt-1"
                 @keyup.enter="navigateTo('/search?q=' + searchWord)"
             />
