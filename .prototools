@@ -1,2 +1,2 @@
-bun = "latest"
+bun = "1.2.2"
 node = "~22"
