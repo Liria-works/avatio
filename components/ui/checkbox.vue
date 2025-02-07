@@ -20,7 +20,7 @@ const inputId = useId();
             type="checkbox"
             :class="
                 twMerge(
-                    'form-checkbox size-4 rounded bg-white dark:bg-zinc-800',
+                    'form-checkbox size-4 rounded-sm bg-white dark:bg-zinc-800',
                     'checked:bg-zinc-700 dark:checked:border-transparent',
                     'focus-visible:ring-2 focus-visible:ring-zinc-500 dark:focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 focus-visible:bg-zinc-700',
                     'focus:ring-0 focus:ring-transparent focus:ring-offset-transparent focus:bg-zinc-700'

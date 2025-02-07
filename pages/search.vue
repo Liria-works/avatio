@@ -166,7 +166,7 @@ useOGP({
                         format="webp"
                         fit="cover"
                         loading="lazy"
-                        class="rounded-lg flex-shrink-0 overflow-hidden"
+                        class="rounded-lg shrink-0 overflow-hidden"
                     >
                         <img
                             v-if="isLoaded"

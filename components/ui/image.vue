@@ -21,7 +21,7 @@ const openImage = ref(false);
         :class="[
             'p-1.5 rounded-xl ring-1 ring-zinc-400 dark:ring-zinc-700',
             'hover:ring-2 hover:ring-zinc-500 dark:hover:ring-zinc-600',
-            'focus:ring-4 focus:ring-zinc-600 dark:focus:ring-zinc-500 focus:outline-none',
+            'focus:ring-4 focus:ring-zinc-600 dark:focus:ring-zinc-500 focus:outline-hidden',
             'transition-all ease-in-out duration-100',
         ]"
     >

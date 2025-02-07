@@ -28,7 +28,7 @@ const booth_url = 'https://booth.pm/ja/items/';
         <div class="w-full flex items-center">
             <div
                 :class="[
-                    'draggable flex-shrink-0 flex items-center gap-1.5',
+                    'draggable shrink-0 flex items-center gap-1.5',
                     props.size === 'lg' ? 'p-4' : 'p-1.5 pr-4',
                 ]"
             >
@@ -108,13 +108,13 @@ const booth_url = 'https://booth.pm/ja/items/';
                                 v-if="props.item.shop.verified"
                                 name="lucide:check"
                                 size="16"
-                                class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
+                                class="shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
                             />
                         </NuxtLink>
                     </div>
                 </div>
                 <div
-                    class="flex-shrink-0 w-fit h-full pt-2 gap-4 flex flex-col items-end justify-between"
+                    class="shrink-0 w-fit h-full pt-2 gap-4 flex flex-col items-end justify-between"
                 >
                     <ButtonBase
                         icon="lucide:trash"
@@ -145,7 +145,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                         name="lucide:pen-line"
                         :width="15"
                         :height="15"
-                        class="self-start flex-shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
+                        class="self-start shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
                     />
                     <UiTextarea
                         v-model="note"

@@ -31,7 +31,7 @@ const props = defineProps<{
                     <Icon
                         v-else-if="props.icon"
                         :name="props.icon"
-                        class="flex-shrink-0 w-5 h-5"
+                        class="shrink-0 w-5 h-5"
                     />
                 </slot>
             </div>

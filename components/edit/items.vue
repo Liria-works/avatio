@@ -216,7 +216,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         <Icon
                             name="lucide:person-standing"
                             size="16"
-                            class="flex-shrink-0 bg-zinc-600 dark:bg-zinc-400"
+                            class="shrink-0 bg-zinc-600 dark:bg-zinc-400"
                         />
                         <span class="text-xs leading-none whitespace-nowrap">
                             {{ items.avatar.length }} / 1
@@ -238,7 +238,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         <Icon
                             name="lucide:box"
                             size="16"
-                            class="flex-shrink-0 bg-zinc-600 dark:bg-zinc-400"
+                            class="shrink-0 bg-zinc-600 dark:bg-zinc-400"
                         />
                         <span class="text-xs leading-none whitespace-nowrap">
                             <span>{{

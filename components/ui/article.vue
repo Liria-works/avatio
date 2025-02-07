@@ -95,8 +95,8 @@ const updatedAt = new Date(props.data.updated_at);
             :class="[
                 'max-w-none',
                 'prose prose-zinc dark:prose-invert',
-                '[&_p]:prose-blockquote:not-italic [&_p]:prose-blockquote:before:content-[none] [&_p]:prose-blockquote:after:content-[none] [&_p]:prose-blockquote:text-zinc-500 [&_p]:prose-blockquote:dark:text-zinc-400',
-                'prose-img:rounded-md first:prose-img:mt-0 last:prose-img:mb-0',
+                'prose-blockquote:[&_p]:not-italic prose-blockquote:[&_p]:before:content-[none] prose-blockquote:[&_p]:after:content-[none] prose-blockquote:text-zinc-500 prose-blockquote:dark:text-zinc-400',
+                'prose-img:rounded-md prose-img:first:mt-0 prose-img:last:mb-0',
             ]"
         ></div>
     </article>

@@ -71,7 +71,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     <Icon
                         name="lucide:person-standing"
                         size="15"
-                        class="flex-shrink-0 bg-zinc-300 dark:bg-zinc-300"
+                        class="shrink-0 bg-zinc-300 dark:bg-zinc-300"
                     />
                     <span
                         class="text-xs text-zinc-300 dark:text-zinc-300 break-all line-clamp-1 leading-none"
@@ -95,12 +95,12 @@ const dateLocale = date.toLocaleString('ja-JP', {
                 :alt="props.setup.name"
                 preset="avatarThumbnail"
                 :placeholder="[30, 30, 75, 5]"
-                class="h-14 md:h-20 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0 object-cover"
+                class="h-14 md:h-20 my-1.5 ml-1.5 rounded-lg overflow-clip shrink-0 object-cover"
             />
 
             <div
                 v-else-if="props.setup.items.avatar[0].outdated"
-                class="size-14 my-1.5 ml-1.5 rounded-lg flex flex-shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
+                class="size-14 my-1.5 ml-1.5 rounded-lg flex shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
             >
                 ?
             </div>
@@ -119,7 +119,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     <Icon
                         name="lucide:person-standing"
                         size="15"
-                        class="flex-shrink-0 bg-zinc-500 dark:bg-zinc-400"
+                        class="shrink-0 bg-zinc-500 dark:bg-zinc-400"
                     />
                     <span
                         class="text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"

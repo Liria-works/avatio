@@ -36,7 +36,7 @@ const save = async () => await storage.set('welcomeBanner', true);
             <ButtonBase
                 icon="lucide:x"
                 variant="flat"
-                class="flex-shrink-0 rounded-full p-2"
+                class="shrink-0 rounded-full p-2"
                 @click="
                     visible = false;
                     save();

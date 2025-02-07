@@ -32,7 +32,7 @@ const Submit = async () => {
                 <HovercardFeedback>
                     <Icon
                         name="lucide:info"
-                        class="flex-shrink-0 size-4 text-zinc-400 dark:text-zinc-300"
+                        class="shrink-0 size-4 text-zinc-400 dark:text-zinc-300"
                     />
                 </HovercardFeedback>
             </div>
@@ -46,7 +46,7 @@ const Submit = async () => {
                 />
                 <Icon
                     name="simple-icons:markdown"
-                    class="absolute right-2 bottom-1 size-6 flex-shrink-0 select-none bg-zinc-500"
+                    class="absolute right-2 bottom-1 size-6 shrink-0 select-none bg-zinc-500"
                 />
             </div>
         </div>

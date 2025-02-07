@@ -90,12 +90,12 @@ const pasteFromClipboard = async () =>
                 <Icon
                     name="lucide:grip-vertical"
                     size="18"
-                    class="flex-shrink-0 text-zinc-500 dark:text-zinc-400 cursor-move"
+                    class="shrink-0 text-zinc-500 dark:text-zinc-400 cursor-move"
                 />
                 <Icon
                     :name="getLinkInfo(i).icon"
                     size="18"
-                    class="flex-shrink-0 text-zinc-500 dark:text-zinc-300"
+                    class="shrink-0 text-zinc-500 dark:text-zinc-300"
                 />
                 <span
                     class="grow text-sm break-all line-clamp-1 text-zinc-700 dark:text-zinc-300"

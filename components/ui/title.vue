@@ -26,7 +26,7 @@ const props = withDefaults(
                 v-if="props.icon.length"
                 :name="props.icon"
                 :size="props.size === 'md' ? 20 : 24"
-                class="flex-shrink-0 text-zinc-500 dark:text-zinc-400"
+                class="shrink-0 text-zinc-500 dark:text-zinc-400"
             />
             <component
                 :is="props.is"

@@ -103,7 +103,7 @@ watch(tags.value, () => {
             <TagsInputInput
                 id="tagInput"
                 placeholder="タグを入力"
-                class="text-sm focus:outline-none flex-1 bg-transparent px-1 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                class="text-sm focus:outline-hidden flex-1 bg-transparent px-1 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
                 @input="handle"
             />
         </TagsInputRoot>
@@ -114,7 +114,7 @@ watch(tags.value, () => {
             <Icon
                 v-show="loading"
                 name="svg-spinners:ring-resize"
-                class="m-1.5 flex-shrink-0"
+                class="m-1.5 shrink-0"
             />
             <button
                 v-for="(i, index) in suggestion"

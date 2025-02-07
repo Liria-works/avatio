@@ -90,9 +90,7 @@ watch(categoryFilter, () => {
             v-if="searchWord.length"
             class="w-full max-h-[60vh] flex flex-col gap-5"
         >
-            <div
-                class="p-1 flex-shrink-0 flex items-center gap-1 overflow-y-auto"
-            >
+            <div class="p-1 shrink-0 flex items-center gap-1 overflow-y-auto">
                 <ButtonBase
                     v-for="c in Object.values(itemCategories())"
                     :label="c.label"
