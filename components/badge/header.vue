@@ -15,6 +15,7 @@ try {
         v-if="badge"
         :to="badge.link"
         :label="badge.label"
+        variant="outline"
         class="rounded-full py-2 text-xs"
     />
 </template>

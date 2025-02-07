@@ -192,7 +192,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         !adding ? 'lucide:plus' : 'i-svg-spinners-ring-resize'
                     "
                     label="追加"
-                    class="pr-3 h-[40px]"
+                    class="pr-3"
                     @click="addItemFromURL"
                 />
             </div>
