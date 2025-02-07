@@ -38,9 +38,9 @@ export default defineNuxtConfig({
     routeRules: {
         '/': { isr: 60 },
         '/setup/edit': { ssr: false },
-        '/faq': { prerender: true },
-        '/terms': { prerender: true },
-        '/privacy-policy': { prerender: true },
+        '/faq': { isr: 600 },
+        '/terms': { isr: 600 },
+        '/privacy-policy': { isr: 600 },
     },
     css: ['~/assets/css/main.css'],
     nitro: {
