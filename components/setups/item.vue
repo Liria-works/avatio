@@ -183,10 +183,7 @@ onMounted(async () => {
 
                     <ButtonBase
                         v-if="!props.noAction"
-                        :to="{
-                            name: 'search',
-                            query: { item: props.item.id },
-                        }"
+                        :to="{ name: 'search', query: { item: props.item.id } }"
                         icon="lucide:search"
                         tooltip="このアイテムを含むセットアップを検索"
                         aria-label="このアイテムを含むセットアップを検索"
