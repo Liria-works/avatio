@@ -6,16 +6,9 @@ const supabase = createClient(
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    future: {
-        compatibilityVersion: 4,
-    },
+    future: { compatibilityVersion: 4 },
     compatibilityDate: '2024-08-21',
-    devtools: {
-        enabled: true,
-        timeline: {
-            enabled: true,
-        },
-    },
+    devtools: { enabled: true, timeline: { enabled: true } },
     modules: [
         'radix-vue/nuxt',
         '@nuxt/ui',
@@ -31,39 +24,23 @@ export default defineNuxtConfig({
         '@nuxtjs/robots',
         '@nuxtjs/sitemap',
     ],
-    imports: {
-        dirs: ['types'],
-    },
+    imports: { dirs: ['types'] },
     routeRules: {
         '/': { isr: 60 },
         '/setup/edit': { ssr: false },
-    },
-    nitro: {
-        preset: 'vercel',
         '/faq': { isr: 600 },
         '/terms': { isr: 600 },
         '/privacy-policy': { isr: 600 },
     },
+    nitro: { preset: 'vercel' },
     runtimeConfig: {
-        public: {
-            r2: { domain: '' },
-        },
-        turnstile: {
-            siteKey: '',
-            secretKey: '',
-        },
-        r2: {
-            endpoint: '',
-            accessKey: '',
-            secretKey: '',
-        },
+        public: { r2: { domain: '' } },
+        turnstile: { siteKey: '', secretKey: '' },
+        r2: { endpoint: '', accessKey: '', secretKey: '' },
     },
     app: {
         head: {
-            htmlAttrs: {
-                lang: 'ja',
-                prefix: 'og: https://ogp.me/ns#',
-            },
+            htmlAttrs: { lang: 'ja', prefix: 'og: https://ogp.me/ns#' },
             title: 'Avatio',
             meta: [
                 { charset: 'utf-8' },
@@ -76,11 +53,7 @@ export default defineNuxtConfig({
                     name: 'description',
                     content: 'あなたのアバター改変を共有しよう',
                 },
-                {
-                    hid: 'icon',
-                    name: 'icon',
-                    content: '/favicon.svg',
-                },
+                { hid: 'icon', name: 'icon', content: '/favicon.svg' },
                 {
                     hid: 'og:site_name',
                     property: 'og:site_name',
@@ -92,11 +65,7 @@ export default defineNuxtConfig({
                     property: 'og:url',
                     content: 'https://avatio.me',
                 },
-                {
-                    hid: 'og:title',
-                    property: 'og:title',
-                    content: 'Avatio',
-                },
+                { hid: 'og:title', property: 'og:title', content: 'Avatio' },
                 {
                     hid: 'og:description',
                     property: 'og:description',
@@ -127,16 +96,9 @@ export default defineNuxtConfig({
             ],
         },
     },
-    fonts: {
-        families: [{ name: 'Murecho', provider: 'google' }],
-    },
+    fonts: { families: [{ name: 'Murecho', provider: 'google' }] },
     icon: {
-        customCollections: [
-            {
-                prefix: 'avatio',
-                dir: './public/icons/avatio',
-            },
-        ],
+        customCollections: [{ prefix: 'avatio', dir: './public/icons/avatio' }],
 
         clientBundle: {
             icons: [
@@ -279,9 +241,7 @@ export default defineNuxtConfig({
         },
         types: './types/database.ts',
     },
-    turnstile: {
-        siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY,
-    },
+    turnstile: { siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY },
 });
 
 //
