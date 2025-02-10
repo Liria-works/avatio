@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import sanitizeHtml from 'sanitize-html';
-import { marked } from 'marked';
-
-const props = defineProps<{
+interface Props {
     data: DocumentData;
     type?: 'release' | 'info';
-}>();
+}
+const props = defineProps<Props>();
 
-const main = sanitizeHtml(
-    await marked.parse(props.data.content, { breaks: true })
-);
+const createdAt = new Date(props.data.created_at).toLocaleString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZoneName: 'short',
+});
 
-const createdAt = new Date(props.data.created_at);
-const updatedAt = new Date(props.data.updated_at);
+const updatedAt = new Date(props.data.updated_at).toLocaleString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZoneName: 'short',
+});
 </script>
 
 <template>
@@ -59,25 +64,11 @@ const updatedAt = new Date(props.data.updated_at);
             </h1>
 
             <span v-if="createdAt < updatedAt" class="text-sm text-zinc-500">
-                {{
-                    updatedAt.toLocaleString('ja-JP', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        timeZoneName: 'short',
-                    })
-                }}
+                {{ updatedAt }}
                 に最終更新
             </span>
             <span v-else class="text-sm text-zinc-500">
-                {{
-                    createdAt.toLocaleString('ja-JP', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        timeZoneName: 'short',
-                    })
-                }}
+                {{ createdAt }}
                 に公開
             </span>
 
@@ -91,7 +82,8 @@ const updatedAt = new Date(props.data.updated_at);
 
         <!-- eslint-disable vue/no-v-html -->
         <div
-            v-html="main"
+            v-if="props.data.html && props.data.html.length"
+            v-html="props.data.html"
             :class="[
                 'max-w-none',
                 'prose prose-zinc dark:prose-invert',

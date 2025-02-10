@@ -62,11 +62,7 @@ export interface SetupBase {
 
 export interface SetupDB extends SetupBase {
     tags: { tag: string }[];
-    items: {
-        data: Item;
-        note: string;
-        unsupported: boolean;
-    }[];
+    items: { data: Item; note: string; unsupported: boolean }[];
 }
 
 export interface SetupClient extends SetupBase {
@@ -94,13 +90,14 @@ export interface CategorizedSetupItems {
 
 export interface DocumentData {
     slug: string;
+    published: boolean;
     created_at: string;
     updated_at: string;
     title: string;
     description?: string;
     thumbnail?: string | null;
     content: string;
-    published: boolean;
+    html?: string;
 }
 
 export interface HeaderBadge {
