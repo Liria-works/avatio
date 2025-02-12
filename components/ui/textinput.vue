@@ -4,6 +4,7 @@ import { twMerge } from 'tailwind-merge';
 const model = defineModel<string>({ default: '' });
 
 interface Prop {
+    type?: string;
     unstyled?: boolean;
     icon?: string;
     placeholder?: string;
@@ -43,7 +44,7 @@ const inputId = useId();
         <input
             :id="inputId"
             ref="input"
-            type="text"
+            :type="props.type || 'text'"
             v-model="model"
             :placeholder="props.placeholder"
             :disabled="props.disabled"

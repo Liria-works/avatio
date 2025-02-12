@@ -182,7 +182,7 @@ const GetBoothItem = async (
                 name: item.shop.name,
                 thumbnail: item.shop.thumbnail,
                 verified: item.shop.verified,
-            } as never)
+            })
             .eq('id', item.shop.id)
             .select()
             .maybeSingle();
@@ -199,7 +199,7 @@ const GetBoothItem = async (
                 nsfw: item.nsfw,
                 outdated: false,
                 source: 'booth',
-            } as never)
+            })
             .eq('id', id)
             .select()
             .maybeSingle();

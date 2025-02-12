@@ -18,9 +18,7 @@ export const useDeleteSetup = async (id: number) => {
 
 export const useAddBookmark = async (id: number) => {
     const client = useSupabaseClient();
-    const { data, error } = await client
-        .from('bookmarks')
-        .insert({ post: id } as never);
+    const { data, error } = await client.from('bookmarks').insert({ post: id });
     if (error) throw error;
 
     useToast().add('ブックマークに追加しました。');

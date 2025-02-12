@@ -10,7 +10,7 @@ const Submit = async () => {
 
     const { error } = await client
         .from('feedback')
-        .insert({ contents: feedback.value } as never);
+        .insert({ contents: feedback.value });
 
     if (error) return useToast().add('フィードバックの送信に失敗');
 
