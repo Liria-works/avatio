@@ -37,7 +37,7 @@ export const useSignUp = async (
     });
     if (error) throw error;
 
-    useAddToast('サインアップしました。');
+    useToast().add('サインアップしました。');
 };
 
 export const useLoginWithTwitter = async () => {
@@ -49,6 +49,6 @@ export const useLoginWithTwitter = async () => {
 
     if (error) {
         navigateTo('/login');
-        useAddToast('ログインに失敗しました。');
+        useToast().add('ログインに失敗しました。');
     }
 };

@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { VueDraggable } from 'vue-draggable-plus';
 
-const links = defineModel<string[]>({
-    default: [],
-});
+const links = defineModel<string[]>({ default: [] });
 
 const linkInput = ref<string>('');
 
@@ -11,15 +9,15 @@ const addLink = async () => {
     if (linkInput.value === '') return;
 
     if (links.value.includes(linkInput.value))
-        return useAddToast('リンクが重複しています');
+        return useToast().add('リンクが重複しています');
 
     if (links.value.length >= 8)
-        return useAddToast('リンクは最大 8 つまでです');
+        return useToast().add('リンクは最大 8 つまでです');
 
     try {
         new URL(linkInput.value);
     } catch {
-        return useAddToast('URL が不正です');
+        return useToast().add('URL が不正です');
     }
 
     links.value.push(linkInput.value);

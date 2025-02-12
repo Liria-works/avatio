@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-const vis = defineModel<boolean>({
-    default: false,
-});
+const vis = defineModel<boolean>({ default: false });
 
-const props = defineProps<{
-    id: number;
-}>();
+const props = defineProps<{ id: number }>();
 
 const choices = ref({
     spam: {
@@ -32,11 +28,7 @@ const choices = ref({
             '過度な露出、暴力表現などを含む画像を添付している\nNSFWタグが付いている投稿であっても、過激な画像を添付することは禁止されています',
         value: false,
     },
-    other: {
-        label: 'その他',
-        descreption: 'その他の理由で報告',
-        value: false,
-    },
+    other: { label: 'その他', descreption: 'その他の理由で報告', value: false },
 });
 const additional = ref<string>('');
 
@@ -50,10 +42,12 @@ const Submit = async () => {
         !choices.value.nsfwImage.value &&
         !choices.value.other.value
     )
-        return useAddToast('報告の理由を選択してください');
+        return useToast().add('報告の理由を選択してください');
 
     if (choices.value.other.value && !additional.value.length)
-        return useAddToast('"その他"を選択した場合は、理由を入力してください');
+        return useToast().add(
+            '"その他"を選択した場合は、理由を入力してください'
+        );
 
     const { error } = await client.from('report_setup').insert({
         setup_id: props.id,
@@ -66,13 +60,13 @@ const Submit = async () => {
     });
     if (error) {
         console.error(error);
-        return useAddToast(
+        return useToast().add(
             '報告の送信に失敗しました',
             'もう一度お試しください'
         );
     }
 
-    useAddToast('報告が送信されました', 'ご協力ありがとうございます');
+    useToast().add('報告が送信されました', 'ご協力ありがとうございます');
     vis.value = false;
 };
 </script>
