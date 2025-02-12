@@ -62,7 +62,7 @@ onMounted(async () => {
                         id="user"
                         tabindex="0"
                         :to="`/@${user?.id}`"
-                        class="hidden sm:flex select-none rounded-full items-center outline outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
+                        class="hidden sm:flex select-none rounded-full items-center outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
                     >
                         <UiAvatar
                             :url="userProfile.avatar ?? ''"
