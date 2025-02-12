@@ -51,7 +51,7 @@
         "budoux": "^0.6.4",
         "date-fns": "^4.1.0",
         "marked": "^15.0.7",
-        "radix-vue": "^1.9.13",
+        "reka-ui": "^1.0.0-alpha.9",
         "sanitize-html": "^2.14.0",
         "sharp": "^0.33.5",
         "tailwind-merge": "^3.0.1",
