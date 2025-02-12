@@ -69,7 +69,7 @@ const variantClass = {
                     props.disabled
                         ? 'text-zinc-400 dark:text-zinc-600'
                         : 'hover:bg-zinc-200 dark:hover:bg-zinc-600',
-                    'transition duration-50 ease-in-out',
+                    'transition duration-100 ease-in-out',
                     variantClass[props.variant],
                     props.class
                 )

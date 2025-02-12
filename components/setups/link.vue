@@ -25,7 +25,9 @@ const dateLocale = date.toLocaleString('ja-JP', {
         :class="
             twMerge(
                 'group flex flex-col rounded-lg overflow-clip',
-                'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:shadow-xl shadow-black dark:shadow-white/10',
+                'hover:ring-2 hover:ring-zinc-400',
+                'hover:bg-zinc-100 dark:hover:bg-zinc-800',
+                'hover:shadow-xl shadow-black/10 dark:shadow-white/10',
                 'transition duration-50 ease-in-out',
                 props.class
             )
