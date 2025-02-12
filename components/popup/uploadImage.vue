@@ -24,11 +24,9 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
                     対応形式
                 </p>
                 <div class="flex flex-wrap gap-1 items-center">
-                    <UBadge
-                        v-for="i in types"
-                        :label="i"
-                        :ui="{ rounded: 'rounded-xl' }"
-                    />
+                    <UiBadge v-for="i in types" :key="useId()">
+                        {{ i }}
+                    </UiBadge>
                 </div>
             </div>
             <div class="flex flex-col gap-1.5 text-zinc-600 dark:text-zinc-400">
