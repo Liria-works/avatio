@@ -14,13 +14,7 @@ useHead({
         class: 'bg-zinc-50 dark:bg-zinc-900 text-black dark:text-white font-[Murecho] transition duration-50 delay-0 ease-in-out',
     },
     title: 'Avatio',
-    link: [
-        {
-            rel: 'icon',
-            type: 'image/svg+xml',
-            href: '/favicon.svg',
-        },
-    ],
+    link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
     meta: [{ name: 'lang', content: 'ja' }],
 });
 
@@ -32,9 +26,8 @@ const handleError = (error: any) => {
 
 <template>
     <NuxtErrorBoundary @error="handleError">
-        <UContainer
-            class="min-h-screen flex flex-col gap-6 md:gap-12 items-center"
-            :ui="{ padding: 'pt-6 px-6 ' }"
+        <div
+            class="max-w-7xl min-h-screen mx-auto pt-6 px-6 lg:px-8 flex flex-col gap-6 md:gap-12 items-center"
         >
             <UiIsMaintenance
                 v-if="env === 'development'"
@@ -52,8 +45,6 @@ const handleError = (error: any) => {
                 <slot />
             </div>
             <UiFooter />
-
-            <UNotifications />
-        </UContainer>
+        </div>
     </NuxtErrorBoundary>
 </template>

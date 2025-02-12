@@ -8,9 +8,7 @@ const items = defineModel<{
     cloth: SetupItem[];
     accessory: SetupItem[];
     other: SetupItem[];
-}>({
-    default: { avatar: [], cloth: [], accessory: [], other: [] },
-});
+}>({ default: { avatar: [], cloth: [], accessory: [], other: [] } });
 
 const adding = ref(false);
 const modalSearchItem = ref(false);
@@ -40,7 +38,10 @@ const addItem = async (id: number) => {
     // ユーザーが何回も追加を試さなくてもよくなりそう
 
     if (!data) {
-        useAddToast(getErrors().editSetup.addItemFailed.clientMessage);
+        useToast().add(
+            getErrors().editSetup.addItemFailed.client.title,
+            getErrors().editSetup.addItemFailed.client.description
+        );
         adding.value = false;
         return;
     }
@@ -50,7 +51,10 @@ const addItem = async (id: number) => {
     if (data.category === 'avatar') {
         if (items.value.avatar.length) {
             if (items.value.avatar[0].id === id)
-                useAddToast(getErrors().publishSetup.sameAvatars.clientMessage);
+                useToast().add(
+                    getErrors().publishSetup.sameAvatars.client.title,
+                    getErrors().publishSetup.sameAvatars.client.description
+                );
             else {
                 replaceAvatar.value = d;
                 modalReplaceAvatar.value = true;
@@ -61,21 +65,30 @@ const addItem = async (id: number) => {
         }
     } else if (data.category === 'cloth') {
         if (items.value.cloth.map((i) => i.id).includes(id))
-            useAddToast(getErrors().publishSetup.sameItems.clientMessage);
+            useToast().add(
+                getErrors().publishSetup.sameItems.client.title,
+                getErrors().publishSetup.sameItems.client.description
+            );
         else {
             items.value.cloth.push(d);
             inputUrl.value = '';
         }
     } else if (data.category === 'accessory') {
         if (items.value.accessory.map((i) => i.id).includes(id))
-            useAddToast(getErrors().publishSetup.sameItems.clientMessage);
+            useToast().add(
+                getErrors().publishSetup.sameItems.client.title,
+                getErrors().publishSetup.sameItems.client.description
+            );
         else {
             items.value.accessory.push(d);
             inputUrl.value = '';
         }
     } else {
         if (items.value.other.map((i) => i.id).includes(id))
-            useAddToast(getErrors().publishSetup.sameItems.clientMessage);
+            useToast().add(
+                getErrors().publishSetup.sameItems.client.title,
+                getErrors().publishSetup.sameItems.client.description
+            );
         else {
             items.value.other.push(d);
             inputUrl.value = '';
@@ -87,23 +100,35 @@ const addItem = async (id: number) => {
 
 const addItemFromURL = async () => {
     if (!inputUrl.value)
-        return useAddToast(getErrors().editSetup.emptyUrl.clientMessage);
+        return useToast().add(
+            getErrors().editSetup.emptyUrl.client.title,
+            getErrors().editSetup.emptyUrl.client.description
+        );
 
     try {
         new URL(inputUrl.value);
     } catch {
-        return useAddToast(getErrors().editSetup.invalidUrl.clientMessage);
+        return useToast().add(
+            getErrors().editSetup.invalidUrl.client.title,
+            getErrors().editSetup.invalidUrl.client.description
+        );
     }
 
     const url = new URL(inputUrl.value);
 
     if (url.hostname.split('.').slice(-2).join('.') !== 'booth.pm')
-        return useAddToast(getErrors().editSetup.invalidUrl.clientMessage);
+        return useToast().add(
+            getErrors().editSetup.invalidUrl.client.title,
+            getErrors().editSetup.invalidUrl.client.description
+        );
 
     const id = url.pathname.split('/').slice(-1)[0];
 
     if (!Number.isInteger(Number(id)))
-        return useAddToast(getErrors().editSetup.invalidUrl.clientMessage);
+        return useToast().add(
+            getErrors().editSetup.invalidUrl.client.title,
+            getErrors().editSetup.invalidUrl.client.description
+        );
 
     addItem(Number(id));
 };
@@ -192,7 +217,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         !adding ? 'lucide:plus' : 'i-svg-spinners-ring-resize'
                     "
                     label="追加"
-                    class="pr-3 h-[40px]"
+                    class="pr-3"
                     @click="addItemFromURL"
                 />
             </div>
@@ -201,11 +226,13 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                 <div class="self-end gap-1 flex items-center">
                     <ButtonBase
                         icon="lucide:undo-2"
+                        variant="flat"
                         class="size-9"
                         @click="emit('undo')"
                     />
                     <ButtonBase
                         icon="lucide:redo-2"
+                        variant="flat"
                         class="size-9"
                         @click="emit('redo')"
                     />
@@ -216,7 +243,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         <Icon
                             name="lucide:person-standing"
                             size="16"
-                            class="flex-shrink-0 bg-zinc-600 dark:bg-zinc-400"
+                            class="shrink-0 bg-zinc-600 dark:bg-zinc-400"
                         />
                         <span class="text-xs leading-none whitespace-nowrap">
                             {{ items.avatar.length }} / 1
@@ -238,7 +265,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         <Icon
                             name="lucide:box"
                             size="16"
-                            class="flex-shrink-0 bg-zinc-600 dark:bg-zinc-400"
+                            class="shrink-0 bg-zinc-600 dark:bg-zinc-400"
                         />
                         <span class="text-xs leading-none whitespace-nowrap">
                             <span>{{

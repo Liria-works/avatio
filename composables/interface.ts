@@ -1,8 +1,25 @@
 import { loadDefaultJapaneseParser } from 'budoux';
 
-export const useAddToast = (title: string, description?: string) => {
-    const toast = useToast();
-    toast.add({ title: title, description: description, color: 'sky' });
+export interface Toast {
+    id: string;
+    title: string;
+    description?: string;
+}
+export const toasts = ref<Toast[]>([]);
+
+export const useToast = () => {
+    const add = (title: string, description?: string) => {
+        toasts.value.push({ id: useId(), title, description });
+    };
+    const remove = (id: string) => {
+        toasts.value = toasts.value.filter((toast) => toast.id !== id);
+    };
+
+    const clear = () => {
+        toasts.value = [];
+    };
+
+    return { add, remove, clear };
 };
 
 export const useSentence = (text: string) =>
@@ -71,11 +88,7 @@ export const useOGP = ({
             property: 'og:url',
             content: url ?? useBrowserLocation().value.href!,
         },
-        {
-            hid: 'og:title',
-            property: 'og:title',
-            content: title,
-        },
+        { hid: 'og:title', property: 'og:title', content: title },
         {
             hid: 'og:image',
             property: 'og:image',

@@ -79,7 +79,7 @@ onMounted(async () => {
                 :to="url"
                 target="_blank"
                 :class="[
-                    'flex-shrink-0 pr-4 rounded-lg object-cover select-none overflow-hidden flex items-center',
+                    'shrink-0 pr-4 rounded-lg object-cover select-none overflow-hidden flex items-center',
                     props.size === 'lg' ? 'p-1.5 sm:p-2' : 'p-1.5',
                 ]"
             >
@@ -163,13 +163,13 @@ onMounted(async () => {
                                     v-if="item.shop.verified"
                                     name="lucide:check"
                                     :size="16"
-                                    class="flex-shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
+                                    class="shrink-0 size-3 text-zinc-700 dark:text-zinc-300"
                                 />
                             </NuxtLink>
                         </HovercardShop>
                     </div>
                 </div>
-                <div class="w-fit gap-3 flex flex-shrink-0 items-center">
+                <div class="w-fit gap-3 flex shrink-0 items-center">
                     <UiTooltip
                         v-if="props.item.unsupported"
                         text="ベースアバターに非対応"
@@ -183,10 +183,7 @@ onMounted(async () => {
 
                     <ButtonBase
                         v-if="!props.noAction"
-                        :to="{
-                            name: 'search',
-                            query: { item: props.item.id },
-                        }"
+                        :to="{ name: 'search', query: { item: props.item.id } }"
                         icon="lucide:search"
                         tooltip="このアイテムを含むセットアップを検索"
                         aria-label="このアイテムを含むセットアップを検索"
@@ -202,7 +199,7 @@ onMounted(async () => {
             <Icon
                 name="lucide:pen-line"
                 :size="15"
-                class="flex-shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
+                class="shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
             />
             <p
                 class="text-xs/relaxed text-left break-keep whitespace-break-spaces [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"

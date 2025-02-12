@@ -26,7 +26,7 @@ const slots = useSlots() as Record<string, (() => VNode[]) | undefined>;
                 :class="
                     twMerge(
                         'z-[100] fixed inset-0 place-self-center max-h-[85vh] w-[90vw] max-w-[450px] p-6 flex flex-col gap-5',
-                        'rounded-2xl bg-zinc-100 dark:bg-zinc-900 focus:outline-none border border-zinc-300 dark:border-zinc-700 shadow-xl',
+                        'rounded-2xl bg-zinc-100 dark:bg-zinc-900 focus:outline-hidden border border-zinc-300 dark:border-zinc-700 shadow-xl',
                         'animate-in slide-in-from-bottom-10 fade-in ease-in-out',
                         props.class
                     )
@@ -41,7 +41,7 @@ const slots = useSlots() as Record<string, (() => VNode[]) | undefined>;
                 <slot name="footer" />
 
                 <!-- <DialogClose
-                    class="text-grass11 hover:bg-green4 focus:shadow-green7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+                    class="text-grass11 hover:bg-green4 focus:shadow-green7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-hidden"
                     aria-label="Close"
                 >
                     <Icon name="lucide:x" />

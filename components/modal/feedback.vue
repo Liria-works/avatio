@@ -1,22 +1,20 @@
 <script lang="ts" setup>
-const vis = defineModel<boolean>({
-    default: false,
-});
+const vis = defineModel<boolean>({ default: false });
 const client = useSupabaseClient();
 
 const feedback = ref<string>('');
 
 const Submit = async () => {
     if (!feedback.value.length)
-        return useAddToast('フィードバックを入力してください');
+        return useToast().add('フィードバックを入力してください');
 
     const { error } = await client
         .from('feedback')
         .insert({ contents: feedback.value } as never);
 
-    if (error) return useAddToast('フィードバックの送信に失敗');
+    if (error) return useToast().add('フィードバックの送信に失敗');
 
-    useAddToast('フィードバックを送信しました');
+    useToast().add('フィードバックを送信しました');
     vis.value = false;
 };
 </script>
@@ -32,7 +30,7 @@ const Submit = async () => {
                 <HovercardFeedback>
                     <Icon
                         name="lucide:info"
-                        class="flex-shrink-0 size-4 text-zinc-400 dark:text-zinc-300"
+                        class="shrink-0 size-4 text-zinc-400 dark:text-zinc-300"
                     />
                 </HovercardFeedback>
             </div>
@@ -46,7 +44,7 @@ const Submit = async () => {
                 />
                 <Icon
                     name="simple-icons:markdown"
-                    class="absolute right-2 bottom-1 size-6 flex-shrink-0 select-none bg-zinc-500"
+                    class="absolute right-2 bottom-1 size-6 shrink-0 select-none bg-zinc-500"
                 />
             </div>
         </div>

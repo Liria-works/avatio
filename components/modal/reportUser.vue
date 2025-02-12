@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-const vis = defineModel<boolean>({
-    default: false,
-});
+const vis = defineModel<boolean>({ default: false });
 
-const props = defineProps<{
-    id: string;
-}>();
+const props = defineProps<{ id: string }>();
 
 const choices = ref({
     spam: {
@@ -24,11 +20,7 @@ const choices = ref({
         descreption: '他者の権利を侵している、または権利侵害を助長している。',
         value: false,
     },
-    other: {
-        label: 'その他',
-        descreption: 'その他の理由で報告',
-        value: false,
-    },
+    other: { label: 'その他', descreption: 'その他の理由で報告', value: false },
 });
 const additional = ref<string>('');
 
@@ -41,10 +33,12 @@ const Submit = async () => {
         !choices.value.infringement.value &&
         !choices.value.other.value
     )
-        return useAddToast('報告の理由を選択してください');
+        return useToast().add('報告の理由を選択してください');
 
     if (choices.value.other && !additional.value.length)
-        return useAddToast('"その他"を選択した場合は、理由を入力してください');
+        return useToast().add(
+            '"その他"を選択した場合は、理由を入力してください'
+        );
 
     const { error } = await client.from('report_user').insert({
         reportee: props.id,
@@ -56,13 +50,13 @@ const Submit = async () => {
     });
     if (error) {
         console.error(error);
-        return useAddToast(
+        return useToast().add(
             '報告の送信に失敗しました',
             'もう一度お試しください'
         );
     }
 
-    useAddToast('報告が送信されました', 'ご協力ありがとうございます');
+    useToast().add('報告が送信されました', 'ご協力ありがとうございます');
     vis.value = false;
 };
 </script>

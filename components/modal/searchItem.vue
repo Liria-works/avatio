@@ -54,14 +54,12 @@ watch(categoryFilter, () => {
 <template>
     <ModalBase v-model="vis">
         <template #header>
-            <UInput
+            <UiTextinput
                 v-model="searchWord"
+                unstyled
                 autofocus
                 icon="lucide:search"
-                size="lg"
-                variant="none"
                 :trailing="false"
-                :padded="false"
                 placeholder="アイテム名検索"
                 class="mt-1"
                 @keyup.enter="
@@ -75,7 +73,7 @@ watch(categoryFilter, () => {
                         class="size-5 text-500 dark:text-500"
                     />
                 </template>
-            </UInput>
+            </UiTextinput>
         </template>
 
         <div
@@ -92,9 +90,7 @@ watch(categoryFilter, () => {
             v-if="searchWord.length"
             class="w-full max-h-[60vh] flex flex-col gap-5"
         >
-            <div
-                class="p-1 flex-shrink-0 flex items-center gap-1 overflow-y-auto"
-            >
+            <div class="p-1 shrink-0 flex items-center gap-1 overflow-y-auto">
                 <ButtonBase
                     v-for="c in Object.values(itemCategories())"
                     :label="c.label"

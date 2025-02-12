@@ -23,9 +23,9 @@ const handleLogin = async () => {
 </script>
 
 <template>
-    <UCard>
+    <UiCard>
         <div class="min-w-80 flex flex-col gap-4 items-center">
-            <div class="font-bold text-2xl mb-4">ログイン</div>
+            <div class="font-bold text-2xl my-4">ログイン</div>
 
             <ButtonBase
                 :disabled="!token"
@@ -58,5 +58,5 @@ const handleLogin = async () => {
 
             <NuxtTurnstile v-model="token" />
         </div>
-    </UCard>
+    </UiCard>
 </template>

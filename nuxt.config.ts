@@ -1,4 +1,6 @@
+import tailwindcss from '@tailwindcss/vite';
 import { createClient } from '@supabase/supabase-js';
+
 const supabase = createClient(
     import.meta.env.SUPABASE_URL,
     import.meta.env.SUPABASE_ANON_KEY
@@ -11,9 +13,8 @@ export default defineNuxtConfig({
     devtools: { enabled: true, timeline: { enabled: true } },
     modules: [
         'radix-vue/nuxt',
-        '@nuxt/ui',
-        '@nuxtjs/tailwindcss',
         '@vueuse/nuxt',
+        '@nuxt/icon',
         '@nuxt/image',
         '@nuxt/fonts',
         '@nuxtjs/color-mode',
@@ -32,7 +33,13 @@ export default defineNuxtConfig({
         '/terms': { isr: 600 },
         '/privacy-policy': { isr: 600 },
     },
-    nitro: { preset: 'vercel' },
+    css: ['~/assets/css/main.css'],
+    nitro: {
+        preset: 'vercel',
+    },
+    vite: {
+        plugins: [tailwindcss()],
+    },
     runtimeConfig: {
         public: { r2: { domain: '' } },
         turnstile: { siteKey: '', secretKey: '' },
