@@ -43,12 +43,10 @@ const suggest = useDebounceFn(
         const input = document.getElementById('tagInput') as HTMLInputElement;
 
         if (input?.value.length) {
-            console.log(input.value, tags.value);
             const { data, error } = await client.rpc('search_tags', {
                 keywords: input.value,
                 exclude: tags.value,
             });
-            console.log(data);
 
             if (error) {
                 suggestion.value = [];
