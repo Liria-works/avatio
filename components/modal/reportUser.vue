@@ -5,22 +5,25 @@ const props = defineProps<{ id: string }>();
 
 const choices = ref({
     spam: {
-        label: 'スパム、個人情報、不適切な内容',
-        descreption:
-            'スパム目的のアカウントと予想される、プロフィールなどに自身および他者の個人情報を含んでいる、その他不適切な情報を含んでいる',
+        label: 'スパム',
+        description: 'スパムの投稿を含む',
         value: false,
     },
     hate: {
         label: '悪意のあるユーザー',
-        descreption: 'ヘイト、差別、脅迫など悪意のある内容を投稿している。',
+        description: 'ヘイト、差別、脅迫など悪意のある内容を投稿している。',
         value: false,
     },
     infringement: {
         label: '権利侵害',
-        descreption: '他者の権利を侵している、または権利侵害を助長している。',
+        description: '他者の権利を侵している、または権利侵害を助長している。',
         value: false,
     },
-    other: { label: 'その他', descreption: 'その他の理由で報告', value: false },
+    other: {
+        label: 'その他',
+        description: 'その他の理由で報告',
+        value: false,
+    },
 });
 const additional = ref<string>('');
 
@@ -107,7 +110,7 @@ const Submit = async () => {
                 <span
                     class="text-zinc-900 dark:text-zinc-100 text-sm text-left whitespace-pre-line"
                 >
-                    {{ choice.descreption }}
+                    {{ choice.description }}
                 </span>
             </Toggle>
             <p

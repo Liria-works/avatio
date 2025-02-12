@@ -17,6 +17,13 @@ const description = ref<string>('');
 const tags = ref<string[]>([]);
 const image = ref<File | null>(null);
 
+const itemsFlatten = computed(() => [
+    ...items.value.avatar,
+    ...items.value.cloth,
+    ...items.value.accessory,
+    ...items.value.other,
+]);
+
 const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     const returnError = (message: string) => {
         publishing.value = false;
@@ -27,22 +34,15 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     if (!title.value || !title.value.length)
         return returnError(getErrors().publishSetup.noTitle.client.title);
 
-    const itemsFlatten = [
-        ...items.value.avatar,
-        ...items.value.cloth,
-        ...items.value.accessory,
-        ...items.value.other,
-    ];
-
-    if (!itemsFlatten.filter((i) => i.category === 'avatar').length)
+    if (!itemsFlatten.value.filter((i) => i.category === 'avatar').length)
         return returnError(getErrors().publishSetup.noAvatar.client.title);
-    if (itemsFlatten.filter((i) => i.category === 'avatar').length > 1)
+    if (itemsFlatten.value.filter((i) => i.category === 'avatar').length > 1)
         return returnError(
             getErrors().publishSetup.tooManyAvatars.client.title
         );
-    if (!itemsFlatten.filter((i) => i.category !== 'avatar').length)
+    if (!itemsFlatten.value.filter((i) => i.category !== 'avatar').length)
         return returnError(getErrors().publishSetup.noItems.client.title);
-    if (itemsFlatten.filter((i) => i.category !== 'avatar').length > 32)
+    if (itemsFlatten.value.filter((i) => i.category !== 'avatar').length > 32)
         return returnError(getErrors().publishSetup.tooManyItems.client.title);
 
     return false;
@@ -51,12 +51,6 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
 const PublishSetup = async () => {
     publishing.value = true;
 
-    const itemsFlatten = [
-        ...items.value.avatar,
-        ...items.value.cloth,
-        ...items.value.accessory,
-        ...items.value.other,
-    ];
     if (errorCheck()) return;
 
     if (image.value && image.value.size > 3.5 * 1024 * 1024) {
@@ -73,7 +67,7 @@ const PublishSetup = async () => {
             name: title.value,
             description: description.value,
             tags: tags.value,
-            items: itemsFlatten.map((i) => ({
+            items: itemsFlatten.value.map((i) => ({
                 id: i.id,
                 note: i.note,
                 unsupported: i.unsupported,
@@ -100,18 +94,11 @@ onBeforeRouteLeave(
     (to: unknown, from: unknown, next: (arg0: boolean | undefined) => void) => {
         if (skip_router_hook.value) return next(true);
 
-        const itemsFlatten = [
-            ...items.value.avatar,
-            ...items.value.cloth,
-            ...items.value.accessory,
-            ...items.value.other,
-        ];
-
         if (
             title.value ||
             description.value ||
             tags.value.length ||
-            itemsFlatten.length
+            itemsFlatten.value.length
         ) {
             const answer = window.confirm(
                 '入力された内容が破棄されます。よろしいですか？'
