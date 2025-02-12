@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     compatibilityDate: '2024-08-21',
     devtools: { enabled: true, timeline: { enabled: true } },
     modules: [
-        'radix-vue/nuxt',
+        'reka-ui/nuxt',
         '@vueuse/nuxt',
         '@nuxt/icon',
         '@nuxt/image',
