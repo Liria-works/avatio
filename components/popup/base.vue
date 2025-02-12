@@ -22,7 +22,10 @@ const props = withDefaults(defineProps<Props>(), {
             >
                 <div
                     :class="[
-                        'rounded-lg p-2 gap-2 flex flex-col bg-zinc-100 dark:bg-zinc-900 shadow-lg shadow-black/50 border border-zinc-400 dark:border-zinc-600',
+                        'rounded-lg p-3 gap-2 flex flex-col',
+                        'bg-zinc-50 dark:bg-zinc-900',
+                        'shadow-lg shadow-black/10 dark:shadow-black/50',
+                        'border border-zinc-300 dark:border-zinc-600',
                         'data-[side=top]:mt-2 data-[side=top]:mx-2',
                         'data-[side=bottom]:mb-2 data-[side=bottom]:mx-2',
                         'data-[side=left]:ml-2 data-[side=left]:my-2',
@@ -31,7 +34,7 @@ const props = withDefaults(defineProps<Props>(), {
                 >
                     <slot name="panel" />
                 </div>
-                <PopoverArrow class="fill-zinc-400 dark:fill-zinc-600" />
+                <PopoverArrow class="fill-zinc-300 dark:fill-zinc-600" />
             </PopoverContent>
         </PopoverPortal>
     </PopoverRoot>
