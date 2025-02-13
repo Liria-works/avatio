@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { VueDraggable } from 'vue-draggable-plus';
 
-const links = defineModel<string[]>({
-    default: [],
-});
+const links = defineModel<string[]>({ default: [] });
 
 const linkInput = ref<string>('');
 
@@ -11,15 +9,15 @@ const addLink = async () => {
     if (linkInput.value === '') return;
 
     if (links.value.includes(linkInput.value))
-        return useAddToast('リンクが重複しています');
+        return useToast().add('リンクが重複しています');
 
     if (links.value.length >= 8)
-        return useAddToast('リンクは最大 8 つまでです');
+        return useToast().add('リンクは最大 8 つまでです');
 
     try {
         new URL(linkInput.value);
     } catch {
-        return useAddToast('URL が不正です');
+        return useToast().add('URL が不正です');
     }
 
     links.value.push(linkInput.value);
@@ -90,12 +88,12 @@ const pasteFromClipboard = async () =>
                 <Icon
                     name="lucide:grip-vertical"
                     size="18"
-                    class="flex-shrink-0 text-zinc-500 dark:text-zinc-400 cursor-move"
+                    class="shrink-0 text-zinc-500 dark:text-zinc-400 cursor-move"
                 />
                 <Icon
                     :name="getLinkInfo(i).icon"
                     size="18"
-                    class="flex-shrink-0 text-zinc-500 dark:text-zinc-300"
+                    class="shrink-0 text-zinc-500 dark:text-zinc-300"
                 />
                 <span
                     class="grow text-sm break-all line-clamp-1 text-zinc-700 dark:text-zinc-300"

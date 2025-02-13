@@ -37,7 +37,7 @@ onChange((files) => {
 
         <div
             v-if="loading"
-            class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
+            class="flex items-center justify-center size-20 rounded-full shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
         >
             <Icon
                 name="svg-spinners:ring-resize"
@@ -48,7 +48,7 @@ onChange((files) => {
 
         <div
             v-else-if="imagePreview"
-            class="flex items-center justify-center size-20 rounded-full overflow-hidden flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
+            class="flex items-center justify-center size-20 rounded-full overflow-hidden shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
         >
             <NuxtImg
                 :src="imagePreview.toString()"
@@ -58,7 +58,7 @@ onChange((files) => {
                 format="webp"
                 fit="cover"
                 loading="lazy"
-                class="flex-shrink-0"
+                class="shrink-0"
             />
             <button
                 type="button"
@@ -69,7 +69,7 @@ onChange((files) => {
 
         <div
             v-else-if="image.oldName?.length"
-            class="flex items-center justify-center size-20 rounded-full overflow-hidden flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
+            class="flex items-center justify-center size-20 rounded-full overflow-hidden shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
         >
             <NuxtImg
                 :src="useGetImage(image.oldName, { prefix: 'avatar' })"
@@ -79,7 +79,7 @@ onChange((files) => {
                 format="webp"
                 fit="cover"
                 loading="lazy"
-                class="flex-shrink-0"
+                class="shrink-0"
             />
             <button
                 type="button"
@@ -90,7 +90,7 @@ onChange((files) => {
 
         <div
             v-else
-            class="flex items-center justify-center size-20 rounded-full flex-shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
+            class="flex items-center justify-center size-20 rounded-full shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
         >
             <Icon
                 name="lucide:user-round"

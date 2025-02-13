@@ -1,42 +1,34 @@
 <script lang="ts" setup>
-const vis = defineModel<boolean>({
-    default: false,
-});
+const vis = defineModel<boolean>({ default: false });
 
-const props = defineProps<{
-    id: number;
-}>();
+const props = defineProps<{ id: number }>();
 
 const choices = ref({
     spam: {
         label: 'スパム、個人情報、不適切な内容',
-        descreption:
+        description:
             '荒らし目的で類似の投稿を複数回行っている、投稿内容に自身および他者の個人情報を含んでいる、その他不適切な内容を含んでいる',
         value: false,
     },
     hate: {
         label: '差別、暴力、誹謗中傷',
-        descreption:
+        description:
             '人種、性別、宗教、性的指向、障害、疾病、年齢、その他の属性に基づく差別的な表現、暴力的な表現などが含まれている',
         value: false,
     },
     infringement: {
         label: '他者への権利侵害',
-        descreption:
+        description:
             '自身および第三者の著作権、商標権、肖像権、またはその他の権利侵害が予想される',
         value: false,
     },
     nsfwImage: {
         label: '過激な画像',
-        descreption:
+        description:
             '過度な露出、暴力表現などを含む画像を添付している\nNSFWタグが付いている投稿であっても、過激な画像を添付することは禁止されています',
         value: false,
     },
-    other: {
-        label: 'その他',
-        descreption: 'その他の理由で報告',
-        value: false,
-    },
+    other: { label: 'その他', description: 'その他の理由で報告', value: false },
 });
 const additional = ref<string>('');
 
@@ -50,10 +42,12 @@ const Submit = async () => {
         !choices.value.nsfwImage.value &&
         !choices.value.other.value
     )
-        return useAddToast('報告の理由を選択してください');
+        return useToast().add('報告の理由を選択してください');
 
     if (choices.value.other.value && !additional.value.length)
-        return useAddToast('"その他"を選択した場合は、理由を入力してください');
+        return useToast().add(
+            '"その他"を選択した場合は、理由を入力してください'
+        );
 
     const { error } = await client.from('report_setup').insert({
         setup_id: props.id,
@@ -66,13 +60,13 @@ const Submit = async () => {
     });
     if (error) {
         console.error(error);
-        return useAddToast(
+        return useToast().add(
             '報告の送信に失敗しました',
             'もう一度お試しください'
         );
     }
 
-    useAddToast('報告が送信されました', 'ご協力ありがとうございます');
+    useToast().add('報告が送信されました', 'ご協力ありがとうございます');
     vis.value = false;
 };
 </script>
@@ -123,7 +117,7 @@ const Submit = async () => {
                 <span
                     class="text-zinc-900 dark:text-zinc-100 text-sm text-left whitespace-pre-line"
                 >
-                    {{ choice.descreption }}
+                    {{ choice.description }}
                 </span>
             </Toggle>
             <p

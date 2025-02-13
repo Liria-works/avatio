@@ -25,19 +25,22 @@ const dateLocale = date.toLocaleString('ja-JP', {
         :class="
             twMerge(
                 'group flex flex-col rounded-lg overflow-clip',
-                'hover:ring-2 hover:ring-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:shadow-xl shadow-black dark:shadow-white/10',
+                'hover:ring-2 hover:ring-zinc-400',
+                'hover:bg-zinc-100 dark:hover:bg-zinc-800',
+                'hover:shadow-xl shadow-black/10 dark:shadow-white/10',
                 'transition duration-50 ease-in-out',
                 props.class
             )
         "
         @click="emit('click')"
     >
-        <div v-if="props.setup.images.length" class="relative w-full p-1.5">
+        <div
+            v-if="props.setup.images.length && props.setup.images[0]"
+            class="relative w-full p-1.5"
+        >
             <NuxtImg
                 :src="
-                    useGetImage(props.setup.images[0].name, {
-                        prefix: 'setup',
-                    })
+                    useGetImage(props.setup.images[0].name, { prefix: 'setup' })
                 "
                 :alt="props.setup.name"
                 preset="thumbnail"
@@ -62,7 +65,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
                 ]"
             >
                 <span
-                    class="text-sm md:text-md font-medium text-white dark:text-white break-all line-clamp-2 leading-1"
+                    class="text-sm md:text-md font-medium text-white dark:text-white break-all line-clamp-2"
                 >
                     {{ props.setup.name }}
                 </span>
@@ -71,15 +74,15 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     <Icon
                         name="lucide:person-standing"
                         size="15"
-                        class="flex-shrink-0 bg-zinc-300 dark:bg-zinc-300"
+                        class="shrink-0 bg-zinc-300 dark:bg-zinc-300"
                     />
                     <span
                         class="text-xs text-zinc-300 dark:text-zinc-300 break-all line-clamp-1 leading-none"
                     >
                         {{
-                            !props.setup.items.avatar[0].outdated
+                            !props.setup.items.avatar[0]!.outdated
                                 ? useAvatarName(
-                                      props.setup.items.avatar[0].name
+                                      props.setup.items.avatar[0]!.name
                                   )
                                 : '不明なベースアバター'
                         }}
@@ -90,17 +93,20 @@ const dateLocale = date.toLocaleString('ja-JP', {
 
         <div class="w-full flex items-center">
             <NuxtImg
-                v-if="!props.setup.images.length"
-                :src="props.setup.items.avatar[0].thumbnail"
+                v-if="
+                    !props.setup.images.length &&
+                    !props.setup.items.avatar[0]!.outdated
+                "
+                :src="props.setup.items.avatar[0]!.thumbnail"
                 :alt="props.setup.name"
                 preset="avatarThumbnail"
                 :placeholder="[30, 30, 75, 5]"
-                class="h-14 md:h-20 my-1.5 ml-1.5 rounded-lg overflow-clip flex-shrink-0 object-cover"
+                class="h-14 md:h-20 my-1.5 ml-1.5 rounded-lg overflow-clip shrink-0 object-cover"
             />
 
             <div
-                v-else-if="props.setup.items.avatar[0].outdated"
-                class="size-14 my-1.5 ml-1.5 rounded-lg flex flex-shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
+                v-else-if="props.setup.items.avatar[0]!.outdated"
+                class="size-14 my-1.5 ml-1.5 rounded-lg flex shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
             >
                 ?
             </div>
@@ -110,24 +116,24 @@ const dateLocale = date.toLocaleString('ja-JP', {
                 class="w-full pb-2 pr-2 pl-3 flex flex-col items-start justify-center gap-1"
             >
                 <span
-                    class="text-sm md:text-md font-medium text-zinc-700 dark:text-zinc-200 break-all line-clamp-2 leading-1"
+                    class="text-sm md:text-md font-medium text-zinc-700 dark:text-zinc-200 break-keep line-clamp-2"
                 >
-                    {{ props.setup.name }}
+                    {{ useSentence(props.setup.name) }}
                 </span>
 
                 <div class="flex items-center gap-1">
                     <Icon
                         name="lucide:person-standing"
                         size="15"
-                        class="flex-shrink-0 bg-zinc-500 dark:bg-zinc-400"
+                        class="shrink-0 bg-zinc-500 dark:bg-zinc-400"
                     />
                     <span
                         class="text-xs text-zinc-500 dark:text-zinc-400 break-all line-clamp-1 leading-none"
                     >
                         {{
-                            !props.setup.items.avatar[0].outdated
+                            !props.setup.items.avatar[0]!.outdated
                                 ? useAvatarName(
-                                      props.setup.items.avatar[0].name
+                                      props.setup.items.avatar[0]!.name
                                   )
                                 : '不明なベースアバター'
                         }}

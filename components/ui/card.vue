@@ -25,10 +25,14 @@ const props = withDefaults(defineProps<Props>(), {
             )
         "
     >
-        <div :class="twMerge('empty:hidden px-4 py-3', props.headerClass)">
+        <div
+            v-if="$slots.header && $slots.header({}).length"
+            :class="twMerge('empty:hidden px-4 py-3', props.headerClass)"
+        >
             <slot name="header" />
         </div>
         <div
+            v-if="$slots.default && $slots.default({}).length"
             :class="
                 twMerge(
                     'empty:hidden px-4',
@@ -39,7 +43,10 @@ const props = withDefaults(defineProps<Props>(), {
         >
             <slot />
         </div>
-        <div :class="twMerge('empty:hidden px-4 py-3', props.footerClass)">
+        <div
+            v-if="$slots.footer && $slots.footer({}).length"
+            :class="twMerge('empty:hidden px-4 py-3', props.footerClass)"
+        >
             <slot name="footer" />
         </div>
     </div>

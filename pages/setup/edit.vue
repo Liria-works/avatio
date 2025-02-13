@@ -17,33 +17,33 @@ const description = ref<string>('');
 const tags = ref<string[]>([]);
 const image = ref<File | null>(null);
 
+const itemsFlatten = computed(() => [
+    ...items.value.avatar,
+    ...items.value.cloth,
+    ...items.value.accessory,
+    ...items.value.other,
+]);
+
 const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     const returnError = (message: string) => {
         publishing.value = false;
-        if (options.toast) useAddToast(message);
+        if (options.toast) useToast().add(message);
         return true;
     };
 
     if (!title.value || !title.value.length)
-        return returnError(getErrors().publishSetup.noTitle.clientMessage);
+        return returnError(getErrors().publishSetup.noTitle.client.title);
 
-    const itemsFlatten = [
-        ...items.value.avatar,
-        ...items.value.cloth,
-        ...items.value.accessory,
-        ...items.value.other,
-    ];
-
-    if (!itemsFlatten.filter((i) => i.category === 'avatar').length)
-        return returnError(getErrors().publishSetup.noAvatar.clientMessage);
-    if (itemsFlatten.filter((i) => i.category === 'avatar').length > 1)
+    if (!itemsFlatten.value.filter((i) => i.category === 'avatar').length)
+        return returnError(getErrors().publishSetup.noAvatar.client.title);
+    if (itemsFlatten.value.filter((i) => i.category === 'avatar').length > 1)
         return returnError(
-            getErrors().publishSetup.tooManyAvatars.clientMessage
+            getErrors().publishSetup.tooManyAvatars.client.title
         );
-    if (!itemsFlatten.filter((i) => i.category !== 'avatar').length)
-        return returnError(getErrors().publishSetup.noItems.clientMessage);
-    if (itemsFlatten.filter((i) => i.category !== 'avatar').length > 32)
-        return returnError(getErrors().publishSetup.tooManyItems.clientMessage);
+    if (!itemsFlatten.value.filter((i) => i.category !== 'avatar').length)
+        return returnError(getErrors().publishSetup.noItems.client.title);
+    if (itemsFlatten.value.filter((i) => i.category !== 'avatar').length > 32)
+        return returnError(getErrors().publishSetup.tooManyItems.client.title);
 
     return false;
 };
@@ -51,17 +51,11 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
 const PublishSetup = async () => {
     publishing.value = true;
 
-    const itemsFlatten = [
-        ...items.value.avatar,
-        ...items.value.cloth,
-        ...items.value.accessory,
-        ...items.value.other,
-    ];
     if (errorCheck()) return;
 
     if (image.value && image.value.size > 3.5 * 1024 * 1024) {
         publishing.value = false;
-        return useAddToast(
+        return useToast().add(
             '画像サイズが大きすぎます',
             '3.5MB以下の画像を選択してください'
         );
@@ -73,7 +67,7 @@ const PublishSetup = async () => {
             name: title.value,
             description: description.value,
             tags: tags.value,
-            items: itemsFlatten.map((i) => ({
+            items: itemsFlatten.value.map((i) => ({
                 id: i.id,
                 note: i.note,
                 unsupported: i.unsupported,
@@ -84,14 +78,14 @@ const PublishSetup = async () => {
 
     if (!response.data) {
         publishing.value = false;
-        return useAddToast(
+        return useToast().add(
             '投稿に失敗しました',
-            response.error!.clientMessage || '不明なエラー'
+            response.error!.client.title || '不明なエラー'
         );
     }
 
     publishing.value = false;
-    useAddToast('セットアップを公開しました。');
+    useToast().add('セットアップを公開しました。');
     skip_router_hook.value = true;
     navigateTo(`/setup/${response.data.id}`);
 };
@@ -100,18 +94,11 @@ onBeforeRouteLeave(
     (to: unknown, from: unknown, next: (arg0: boolean | undefined) => void) => {
         if (skip_router_hook.value) return next(true);
 
-        const itemsFlatten = [
-            ...items.value.avatar,
-            ...items.value.cloth,
-            ...items.value.accessory,
-            ...items.value.other,
-        ];
-
         if (
             title.value ||
             description.value ||
             tags.value.length ||
-            itemsFlatten.length
+            itemsFlatten.value.length
         ) {
             const answer = window.confirm(
                 '入力された内容が破棄されます。よろしいですか？'
@@ -122,9 +109,7 @@ onBeforeRouteLeave(
     }
 );
 
-useOGP({
-    title: 'セットアップ作成',
-});
+useOGP({ title: 'セットアップ作成' });
 </script>
 
 <template>
@@ -133,14 +118,11 @@ useOGP({
             class="flex flex-wrap-reverse md:flex-row gap-x-10 gap-y-3 items-center justify-between w-full"
         >
             <div class="grow flex flex-col gap-2 pt-1">
-                <UInput
+                <UiTextinput
                     v-model="title"
                     placeholder="セットアップ名を入力"
-                    size="xl"
-                    :padded="false"
-                    variant="none"
-                    :ui="{ size: { xl: 'text-2xl font-bold' } }"
-                    class="w-full"
+                    unstyled
+                    class="w-full text-2xl font-bold"
                 />
                 <UiDivider
                     :border-class="
@@ -169,14 +151,14 @@ useOGP({
                         >
                             <p v-if="!title">
                                 {{
-                                    getErrors().publishSetup.noTitle
-                                        .clientMessage
+                                    getErrors().publishSetup.noTitle.client
+                                        .title
                                 }}
                             </p>
                             <p v-if="!items.avatar.length">
                                 {{
-                                    getErrors().publishSetup.noAvatar
-                                        .clientMessage
+                                    getErrors().publishSetup.noAvatar.client
+                                        .title
                                 }}
                             </p>
                             <p
@@ -187,8 +169,8 @@ useOGP({
                                 "
                             >
                                 {{
-                                    getErrors().publishSetup.noItems
-                                        .clientMessage
+                                    getErrors().publishSetup.noItems.client
+                                        .title
                                 }}
                             </p>
 

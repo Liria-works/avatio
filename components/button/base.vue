@@ -41,7 +41,7 @@ const Link = defineNuxtLink({
 const variantClass = {
     outline:
         'outline outline-1 outline-zinc-400 dark:outline-zinc-600 focus:outline-zinc-600 focus:outline-2',
-    flat: 'focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 dark:focus-visible:ring-zinc-400',
+    flat: 'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-600 dark:focus-visible:ring-zinc-400',
     link: 'p-1 text-xs font-semibold text-zinc-600 hover:text-zinc-400 dark:text-zinc-400 hover:dark:text-zinc-500 hover:bg-transparent hover:dark:bg-transparent',
 };
 </script>
@@ -69,7 +69,7 @@ const variantClass = {
                     props.disabled
                         ? 'text-zinc-400 dark:text-zinc-600'
                         : 'hover:bg-zinc-200 dark:hover:bg-zinc-600',
-                    'transition duration-50 ease-in-out',
+                    'transition duration-100 ease-in-out',
                     variantClass[props.variant],
                     props.class
                 )
@@ -81,7 +81,7 @@ const variantClass = {
                     v-if="props.icon.length"
                     :name="props.icon"
                     :size="props.iconSize"
-                    :class="twMerge('flex-shrink-0', props.iconClass)"
+                    :class="twMerge('shrink-0', props.iconClass)"
                 />
 
                 <p

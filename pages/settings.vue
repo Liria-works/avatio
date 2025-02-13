@@ -36,7 +36,8 @@ const checkSame = () =>
     links.value === old.value.links;
 
 const save = async () => {
-    if (name.value === '') return useAddToast('ユーザー名を入力してください');
+    if (name.value === '')
+        return useToast().add('ユーザー名を入力してください');
 
     let avatarName = old.value.avatar;
     if (avatar.value.new) {
@@ -47,7 +48,7 @@ const save = async () => {
         });
 
         if (!uploaded)
-            return useAddToast(
+            return useToast().add(
                 'ユーザー情報の保存に失敗しました',
                 'アバターのアップロードでエラーが発生しました'
             );
@@ -68,7 +69,7 @@ const save = async () => {
         })
         .eq('id', user.value.id);
 
-    if (error) return useAddToast('ユーザー情報の保存に失敗しました');
+    if (error) return useToast().add('ユーザー情報の保存に失敗しました');
 
     old.value = {
         name: name.value,
@@ -80,12 +81,10 @@ const save = async () => {
     userProfile.value.avatar = avatarName
         ? useGetImage(avatarName, { prefix: 'avatar' })
         : null;
-    return useAddToast('ユーザー情報を保存しました');
+    return useToast().add('ユーザー情報を保存しました');
 };
 
-useOGP({
-    title: 'ユーザー設定',
-});
+useOGP({ title: 'ユーザー設定' });
 </script>
 
 <template>

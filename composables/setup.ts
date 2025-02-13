@@ -7,23 +7,21 @@ export const useDeleteSetup = async (id: number) => {
     });
 
     if (error)
-        return useAddToast(
+        return useToast().add(
             'セットアップの削除に失敗しました',
             `エラーコード : ${error.status}`
         );
 
-    useAddToast('セットアップを削除しました');
+    useToast().add('セットアップを削除しました');
     navigateTo('/');
 };
 
 export const useAddBookmark = async (id: number) => {
     const client = useSupabaseClient();
-    const { data, error } = await client
-        .from('bookmarks')
-        .insert({ post: id } as never);
+    const { data, error } = await client.from('bookmarks').insert({ post: id });
     if (error) throw error;
 
-    useAddToast('ブックマークに追加しました。');
+    useToast().add('ブックマークに追加しました。');
     return data;
 };
 
@@ -35,7 +33,7 @@ export const useRemoveBookmark = async (id: number) => {
         .eq('post', id);
     if (error) throw error;
 
-    useAddToast('ブックマークから削除しました。');
+    useToast().add('ブックマークから削除しました。');
     return data;
 };
 

@@ -7,7 +7,6 @@ const props = withDefaults(
         icon?: string;
         trailing?: string;
         trailingIcon?: string;
-        infomation?: string;
     }>(),
     {
         is: 'h1',
@@ -27,7 +26,7 @@ const props = withDefaults(
                 v-if="props.icon.length"
                 :name="props.icon"
                 :size="props.size === 'md' ? 20 : 24"
-                class="flex-shrink-0 text-zinc-500 dark:text-zinc-400"
+                class="shrink-0 text-zinc-500 dark:text-zinc-400"
             />
             <component
                 :is="props.is"
@@ -40,22 +39,6 @@ const props = withDefaults(
             >
                 {{ props.label }}
             </component>
-            <UTooltip
-                v-if="props.infomation"
-                :prevent="props.infomation ? false : true"
-                :text="props.infomation"
-                :popper="{ placement: 'top' }"
-                :ui="{
-                    ring: 'ring-1 ring-gray-300 dark:ring-gray-600',
-                }"
-                class="rounded-full"
-            >
-                <Icon
-                    name="lucide:info"
-                    size="15"
-                    class="flex-shrink-0 ml-1 text-zinc-500 dark:text-zinc-400"
-                />
-            </UTooltip>
         </div>
         <button v-if="props.trailing" class="items-center gap-1 inline-flex">
             <div class="text-black dark:text-zinc-400 text-sm">
