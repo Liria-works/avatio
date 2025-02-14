@@ -25,9 +25,9 @@ const inputId = useId();
         :class="
             twMerge(
                 props.unstyled
-                    ? 'relative flex items-center gap-1'
+                    ? 'relative flex items-center gap-2'
                     : twMerge(
-                          'relative p-3 rounded-lg flex items-center gap-1',
+                          'relative px-2.5 py-2 rounded-lg flex items-center gap-2',
                           'text-sm text-black dark:text-white',
                           'ring-inset ring-1 hover:ring-2 focus-within:ring-2 ring-zinc-400 dark:ring-zinc-700 focus-within:ring-zinc-700',
                           'transition-all duration-100 ease-in-out'
@@ -56,8 +56,6 @@ const inputId = useId();
             @change="emit('change', $event)"
         />
 
-        <div class="absolute right-1.5">
-            <slot name="trailing" />
-        </div>
+        <slot name="trailing" />
     </div>
 </template>

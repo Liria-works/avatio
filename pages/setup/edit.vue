@@ -24,6 +24,14 @@ const itemsFlatten = computed(() => [
     ...items.value.other,
 ]);
 
+const limits = {
+    title: 64,
+    description: 140,
+    tags: 8,
+    avatar: 1,
+    items: 32,
+};
+
 const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     const returnError = (message: string) => {
         publishing.value = false;
@@ -34,23 +42,32 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     if (!title.value || !title.value.length)
         return returnError(getErrors().publishSetup.noTitle.client.title);
 
-    if (description.value.length > 140)
+    if (title.value.length > limits.title)
+        return returnError(getErrors().publishSetup.tooLongTitle.client.title);
+
+    if (description.value.length > limits.description)
         return returnError(
             getErrors().publishSetup.tooLongDescription.client.title
         );
 
-    if (tags.value.length > 8)
+    if (tags.value.length > limits.tags)
         return returnError(getErrors().publishSetup.tooManyTags.client.title);
 
     if (!itemsFlatten.value.filter((i) => i.category === 'avatar').length)
         return returnError(getErrors().publishSetup.noAvatar.client.title);
-    if (itemsFlatten.value.filter((i) => i.category === 'avatar').length > 1)
+    if (
+        itemsFlatten.value.filter((i) => i.category === 'avatar').length >
+        limits.avatar
+    )
         return returnError(
             getErrors().publishSetup.tooManyAvatars.client.title
         );
     if (!itemsFlatten.value.filter((i) => i.category !== 'avatar').length)
         return returnError(getErrors().publishSetup.noItems.client.title);
-    if (itemsFlatten.value.filter((i) => i.category !== 'avatar').length > 32)
+    if (
+        itemsFlatten.value.filter((i) => i.category !== 'avatar').length >
+        limits.items
+    )
         return returnError(getErrors().publishSetup.tooManyItems.client.title);
 
     return false;
@@ -131,13 +148,13 @@ useOGP({ title: 'セットアップ作成' });
                     placeholder="セットアップ名を入力"
                     unstyled
                     class="w-full text-2xl font-bold"
-                />
+                >
+                    <template #trailing>
+                        <UiCount :count="title.length" :max="limits.title" />
+                    </template>
+                </UiTextinput>
                 <UiDivider
-                    :border-class="
-                        title.length < 25
-                            ? 'border-zinc-300 dark:border-zinc-600'
-                            : 'border-red-400 dark:border-red-600'
-                    "
+                    border-class="border-zinc-300 dark:border-zinc-600"
                 />
             </div>
             <div class="w-full md:w-fit flex gap-2 items-center">
@@ -220,7 +237,10 @@ useOGP({ title: 'セットアップ作成' });
                 <div class="w-full flex flex-col items-start gap-3">
                     <div class="w-full flex gap-2 items-center justify-between">
                         <UiTitle label="説明" icon="lucide:text" />
-                        <UiCount :count="description.length" :max="140" />
+                        <UiCount
+                            :count="description.length"
+                            :max="limits.description"
+                        />
                     </div>
                     <UiTextarea
                         v-model="description"
@@ -232,7 +252,7 @@ useOGP({ title: 'セットアップ作成' });
                 <div class="w-full flex flex-col items-start gap-3">
                     <div class="w-full flex gap-2 items-center justify-between">
                         <UiTitle label="タグ" icon="lucide:tags" />
-                        <UiCount :count="tags.length" :max="8" />
+                        <UiCount :count="tags.length" :max="limits.tags" />
                     </div>
                     <EditTags v-model="tags" />
                 </div>

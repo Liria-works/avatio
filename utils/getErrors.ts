@@ -29,6 +29,7 @@ interface Errors {
         insertImages: ErrorType;
         tooLongDescription: ErrorType;
         tooManyTags: ErrorType;
+        tooLongTitle: ErrorType;
     };
 }
 
@@ -140,6 +141,11 @@ export default (): Errors => {
                 status: 35,
                 message: 'Too many tags.',
                 client: { title: 'タグは最大8個まで登録可能です。' },
+            },
+            tooLongTitle: {
+                status: 36,
+                message: 'Title is too long.',
+                client: { title: 'タイトルは最大64字までです。' },
             },
         },
     };

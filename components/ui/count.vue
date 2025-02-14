@@ -30,7 +30,7 @@ const dashOffset = computed(
 
 <template>
     <UiTooltip :text="`${count} / ${props.max}`">
-        <svg :width="size" :height="size" class="-rotate-90">
+        <svg :width="size" :height="size" class="-rotate-90 focus:outline-none">
             <!-- 背景の円 -->
             <circle
                 :cx="size / 2"

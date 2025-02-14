@@ -20,13 +20,15 @@ const emit = defineEmits(['input', 'change', 'blur']);
 <template>
     <div
         :class="
-            unstyled
-                ? ''
-                : twMerge(
-                      'px-2.5 py-2 ring-inset ring-1 hover:ring-2 focus-within:ring-2 ring-zinc-400 dark:ring-zinc-700 focus-within:ring-zinc-700 rounded-lg',
-                      'transition-all duration-100 ease-in-out',
-                      props.class
-                  )
+            twMerge(
+                unstyled
+                    ? ''
+                    : twMerge(
+                          'px-2.5 py-2 ring-inset ring-1 hover:ring-2 focus-within:ring-2 ring-zinc-400 dark:ring-zinc-700 focus-within:ring-zinc-700 rounded-lg',
+                          'transition-all duration-100 ease-in-out'
+                      ),
+                props.class
+            )
         "
     >
         <textarea
