@@ -4,6 +4,8 @@ const modal_feedback = ref(false);
 
 <template>
     <footer class="self-stretch flex flex-col gap-10">
+        <BannerOwnerWarning />
+
         <UiDivider icon="avatio:avatio" />
 
         <div
