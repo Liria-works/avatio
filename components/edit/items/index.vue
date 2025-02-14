@@ -251,16 +251,14 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                     </div>
 
                     <div
-                        :class="[
-                            'ml-1 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1',
+                        :data-exceeded="
                             useSum(
                                 items.cloth.length,
                                 items.accessory.length,
                                 items.other.length
                             ).value > 32
-                                ? 'ring-red-500'
-                                : 'ring-zinc-500',
-                        ]"
+                        "
+                        class="ml-1 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1 ring-zinc-500 data-[exceeded=true]:ring-red-500"
                     >
                         <Icon
                             name="lucide:box"

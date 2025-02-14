@@ -1,6 +1,7 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 import type { ApiResponse } from '~/types';
 import getErrors, { type ErrorType } from '~/utils/getErrors';
+import setupLimits from '~/utils/setupLimits';
 
 export interface RequestBody {
     name: string;
@@ -11,35 +12,31 @@ export interface RequestBody {
     items: { id: number; note: string; unsupported: boolean }[];
 }
 
-const returnError = (error: ErrorType) => {
-    return {
-        error: error,
-        data: null,
-    };
-};
+const returnError = (error: ErrorType) => ({ error, data: null });
 
 export default defineEventHandler(
     async (event): Promise<ApiResponse<{ id: number }>> => {
-        try {
-            const user = await serverSupabaseUser(event);
-            if (!user) throw new Error();
-        } catch {
-            return { error: getErrors().general.forbidden, data: null };
-        }
+        const user = await serverSupabaseUser(event).catch(() => null);
+        if (!user) return { error: getErrors().general.forbidden, data: null };
 
         const supabase = await serverSupabaseClient(event);
         const body: RequestBody = await readBody(event);
+        const limits = setupLimits();
+        const {
+            description: limitDescription,
+            tags: limitTags,
+            coAuthors: limitCoAuthors,
+            avatars: limitAvatars,
+            items: limitItems,
+        } = limits;
 
-        if (!body.name || !body.name.length)
+        if (!body.name?.length)
             return returnError(getErrors().publishSetup.noTitle);
-
-        if (body.description && body.description.length > 140)
+        if (body.description && body.description.length > limitDescription)
             return returnError(getErrors().publishSetup.tooLongDescription);
-
-        if (body.tags.length > 8)
+        if (body.tags.length > limitTags)
             return returnError(getErrors().publishSetup.tooManyTags);
-
-        if (body.coAuthors.length > 5)
+        if (body.coAuthors.length > limitCoAuthors)
             return returnError(getErrors().publishSetup.tooManyCoAuthors);
 
         const { data: itemsDB } = await supabase
@@ -51,18 +48,26 @@ export default defineEventHandler(
             );
         if (!itemsDB)
             return returnError(getErrors().publishSetup.itemCheckFailed);
+
         const itemsInfo = itemsDB.reduce(
             (acc, item) => ({ ...acc, [item.id]: item.category }),
             {} as Record<number, 'avatar' | 'cloth' | 'accessory' | 'other'>
         );
 
-        if (!body.items.filter((i) => itemsInfo[i.id] === 'avatar').length)
+        const avatarItems = body.items.filter(
+            (i) => itemsInfo[i.id] === 'avatar'
+        );
+        const nonAvatarItems = body.items.filter(
+            (i) => itemsInfo[i.id] !== 'avatar'
+        );
+
+        if (!avatarItems.length)
             return returnError(getErrors().publishSetup.noAvatar);
-        if (body.items.filter((i) => itemsInfo[i.id] === 'avatar').length > 1)
+        if (avatarItems.length > limitAvatars)
             return returnError(getErrors().publishSetup.tooManyAvatars);
-        if (!body.items.filter((i) => itemsInfo[i.id] !== 'avatar').length)
+        if (!nonAvatarItems.length)
             return returnError(getErrors().publishSetup.noItems);
-        if (body.items.filter((i) => itemsInfo[i.id] !== 'avatar').length > 32)
+        if (nonAvatarItems.length > limitItems)
             return returnError(getErrors().publishSetup.tooManyItems);
 
         let image: {
@@ -89,10 +94,8 @@ export default defineEventHandler(
                     prefix: 'setup',
                 },
             });
-
             if (!response.data)
                 return returnError(getErrors().publishSetup.uploadImage);
-
             image = response.data;
         }
 
@@ -104,47 +107,41 @@ export default defineEventHandler(
             })
             .select('id')
             .single();
-
         if (setupError)
             return returnError(getErrors().publishSetup.insertSetup);
 
-        const { error: itemsError } = await supabase.from('setup_items').insert(
-            body.items.map((i) => {
-                return {
+        // 複数テーブルへの挿入処理は並行実行可能
+        const insertOperations = [
+            supabase.from('setup_items').insert(
+                body.items.map((i) => ({
                     setup_id: setupData.id,
                     item_id: i.id,
                     note: i.note,
                     unsupported: i.unsupported,
-                };
-            })
-        );
+                }))
+            ),
+            supabase
+                .from('setup_tags')
+                .insert(
+                    body.tags.map((tag) => ({ setup_id: setupData.id, tag }))
+                ),
+            supabase.from('setup_coauthors').insert(
+                body.coAuthors.map((coauthor) => ({
+                    setup_id: setupData.id,
+                    user_id: coauthor.id,
+                    note: coauthor.note,
+                }))
+            ),
+        ];
+        const [
+            { error: itemsError },
+            { error: tagsError },
+            { error: coAuthorError },
+        ] = await Promise.all(insertOperations);
 
         if (itemsError)
             return returnError(getErrors().publishSetup.insertItems);
-
-        const { error: tagsError } = await supabase.from('setup_tags').insert(
-            body.tags.map((i) => {
-                return {
-                    setup_id: setupData.id,
-                    tag: i,
-                };
-            })
-        );
-
         if (tagsError) return returnError(getErrors().publishSetup.insertTags);
-
-        const { error: coAuthorError } = await supabase
-            .from('setup_coauthors')
-            .insert(
-                body.coAuthors.map((i) => {
-                    return {
-                        setup_id: setupData.id,
-                        user_id: i.id,
-                        note: i.note,
-                    };
-                })
-            );
-
         if (coAuthorError)
             return returnError(getErrors().publishSetup.insertCoAuthors);
 
@@ -157,14 +154,10 @@ export default defineEventHandler(
                     width: image.width,
                     height: image.height,
                 });
-
             if (imageError)
                 return returnError(getErrors().publishSetup.insertImages);
         }
 
-        return {
-            error: null,
-            data: { id: setupData.id },
-        };
+        return { error: null, data: { id: setupData.id } };
     }
 );

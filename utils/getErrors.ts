@@ -97,7 +97,9 @@ export default (): Errors => {
             tooManyItems: {
                 status: 15,
                 message: 'Too many items.',
-                client: { title: 'アイテムは最大32個まで登録可能です。' },
+                client: {
+                    title: `アイテムは最大${setupLimits().items}個まで登録可能です。`,
+                },
             },
             sameItems: {
                 status: 16,
@@ -137,22 +139,30 @@ export default (): Errors => {
             tooLongDescription: {
                 status: 34,
                 message: 'Description is too long.',
-                client: { title: '説明文は最大140字までです。' },
+                client: {
+                    title: `説明文は最大${setupLimits().description}字までです。`,
+                },
             },
             tooManyTags: {
                 status: 35,
                 message: 'Too many tags.',
-                client: { title: 'タグは最大8個まで登録可能です。' },
+                client: {
+                    title: `タグは最大${setupLimits().tags}個まで登録可能です。`,
+                },
             },
             tooLongTitle: {
                 status: 36,
                 message: 'Title is too long.',
-                client: { title: 'タイトルは最大64字までです。' },
+                client: {
+                    title: `タイトルは最大${setupLimits().title}字までです。`,
+                },
             },
             tooManyCoAuthors: {
                 status: 37,
                 message: 'Too many co-authors.',
-                client: { title: '共同投稿者は最大5人までです。' },
+                client: {
+                    title: `共同投稿者は最大${setupLimits().coAuthors}人までです。`,
+                },
             },
             insertCoAuthors: {
                 status: 34,

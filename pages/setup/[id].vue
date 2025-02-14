@@ -177,20 +177,6 @@ onMounted(async () => {
 
                 <div class="self-stretch flex xl:hidden flex-col gap-3">
                     <div
-                        v-if="data.description"
-                        class="self-stretch rounded-lg flex flex-col gap-1.5"
-                    >
-                        <h2 class="text-zinc-500 text-sm mt-1 leading-none">
-                            説明
-                        </h2>
-                        <p
-                            class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
-                        >
-                            {{ useSentence(data.description) }}
-                        </p>
-                    </div>
-
-                    <div
                         v-if="data.tags && data.tags.length"
                         class="items-center gap-1.5 flex flex-row flex-wrap"
                     >
@@ -201,6 +187,20 @@ onMounted(async () => {
                             class="rounded-full"
                             @click="navigateTo(`/search?tag=${tag}`)"
                         />
+                    </div>
+
+                    <div
+                        v-if="data.description"
+                        class="self-stretch rounded-lg flex flex-col gap-1.5"
+                    >
+                        <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                            説明
+                        </h2>
+                        <p
+                            class="pl-1 text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
+                        >
+                            {{ useSentence(data.description) }}
+                        </p>
                     </div>
 
                     <div
@@ -313,20 +313,6 @@ onMounted(async () => {
             <div
                 class="empty:hidden w-full xl:w-[440px] xl:pt-12 flex flex-col gap-6"
             >
-                <div
-                    v-if="data.description"
-                    class="hidden xl:flex flex-col self-stretch rounded-xl gap-1.5"
-                >
-                    <h2 class="text-zinc-500 text-sm mt-1 leading-none">
-                        説明
-                    </h2>
-                    <p
-                        class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
-                    >
-                        {{ useSentence(data.description) }}
-                    </p>
-                </div>
-
                 <ul
                     v-if="data.tags && data.tags.length"
                     class="hidden xl:flex flex-wrap items-center gap-1.5"
@@ -339,6 +325,20 @@ onMounted(async () => {
                         />
                     </li>
                 </ul>
+
+                <div
+                    v-if="data.description"
+                    class="hidden xl:flex flex-col self-stretch rounded-xl gap-1.5"
+                >
+                    <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                        説明
+                    </h2>
+                    <p
+                        class="pl-1 text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
+                    >
+                        {{ useSentence(data.description) }}
+                    </p>
+                </div>
 
                 <div
                     v-if="data.co_authors?.length"

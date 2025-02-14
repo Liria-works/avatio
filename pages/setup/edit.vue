@@ -32,15 +32,6 @@ const itemsFlatten = computed(() => [
     ...items.value.other,
 ]);
 
-const limits = {
-    title: 64,
-    description: 140,
-    tags: 8,
-    coAuthors: 5,
-    avatar: 1,
-    items: 32,
-};
-
 const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     const returnError = (message: string) => {
         publishing.value = false;
@@ -51,15 +42,15 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     if (!title.value?.length)
         return returnError(getErrors().publishSetup.noTitle.client.title);
 
-    if (title.value.length > limits.title)
+    if (title.value.length > setupLimits().title)
         return returnError(getErrors().publishSetup.tooLongTitle.client.title);
 
-    if (description.value.length > limits.description)
+    if (description.value.length > setupLimits().description)
         return returnError(
             getErrors().publishSetup.tooLongDescription.client.title
         );
 
-    if (tags.value.length > limits.tags)
+    if (tags.value.length > setupLimits().tags)
         return returnError(getErrors().publishSetup.tooManyTags.client.title);
 
     const avatarCount = itemsFlatten.value.filter(
@@ -71,13 +62,13 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
 
     if (!avatarCount)
         return returnError(getErrors().publishSetup.noAvatar.client.title);
-    if (avatarCount > limits.avatar)
+    if (avatarCount > setupLimits().avatars)
         return returnError(
             getErrors().publishSetup.tooManyAvatars.client.title
         );
     if (!nonAvatarCount)
         return returnError(getErrors().publishSetup.noItems.client.title);
-    if (nonAvatarCount > limits.items)
+    if (nonAvatarCount > setupLimits().items)
         return returnError(getErrors().publishSetup.tooManyItems.client.title);
 
     return false;
@@ -163,7 +154,11 @@ useOGP({ title: 'セットアップ作成' });
                     class="w-full text-2xl font-bold"
                 >
                     <template #trailing>
-                        <UiCount :count="title.length" :max="limits.title" />
+                        <UiCount
+                            v-if="title.length"
+                            :count="title.length"
+                            :max="setupLimits().title"
+                        />
                     </template>
                 </UiTextinput>
                 <UiDivider
@@ -251,8 +246,9 @@ useOGP({ title: 'セットアップ作成' });
                     <div class="w-full flex gap-2 items-center justify-between">
                         <UiTitle label="説明" icon="lucide:text" />
                         <UiCount
+                            v-if="description.length"
                             :count="description.length"
-                            :max="limits.description"
+                            :max="setupLimits().description"
                         />
                     </div>
                     <UiTextarea
@@ -265,7 +261,11 @@ useOGP({ title: 'セットアップ作成' });
                 <div class="w-full flex flex-col items-start gap-3">
                     <div class="w-full flex gap-2 items-center justify-between">
                         <UiTitle label="タグ" icon="lucide:tags" />
-                        <UiCount :count="tags.length" :max="limits.tags" />
+                        <UiCount
+                            v-if="tags.length"
+                            :count="tags.length"
+                            :max="setupLimits().tags"
+                        />
                     </div>
                     <EditTags v-model="tags" />
                 </div>
@@ -274,8 +274,9 @@ useOGP({ title: 'セットアップ作成' });
                     <div class="w-full flex gap-2 items-center justify-between">
                         <UiTitle label="共同作者" icon="lucide:users-round" />
                         <UiCount
+                            v-if="coAuthors.length"
                             :count="coAuthors.length"
-                            :max="limits.coAuthors"
+                            :max="setupLimits().coAuthors"
                         />
                     </div>
                     <EditCoAuthor v-model="coAuthors" />
