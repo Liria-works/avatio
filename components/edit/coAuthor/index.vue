@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-const model = defineModel<{ id: string; note: string }[]>({
+const model = defineModel<
+    { id: string; name: string; avatar: string; note: string }[]
+>({
     default: [],
 });
 
 const input = ref('');
-const coauthors = ref<
+const searching = ref(false);
+const searchedUsers = ref<
     { id: string; name: string; avatar: string; note: string }[]
 >([]);
 
@@ -25,10 +28,12 @@ const add = async (id: string) => {
             .maybeSingle();
         if (!data) return useToast().add('ユーザーが見つかりませんでした');
 
-        coauthors.value.push({
+        model.value.push({
             id: id,
             name: data.name,
-            avatar: useGetImage(data.avatar, { prefix: 'avatar' }),
+            avatar: data.avatar
+                ? useGetImage(data.avatar, { prefix: 'avatar' })
+                : '',
             note: '',
         });
         input.value = '';
@@ -36,26 +41,83 @@ const add = async (id: string) => {
 };
 
 const remove = (index: number) => {
-    coauthors.value.splice(index, 1);
+    model.value.splice(index, 1);
 };
 
-watch(coauthors, () => {
-    model.value = coauthors.value.map((i) => ({
-        id: i.id,
-        note: i.note,
-    }));
-});
+const handleInputChange = useDebounceFn(
+    async (value: string) => {
+        if (value.length) {
+            searching.value = true;
+
+            const { data } = await client.rpc('search_users', {
+                keyword: value,
+                num: 20,
+            });
+
+            searchedUsers.value = data ?? [];
+            searching.value = false;
+        } else {
+            searchedUsers.value = [];
+        }
+    },
+    400,
+    { maxWait: 1000 }
+); // 400～1000ms デバウンス
+
+// watch のコールバックを直接 debounced 関数に渡す
+watch(input, handleInputChange);
 </script>
 
 <template>
     <div class="w-full flex flex-col gap-2">
-        <UiTextinput
-            v-model="input"
-            placeholder="ユーザーを追加"
-            @keyup.enter="add(input.trim())"
-        />
+        <PopupBase v-if="model.length < 5" side="top">
+            <template #trigger>
+                <ButtonBase variant="flat">
+                    <Icon name="lucide:plus" size="18" />
+                    <span>ユーザーを追加</span>
+                </ButtonBase>
+            </template>
+
+            <template #panel>
+                <div class="flex flex-col gap-2 text-sm min-w-48">
+                    <UiTextinput
+                        v-model="input"
+                        placeholder="ユーザー名"
+                        @keyup.enter="add(input.trim())"
+                    />
+
+                    <Icon
+                        v-if="searching"
+                        name="svg-spinners:ring-resize"
+                        size="18"
+                    />
+
+                    <div v-else class="empty:hidden flex flex-col gap-1">
+                        <ButtonBase
+                            v-for="i in searchedUsers"
+                            :key="`coauthor-${i.id}`"
+                            variant="flat"
+                            class="p-2 justify-start"
+                            @click="add(i.id)"
+                        >
+                            <UiAvatar
+                                :url="
+                                    i.avatar
+                                        ? useGetImage(i.avatar, {
+                                              prefix: 'avatar',
+                                          })
+                                        : ''
+                                "
+                                :alt="i.name"
+                            />
+                            <span>{{ i.name }}</span>
+                        </ButtonBase>
+                    </div>
+                </div>
+            </template>
+        </PopupBase>
         <EditCoAuthorItem
-            v-for="(i, index) in coauthors"
+            v-for="(i, index) in model"
             :key="`coauthor-${index}`"
             :id="i.id"
             :name="i.name"
