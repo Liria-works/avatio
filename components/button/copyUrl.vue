@@ -15,7 +15,7 @@ const writeClipboard = () => {
 </script>
 
 <template>
-    <ButtonBase
+    <Button
         :icon="copied ? 'lucide:check' : 'lucide:link'"
         :icon-size="18"
         :label="copied ? 'コピーしました' : 'URLをコピー'"

@@ -171,7 +171,7 @@ useOGP({ title: 'セットアップ作成' });
                 />
             </div>
             <div class="w-full md:w-fit flex gap-2 items-center">
-                <ButtonBase
+                <Button
                     :disabled="errorCheck({ toast: false })"
                     :label="!publishing ? '公開' : '処理中'"
                     :icon="
@@ -225,9 +225,9 @@ useOGP({ title: 'セットアップ作成' });
                             </p>
                         </div>
                     </template>
-                </ButtonBase>
+                </Button>
 
-                <ButtonBase
+                <Button
                     tooltip="破棄"
                     icon="lucide:trash"
                     :icon-size="18"

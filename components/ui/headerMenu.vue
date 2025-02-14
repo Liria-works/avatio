@@ -33,16 +33,16 @@ onMounted(async () => {
 <template>
     <div class="items-center gap-2 flex">
         <div class="items-center gap-0.5 flex">
-            <ButtonBase
+            <Button
                 v-if="user && !['/login', '/setup/edit'].includes(route.path)"
                 to="/setup/edit"
                 class="p-3 md:pr-6 md:pl-5 md:mr-2 outline-0 md:outline-1 md:rounded-full whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 hover:dark:bg-zinc-300 hover:dark:text-zinc-800"
             >
                 <Icon name="lucide:plus" :size="18" />
                 <span class="hidden md:block">セットアップを投稿</span>
-            </ButtonBase>
+            </Button>
 
-            <ButtonBase
+            <Button
                 v-if="route.path !== '/login'"
                 to="/search"
                 tooltip="検索"
@@ -71,7 +71,7 @@ onMounted(async () => {
                     </NuxtLink>
                 </UiTooltip>
 
-                <ButtonBase
+                <Button
                     v-else
                     id="login"
                     to="/login"
@@ -82,17 +82,13 @@ onMounted(async () => {
             </ClientOnly>
         </template>
 
-        <PopupBase>
+        <Popup>
             <template #trigger>
-                <ButtonBase
-                    icon="lucide:menu"
-                    variant="flat"
-                    class="sm:hidden"
-                />
+                <Button icon="lucide:menu" variant="flat" class="sm:hidden" />
             </template>
             <template #panel>
                 <div class="flex flex-col items-center gap-1">
-                    <ButtonBase
+                    <Button
                         to="/search"
                         label="検索"
                         icon="lucide:search"
@@ -104,7 +100,7 @@ onMounted(async () => {
 
                     <template v-if="route.path !== '/login'">
                         <ClientOnly>
-                            <ButtonBase
+                            <Button
                                 v-if="user"
                                 :to="`/@${user?.id}`"
                                 variant="flat"
@@ -115,9 +111,9 @@ onMounted(async () => {
                                     :alt="userProfile.name ?? ''"
                                 />
                                 <span>{{ userProfile.name }}</span>
-                            </ButtonBase>
+                            </Button>
 
-                            <ButtonBase
+                            <Button
                                 v-else-if="route.path !== '/login'"
                                 to="/login"
                                 label="ログイン"
@@ -128,6 +124,6 @@ onMounted(async () => {
                     </template>
                 </div>
             </template>
-        </PopupBase>
+        </Popup>
     </div>
 </template>

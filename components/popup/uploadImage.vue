@@ -3,9 +3,12 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
 </script>
 
 <template>
-    <PopupBase>
+    <Popup>
         <template #trigger>
-            <div class="flex items-center gap-1">
+            <button
+                type="button"
+                class="cursor-pointer flex items-center gap-1"
+            >
                 <Icon
                     name="lucide:info"
                     class="text-indigo-400 dark:text-indigo-300"
@@ -15,7 +18,7 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
                 >
                     画像の添付について
                 </span>
-            </div>
+            </button>
         </template>
 
         <template #panel>
@@ -39,5 +42,5 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
                 </p>
             </div>
         </template>
-    </PopupBase>
+    </Popup>
 </template>

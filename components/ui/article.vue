@@ -20,14 +20,14 @@ const updatedAt = new Date(props.data.updated_at);
         <div class="markdown flex flex-col gap-4">
             <div class="flex items-center gap-1">
                 <template v-if="props.type === 'release'">
-                    <ButtonBase
+                    <Button
                         to="/release"
                         icon="lucide:arrow-left"
                         label="お知らせ一覧へ"
                         variant="flat"
                         class="text-zinc-500 dark:text-zinc-400"
                     />
-                    <ButtonBase
+                    <Button
                         to="/"
                         icon="lucide:house"
                         tooltip="ホーム"
@@ -36,7 +36,7 @@ const updatedAt = new Date(props.data.updated_at);
                     />
                 </template>
                 <template v-else>
-                    <ButtonBase
+                    <Button
                         to="/"
                         icon="lucide:house"
                         label="ホーム"

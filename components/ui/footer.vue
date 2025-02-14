@@ -15,7 +15,7 @@ const modal_feedback = ref(false);
                 class="flex-wrap flex items-center justify-center gap-x-4 gap-y-2 text-zinc-700 dark:text-white"
             >
                 <div class="flex items-center gap-2">
-                    <ButtonBase
+                    <Button
                         to="https://x.com/liria_work"
                         new-tab
                         icon="simple-icons:x"
@@ -24,7 +24,7 @@ const modal_feedback = ref(false);
                         class="p-2"
                     />
 
-                    <ButtonBase
+                    <Button
                         to="https://github.com/Liria-works/avatio"
                         new-tab
                         icon="simple-icons:github"
@@ -35,9 +35,9 @@ const modal_feedback = ref(false);
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <ButtonBase to="/release" label="お知らせ" variant="link" />
+                    <Button to="/release" label="お知らせ" variant="link" />
 
-                    <ButtonBase
+                    <Button
                         label="フィードバック"
                         variant="link"
                         @click="modal_feedback = true"
@@ -47,16 +47,16 @@ const modal_feedback = ref(false);
             <div
                 class="items-center justify-center gap-x-4 gap-y-2 flex flex-wrap"
             >
-                <!-- <ButtonBase
+                <!-- <Button
                     label="Avatioについて"
                     variant="link"
                 /> -->
 
-                <ButtonBase to="/faq" label="FAQ" variant="link" />
+                <Button to="/faq" label="FAQ" variant="link" />
 
-                <ButtonBase to="/terms" label="利用規約" variant="link" />
+                <Button to="/terms" label="利用規約" variant="link" />
 
-                <ButtonBase
+                <Button
                     to="/privacy-policy"
                     label="プライバシーポリシー"
                     variant="link"
@@ -64,7 +64,7 @@ const modal_feedback = ref(false);
             </div>
             <div class="flex gap-1 items-center">
                 <p class="text-zinc-500 text-sm">Copyright © 2025</p>
-                <ButtonBase
+                <Button
                     to="https://liria.work"
                     new-tab
                     label="Liria"

@@ -72,7 +72,7 @@ const Submit = async () => {
 </script>
 
 <template>
-    <ModalBase v-model="vis">
+    <Modal v-model="vis">
         <template #header>
             <div
                 class="w-full px-10 flex flex-row gap-2 items-center justify-center"
@@ -135,13 +135,13 @@ const Submit = async () => {
 
         <template #footer>
             <div class="gap-1.5 flex items-center justify-between">
-                <ButtonBase
+                <Button
                     label="キャンセル"
                     variant="flat"
                     @click="vis = false"
                 />
-                <ButtonBase label="報告" @click="Submit" />
+                <Button label="報告" @click="Submit" />
             </div>
         </template>
-    </ModalBase>
+    </Modal>
 </template>

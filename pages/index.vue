@@ -21,7 +21,7 @@ useOGP({
         <div v-if="user" class="flex flex-col items-start gap-5 w-full">
             <UiTitle label="ホーム" size="lg" />
             <div class="flex flex-wrap items-center gap-1">
-                <ButtonBase
+                <Button
                     label="最新"
                     variant="flat"
                     :class="[
@@ -30,7 +30,7 @@ useOGP({
                     ]"
                     @click="mode = 'all'"
                 />
-                <ButtonBase
+                <Button
                     label="自分の投稿"
                     variant="flat"
                     :class="[
@@ -39,7 +39,7 @@ useOGP({
                     ]"
                     @click="mode = 'mine'"
                 />
-                <ButtonBase
+                <Button
                     label="ブックマーク"
                     variant="flat"
                     :class="[

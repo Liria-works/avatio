@@ -13,7 +13,7 @@ const emit = defineEmits(['accept', 'close']);
 </script>
 
 <template>
-    <ModalBase v-model="vis">
+    <Modal v-model="vis">
         <template #header>
             <UiTitle
                 label="ベースアバターの置換"
@@ -33,15 +33,15 @@ const emit = defineEmits(['accept', 'close']);
 
         <template #footer>
             <div class="w-full flex gap-2 items-center justify-end">
-                <ButtonBase
+                <Button
                     label="置換"
                     @click="
                         emit('accept');
                         emit('close');
                     "
                 />
-                <ButtonBase label="キャンセル" @click="() => emit('close')" />
+                <Button label="キャンセル" @click="() => emit('close')" />
             </div>
         </template>
-    </ModalBase>
+    </Modal>
 </template>

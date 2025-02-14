@@ -70,12 +70,12 @@ watch(input, handleInputChange);
 
 <template>
     <div class="w-full flex flex-col gap-2">
-        <PopupBase v-if="model.length < 5" side="top">
+        <Popup v-if="model.length < 5" side="top">
             <template #trigger>
-                <ButtonBase variant="flat">
+                <Button variant="flat">
                     <Icon name="lucide:plus" size="18" />
                     <span>ユーザーを追加</span>
-                </ButtonBase>
+                </Button>
             </template>
 
             <template #panel>
@@ -93,7 +93,7 @@ watch(input, handleInputChange);
                     />
 
                     <div v-else class="empty:hidden flex flex-col gap-1">
-                        <ButtonBase
+                        <Button
                             v-for="i in searchedUsers"
                             :key="`coauthor-${i.id}`"
                             variant="flat"
@@ -111,11 +111,11 @@ watch(input, handleInputChange);
                                 :alt="i.name"
                             />
                             <span>{{ i.name }}</span>
-                        </ButtonBase>
+                        </Button>
                     </div>
                 </div>
             </template>
-        </PopupBase>
+        </Popup>
         <EditCoAuthorItem
             v-for="(i, index) in model"
             :key="`coauthor-${index}`"

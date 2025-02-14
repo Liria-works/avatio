@@ -106,7 +106,7 @@ onMounted(async () => {
                         </div>
 
                         <div class="flex items-center gap-1">
-                            <ButtonBase
+                            <Button
                                 v-if="user?.id !== data.author.id"
                                 :tooltip="
                                     bookmark
@@ -133,7 +133,7 @@ onMounted(async () => {
                                 @click="toggleBookmark"
                             />
 
-                            <ButtonBase
+                            <Button
                                 v-if="user?.id === data.author.id"
                                 tooltip="削除"
                                 aria-label="削除"
@@ -150,7 +150,7 @@ onMounted(async () => {
                                 :setup-description="data.description ?? ''"
                                 :setup-author="data.author.name"
                             >
-                                <ButtonBase
+                                <Button
                                     icon="lucide:share-2"
                                     :icon-size="18"
                                     tooltip="シェア"
@@ -194,7 +194,7 @@ onMounted(async () => {
                         v-if="data.tags && data.tags.length"
                         class="items-center gap-1.5 flex flex-row flex-wrap"
                     >
-                        <ButtonBase
+                        <Button
                             v-for="tag in data.tags"
                             :key="useId()"
                             :label="tag"
@@ -332,7 +332,7 @@ onMounted(async () => {
                     class="hidden xl:flex flex-wrap items-center gap-1.5"
                 >
                     <li v-for="tag in data.tags" :key="useId()">
-                        <ButtonBase
+                        <Button
                             :label="tag"
                             class="rounded-full"
                             @click="navigateTo(`/search?tag=${tag}`)"
@@ -385,7 +385,7 @@ onMounted(async () => {
             </div>
         </div>
 
-        <ButtonBase
+        <Button
             label="セットアップを報告"
             icon="lucide:flag"
             :icon-size="16"
@@ -398,7 +398,7 @@ onMounted(async () => {
             "
         />
 
-        <ModalBase v-model="modalLogin">
+        <Modal v-model="modalLogin">
             <UiLogin
                 :redirect="`/setup/${route.params.id}`"
                 @login-success="
@@ -409,7 +409,7 @@ onMounted(async () => {
                     })();
                 "
             />
-        </ModalBase>
+        </Modal>
 
         <ModalReportSetup v-model="modalReport" :id="Number(id)" />
         <ModalDeleteSetup v-model="modalDelete" :id="Number(id)" />

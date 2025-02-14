@@ -21,7 +21,7 @@ watch(modal, (newValue) => {
 </script>
 
 <template>
-    <ButtonBase
+    <Button
         :tooltip="props.link"
         :aria-label="props.link"
         variant="flat"
@@ -33,9 +33,9 @@ watch(modal, (newValue) => {
             :size="data.iconSize"
             class="bg-zinc-700 dark:bg-zinc-300"
         />
-    </ButtonBase>
+    </Button>
 
-    <ModalBase v-model="modal">
+    <Modal v-model="modal">
         <template #header>
             <DialogTitle> 外部サイトに移動します </DialogTitle>
         </template>
@@ -48,7 +48,7 @@ watch(modal, (newValue) => {
         </span>
 
         <template #footer>
-            <ButtonBase
+            <Button
                 :to="props.link"
                 :disabled="!isButtonEnabled"
                 new-tab
@@ -56,5 +56,5 @@ watch(modal, (newValue) => {
                 class="w-full"
             />
         </template>
-    </ModalBase>
+    </Modal>
 </template>

@@ -100,7 +100,7 @@ useOGP({ title: 'ユーザー設定' });
                 size="lg"
                 is="h1"
             />
-            <ButtonBase label="保存" @click="save" />
+            <Button label="保存" @click="save" />
         </div>
         <UserSettingName v-model="name" />
         <UserSettingAvatar v-model="avatar" />

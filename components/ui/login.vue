@@ -27,7 +27,7 @@ const handleLogin = async () => {
         <div class="min-w-80 flex flex-col gap-4 items-center">
             <div class="font-bold text-2xl my-4">ログイン</div>
 
-            <ButtonBase
+            <Button
                 :disabled="!token"
                 variant="outline"
                 label="X アカウントでログイン"
@@ -46,7 +46,7 @@ const handleLogin = async () => {
                     v-model="mailAddressLogin.password"
                     type="password"
                 />
-                <ButtonBase
+                <Button
                     :disabled="!token"
                     variant="outline"
                     label="Mail address login"

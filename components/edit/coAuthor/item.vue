@@ -21,9 +21,9 @@ const note = defineModel<string>('note', {
         <div class="flex gap-1.5 items-center">
             <UiAvatar :url="props.avatar" alt="co-author" />
             <span class="grow text-sm leading-none">{{ props.name }}</span>
-            <ButtonBase variant="flat" class="p-2" @click="emit('remove')">
+            <Button variant="flat" class="p-2" @click="emit('remove')">
                 <Icon name="lucide:x" size="16" />
-            </ButtonBase>
+            </Button>
         </div>
         <UiTextinput v-model="note" placeholder="ノート">
             <template #trailing>

@@ -31,7 +31,7 @@ const save = async () => await storage.set('ownerWarningBanner', true);
             {{ useSentence('よりご連絡をお願いします。') }}
         </p>
 
-        <ButtonBase
+        <Button
             icon="lucide:x"
             variant="flat"
             class="place-self-end rounded-full p-2"

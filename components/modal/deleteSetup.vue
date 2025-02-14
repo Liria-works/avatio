@@ -9,7 +9,7 @@ const vis = defineModel<boolean>({
 </script>
 
 <template>
-    <ModalBase v-model="vis">
+    <Modal v-model="vis">
         <template #header>
             <UiTitle label="セットアップ削除" icon="lucide:trash" />
         </template>
@@ -23,7 +23,7 @@ const vis = defineModel<boolean>({
 
         <template #footer>
             <div class="flex gap-2 items-center justify-end">
-                <ButtonBase
+                <Button
                     label="削除"
                     class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
                     @click="
@@ -31,8 +31,8 @@ const vis = defineModel<boolean>({
                         vis = false;
                     "
                 />
-                <ButtonBase label="キャンセル" @click="vis = false" />
+                <Button label="キャンセル" @click="vis = false" />
             </div>
         </template>
-    </ModalBase>
+    </Modal>
 </template>
