@@ -27,6 +27,8 @@ interface Errors {
         insertItems: ErrorType;
         insertTags: ErrorType;
         insertImages: ErrorType;
+        tooLongDescription: ErrorType;
+        tooManyTags: ErrorType;
     };
 }
 
@@ -128,6 +130,16 @@ export default (): Errors => {
                 status: 33,
                 message: 'Failed to insert on DB. Table: setup_images',
                 client: { title: 'データベースへの登録に失敗しました。' },
+            },
+            tooLongDescription: {
+                status: 34,
+                message: 'Description is too long.',
+                client: { title: '説明文は最大140字までです。' },
+            },
+            tooManyTags: {
+                status: 35,
+                message: 'Too many tags.',
+                client: { title: 'タグは最大8個まで登録可能です。' },
             },
         },
     };

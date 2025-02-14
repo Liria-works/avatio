@@ -32,6 +32,12 @@ export default defineEventHandler(
         if (!body.name || !body.name.length)
             return returnError(getErrors().publishSetup.noTitle);
 
+        if (body.description && body.description.length > 140)
+            return returnError(getErrors().publishSetup.tooLongDescription);
+
+        if (body.tags.length > 8)
+            return returnError(getErrors().publishSetup.tooManyTags);
+
         const { data: itemsDB } = await supabase
             .from('items')
             .select('id, category')

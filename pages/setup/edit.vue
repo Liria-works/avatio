@@ -34,6 +34,14 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     if (!title.value || !title.value.length)
         return returnError(getErrors().publishSetup.noTitle.client.title);
 
+    if (description.value.length > 140)
+        return returnError(
+            getErrors().publishSetup.tooLongDescription.client.title
+        );
+
+    if (tags.value.length > 8)
+        return returnError(getErrors().publishSetup.tooManyTags.client.title);
+
     if (!itemsFlatten.value.filter((i) => i.category === 'avatar').length)
         return returnError(getErrors().publishSetup.noAvatar.client.title);
     if (itemsFlatten.value.filter((i) => i.category === 'avatar').length > 1)
@@ -210,31 +218,22 @@ useOGP({ title: 'セットアップ作成' });
                 <EditImage v-model="image" />
 
                 <div class="w-full flex flex-col items-start gap-3">
-                    <UiTitle label="説明" icon="lucide:text" />
-                    <div class="w-full flex flex-col gap-1 items-end">
-                        <UiTextarea
-                            v-model="description"
-                            placeholder="説明を入力"
-                            :class="`w-full p-3 rounded-lg ${
-                                description.length < 141 ||
-                                'ring-red-400 dark:ring-red-400'
-                            }`"
-                        />
-
-                        <span
-                            :class="`text-sm pr-1 ${
-                                description.length < 141
-                                    ? 'text-zinc-500 dark:text-zinc-500'
-                                    : 'text-red-500 dark:text-red-400'
-                            }`"
-                        >
-                            {{ description.length }} / 140
-                        </span>
+                    <div class="w-full flex gap-2 items-center justify-between">
+                        <UiTitle label="説明" icon="lucide:text" />
+                        <UiCount :count="description.length" :max="140" />
                     </div>
+                    <UiTextarea
+                        v-model="description"
+                        placeholder="説明を入力"
+                        class="w-full"
+                    />
                 </div>
 
                 <div class="w-full flex flex-col items-start gap-3">
-                    <UiTitle label="タグ" icon="lucide:tags" />
+                    <div class="w-full flex gap-2 items-center justify-between">
+                        <UiTitle label="タグ" icon="lucide:tags" />
+                        <UiCount :count="tags.length" :max="8" />
+                    </div>
                     <EditTags v-model="tags" />
                 </div>
             </div>
