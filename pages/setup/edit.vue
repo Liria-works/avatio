@@ -15,6 +15,14 @@ const { undo, redo } = useRefHistory(items, { deep: true });
 const title = ref<string>('');
 const description = ref<string>('');
 const tags = ref<string[]>([]);
+const coAuthors = ref<
+    {
+        id: string;
+        name: string;
+        avatar: string;
+        note: string;
+    }[]
+>([]);
 const image = ref<File | null>(null);
 
 const itemsFlatten = computed(() => [
@@ -28,6 +36,7 @@ const limits = {
     title: 64,
     description: 140,
     tags: 8,
+    coAuthors: 5,
     avatar: 1,
     items: 32,
 };
@@ -39,7 +48,7 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
         return true;
     };
 
-    if (!title.value || !title.value.length)
+    if (!title.value?.length)
         return returnError(getErrors().publishSetup.noTitle.client.title);
 
     if (title.value.length > limits.title)
@@ -53,21 +62,22 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     if (tags.value.length > limits.tags)
         return returnError(getErrors().publishSetup.tooManyTags.client.title);
 
-    if (!itemsFlatten.value.filter((i) => i.category === 'avatar').length)
+    const avatarCount = itemsFlatten.value.filter(
+        (i) => i.category === 'avatar'
+    ).length;
+    const nonAvatarCount = itemsFlatten.value.filter(
+        (i) => i.category !== 'avatar'
+    ).length;
+
+    if (!avatarCount)
         return returnError(getErrors().publishSetup.noAvatar.client.title);
-    if (
-        itemsFlatten.value.filter((i) => i.category === 'avatar').length >
-        limits.avatar
-    )
+    if (avatarCount > limits.avatar)
         return returnError(
             getErrors().publishSetup.tooManyAvatars.client.title
         );
-    if (!itemsFlatten.value.filter((i) => i.category !== 'avatar').length)
+    if (!nonAvatarCount)
         return returnError(getErrors().publishSetup.noItems.client.title);
-    if (
-        itemsFlatten.value.filter((i) => i.category !== 'avatar').length >
-        limits.items
-    )
+    if (nonAvatarCount > limits.items)
         return returnError(getErrors().publishSetup.tooManyItems.client.title);
 
     return false;
@@ -92,6 +102,10 @@ const PublishSetup = async () => {
             name: title.value,
             description: description.value,
             tags: tags.value,
+            coAuthors: coAuthors.value.map((i) => ({
+                id: i.id,
+                note: i.note,
+            })),
             items: itemsFlatten.value.map((i) => ({
                 id: i.id,
                 note: i.note,
@@ -115,24 +129,23 @@ const PublishSetup = async () => {
     navigateTo(`/setup/${response.data.id}`);
 };
 
-onBeforeRouteLeave(
-    (to: unknown, from: unknown, next: (arg0: boolean | undefined) => void) => {
-        if (skip_router_hook.value) return next(true);
+onBeforeRouteLeave((to, from, next) => {
+    if (skip_router_hook.value) return next(true);
 
-        if (
-            title.value ||
-            description.value ||
-            tags.value.length ||
-            itemsFlatten.value.length
-        ) {
-            const answer = window.confirm(
-                '入力された内容が破棄されます。よろしいですか？'
-            );
-            if (answer) next(true);
-            else next(false);
-        } else next(true);
+    const hasChanges =
+        title.value ||
+        description.value.length ||
+        tags.value.length ||
+        itemsFlatten.value.length;
+
+    if (hasChanges) {
+        const answer = window.confirm(
+            '入力された内容が破棄されます。よろしいですか？'
+        );
+        return next(answer);
     }
-);
+    return next(true);
+});
 
 useOGP({ title: 'セットアップ作成' });
 </script>
@@ -255,6 +268,17 @@ useOGP({ title: 'セットアップ作成' });
                         <UiCount :count="tags.length" :max="limits.tags" />
                     </div>
                     <EditTags v-model="tags" />
+                </div>
+
+                <div class="w-full flex flex-col items-start gap-3">
+                    <div class="w-full flex gap-2 items-center justify-between">
+                        <UiTitle label="共同作者" icon="lucide:users-round" />
+                        <UiCount
+                            :count="coAuthors.length"
+                            :max="limits.coAuthors"
+                        />
+                    </div>
+                    <EditCoAuthor v-model="coAuthors" />
                 </div>
             </div>
         </div>

@@ -202,6 +202,49 @@ onMounted(async () => {
                             @click="navigateTo(`/search?tag=${tag}`)"
                         />
                     </div>
+
+                    <div
+                        v-if="data.co_authors?.length"
+                        class="self-stretch rounded-lg flex flex-col gap-3"
+                    >
+                        <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                            共同作者
+                        </h2>
+                        <ul class="flex flex-col gap-2 pl-1">
+                            <li
+                                v-for="coAuthor in data.co_authors"
+                                :key="coAuthor.id"
+                                class="p-2 rounded-lg flex flex-col gap-1.5 ring-1 ring-zinc-300 dark:ring-zinc-700"
+                            >
+                                <NuxtLink
+                                    :to="`/@${coAuthor.id}`"
+                                    class="flex flex-row gap-3 items-center"
+                                >
+                                    <UiAvatar
+                                        :url="
+                                            coAuthor.avatar
+                                                ? useGetImage(coAuthor.avatar, {
+                                                      prefix: 'avatar',
+                                                  })
+                                                : ''
+                                        "
+                                        :alt="coAuthor.name"
+                                    />
+                                    <p
+                                        class="text-black dark:text-white pb-0.5 text-left font-normal"
+                                    >
+                                        {{ coAuthor.name }}
+                                    </p>
+                                </NuxtLink>
+                                <p
+                                    v-if="coAuthor.note.length"
+                                    class="pl-1 text-sm text-zinc-600 dark:text-zinc-400"
+                                >
+                                    {{ coAuthor.note }}
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="w-full flex flex-col gap-3">
@@ -296,6 +339,49 @@ onMounted(async () => {
                         />
                     </li>
                 </ul>
+
+                <div
+                    v-if="data.co_authors?.length"
+                    class="hidden xl:flex flex-col self-stretch rounded-lg gap-3"
+                >
+                    <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                        共同作者
+                    </h2>
+                    <ul class="flex flex-col gap-2 pl-1">
+                        <li
+                            v-for="coAuthor in data.co_authors"
+                            :key="coAuthor.id"
+                            class="p-2 rounded-lg flex flex-col gap-1.5 ring-1 ring-zinc-300 dark:ring-zinc-700"
+                        >
+                            <NuxtLink
+                                :to="`/@${coAuthor.id}`"
+                                class="flex flex-row gap-3 items-center"
+                            >
+                                <UiAvatar
+                                    :url="
+                                        coAuthor.avatar
+                                            ? useGetImage(coAuthor.avatar, {
+                                                  prefix: 'avatar',
+                                              })
+                                            : ''
+                                    "
+                                    :alt="coAuthor.name"
+                                />
+                                <p
+                                    class="text-black dark:text-white pb-0.5 text-left font-normal"
+                                >
+                                    {{ coAuthor.name }}
+                                </p>
+                            </NuxtLink>
+                            <p
+                                v-if="coAuthor.note.length"
+                                class="pl-1 text-sm text-zinc-600 dark:text-zinc-400"
+                            >
+                                {{ coAuthor.note }}
+                            </p>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 

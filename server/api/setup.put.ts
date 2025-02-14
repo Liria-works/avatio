@@ -6,6 +6,7 @@ export interface RequestBody {
     name: string;
     description: string;
     tags: string[];
+    coAuthors: { id: string; note: string }[];
     image: string | null;
     items: { id: number; note: string; unsupported: boolean }[];
 }
@@ -37,6 +38,9 @@ export default defineEventHandler(
 
         if (body.tags.length > 8)
             return returnError(getErrors().publishSetup.tooManyTags);
+
+        if (body.coAuthors.length > 5)
+            return returnError(getErrors().publishSetup.tooManyCoAuthors);
 
         const { data: itemsDB } = await supabase
             .from('items')
@@ -128,6 +132,21 @@ export default defineEventHandler(
         );
 
         if (tagsError) return returnError(getErrors().publishSetup.insertTags);
+
+        const { error: coAuthorError } = await supabase
+            .from('setup_coauthors')
+            .insert(
+                body.coAuthors.map((i) => {
+                    return {
+                        setup_id: setupData.id,
+                        user_id: i.id,
+                        note: i.note,
+                    };
+                })
+            );
+
+        if (coAuthorError)
+            return returnError(getErrors().publishSetup.insertCoAuthors);
 
         if (image) {
             const { error: imageError } = await supabase

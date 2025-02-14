@@ -50,7 +50,15 @@ export default defineEventHandler(
                     note,
                     unsupported
                 ),
-                tags:setup_tags(tag)
+                tags:setup_tags(tag),
+                co_authors:setup_coauthors(
+                    user_id(
+                        id,
+                        name,
+                        avatar
+                    ),
+                    note
+                )
                 `
             )
             .eq('id', Number(query.id))
@@ -94,6 +102,12 @@ export default defineEventHandler(
                 name: data.name,
                 description: data.description,
                 tags: data.tags.map((t) => t.tag),
+                co_authors: data.co_authors.map((c) => ({
+                    id: c.user_id.id,
+                    name: c.user_id.name || 'Unknown',
+                    avatar: c.user_id.avatar,
+                    note: c.note,
+                })),
                 images: data.images,
                 items: items.items,
             },
