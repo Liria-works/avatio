@@ -30,6 +30,8 @@ interface Errors {
         tooLongDescription: ErrorType;
         tooManyTags: ErrorType;
         tooLongTitle: ErrorType;
+        tooManyCoAuthors: ErrorType;
+        insertCoAuthors: ErrorType;
     };
 }
 
@@ -146,6 +148,16 @@ export default (): Errors => {
                 status: 36,
                 message: 'Title is too long.',
                 client: { title: 'タイトルは最大64字までです。' },
+            },
+            tooManyCoAuthors: {
+                status: 37,
+                message: 'Too many co-authors.',
+                client: { title: '共同投稿者は最大5人までです。' },
+            },
+            insertCoAuthors: {
+                status: 34,
+                message: 'Failed to insert on DB. Table: setup_coauthors',
+                client: { title: 'データベースへの登録に失敗しました。' },
             },
         },
     };

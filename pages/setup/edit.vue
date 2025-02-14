@@ -29,6 +29,7 @@ const limits = {
     title: 64,
     description: 140,
     tags: 8,
+    coAuthors: 5,
     avatar: 1,
     items: 32,
 };
@@ -93,6 +94,7 @@ const PublishSetup = async () => {
             name: title.value,
             description: description.value,
             tags: tags.value,
+            coAuthors: coAuthors.value,
             items: itemsFlatten.value.map((i) => ({
                 id: i.id,
                 note: i.note,
@@ -261,7 +263,10 @@ useOGP({ title: 'セットアップ作成' });
                 <div class="w-full flex flex-col items-start gap-3">
                     <div class="w-full flex gap-2 items-center justify-between">
                         <UiTitle label="共同作者" icon="lucide:users-round" />
-                        <UiCount :count="coAuthors.length" :max="5" />
+                        <UiCount
+                            :count="coAuthors.length"
+                            :max="limits.coAuthors"
+                        />
                     </div>
                     <EditCoAuthor v-model="coAuthors" />
                 </div>
