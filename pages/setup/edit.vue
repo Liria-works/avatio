@@ -15,6 +15,7 @@ const { undo, redo } = useRefHistory(items, { deep: true });
 const title = ref<string>('');
 const description = ref<string>('');
 const tags = ref<string[]>([]);
+const coAuthors = ref<{ id: string; note: string }[]>([]);
 const image = ref<File | null>(null);
 
 const itemsFlatten = computed(() => [
@@ -255,6 +256,14 @@ useOGP({ title: 'セットアップ作成' });
                         <UiCount :count="tags.length" :max="limits.tags" />
                     </div>
                     <EditTags v-model="tags" />
+                </div>
+
+                <div class="w-full flex flex-col items-start gap-3">
+                    <div class="w-full flex gap-2 items-center justify-between">
+                        <UiTitle label="共同作者" icon="lucide:users-round" />
+                        <UiCount :count="coAuthors.length" :max="5" />
+                    </div>
+                    <EditCoAuthor v-model="coAuthors" />
                 </div>
             </div>
         </div>
