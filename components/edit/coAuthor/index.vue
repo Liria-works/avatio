@@ -78,7 +78,7 @@ watch(input, handleInputChange);
                 </Button>
             </template>
 
-            <template #panel>
+            <template #content>
                 <div class="flex flex-col gap-2 text-sm min-w-48">
                     <UiTextinput
                         v-model="input"

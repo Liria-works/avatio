@@ -86,7 +86,7 @@ onMounted(async () => {
             <template #trigger>
                 <Button icon="lucide:menu" variant="flat" class="sm:hidden" />
             </template>
-            <template #panel>
+            <template #content>
                 <div class="flex flex-col items-center gap-1">
                     <Button
                         to="/search"
