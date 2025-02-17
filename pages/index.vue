@@ -16,17 +16,12 @@ useOGP({
 
 <template>
     <div class="w-full flex flex-col gap-6">
-        <ClientOnly>
-            <div class="empty:hidden -mt-2 flex flex-col gap-2">
-                <BannerWelcome />
-                <BannerOwnerWarning />
-            </div>
-        </ClientOnly>
+        <Hero v-if="!user" />
 
-        <div class="flex flex-col items-start gap-5 w-full">
+        <div v-if="user" class="flex flex-col items-start gap-5 w-full">
             <UiTitle label="ホーム" size="lg" />
             <div class="flex flex-wrap items-center gap-1">
-                <ButtonBase
+                <Button
                     label="最新"
                     variant="flat"
                     :class="[
@@ -35,7 +30,7 @@ useOGP({
                     ]"
                     @click="mode = 'all'"
                 />
-                <ButtonBase
+                <Button
                     label="自分の投稿"
                     variant="flat"
                     :class="[
@@ -44,7 +39,7 @@ useOGP({
                     ]"
                     @click="mode = 'mine'"
                 />
-                <ButtonBase
+                <Button
                     label="ブックマーク"
                     variant="flat"
                     :class="[
@@ -64,5 +59,7 @@ useOGP({
             />
             <SetupsListBookmarks v-else-if="mode === 'bookmark'" />
         </div>
+
+        <SetupsListHome v-else />
     </div>
 </template>

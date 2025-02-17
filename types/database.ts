@@ -294,17 +294,17 @@ export type Database = {
                 };
                 Relationships: [
                     {
-                        foreignKeyName: 'report_setup_id_fkey';
-                        columns: ['setup_id'];
-                        isOneToOne: false;
-                        referencedRelation: 'setups';
-                        referencedColumns: ['id'];
-                    },
-                    {
                         foreignKeyName: 'report_setup_reporter_fkey';
                         columns: ['reporter'];
                         isOneToOne: false;
                         referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'report_setup_setup_id_fkey';
+                        columns: ['setup_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'setups';
                         referencedColumns: ['id'];
                     },
                 ];
@@ -355,15 +355,51 @@ export type Database = {
                         referencedColumns: ['id'];
                     },
                     {
+                        foreignKeyName: 'report_user_reportee_fkey1';
+                        columns: ['reportee'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    },
+                    {
                         foreignKeyName: 'report_user_reporter_fkey';
                         columns: ['reporter'];
                         isOneToOne: false;
                         referencedRelation: 'users';
                         referencedColumns: ['id'];
                     },
+                ];
+            };
+            setup_coauthors: {
+                Row: {
+                    id: number;
+                    note: string;
+                    setup_id: number;
+                    user_id: string;
+                };
+                Insert: {
+                    id?: number;
+                    note?: string;
+                    setup_id: number;
+                    user_id: string;
+                };
+                Update: {
+                    id?: number;
+                    note?: string;
+                    setup_id?: number;
+                    user_id?: string;
+                };
+                Relationships: [
                     {
-                        foreignKeyName: 'report_user_user_id_fkey';
-                        columns: ['reportee'];
+                        foreignKeyName: 'setup_coauthor_setup_id_fkey';
+                        columns: ['setup_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'setups';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'setup_coauthor_user_id_fkey';
+                        columns: ['user_id'];
                         isOneToOne: false;
                         referencedRelation: 'users';
                         referencedColumns: ['id'];
@@ -629,6 +665,13 @@ export type Database = {
                     tag: string;
                     score: number;
                 }[];
+            };
+            search_users: {
+                Args: {
+                    keyword: string;
+                    num: number;
+                };
+                Returns: Json;
             };
             tags_order_by_count: {
                 Args: Record<PropertyKey, never>;

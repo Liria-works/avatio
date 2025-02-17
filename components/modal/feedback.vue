@@ -20,7 +20,7 @@ const Submit = async () => {
 </script>
 
 <template>
-    <ModalBase v-model="vis">
+    <Modal v-model="vis">
         <template #header>
             <div class="flex items-center gap-2 justify-between">
                 <DialogTitle>
@@ -51,13 +51,13 @@ const Submit = async () => {
 
         <template #footer>
             <div class="gap-1.5 flex items-center justify-between">
-                <ButtonBase
+                <Button
                     label="キャンセル"
                     variant="flat"
                     @click="vis = false"
                 />
-                <ButtonBase label="送信" @click="Submit" />
+                <Button label="送信" @click="Submit" />
             </div>
         </template>
-    </ModalBase>
+    </Modal>
 </template>

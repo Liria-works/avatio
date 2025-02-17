@@ -26,13 +26,14 @@ const props = withDefaults(defineProps<Props>(), {
                         'bg-zinc-50 dark:bg-zinc-900',
                         'shadow-lg shadow-black/10 dark:shadow-black/50',
                         'border border-zinc-300 dark:border-zinc-600',
-                        'data-[side=top]:mt-2 data-[side=top]:mx-2',
-                        'data-[side=bottom]:mb-2 data-[side=bottom]:mx-2',
-                        'data-[side=left]:ml-2 data-[side=left]:my-2',
-                        'data-[side=right]:mr-2 data-[side=right]:my-2',
+                        'animate-in fade-in',
+                        'data-[side=top]:mt-2 data-[side=top]:mx-2 data-[side=top]:slide-in-from-bottom-1',
+                        'data-[side=bottom]:mb-2 data-[side=bottom]:mx-2 data-[side=bottom]:slide-in-from-top-1',
+                        'data-[side=left]:ml-2 data-[side=left]:my-2 data-[side=left]:slide-in-from-right-1',
+                        'data-[side=right]:mr-2 data-[side=right]:my-2 data-[side=right]:slide-in-from-left-1',
                     ]"
                 >
-                    <slot name="panel" />
+                    <slot name="content" />
                 </div>
                 <PopoverArrow class="fill-zinc-300 dark:fill-zinc-600" />
             </PopoverContent>

@@ -11,7 +11,7 @@ const emit = defineEmits(['click']);
 </script>
 
 <template>
-    <ButtonBase
+    <Button
         :disabled="props.loading"
         label="さらに読み込む"
         :icon="props.loading ? 'svg-spinners:ring-resize' : ''"

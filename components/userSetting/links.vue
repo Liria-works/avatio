@@ -51,14 +51,14 @@ const pasteFromClipboard = async () =>
                 @keyup.enter="addLink"
             >
                 <template #trailing>
-                    <ButtonBase
+                    <Button
                         v-if="!linkInput"
                         variant="flat"
                         icon="lucide:clipboard"
                         class="p-1"
                         @click="pasteFromClipboard"
                     />
-                    <ButtonBase
+                    <Button
                         v-if="linkInput !== ''"
                         variant="flat"
                         icon="lucide:x"
@@ -67,7 +67,7 @@ const pasteFromClipboard = async () =>
                     />
                 </template>
             </UiTextinput>
-            <ButtonBase
+            <Button
                 label="追加"
                 size="sm"
                 class="pr-3 h-[40px]"
@@ -100,7 +100,7 @@ const pasteFromClipboard = async () =>
                 >
                     {{ i }}
                 </span>
-                <ButtonBase
+                <Button
                     icon="lucide:x"
                     variant="flat"
                     class="p-1"

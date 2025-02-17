@@ -195,14 +195,14 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                     @keyup.enter="addItemFromURL"
                 >
                     <template #trailing>
-                        <ButtonBase
+                        <Button
                             v-if="!inputUrl"
                             icon="lucide:clipboard"
                             variant="flat"
                             class="p-1.5"
                             @click="pasteFromClipboard"
                         />
-                        <ButtonBase
+                        <Button
                             v-if="inputUrl !== ''"
                             icon="lucide:x"
                             variant="flat"
@@ -211,7 +211,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         />
                     </template>
                 </UiTextinput>
-                <ButtonBase
+                <Button
                     :disabled="adding"
                     :icon="
                         !adding ? 'lucide:plus' : 'i-svg-spinners-ring-resize'
@@ -224,13 +224,13 @@ quickAvatarsOwned.value = await getOwnedAvatars();
 
             <div class="gap-2 flex flex-wrap items-center justify-between">
                 <div class="self-end gap-1 flex items-center">
-                    <ButtonBase
+                    <Button
                         icon="lucide:undo-2"
                         variant="flat"
                         class="size-9"
                         @click="emit('undo')"
                     />
-                    <ButtonBase
+                    <Button
                         icon="lucide:redo-2"
                         variant="flat"
                         class="size-9"
@@ -251,16 +251,14 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                     </div>
 
                     <div
-                        :class="[
-                            'ml-1 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1',
+                        :data-exceeded="
                             useSum(
                                 items.cloth.length,
                                 items.accessory.length,
                                 items.other.length
                             ).value > 32
-                                ? 'ring-red-500'
-                                : 'ring-zinc-500',
-                        ]"
+                        "
+                        class="ml-1 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1 ring-zinc-500 data-[exceeded=true]:ring-red-500"
                     >
                         <Icon
                             name="lucide:box"
@@ -287,7 +285,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                     </div>
                 </div>
 
-                <ButtonBase
+                <Button
                     icon="lucide:search"
                     label="アバター・アイテムを検索"
                     class="h-9"
@@ -309,7 +307,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                 アイテムが登録されていません
             </p>
             <div class="flex flex-wrap gap-2 items-center justify-center">
-                <ButtonBase
+                <Button
                     v-for="i in quickAvatarsOwned"
                     class="p-1 pr-2.5"
                     @click="addItem(i.id)"
@@ -321,7 +319,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         class="rounded-lg"
                     />
                     <span>{{ useAvatarName(i.name) }}</span>
-                </ButtonBase>
+                </Button>
             </div>
         </div>
 
@@ -345,7 +343,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                         ghost-class="opacity-0"
                         class="flex flex-col gap-2"
                     >
-                        <EditItem
+                        <EditItemsItem
                             v-for="item in value"
                             v-model:note="item.note"
                             v-model:unsupported="item.unsupported"

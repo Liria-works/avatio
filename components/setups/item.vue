@@ -181,7 +181,7 @@ onMounted(async () => {
                         />
                     </UiTooltip>
 
-                    <ButtonBase
+                    <Button
                         v-if="!props.noAction"
                         :to="{ name: 'search', query: { item: props.item.id } }"
                         icon="lucide:search"

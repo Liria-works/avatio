@@ -106,7 +106,7 @@ onMounted(async () => {
                         </div>
 
                         <div class="flex items-center gap-1">
-                            <ButtonBase
+                            <Button
                                 v-if="user?.id !== data.author.id"
                                 :tooltip="
                                     bookmark
@@ -133,7 +133,7 @@ onMounted(async () => {
                                 @click="toggleBookmark"
                             />
 
-                            <ButtonBase
+                            <Button
                                 v-if="user?.id === data.author.id"
                                 tooltip="削除"
                                 aria-label="削除"
@@ -150,7 +150,7 @@ onMounted(async () => {
                                 :setup-description="data.description ?? ''"
                                 :setup-author="data.author.name"
                             >
-                                <ButtonBase
+                                <Button
                                     icon="lucide:share-2"
                                     :icon-size="18"
                                     tooltip="シェア"
@@ -177,6 +177,19 @@ onMounted(async () => {
 
                 <div class="self-stretch flex xl:hidden flex-col gap-3">
                     <div
+                        v-if="data.tags && data.tags.length"
+                        class="items-center gap-1.5 flex flex-row flex-wrap"
+                    >
+                        <Button
+                            v-for="tag in data.tags"
+                            :key="useId()"
+                            :label="tag"
+                            class="rounded-full"
+                            @click="navigateTo(`/search?tag=${tag}`)"
+                        />
+                    </div>
+
+                    <div
                         v-if="data.description"
                         class="self-stretch rounded-lg flex flex-col gap-1.5"
                     >
@@ -184,23 +197,53 @@ onMounted(async () => {
                             説明
                         </h2>
                         <p
-                            class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
+                            class="pl-1 text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                         >
                             {{ useSentence(data.description) }}
                         </p>
                     </div>
 
                     <div
-                        v-if="data.tags && data.tags.length"
-                        class="items-center gap-1.5 flex flex-row flex-wrap"
+                        v-if="data.co_authors?.length"
+                        class="self-stretch rounded-lg flex flex-col gap-3"
                     >
-                        <ButtonBase
-                            v-for="tag in data.tags"
-                            :key="useId()"
-                            :label="tag"
-                            class="rounded-full"
-                            @click="navigateTo(`/search?tag=${tag}`)"
-                        />
+                        <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                            共同作者
+                        </h2>
+                        <ul class="flex flex-col gap-2 pl-1">
+                            <li
+                                v-for="coAuthor in data.co_authors"
+                                :key="coAuthor.id"
+                                class="p-2 rounded-lg flex flex-col gap-1.5 ring-1 ring-zinc-300 dark:ring-zinc-700"
+                            >
+                                <NuxtLink
+                                    :to="`/@${coAuthor.id}`"
+                                    class="flex flex-row gap-3 items-center"
+                                >
+                                    <UiAvatar
+                                        :url="
+                                            coAuthor.avatar
+                                                ? useGetImage(coAuthor.avatar, {
+                                                      prefix: 'avatar',
+                                                  })
+                                                : ''
+                                        "
+                                        :alt="coAuthor.name"
+                                    />
+                                    <p
+                                        class="text-black dark:text-white pb-0.5 text-left font-normal"
+                                    >
+                                        {{ coAuthor.name }}
+                                    </p>
+                                </NuxtLink>
+                                <p
+                                    v-if="coAuthor.note.length"
+                                    class="pl-1 text-sm text-zinc-600 dark:text-zinc-400"
+                                >
+                                    {{ coAuthor.note }}
+                                </p>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
@@ -270,6 +313,19 @@ onMounted(async () => {
             <div
                 class="empty:hidden w-full xl:w-[440px] xl:pt-12 flex flex-col gap-6"
             >
+                <ul
+                    v-if="data.tags && data.tags.length"
+                    class="hidden xl:flex flex-wrap items-center gap-1.5"
+                >
+                    <li v-for="tag in data.tags" :key="useId()">
+                        <Button
+                            :label="tag"
+                            class="rounded-full"
+                            @click="navigateTo(`/search?tag=${tag}`)"
+                        />
+                    </li>
+                </ul>
+
                 <div
                     v-if="data.description"
                     class="hidden xl:flex flex-col self-stretch rounded-xl gap-1.5"
@@ -278,28 +334,58 @@ onMounted(async () => {
                         説明
                     </h2>
                     <p
-                        class="text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
+                        class="pl-1 text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                     >
                         {{ useSentence(data.description) }}
                     </p>
                 </div>
 
-                <ul
-                    v-if="data.tags && data.tags.length"
-                    class="hidden xl:flex flex-wrap items-center gap-1.5"
+                <div
+                    v-if="data.co_authors?.length"
+                    class="hidden xl:flex flex-col self-stretch rounded-lg gap-3"
                 >
-                    <li v-for="tag in data.tags" :key="useId()">
-                        <ButtonBase
-                            :label="tag"
-                            class="rounded-full"
-                            @click="navigateTo(`/search?tag=${tag}`)"
-                        />
-                    </li>
-                </ul>
+                    <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                        共同作者
+                    </h2>
+                    <ul class="flex flex-col gap-2 pl-1">
+                        <li
+                            v-for="coAuthor in data.co_authors"
+                            :key="coAuthor.id"
+                            class="p-2 rounded-lg flex flex-col gap-1.5 ring-1 ring-zinc-300 dark:ring-zinc-700"
+                        >
+                            <NuxtLink
+                                :to="`/@${coAuthor.id}`"
+                                class="flex flex-row gap-3 items-center"
+                            >
+                                <UiAvatar
+                                    :url="
+                                        coAuthor.avatar
+                                            ? useGetImage(coAuthor.avatar, {
+                                                  prefix: 'avatar',
+                                              })
+                                            : ''
+                                    "
+                                    :alt="coAuthor.name"
+                                />
+                                <p
+                                    class="text-black dark:text-white pb-0.5 text-left font-normal"
+                                >
+                                    {{ coAuthor.name }}
+                                </p>
+                            </NuxtLink>
+                            <p
+                                v-if="coAuthor.note.length"
+                                class="pl-1 text-sm text-zinc-600 dark:text-zinc-400"
+                            >
+                                {{ coAuthor.note }}
+                            </p>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <ButtonBase
+        <Button
             label="セットアップを報告"
             icon="lucide:flag"
             :icon-size="16"
@@ -312,7 +398,7 @@ onMounted(async () => {
             "
         />
 
-        <ModalBase v-model="modalLogin">
+        <Modal v-model="modalLogin">
             <UiLogin
                 :redirect="`/setup/${route.params.id}`"
                 @login-success="
@@ -323,7 +409,7 @@ onMounted(async () => {
                     })();
                 "
             />
-        </ModalBase>
+        </Modal>
 
         <ModalReportSetup v-model="modalReport" :id="Number(id)" />
         <ModalDeleteSetup v-model="modalDelete" :id="Number(id)" />

@@ -62,6 +62,7 @@ export interface SetupBase {
 
 export interface SetupDB extends SetupBase {
     tags: { tag: string }[];
+    co_authors: { id: string; note: string }[];
     items: {
         data: Item;
         note: string;
@@ -71,6 +72,7 @@ export interface SetupDB extends SetupBase {
 
 export interface SetupClient extends SetupBase {
     tags: string[];
+    co_authors: (Author & { note: string })[];
     items: {
         avatar: SetupItem[];
         cloth: SetupItem[];

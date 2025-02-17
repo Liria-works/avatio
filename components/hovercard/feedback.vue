@@ -1,7 +1,7 @@
 <script lang="ts" setup></script>
 
 <template>
-    <HovercardBase>
+    <Hovercard>
         <template #trigger>
             <slot />
         </template>
@@ -14,5 +14,5 @@
                 </p>
             </DialogDescription>
         </template>
-    </HovercardBase>
+    </Hovercard>
 </template>

@@ -52,7 +52,7 @@ watch(categoryFilter, () => {
 </script>
 
 <template>
-    <ModalBase v-model="vis">
+    <Modal v-model="vis">
         <template #header>
             <UiTextinput
                 v-model="searchWord"
@@ -91,7 +91,7 @@ watch(categoryFilter, () => {
             class="w-full max-h-[60vh] flex flex-col gap-5"
         >
             <div class="p-1 shrink-0 flex items-center gap-1 overflow-y-auto">
-                <ButtonBase
+                <Button
                     v-for="c in Object.values(itemCategories())"
                     :label="c.label"
                     :class="[
@@ -137,7 +137,7 @@ watch(categoryFilter, () => {
                         >
                             <UiTitle :label="c.label" :icon="c.icon" />
                             <div class="flex flex-col gap-2 px-3">
-                                <ButtonBase
+                                <Button
                                     v-for="i in searchItems.filter((item) =>
                                         c.id
                                             ? item.category === c.id
@@ -172,7 +172,7 @@ watch(categoryFilter, () => {
                                     >
                                         {{ i.shop }}
                                     </p>
-                                </ButtonBase>
+                                </Button>
                             </div>
                         </template>
                     </div>
@@ -186,5 +186,5 @@ watch(categoryFilter, () => {
                 <Icon name="i-svg-spinners-ring-resize" />
             </div>
         </div>
-    </ModalBase>
+    </Modal>
 </template>

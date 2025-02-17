@@ -16,7 +16,7 @@ const modalDeleteUser = ref<boolean>(false);
                 <div class="flex flex-col gap-1">
                     <h3 class="text-sm font-semibold">パスワード変更</h3>
                 </div>
-                <ButtonBase
+                <Button
                     label="パスワード変更"
                     class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
                     @click="modalDeleteUser = true"
@@ -36,7 +36,7 @@ const modalDeleteUser = ref<boolean>(false);
                         削除したアカウントは復元できません。
                     </p>
                 </div>
-                <ButtonBase
+                <Button
                     label="アカウント削除"
                     class="text-red-500 dark:text-red-400 hover:text-white hover:dark:text-white hover:bg-red-500 hover:dark:bg-red-800 hover:outline-red-400 hover:dark:outline-red-700"
                     @click="modalDeleteUser = true"
