@@ -32,7 +32,7 @@ const props = defineProps<Props>();
                 <Icon name="lucide:x" :size="16" />
             </ToastClose>
         </div>
-        <ToastDescription class="empty:hidden text-sm text-zinc-300">
+        <ToastDescription class="empty:hidden px-3 text-sm text-zinc-300">
             {{ props.description }}
         </ToastDescription>
 
