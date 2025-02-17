@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
                 :side-offset="props.sideOffset"
                 :class="
                     twMerge(
-                        'rounded-xl bg-zinc-100 dark:bg-zinc-900 p-5 z-[200] shadow-lg shadow-black/10 border border-zinc-300 dark:border-zinc-700',
+                        'max-w-[90vw] rounded-xl bg-zinc-100 dark:bg-zinc-900 p-5 z-[200] shadow-lg shadow-black/10 border border-zinc-300 dark:border-zinc-700',
                         'animate-in fade-in data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1',
                         props.class
                     )

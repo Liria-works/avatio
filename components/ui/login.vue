@@ -58,5 +58,17 @@ const handleLogin = async () => {
 
             <NuxtTurnstile v-model="token" />
         </div>
+
+        <template #footer>
+            <div class="flex flex-col gap-2">
+                <div class="self-center flex gap-1.5 items-center">
+                    <Button to="/terms" variant="link"> 利用規約 </Button>
+                    <Button to="/privacy" variant="link">
+                        プライバシーポリシー
+                    </Button>
+                </div>
+                <HovercardTwitterWarning />
+            </div>
+        </template>
     </UiCard>
 </template>
