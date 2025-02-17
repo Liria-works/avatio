@@ -21,7 +21,7 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
             </button>
         </template>
 
-        <template #panel>
+        <template #content>
             <div class="flex flex-col gap-1.5">
                 <p class="text-sm font-bold text-zinc-600 dark:text-zinc-200">
                     対応形式

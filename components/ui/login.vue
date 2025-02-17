@@ -63,11 +63,11 @@ const handleLogin = async () => {
             <div class="flex flex-col gap-2">
                 <div class="self-center flex gap-1.5 items-center">
                     <Button to="/terms" variant="link"> 利用規約 </Button>
-                    <Button to="/privacy" variant="link">
+                    <Button to="/privacy-policy" variant="link">
                         プライバシーポリシー
                     </Button>
                 </div>
-                <HovercardTwitterWarning />
+                <PopupTwitterWarning />
             </div>
         </template>
     </UiCard>

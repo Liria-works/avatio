@@ -16,7 +16,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
             <slot />
         </template>
 
-        <template #panel>
+        <template #content>
             <div class="flex flex-col gap-0.5 text-sm min-w-48">
                 <ButtonCopyUrl :url="useBrowserLocation().value.href!" />
 

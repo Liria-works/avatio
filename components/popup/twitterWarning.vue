@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-    <Hovercard>
+    <Popup>
         <template #trigger>
             <div class="cursor-pointer flex items-center gap-1.5">
                 <Icon
@@ -39,5 +39,5 @@
                 />
             </div>
         </template>
-    </Hovercard>
+    </Popup>
 </template>
