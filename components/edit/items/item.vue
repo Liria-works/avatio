@@ -23,42 +23,39 @@ const booth_url = 'https://booth.pm/ja/items/';
 
 <template>
     <div
-        class="w-full flex flex-col ring-2 ring-zinc-300 dark:ring-zinc-700 rounded-lg overflow-clip"
+        class="flex items-center ring-2 ring-zinc-300 dark:ring-zinc-700 rounded-lg overflow-clip"
     >
-        <div class="w-full flex items-center">
+        <div class="draggable cursor-move w-10 h-full p-1.5">
             <div
-                :class="[
-                    'draggable shrink-0 flex items-center gap-1.5',
-                    props.size === 'lg' ? 'p-4' : 'p-1.5 pr-4',
-                ]"
+                class="size-full rounded-lg flex items-center justify-center hover:bg-zinc-800 transition duration-150"
             >
-                <div class="draggable cursor-move flex h-full">
-                    <Icon
-                        name="lucide:grip-vertical"
-                        :size="18"
-                        class="bg-zinc-400"
-                    />
-                </div>
+                <Icon
+                    name="lucide:grip-vertical"
+                    :size="22"
+                    class="text-zinc-400"
+                />
+            </div>
+        </div>
+
+        <div class="w-full py-2 pr-2 flex flex-col gap-2">
+            <div class="w-full flex gap-2 items-start">
                 <NuxtLink
                     :to="booth_url + props.item.id"
                     target="_blank"
-                    :class="[
-                        'rounded-lg object-cover select-none overflow-hidden',
-                        props.size === 'lg' ? 'size-32' : 'size-20',
-                    ]"
+                    :data-size="props.size"
+                    class="shrink-0 select-none"
                 >
                     <NuxtImg
                         :src="props.item.thumbnail"
                         :alt="props.item.name"
-                        :class="props.item.nsfw ? 'blur-md' : ''"
+                        :data-size="props.size"
+                        :data-nsfw="props.item.nsfw"
+                        class="size-20 rounded-lg data-[size=lg]:size-32 data-[nsfw=true]:blur-md"
                     />
                 </NuxtLink>
-            </div>
-            <div class="w-full flex gap-5 pr-4 justify-between">
-                <div
-                    :class="`w-fit flex flex-col gap-3 items-start justify-center ${props.size === 'lg' ? 'h-32' : 'h-20'}`"
-                >
-                    <div class="w-fit gap-2 flex items-center">
+
+                <div class="self-center w-full flex flex-col gap-3 items-start">
+                    <div class="gap-2 flex items-center">
                         <NuxtLink
                             :to="booth_url + props.item.id"
                             target="_blank"
@@ -113,25 +110,57 @@ const booth_url = 'https://booth.pm/ja/items/';
                         </NuxtLink>
                     </div>
                 </div>
-                <div
-                    class="shrink-0 w-fit h-full pt-2 gap-4 flex flex-col items-end justify-between"
-                >
-                    <Button
-                        icon="lucide:trash"
-                        :icon-size="16"
-                        tooltip="アイテム削除"
-                        class="p-3"
-                        @click="emit('remove')"
-                    />
 
-                    <UiCheckbox v-model="unsupported" label="アバター非対応" />
+                <div
+                    class="self-stretch flex flex-col gap-1 items-center justify-between"
+                >
+                    <Popup class="p-1">
+                        <template #trigger>
+                            <Button variant="flat" class="p-2">
+                                <Icon
+                                    name="lucide:menu"
+                                    size="18"
+                                    class="text-zinc-300"
+                                />
+                            </Button>
+                        </template>
+
+                        <template #content>
+                            <div class="flex flex-col gap-0.5 text-sm min-w-32">
+                                <Button
+                                    variant="flat"
+                                    @click="unsupported = !unsupported"
+                                >
+                                    <Icon
+                                        name="lucide:user-x"
+                                        size="18"
+                                        class="text-zinc-400"
+                                    />
+                                    <span>アバター非対応</span>
+                                </Button>
+                                <Button variant="flat" @click="emit('remove')">
+                                    <Icon
+                                        name="lucide:x"
+                                        size="18"
+                                        class="text-red-400"
+                                    />
+                                    <span class="text-red-400">削除</span>
+                                </Button>
+                            </div>
+                        </template>
+                    </Popup>
+
+                    <UiTooltip v-if="unsupported" text="アバター非対応">
+                        <Icon
+                            name="lucide:user-x"
+                            size="16"
+                            class="text-zinc-300"
+                        />
+                    </UiTooltip>
                 </div>
             </div>
-        </div>
-        <div class="empty:hidden w-full flex">
-            <div
-                :class="`w-full flex flex-col items-end gap-2 ${props.size === 'lg' ? 'px-4 pb-3' : 'px-1.5 pt-1 pb-2'}`"
-            >
+
+            <div class="w-full flex flex-col gap-2">
                 <div
                     :class="[
                         'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700',

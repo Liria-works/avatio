@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const route = useRoute();
 const paddingExclude = ['/', '/setup/edit'];
+const footerExclude = ['/setup/edit'];
 
 const env = ref<string | undefined>(undefined);
 try {
@@ -36,7 +37,7 @@ const handleError = (error: any) => {
             <UiHeader />
             <div
                 :class="[
-                    'w-full grow',
+                    'w-full grow grid',
                     paddingExclude.includes(route.path)
                         ? 'px-4'
                         : 'md:px-20 lg:px-32',
@@ -44,7 +45,7 @@ const handleError = (error: any) => {
             >
                 <slot />
             </div>
-            <UiFooter />
+            <UiFooter v-if="!footerExclude.includes(route.path)" />
         </div>
     </NuxtErrorBoundary>
 </template>

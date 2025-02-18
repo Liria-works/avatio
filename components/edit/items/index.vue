@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import { twMerge } from 'tailwind-merge';
 import { VueDraggable } from 'vue-draggable-plus';
 
+const { class: propClass } = defineProps<{ class?: string | string[] }>();
 const emit = defineEmits(['undo', 'redo']);
 
 const items = defineModel<{
@@ -183,9 +185,9 @@ quickAvatarsOwned.value = await getOwnedAvatars();
 </script>
 
 <template>
-    <div class="flex-col items-center gap-8 flex w-full">
+    <div :class="twMerge('flex-col items-center gap-8 flex', propClass)">
         <div class="w-full flex flex-col gap-4 items-stretch">
-            <div class="flex gap-1 items-center">
+            <!-- <div class="flex gap-1 items-center">
                 <UiTextinput
                     v-model="inputUrl"
                     :disabled="adding"
@@ -220,10 +222,10 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                     class="pr-3"
                     @click="addItemFromURL"
                 />
-            </div>
+            </div> -->
 
-            <div class="gap-2 flex flex-wrap items-center justify-between">
-                <div class="self-end gap-1 flex items-center">
+            <div class="gap-2 flex items-center">
+                <div class="grow gap-1 flex items-center">
                     <Button
                         icon="lucide:undo-2"
                         variant="flat"
@@ -286,9 +288,9 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                 </div>
 
                 <Button
-                    icon="lucide:search"
-                    label="アバター・アイテムを検索"
-                    class="h-9"
+                    icon="lucide:plus"
+                    label="アバター・アイテムを追加"
+                    class="px-4"
                     @click="modalSearchItem = true"
                 />
             </div>
@@ -301,7 +303,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                 !items.accessory.length &&
                 !items.other.length
             "
-            class="flex flex-col gap-6 items-center"
+            class="h-full flex flex-col gap-6 items-center justify-center"
         >
             <p class="text-sm text-zinc-600 dark:text-zinc-400">
                 アイテムが登録されていません

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const router = useRouter();
 const skip_router_hook = ref(false);
 
 const publishing = ref(false);
@@ -159,147 +158,24 @@ useOGP({ title: 'セットアップ作成' });
 </script>
 
 <template>
-    <div class="flex-col justify-start items-start gap-8 flex w-full px-3">
-        <div
-            class="flex flex-wrap-reverse md:flex-row gap-x-10 gap-y-3 items-center justify-between w-full"
-        >
-            <div class="w-full flex flex-col gap-2 pt-1">
-                <UiTextinput
-                    v-model="title"
-                    placeholder="セットアップ名を入力"
-                    unstyled
-                    class="text-2xl font-bold"
-                >
-                    <template #trailing>
-                        <UiCount
-                            v-if="title.length"
-                            :count="title.length"
-                            :max="setupLimits().title"
-                        />
-                    </template>
-                </UiTextinput>
-                <UiDivider
-                    border-class="border-zinc-300 dark:border-zinc-600"
-                />
-            </div>
-            <div class="w-full md:w-fit flex gap-2 items-center">
-                <Button
-                    :disabled="errorCheck({ toast: false })"
-                    :label="!publishing ? '公開' : '処理中'"
-                    :icon="
-                        !publishing
-                            ? 'lucide:upload'
-                            : 'i-svg-spinners-ring-resize'
-                    "
-                    :icon-size="18"
-                    class="grow md:grow-0 rounded-full px-4"
-                    @click="PublishSetup"
-                >
-                    <template #tooltip>
-                        <div
-                            class="flex flex-col gap-1 text-xs px-4 py-2 rounded-lg text-zinc-900 dark:text-zinc-100"
-                        >
-                            <p v-if="!title">
-                                {{
-                                    getErrors().publishSetup.noTitle.client
-                                        .title
-                                }}
-                            </p>
-                            <p v-if="!items.avatar.length">
-                                {{
-                                    getErrors().publishSetup.noAvatar.client
-                                        .title
-                                }}
-                            </p>
-                            <p
-                                v-if="
-                                    !items.cloth.length &&
-                                    !items.accessory.length &&
-                                    !items.other.length
-                                "
-                            >
-                                {{
-                                    getErrors().publishSetup.noItems.client
-                                        .title
-                                }}
-                            </p>
+    <div class="size-full pb-5 relative pl-[23rem]">
+        <EditSidebar
+            v-model:publishing="publishing"
+            v-model:title="title"
+            v-model:description="description"
+            v-model:tags="tags"
+            v-model:co-authors="coAuthors"
+            v-model:image="image"
+            class="absolute top-0 bottom-4 left-0 w-[22rem] overflow-y-auto"
+            @publish="PublishSetup"
+        />
 
-                            <p
-                                v-if="
-                                    title &&
-                                    items.avatar.length &&
-                                    (items.cloth.length ||
-                                        items.accessory.length ||
-                                        items.other.length)
-                                "
-                            >
-                                セットアップを投稿
-                            </p>
-                        </div>
-                    </template>
-                </Button>
-
-                <Button
-                    tooltip="破棄"
-                    icon="lucide:trash"
-                    :icon-size="18"
-                    variant="flat"
-                    @click="router.back()"
-                />
-            </div>
-        </div>
-
-        <div class="flex flex-col lg:flex-row items-start gap-8 w-full">
-            <EditItems v-model="items" @undo="undo" @redo="redo" />
-
-            <UiDivider class="block lg:hidden mx-3 my-2" />
-
-            <div
-                class="w-full lg:max-w-[30%] flex-col justify-start items-start gap-8 flex"
-            >
-                <EditImage ref="editImage" v-model="image" />
-
-                <div class="w-full flex flex-col items-start gap-3">
-                    <div class="w-full flex gap-2 items-center justify-between">
-                        <UiTitle label="説明" icon="lucide:text" />
-                        <UiCount
-                            v-if="description.length"
-                            :count="description.length"
-                            :max="setupLimits().description"
-                        />
-                    </div>
-                    <UiTextarea
-                        v-model="description"
-                        placeholder="説明を入力"
-                        class="w-full"
-                    />
-                </div>
-
-                <div class="w-full flex flex-col items-start gap-3">
-                    <div class="w-full flex gap-2 items-center justify-between">
-                        <UiTitle label="タグ" icon="lucide:tags" />
-                        <UiCount
-                            v-if="tags.length"
-                            :count="tags.length"
-                            :max="setupLimits().tags"
-                        />
-                    </div>
-                    <EditTags v-model="tags" />
-                </div>
-
-                <div class="w-full flex flex-col items-start gap-3">
-                    <div class="w-full flex gap-2 items-center justify-between">
-                        <UiTitle label="共同作者" icon="lucide:users-round" />
-                        <UiCount
-                            v-if="coAuthors.length"
-                            :count="coAuthors.length"
-                            :max="setupLimits().coAuthors"
-                        />
-                    </div>
-                    <EditCoAuthor v-model="coAuthors" />
-                </div>
-            </div>
-        </div>
+        <EditItems
+            v-model="items"
+            class="w-full h-full"
+            @undo="undo"
+            @redo="redo"
+        />
 
         <ModalPublishSetupComplete
             v-model="modalComplete"

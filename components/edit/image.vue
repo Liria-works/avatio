@@ -69,9 +69,12 @@ defineExpose({
         <button
             v-if="!imagePreview"
             ref="dropZoneRef"
+            type="button"
             @click="open()"
             :class="[
-                'h-40 flex flex-col items-center justify-center w-full rounded-xl border-4 border-dashed border-zinc-300 dark:border-zinc-600',
+                'h-40 w-full flex flex-col items-center justify-center',
+                'rounded-xl cursor-pointer',
+                'border-4 border-dashed border-zinc-300 dark:border-zinc-600',
                 isOverDropZone
                     ? 'bg-zinc-500 dark:bg-zinc-400'
                     : 'hover:bg-zinc-200 dark:hover:bg-black/15 ',
@@ -110,6 +113,5 @@ defineExpose({
                 {{ files[0].name }}
             </div>
         </div>
-        <PopupUploadImage class="w-fit" />
     </div>
 </template>
