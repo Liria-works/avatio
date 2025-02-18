@@ -27,6 +27,8 @@ const coAuthors = ref<
 >([]);
 const image = ref<File | null>(null);
 
+const editImage = ref();
+
 const itemsFlatten = computed(() => [
     ...items.value.avatar,
     ...items.value.cloth,
@@ -129,6 +131,7 @@ const reset = () => {
     coAuthors.value = [];
     items.value = { avatar: [], cloth: [], accessory: [], other: [] };
     image.value = null;
+    editImage.value.reset();
     publishedSetupId.value = null;
     publishing.value = false;
     skip_router_hook.value = false;
@@ -255,6 +258,7 @@ useOGP({ title: 'セットアップ作成' });
                 class="w-full lg:max-w-[30%] flex-col justify-start items-start gap-8 flex"
             >
                 <EditImage v-model="image" />
+                <EditImage ref="editImage" v-model="image" />
 
                 <div class="w-full flex flex-col items-start gap-3">
                     <div class="w-full flex gap-2 items-center justify-between">
