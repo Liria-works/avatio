@@ -14,13 +14,11 @@ const items = defineModel<{
 
 const adding = ref(false);
 const modalSearchItem = ref(false);
-const modalReplaceAvatar = ref(false);
 
 const quickAvatarsOwned = ref<
     { id: number; name: string; thumbnail: string }[] | null
 >(null);
 const inputUrl = ref<string>('');
-const replaceAvatar = ref<SetupItem | null>(null);
 
 const pasteFromClipboard = async () => {
     try {
@@ -50,51 +48,17 @@ const addItem = async (id: number) => {
 
     const d = { ...data, note: '', unsupported: false };
 
-    if (data.category === 'avatar') {
-        if (items.value.avatar.length) {
-            if (items.value.avatar[0].id === id)
-                useToast().add(
-                    getErrors().publishSetup.sameAvatars.client.title,
-                    getErrors().publishSetup.sameAvatars.client.description
-                );
-            else {
-                replaceAvatar.value = d;
-                modalReplaceAvatar.value = true;
-            }
-        } else {
-            items.value.avatar.push(d);
-            inputUrl.value = '';
-        }
-    } else if (data.category === 'cloth') {
-        if (items.value.cloth.map((i) => i.id).includes(id))
-            useToast().add(
-                getErrors().publishSetup.sameItems.client.title,
-                getErrors().publishSetup.sameItems.client.description
-            );
-        else {
-            items.value.cloth.push(d);
-            inputUrl.value = '';
-        }
-    } else if (data.category === 'accessory') {
-        if (items.value.accessory.map((i) => i.id).includes(id))
-            useToast().add(
-                getErrors().publishSetup.sameItems.client.title,
-                getErrors().publishSetup.sameItems.client.description
-            );
-        else {
-            items.value.accessory.push(d);
-            inputUrl.value = '';
-        }
+    const categoryKey = data.category in items.value ? data.category : 'other';
+    const target = items.value[categoryKey];
+
+    if (target.some((i) => i.id === id)) {
+        useToast().add(
+            getErrors().publishSetup.sameItems.client.title,
+            getErrors().publishSetup.sameItems.client.description
+        );
     } else {
-        if (items.value.other.map((i) => i.id).includes(id))
-            useToast().add(
-                getErrors().publishSetup.sameItems.client.title,
-                getErrors().publishSetup.sameItems.client.description
-            );
-        else {
-            items.value.other.push(d);
-            inputUrl.value = '';
-        }
+        target.push(d);
+        inputUrl.value = '';
     }
 
     adding.value = false;
@@ -164,7 +128,21 @@ const getOwnedAvatars = async () => {
         .eq('author', user.value.id)
         .eq('setup_items.item_id.category', 'avatar')
         .order('created_at', { ascending: false })
-        .limit(30);
+        .limit(30)
+        .returns<
+            {
+                items: {
+                    data: {
+                        id: number;
+                        outdated: boolean;
+                        category: string;
+                        name: string;
+                        thumbnail: string;
+                        nsfw: boolean;
+                    };
+                }[];
+            }[]
+        >();
 
     if (!data) return null;
 
@@ -185,7 +163,9 @@ quickAvatarsOwned.value = await getOwnedAvatars();
 </script>
 
 <template>
-    <div :class="twMerge('flex-col items-center gap-8 flex', propClass)">
+    <div
+        :class="twMerge('relative flex-col items-center gap-8 flex', propClass)"
+    >
         <div class="w-full flex flex-col gap-4 items-stretch">
             <!-- <div class="flex gap-1 items-center">
                 <UiTextinput
@@ -325,7 +305,10 @@ quickAvatarsOwned.value = await getOwnedAvatars();
             </div>
         </div>
 
-        <div v-else class="w-full flex flex-col gap-5">
+        <div
+            v-else
+            class="absolute inset-0 mt-16 p-1 flex flex-col gap-5 overflow-y-auto"
+        >
             <div
                 v-for="(value, key) in items"
                 :key="useId()"
@@ -364,14 +347,5 @@ quickAvatarsOwned.value = await getOwnedAvatars();
         v-model="modalSearchItem"
         @add="addItem"
         @close="modalSearchItem = false"
-    />
-
-    <ModalReplaceAvatar
-        v-if="replaceAvatar"
-        v-model="modalReplaceAvatar"
-        :from="items.avatar[0]"
-        :to="replaceAvatar"
-        @accept="((inputUrl = ''), (items.avatar[0] = replaceAvatar))"
-        @close="modalReplaceAvatar = false"
     />
 </template>

@@ -34,7 +34,9 @@ const router = useRouter();
             )
         "
     >
-        <div class="sticky top-0 left-0 right-0 p-5 flex gap-1 bg-zinc-800">
+        <div
+            class="z-[1] sticky top-0 left-0 right-0 p-5 flex gap-1 bg-zinc-800"
+        >
             <Button
                 :label="!publishing ? '公開' : '処理中'"
                 :icon="

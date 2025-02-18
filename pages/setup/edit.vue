@@ -56,22 +56,9 @@ const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
     if (tags.value.length > setupLimits().tags)
         return returnError(getErrors().publishSetup.tooManyTags.client.title);
 
-    const avatarCount = itemsFlatten.value.filter(
-        (i) => i.category === 'avatar'
-    ).length;
-    const nonAvatarCount = itemsFlatten.value.filter(
-        (i) => i.category !== 'avatar'
-    ).length;
-
-    if (!avatarCount)
-        return returnError(getErrors().publishSetup.noAvatar.client.title);
-    if (avatarCount > setupLimits().avatars)
-        return returnError(
-            getErrors().publishSetup.tooManyAvatars.client.title
-        );
-    if (!nonAvatarCount)
+    if (!itemsFlatten.value.length)
         return returnError(getErrors().publishSetup.noItems.client.title);
-    if (nonAvatarCount > setupLimits().items)
+    if (itemsFlatten.value.length > setupLimits().items)
         return returnError(getErrors().publishSetup.tooManyItems.client.title);
 
     return false;

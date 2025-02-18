@@ -42,7 +42,6 @@ const booth_url = 'https://booth.pm/ja/items/';
                 <NuxtLink
                     :to="booth_url + props.item.id"
                     target="_blank"
-                    :data-size="props.size"
                     class="shrink-0 select-none"
                 >
                     <NuxtImg
@@ -50,7 +49,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                         :alt="props.item.name"
                         :data-size="props.size"
                         :data-nsfw="props.item.nsfw"
-                        class="size-20 rounded-lg data-[size=lg]:size-32 data-[nsfw=true]:blur-md"
+                        class="size-20 rounded-lg data-[nsfw=true]:blur-md"
                     />
                 </NuxtLink>
 
