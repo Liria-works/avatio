@@ -163,12 +163,12 @@ useOGP({ title: 'セットアップ作成' });
         <div
             class="flex flex-wrap-reverse md:flex-row gap-x-10 gap-y-3 items-center justify-between w-full"
         >
-            <div class="grow flex flex-col gap-2 pt-1">
+            <div class="w-full flex flex-col gap-2 pt-1">
                 <UiTextinput
                     v-model="title"
                     placeholder="セットアップ名を入力"
                     unstyled
-                    class="w-full text-2xl font-bold"
+                    class="text-2xl font-bold"
                 >
                     <template #trailing>
                         <UiCount
@@ -257,7 +257,6 @@ useOGP({ title: 'セットアップ作成' });
             <div
                 class="w-full lg:max-w-[30%] flex-col justify-start items-start gap-8 flex"
             >
-                <EditImage v-model="image" />
                 <EditImage ref="editImage" v-model="image" />
 
                 <div class="w-full flex flex-col items-start gap-3">
