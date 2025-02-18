@@ -3,6 +3,8 @@ const router = useRouter();
 const skip_router_hook = ref(false);
 
 const publishing = ref(false);
+const modalComplete = ref(false);
+const publishedSetupId = ref<number | null>(null);
 
 const items = ref<{
     avatar: SetupItem[];
@@ -87,7 +89,8 @@ const PublishSetup = async () => {
         );
     }
 
-    const response = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {
+    type res = ApiResponse<{ id: number; image: string | null }>;
+    const response = await $fetch<res>('/api/setup', {
         method: 'PUT',
         body: {
             name: title.value,
@@ -114,10 +117,21 @@ const PublishSetup = async () => {
         );
     }
 
+    publishedSetupId.value = response.data.id;
     publishing.value = false;
-    useToast().add('セットアップを公開しました。');
-    skip_router_hook.value = true;
-    navigateTo(`/setup/${response.data.id}`);
+    modalComplete.value = true;
+};
+
+const reset = () => {
+    title.value = '';
+    description.value = '';
+    tags.value = [];
+    coAuthors.value = [];
+    items.value = { avatar: [], cloth: [], accessory: [], other: [] };
+    image.value = null;
+    publishedSetupId.value = null;
+    publishing.value = false;
+    skip_router_hook.value = false;
 };
 
 onBeforeRouteLeave((to, from, next) => {
@@ -283,5 +297,11 @@ useOGP({ title: 'セットアップ作成' });
                 </div>
             </div>
         </div>
+
+        <ModalPublishSetupComplete
+            v-model="modalComplete"
+            :id="publishedSetupId"
+            @continue="reset"
+        />
     </div>
 </template>

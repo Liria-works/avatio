@@ -15,7 +15,9 @@ export interface RequestBody {
 const returnError = (error: ErrorType) => ({ error, data: null });
 
 export default defineEventHandler(
-    async (event): Promise<ApiResponse<{ id: number }>> => {
+    async (
+        event
+    ): Promise<ApiResponse<{ id: number; image: string | null }>> => {
         const user = await serverSupabaseUser(event).catch(() => null);
         if (!user) return { error: getErrors().general.forbidden, data: null };
 
@@ -158,6 +160,9 @@ export default defineEventHandler(
                 return returnError(getErrors().publishSetup.insertImages);
         }
 
-        return { error: null, data: { id: setupData.id } };
+        return {
+            error: null,
+            data: { id: setupData.id, image: image ? image.path : null },
+        };
     }
 );

@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-const props = defineProps<{
+interface Props {
     setupName: string;
     setupDescription: string;
     setupAuthor: string;
-}>();
+    copyUrlButton?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+    copyUrlButton: true,
+});
 
 const { share, isSupported } = useShare();
 
@@ -18,7 +22,10 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
 
         <template #content>
             <div class="flex flex-col gap-0.5 text-sm min-w-48">
-                <ButtonCopyUrl :url="useBrowserLocation().value.href!" />
+                <ButtonCopyUrl
+                    v-if="props.copyUrlButton"
+                    :url="useBrowserLocation().value.href!"
+                />
 
                 <Button
                     :to="tweet"

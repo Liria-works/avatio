@@ -11,10 +11,12 @@ const vis = defineModel<boolean>({
 });
 
 const slots = useSlots() as Record<string, (() => VNode[]) | undefined>;
+
+const emit = defineEmits(['update:open']);
 </script>
 
 <template>
-    <DialogRoot v-model:open="vis">
+    <DialogRoot v-model:open="vis" @update:open="emit('update:open', $event)">
         <!-- <DialogTrigger as-child>
             <slot name="trigger" />
         </DialogTrigger> -->

@@ -13,6 +13,7 @@
         "@yeger/vue-masonry-wall": "^5.0.18",
         "aws4fetch": "^1.0.20",
         "budoux": "^0.6.4",
+        "canvas-confetti": "^1.9.3",
         "date-fns": "^4.1.0",
         "marked": "^15.0.7",
         "radix-vue": "^1.9.14",
@@ -45,6 +46,7 @@
         "@nuxtjs/turnstile": "^0.9.12",
         "@tailwindcss/typography": "^0.5.16",
         "@types/bun": "^1.2.2",
+        "@types/canvas-confetti": "^1.9.0",
         "@types/sanitize-html": "^2.13.0",
         "@vue/eslint-config-prettier": "^10.2.0",
         "@vueuse/nuxt": "^12.7.0",
@@ -559,6 +561,8 @@
 
     "@types/bun": ["@types/bun@1.2.2", "", { "dependencies": { "bun-types": "1.2.2" } }, "sha512-tr74gdku+AEDN5ergNiBnplr7hpDp3V1h7fqI2GcR/rsUaM39jpSeKH0TFibRvU0KwniRx5POgaYnaXbk0hU+w=="],
 
+    "@types/canvas-confetti": ["@types/canvas-confetti@1.9.0", "", {}, "sha512-aBGj/dULrimR1XDZLtG9JwxX1b4HPRF6CX9Yfwh3NvstZEm1ZL7RBnel4keCPSqs1ANRu1u2Aoz9R+VmtjYuTg=="],
+
     "@types/cloudflare-turnstile": ["@types/cloudflare-turnstile@0.2.2", "", {}, "sha512-3Yf7b1Glci+V2bFWwWBbZkRgTuegp7RDgNTOG4U0UNPB9RV4AWvwqg2/qqLff8G+SwKFNXoXvTkqaRBZrAFdKA=="],
 
     "@types/cookie": ["@types/cookie@0.6.0", "", {}, "sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA=="],
@@ -810,6 +814,8 @@
     "caniuse-api": ["caniuse-api@3.0.0", "", { "dependencies": { "browserslist": "^4.0.0", "caniuse-lite": "^1.0.0", "lodash.memoize": "^4.1.2", "lodash.uniq": "^4.5.0" } }, "sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw=="],
 
     "caniuse-lite": ["caniuse-lite@1.0.30001699", "", {}, "sha512-b+uH5BakXZ9Do9iK+CkDmctUSEqZl+SP056vc5usa0PL+ev5OHw003rZXcnjNDv3L8P5j6rwT6C0BPKSikW08w=="],
+
+    "canvas-confetti": ["canvas-confetti@1.9.3", "", {}, "sha512-rFfTURMvmVEX1gyXFgn5QMn81bYk70qa0HLzcIOSVEyl57n6o9ItHeBtUSWdvKAPY0xlvBHno4/v3QPrT83q9g=="],
 
     "chalk": ["chalk@5.4.1", "", {}, "sha512-zgVZuo2WcZgfUEmsn6eO3kINexW8RAE4maiQ8QNs8CtpPCSyMiYsULR3HQYkm3w8FIA3SberyMJMSldGsW+U3w=="],
 
