@@ -220,19 +220,6 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                     />
 
                     <div
-                        class="ml-2 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1 ring-zinc-500"
-                    >
-                        <Icon
-                            name="lucide:person-standing"
-                            size="16"
-                            class="shrink-0 bg-zinc-600 dark:bg-zinc-400"
-                        />
-                        <span class="text-xs leading-none whitespace-nowrap">
-                            {{ items.avatar.length }} / 1
-                        </span>
-                    </div>
-
-                    <div
                         :data-exceeded="
                             useSum(
                                 items.cloth.length,
@@ -240,12 +227,12 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                                 items.other.length
                             ).value > 32
                         "
-                        class="ml-1 pl-2 pr-2.5 py-1 rounded-full flex gap-1 items-center ring-1 ring-zinc-500 data-[exceeded=true]:ring-red-500"
+                        class="ml-1 pl-2.5 pr-3 py-1 rounded-full flex gap-1.5 items-center ring-1 ring-zinc-500 data-[exceeded=true]:ring-red-500"
                     >
                         <Icon
                             name="lucide:box"
                             size="16"
-                            class="shrink-0 bg-zinc-600 dark:bg-zinc-400"
+                            class="shrink-0 text-zinc-600 dark:text-zinc-400"
                         />
                         <span class="text-xs leading-none whitespace-nowrap">
                             <span>{{
