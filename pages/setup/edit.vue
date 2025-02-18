@@ -3,6 +3,8 @@ const router = useRouter();
 const skip_router_hook = ref(false);
 
 const publishing = ref(false);
+const modalComplete = ref(false);
+const publishedSetupId = ref<number | null>(null);
 
 const items = ref<{
     avatar: SetupItem[];
@@ -24,6 +26,8 @@ const coAuthors = ref<
     }[]
 >([]);
 const image = ref<File | null>(null);
+
+const editImage = ref();
 
 const itemsFlatten = computed(() => [
     ...items.value.avatar,
@@ -87,7 +91,8 @@ const PublishSetup = async () => {
         );
     }
 
-    const response = await $fetch<ApiResponse<{ id: number }>>('/api/setup', {
+    type res = ApiResponse<{ id: number; image: string | null }>;
+    const response = await $fetch<res>('/api/setup', {
         method: 'PUT',
         body: {
             name: title.value,
@@ -114,10 +119,22 @@ const PublishSetup = async () => {
         );
     }
 
+    publishedSetupId.value = response.data.id;
     publishing.value = false;
-    useToast().add('セットアップを公開しました。');
-    skip_router_hook.value = true;
-    navigateTo(`/setup/${response.data.id}`);
+    modalComplete.value = true;
+};
+
+const reset = () => {
+    title.value = '';
+    description.value = '';
+    tags.value = [];
+    coAuthors.value = [];
+    items.value = { avatar: [], cloth: [], accessory: [], other: [] };
+    image.value = null;
+    editImage.value.reset();
+    publishedSetupId.value = null;
+    publishing.value = false;
+    skip_router_hook.value = false;
 };
 
 onBeforeRouteLeave((to, from, next) => {
@@ -146,12 +163,12 @@ useOGP({ title: 'セットアップ作成' });
         <div
             class="flex flex-wrap-reverse md:flex-row gap-x-10 gap-y-3 items-center justify-between w-full"
         >
-            <div class="grow flex flex-col gap-2 pt-1">
+            <div class="w-full flex flex-col gap-2 pt-1">
                 <UiTextinput
                     v-model="title"
                     placeholder="セットアップ名を入力"
                     unstyled
-                    class="w-full text-2xl font-bold"
+                    class="text-2xl font-bold"
                 >
                     <template #trailing>
                         <UiCount
@@ -240,7 +257,7 @@ useOGP({ title: 'セットアップ作成' });
             <div
                 class="w-full lg:max-w-[30%] flex-col justify-start items-start gap-8 flex"
             >
-                <EditImage v-model="image" />
+                <EditImage ref="editImage" v-model="image" />
 
                 <div class="w-full flex flex-col items-start gap-3">
                     <div class="w-full flex gap-2 items-center justify-between">
@@ -283,5 +300,11 @@ useOGP({ title: 'セットアップ作成' });
                 </div>
             </div>
         </div>
+
+        <ModalPublishSetupComplete
+            v-model="modalComplete"
+            :id="publishedSetupId"
+            @continue="reset"
+        />
     </div>
 </template>

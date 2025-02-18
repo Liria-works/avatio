@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
             >
                 <div
                     :class="[
-                        'rounded-lg p-3 gap-2 flex flex-col',
+                        'z-[200] rounded-lg p-3 gap-2 flex flex-col',
                         'bg-zinc-50 dark:bg-zinc-900',
                         'shadow-lg shadow-black/10 dark:shadow-black/50',
                         'border border-zinc-300 dark:border-zinc-600',

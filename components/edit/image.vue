@@ -12,7 +12,7 @@ const { files, open, reset, onChange } = useFileDialog({
 });
 
 onChange((files) => {
-    if (files?.length) {
+    if (files?.length && files[0]) {
         const file = files[0];
         image.value = file;
 
@@ -29,8 +29,7 @@ onChange((files) => {
 });
 
 const onDrop = (files: File[] | null) => {
-    console.log(files);
-    if (files && files.length === 1) {
+    if (files && files.length === 1 && files[0]) {
         const file = files[0];
         image.value = file;
 
@@ -58,6 +57,10 @@ const { isOverDropZone } = useDropZone(dropZoneRef, {
     multiple: false,
     // whether to prevent default behavior for unhandled events
     preventDefaultForUnhandled: false,
+});
+
+defineExpose({
+    reset,
 });
 </script>
 
@@ -101,7 +104,7 @@ const { isOverDropZone } = useDropZone(dropZoneRef, {
                 </button>
             </div>
             <div
-                v-if="files"
+                v-if="files && files.length && files[0]"
                 class="w-full line-clamp-1 break-all text-xs px-1 text-zinc-600 dark:text-zinc-400"
             >
                 {{ files[0].name }}
