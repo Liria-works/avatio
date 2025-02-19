@@ -89,6 +89,7 @@ const removeItem = (id: number) => {
                         />
                         <span class="text-xs leading-none whitespace-nowrap">
                             <span>{{
+                                items.avatar.length +
                                 items.cloth.length +
                                 items.accessory.length +
                                 items.other.length
@@ -96,6 +97,7 @@ const removeItem = (id: number) => {
                             <span
                                 v-if="
                                     useSum(
+                                        items.avatar.length,
                                         items.cloth.length,
                                         items.accessory.length,
                                         items.other.length
