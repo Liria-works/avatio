@@ -253,7 +253,7 @@ onMounted(async () => {
                             label="ベースアバター"
                             icon="lucide:person-standing"
                             is="h2"
-                            class="mb-3"
+                            class="mt-3"
                         />
                         <SetupsItem
                             v-for="item in data.items.avatar"
@@ -268,7 +268,7 @@ onMounted(async () => {
                             label="衣装"
                             icon="lucide:shirt"
                             is="h2"
-                            class="mb-3"
+                            class="mt-3"
                         />
                         <SetupsItem
                             v-for="item in data.items.cloth"
@@ -283,7 +283,7 @@ onMounted(async () => {
                             label="アクセサリー"
                             icon="lucide:star"
                             is="h2"
-                            class="mb-3"
+                            class="mt-3"
                         />
                         <SetupsItem
                             v-for="item in data.items.accessory"
@@ -298,7 +298,7 @@ onMounted(async () => {
                             label="その他"
                             icon="lucide:package"
                             is="h2"
-                            class="mb-3"
+                            class="mt-3"
                         />
                         <SetupsItem
                             v-for="item in data.items.other"
