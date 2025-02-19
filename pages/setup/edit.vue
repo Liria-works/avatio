@@ -145,7 +145,7 @@ useOGP({ title: 'セットアップ作成' });
 </script>
 
 <template>
-    <div class="size-full pb-5 relative pl-[23rem]">
+    <div class="relative size-full pb-5 lg:pl-[23rem]">
         <EditSidebar
             v-model:publishing="publishing"
             v-model:title="title"
@@ -153,9 +153,11 @@ useOGP({ title: 'セットアップ作成' });
             v-model:tags="tags"
             v-model:co-authors="coAuthors"
             v-model:image="image"
-            class="absolute top-0 bottom-4 left-0 w-[22rem] overflow-y-auto"
+            class="static lg:absolute top-0 bottom-4 left-0 lg:w-[22rem] overflow-y-auto"
             @publish="PublishSetup"
         />
+
+        <UiDivider class="static lg:hidden my-8" />
 
         <EditItems
             v-model="items"
@@ -169,5 +171,14 @@ useOGP({ title: 'セットアップ作成' });
             :id="publishedSetupId"
             @continue="reset"
         />
+
+        <!-- <Button
+            tooltip="セットアップを投稿"
+            :icon="!publishing ? 'lucide:upload' : 'i-svg-spinners-ring-resize'"
+            :icon-size="18"
+            variant="flat"
+            class="fixed bottom-3 right-1 rounded-full p-4 whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 dark:text-zinc-900 dark:bg-zinc-300 hover:dark:text-zinc-100"
+            @click="PublishSetup"
+        /> -->
     </div>
 </template>

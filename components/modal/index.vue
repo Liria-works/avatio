@@ -32,7 +32,8 @@ const emit = defineEmits(['update:open']);
                 :class="
                     twMerge(
                         'z-[100] fixed place-self-center max-h-[85vh] w-[90vw] max-w-[450px] p-6 flex flex-col gap-5',
-                        'rounded-2xl bg-zinc-100 dark:bg-zinc-900 focus:outline-hidden border border-zinc-300 dark:border-zinc-700 shadow-xl',
+                        'rounded-2xl bg-zinc-100 dark:bg-zinc-900 focus:outline-hidden border border-zinc-300 dark:border-zinc-700',
+                        'shadow-xl shadow-black/10 dark:shadow-black/50',
                         'animate-in slide-in-from-bottom-3 fade-in ease-in-out',
                         'data-[anchor=center]:inset-0',
                         'data-[anchor=top]:top-0 data-[anchor=top]:left-0 data-[anchor=top]:right-0',
@@ -45,9 +46,7 @@ const emit = defineEmits(['update:open']);
             >
                 <slot name="header" />
                 <UiDivider v-if="slots.header && slots.header().length" />
-                <div class="p-1 overflow-y-auto flex flex-col gap-2">
-                    <slot />
-                </div>
+                <slot />
                 <UiDivider v-if="slots.footer && slots.footer().length" />
                 <slot name="footer" />
 

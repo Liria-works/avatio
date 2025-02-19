@@ -119,7 +119,7 @@ const booth_url = 'https://booth.pm/ja/items/';
                                 <Icon
                                     name="lucide:menu"
                                     size="18"
-                                    class="text-zinc-300"
+                                    class="text-zinc-700 dark:text-zinc-300"
                                 />
                             </Button>
                         </template>
@@ -165,20 +165,20 @@ const booth_url = 'https://booth.pm/ja/items/';
 
             <div class="w-full flex flex-col gap-2">
                 <div
+                    :data-exceeded="note.length > 140"
                     :class="[
-                        'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-200 dark:bg-zinc-800 ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700',
-                        {
-                            'border border-red-400 dark:border-red-400':
-                                note.length > 140,
-                        },
+                        'w-full px-3 py-2 gap-2 flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-800',
+                        'ring-inset ring-1 ring-zinc-300 dark:ring-zinc-700',
+                        'data-[exceeded=true]:ring-red-400 data-[exceeded=true]:dark:ring-red-400',
                     ]"
                 >
                     <Icon
+                        v-if="!note.length"
                         name="lucide:pen-line"
-                        :width="15"
-                        :height="15"
-                        class="self-start shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
+                        :size="18"
+                        class="self-start shrink-0 mt-[0.1rem] text-zinc-400 dark:text-zinc-400"
                     />
+                    <UiCount v-else :count="note.length" :max="140" />
                     <UiTextarea
                         v-model="note"
                         autoresize

@@ -72,7 +72,7 @@ watchEffect(() => {
 
         <div
             v-if="searchWord.length"
-            class="p-1 shrink-0 flex items-center gap-1 overflow-y-auto"
+            class="p-1 shrink-0 flex items-center gap-1 overflow-x-auto overflow-y-visible"
         >
             <Button
                 v-for="c in Object.values(itemCategories())"
@@ -82,7 +82,7 @@ watchEffect(() => {
                     c.id
                         ? categoryFilter.includes(c.id)
                             ? 'bg-zinc-700 dark:bg-zinc-300 hover:bg-zinc-500 hover:dark:bg-zinc-400 text-zinc-100 dark:text-zinc-900'
-                            : 'hover:bg-zinc-200 hover:dark:bg-zinc-600'
+                            : 'bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 hover:dark:bg-zinc-600'
                         : '',
                 ]"
                 @click="

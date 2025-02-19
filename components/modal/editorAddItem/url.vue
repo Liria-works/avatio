@@ -51,7 +51,12 @@ const addItemFromURL = async () => {
 
 <template>
     <div
-        class="px-5 py-4 rounded-2xl flex flex-col gap-2 ring-1 ring-zinc-300 dark:ring-zinc-700 bg-zinc-100 dark:bg-zinc-900"
+        :class="[
+            'px-5 py-4 rounded-2xl flex flex-col gap-2',
+            'ring-1 ring-zinc-300 dark:ring-zinc-700',
+            'bg-zinc-100 dark:bg-zinc-900',
+            'shadow-xl shadow-black/10 dark:shadow-black/50',
+        ]"
     >
         <label for="url" class="text-sm text-zinc-600 dark:text-zinc-400">
             URLから追加

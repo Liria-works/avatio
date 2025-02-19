@@ -18,10 +18,18 @@ const emit = defineEmits(['add']);
 
 <template>
     <div
-        class="min-h-[30vh] px-4 py-3 rounded-2xl ring-1 ring-zinc-300 dark:ring-zinc-700 bg-zinc-100 dark:bg-zinc-900"
+        :class="[
+            'min-h-[30vh] p-4 rounded-2xl flex',
+            'ring-1 ring-zinc-300 dark:ring-zinc-700',
+            'bg-zinc-100 dark:bg-zinc-900',
+            'shadow-xl shadow-black/10 dark:shadow-black/50',
+        ]"
     >
-        <div v-if="searching" class="flex items-center justify-center">
-            <Icon name="i-svg-spinners-ring-resize" />
+        <div
+            v-if="searching"
+            class="self-center size-full flex items-center justify-center"
+        >
+            <Icon name="i-svg-spinners-ring-resize" size="20" />
         </div>
 
         <div
