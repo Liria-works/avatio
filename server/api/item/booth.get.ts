@@ -1,6 +1,7 @@
 import { serverSupabaseClient } from '#supabase/server';
 import type { H3Event } from 'h3';
 import type { Item, ApiResponse } from '~/types';
+import type { Booth } from '~/types/booth';
 
 interface fetchedItem extends Omit<Item, 'updated_at'> {
     tags: string[];
@@ -36,6 +37,7 @@ const GetBoothItem = async (
                 thumbnail,
                 verified
             ),
+            likes,
             nsfw,
             outdated,
             source
@@ -44,7 +46,7 @@ const GetBoothItem = async (
         .eq('id', id)
         .maybeSingle();
 
-    // 時間の差分が1日を超えている場合、処理継続する
+    // データが存在し、かつ最終更新が1日以内ならそのまま返す
     if (itemData) {
         const timeDifference =
             new Date().getTime() - new Date(itemData.updated_at).getTime();
@@ -58,187 +60,183 @@ const GetBoothItem = async (
         console.log('Data is old, fetching from Booth', id);
     }
 
-    const urlBase = 'https://booth.pm/ja/items/';
+    const locale = 'ja';
+    const urlBase = `https://booth.pm/${locale}/items/`;
 
+    let response: Booth;
     try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let response: any;
+        response = await $fetch<Booth>(`${urlBase}${id}.json`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Accept-Encoding': 'gzip, deflate, br, zstd',
+                'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
+            },
+        });
+    } catch {
+        // Boothからの取得に失敗した場合、DBの outdated フラグを更新してエラーを返す
+        const { data } = await client
+            .from('items')
+            .select('id')
+            .eq('id', id)
+            .maybeSingle();
 
-        try {
-            response = await $fetch(`${urlBase}${id}.json`, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Accept-Encoding': 'gzip, deflate, br, zstd',
-                    'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
-                },
-            });
-        } catch {
-            const { data } = await client
-                .from('items')
-                .select('id')
-                .eq('id', id)
-                .maybeSingle();
+        if (data) {
+            await client.from('items').update({ outdated: true }).eq('id', id);
+            await client.rpc('update_item_updated_at', { item_id: id });
+        }
+        return {
+            data: null,
+            error: { status: 500, message: 'Failed to fetch data from Booth' },
+        };
+    }
 
-            if (data) {
-                await client
-                    .from('items')
-                    .update({ outdated: true })
-                    .eq('id', id);
-                await client.rpc('update_item_updated_at', { item_id: id });
-            }
+    let price = response.price;
+    for (const i of response.variations)
+        if (i.status === 'free_download') {
+            price = 'FREE';
+            break;
         }
 
-        let price: string = response.price.toString();
-        for (const i of response.variations)
-            if (i.status === 'free_download') {
-                price = 'FREE';
-                break;
-            }
+    let category: 'avatar' | 'cloth' | 'accessory' | 'other' = 'other';
+    if (response.category.id === 208) category = 'avatar';
+    else if (response.category.id === 209) category = 'cloth';
+    else if (response.category.id === 217) category = 'accessory';
 
-        let category: 'avatar' | 'cloth' | 'accessory' | 'other' = 'other';
-        if (response.category.id === 208) category = 'avatar';
-        else if (response.category.id === 209) category = 'cloth';
-        else if (response.category.id === 217) category = 'accessory';
+    const item: fetchedItem = {
+        id: Number(response.id),
+        name: response.name.toString(),
+        thumbnail: response.images[0].original.toString(),
+        price: price,
+        likes: Number(response.wish_lists_count),
+        category: category,
+        shop: {
+            name: response.shop.name.toString(),
+            id: response.shop.subdomain.toString(),
+            thumbnail: response.shop.thumbnail_url.toString(),
+            verified: Boolean(response.shop.verified),
+        },
+        nsfw: Boolean(response.is_adult),
+        tags: response.tags.map((tag: { name: string }) => tag.name),
+        outdated: false,
+        source: 'booth',
+    };
 
-        const item: fetchedItem = {
-            id: Number(response.id),
-            name: response.name.toString(),
-            thumbnail: response.images[0].original.toString(),
-            price: price,
-            category: category,
-            shop: {
-                name: response.shop.name.toString(),
-                id: response.shop.subdomain.toString(),
-                thumbnail: response.shop.thumbnail_url.toString(),
-                verified: Boolean(response.shop.verified),
-            },
-            nsfw: Boolean(response.is_adult),
-            tags: response.tags.map((tag: { name: string }) => tag.name),
-            outdated: false,
-            source: 'booth',
-        };
+    // カテゴリIDをチェック
 
-        // カテゴリIDをチェック
+    // 3Dモデル
+    //      208 - 3Dキャラクター
+    //      209 - 3D衣装
+    //      217 - 3D装飾品
+    //      210 - 3D小道具
+    //      214 - 3Dテクスチャ
+    //      215 - 3Dツール・システム
+    //      216 - 3Dモーション・アニメーション
+    //      211 - 3D環境・ワールド
+    //      212 - VRoid
+    //      127 - 3Dモデル（その他）
+    // 素材データ
+    //      125 - イラスト素材
+    //      213 - イラスト3D素材
+    //      126 - 背景画像
+    //      128 - フォント・書体
+    //      129 - アイコン
+    //      22  - ロゴ
+    //      123 - BGM素材
+    //      124 - 効果音
+    //      134 - 素材（その他）
 
-        // 3Dモデル
-        //      208 - 3Dキャラクター
-        //      209 - 3D衣装
-        //      217 - 3D装飾品
-        //      210 - 3D小道具
-        //      214 - 3Dテクスチャ
-        //      215 - 3Dツール・システム
-        //      216 - 3Dモーション・アニメーション
-        //      211 - 3D環境・ワールド
-        //      212 - VRoid
-        //      127 - 3Dモデル（その他）
-        // 素材データ
-        //      125 - イラスト素材
-        //      213 - イラスト3D素材
-        //      126 - 背景画像
-        //      128 - フォント・書体
-        //      129 - アイコン
-        //      22  - ロゴ
-        //      123 - BGM素材
-        //      124 - 効果音
-        //      134 - 素材（その他）
-
-        try {
-            const config = await event.$fetch(
-                '/api/edgeConfig/allowed_category_id'
-            );
-            if (config.status !== 200 || !config.value)
-                return {
-                    data: null,
-                    error: {
-                        status: 500,
-                        message: 'Error in vercel edge config.',
-                    },
-                };
-
-            const allowed_category_id: number[] = config.value as number[];
-
-            if (!allowed_category_id.includes(Number(item.category)))
-                if (!item.tags.map((t: string) => t).includes('VRChat'))
-                    return {
-                        data: null,
-                        error: { status: 400, message: 'Invalid category ID' },
-                    };
-        } catch (e) {
-            console.log(e);
+    try {
+        const config = await event.$fetch(
+            '/api/edgeConfig/allowed_category_id'
+        );
+        if (config.status !== 200 || !config.value)
             return {
                 data: null,
                 error: {
                     status: 500,
-                    message: 'Failed to get allowed tag data.',
+                    message: 'Error in vercel edge config.',
                 },
             };
-        }
 
-        const { data: insertShop } = await client
-            .from('shops')
-            .upsert({
-                id: item.shop.id,
-                name: item.shop.name,
-                thumbnail: item.shop.thumbnail,
-                verified: item.shop.verified,
-            })
-            .eq('id', item.shop.id)
-            .select()
-            .maybeSingle();
+        const allowed_category_id: number[] = config.value as number[];
 
-        const { data: insertItem } = await client
-            .from('items')
-            .upsert({
-                id: item.id,
-                name: item.name,
-                thumbnail: item.thumbnail,
-                price: item.price,
-                category: item.category,
-                shop_id: item.shop.id,
-                nsfw: item.nsfw,
-                outdated: false,
-                source: 'booth',
-            })
-            .eq('id', id)
-            .select()
-            .maybeSingle();
-
-        if (!insertItem || !insertShop)
-            return {
-                data: null,
-                error: { status: 500, message: 'Failed to insert data.' },
-            };
-
-        logDuration(startTime, 'Booth', item.name);
-
-        return {
-            data: {
-                id: insertItem.id,
-                updated_at: insertItem.updated_at,
-                category: insertItem.category,
-                name: insertItem.name,
-                thumbnail: insertItem.thumbnail,
-                price: insertItem.price,
-                shop: {
-                    name: insertShop.name,
-                    id: insertShop.id,
-                    thumbnail: insertShop.thumbnail,
-                    verified: insertShop.verified,
-                },
-                nsfw: insertItem.nsfw,
-                outdated: false,
-                source: 'booth',
-            },
-            error: null,
-        };
-    } catch (error) {
-        console.log(error);
+        if (!allowed_category_id.includes(Number(item.category)))
+            if (!item.tags.map((t: string) => t).includes('VRChat'))
+                return {
+                    data: null,
+                    error: { status: 400, message: 'Invalid category ID' },
+                };
+    } catch (e) {
+        console.log(e);
         return {
             data: null,
-            error: { status: 500, message: 'Failed to fetch data' },
+            error: {
+                status: 500,
+                message: 'Failed to get allowed tag data.',
+            },
         };
     }
+
+    const { data: insertShop } = await client
+        .from('shops')
+        .upsert({
+            id: item.shop.id,
+            name: item.shop.name,
+            thumbnail: item.shop.thumbnail,
+            verified: item.shop.verified,
+        })
+        .eq('id', item.shop.id)
+        .select()
+        .maybeSingle();
+
+    const { data: insertItem } = await client
+        .from('items')
+        .upsert({
+            id: item.id,
+            name: item.name,
+            thumbnail: item.thumbnail,
+            price: item.price,
+            likes: item.likes,
+            category: item.category,
+            shop_id: item.shop.id,
+            nsfw: item.nsfw,
+            outdated: false,
+            source: 'booth',
+        })
+        .eq('id', id)
+        .select()
+        .maybeSingle();
+
+    if (!insertItem || !insertShop)
+        return {
+            data: null,
+            error: { status: 500, message: 'Failed to insert data.' },
+        };
+
+    logDuration(startTime, 'Booth', item.name);
+
+    return {
+        data: {
+            id: insertItem.id,
+            updated_at: insertItem.updated_at,
+            category: insertItem.category,
+            name: insertItem.name,
+            thumbnail: insertItem.thumbnail,
+            price: insertItem.price,
+            likes: insertItem.likes,
+            shop: {
+                name: insertShop.name,
+                id: insertShop.id,
+                thumbnail: insertShop.thumbnail,
+                verified: insertShop.verified,
+            },
+            nsfw: insertItem.nsfw,
+            outdated: false,
+            source: 'booth',
+        },
+        error: null,
+    };
 };
 
 export default defineEventHandler(async (event): Promise<ApiResponse<Item>> => {

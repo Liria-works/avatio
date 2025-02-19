@@ -174,6 +174,7 @@ export type Database = {
                     category: Database['public']['Enums']['item_category'];
                     created_at: string;
                     id: number;
+                    likes: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated: boolean;
@@ -187,6 +188,7 @@ export type Database = {
                     category?: Database['public']['Enums']['item_category'];
                     created_at?: string;
                     id: number;
+                    likes?: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated?: boolean;
@@ -200,6 +202,7 @@ export type Database = {
                     category?: Database['public']['Enums']['item_category'];
                     created_at?: string;
                     id?: number;
+                    likes?: number | null;
                     name?: string;
                     nsfw?: boolean;
                     outdated?: boolean;
@@ -610,6 +613,7 @@ export type Database = {
                     category: Database['public']['Enums']['item_category'];
                     created_at: string;
                     id: number;
+                    likes: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated: boolean;

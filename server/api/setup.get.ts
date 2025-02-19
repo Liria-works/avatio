@@ -38,6 +38,7 @@ export default defineEventHandler(
                         name,
                         thumbnail,
                         price,
+                        likes,
                         shop:shop_id(
                             id,
                             name,
