@@ -7,6 +7,7 @@ interface Prop {
     type?: string;
     unstyled?: boolean;
     icon?: string;
+    iconSize?: string | number;
     placeholder?: string;
     disabled?: boolean;
     autocomplete?: string;
@@ -39,7 +40,8 @@ const inputId = useId();
         <Icon
             v-if="props.icon"
             :name="props.icon"
-            class="w-5 h-5 text-zinc-400 dark:text-zinc-500"
+            :size="props.iconSize || 18"
+            class="text-zinc-400 dark:text-zinc-500"
         />
         <input
             :id="inputId"

@@ -12,91 +12,34 @@ const items = defineModel<{
     other: SetupItem[];
 }>({ default: { avatar: [], cloth: [], accessory: [], other: [] } });
 
-const adding = ref(false);
 const modalSearchItem = ref(false);
 
-const quickAvatarsOwned = ref<
-    { id: number; name: string; thumbnail: string }[] | null
->(null);
-const inputUrl = ref<string>('');
-
-const pasteFromClipboard = async () => {
-    try {
-        const text = await navigator.clipboard.readText();
-        inputUrl.value = text;
-    } catch (err) {
-        console.error('Failed to read clipboard contents: ', err);
-    }
-};
-
 const addItem = async (id: number) => {
-    adding.value = true;
-
     const data = await useFetchBooth(id);
 
     // outdated === true だった場合に、細かくエラーの理由を説明するほうが、
     // ユーザーが何回も追加を試さなくてもよくなりそう
 
-    if (!data) {
-        useToast().add(
+    if (!data)
+        return useToast().add(
             getErrors().editSetup.addItemFailed.client.title,
             getErrors().editSetup.addItemFailed.client.description
         );
-        adding.value = false;
-        return;
-    }
 
     const d = { ...data, note: '', unsupported: false };
 
     const categoryKey = data.category in items.value ? data.category : 'other';
     const target = items.value[categoryKey];
 
-    if (target.some((i) => i.id === id)) {
+    if (target.some((i) => i.id === id))
         useToast().add(
             getErrors().publishSetup.sameItems.client.title,
             getErrors().publishSetup.sameItems.client.description
         );
-    } else {
+    else {
         target.push(d);
-        inputUrl.value = '';
+        modalSearchItem.value = false;
     }
-
-    adding.value = false;
-};
-
-const addItemFromURL = async () => {
-    if (!inputUrl.value)
-        return useToast().add(
-            getErrors().editSetup.emptyUrl.client.title,
-            getErrors().editSetup.emptyUrl.client.description
-        );
-
-    try {
-        new URL(inputUrl.value);
-    } catch {
-        return useToast().add(
-            getErrors().editSetup.invalidUrl.client.title,
-            getErrors().editSetup.invalidUrl.client.description
-        );
-    }
-
-    const url = new URL(inputUrl.value);
-
-    if (url.hostname.split('.').slice(-2).join('.') !== 'booth.pm')
-        return useToast().add(
-            getErrors().editSetup.invalidUrl.client.title,
-            getErrors().editSetup.invalidUrl.client.description
-        );
-
-    const id = url.pathname.split('/').slice(-1)[0];
-
-    if (!Number.isInteger(Number(id)))
-        return useToast().add(
-            getErrors().editSetup.invalidUrl.client.title,
-            getErrors().editSetup.invalidUrl.client.description
-        );
-
-    addItem(Number(id));
 };
 
 const removeItem = (id: number) => {
@@ -107,59 +50,6 @@ const removeItem = (id: number) => {
     );
     items.value.other = items.value.other.filter((item) => item.id !== id);
 };
-
-const getOwnedAvatars = async () => {
-    const client = useSupabaseClient();
-    const user = useSupabaseUser();
-
-    if (!user.value) return null;
-
-    const { data } = await client
-        .from('setups')
-        .select(
-            `
-            items:setup_items(
-                data:item_id(
-                    id, outdated, category, name, thumbnail, nsfw
-                )
-            )
-            `
-        )
-        .eq('author', user.value.id)
-        .eq('setup_items.item_id.category', 'avatar')
-        .order('created_at', { ascending: false })
-        .limit(30)
-        .returns<
-            {
-                items: {
-                    data: {
-                        id: number;
-                        outdated: boolean;
-                        category: string;
-                        name: string;
-                        thumbnail: string;
-                        nsfw: boolean;
-                    };
-                }[];
-            }[]
-        >();
-
-    if (!data) return null;
-
-    const avatars = [
-        ...new Map(
-            data
-                .map((s) => s.items.filter((i) => i.data).map((i) => i.data))
-                .flat()
-                .flat()
-                .map((obj) => [obj.id, obj])
-        ).values(),
-    ].slice(0, 6);
-
-    return avatars;
-};
-
-quickAvatarsOwned.value = await getOwnedAvatars();
 </script>
 
 <template>
@@ -167,43 +57,6 @@ quickAvatarsOwned.value = await getOwnedAvatars();
         :class="twMerge('relative flex-col items-center gap-8 flex', propClass)"
     >
         <div class="w-full flex flex-col gap-4 items-stretch">
-            <!-- <div class="flex gap-1 items-center">
-                <UiTextinput
-                    v-model="inputUrl"
-                    :disabled="adding"
-                    autocomplete="off"
-                    placeholder="BOOTH URLからアバター・アイテムを追加"
-                    class="w-full"
-                    @keyup.enter="addItemFromURL"
-                >
-                    <template #trailing>
-                        <Button
-                            v-if="!inputUrl"
-                            icon="lucide:clipboard"
-                            variant="flat"
-                            class="p-1.5"
-                            @click="pasteFromClipboard"
-                        />
-                        <Button
-                            v-if="inputUrl !== ''"
-                            icon="lucide:x"
-                            variant="flat"
-                            class="p-1.5"
-                            @click="inputUrl = ''"
-                        />
-                    </template>
-                </UiTextinput>
-                <Button
-                    :disabled="adding"
-                    :icon="
-                        !adding ? 'lucide:plus' : 'i-svg-spinners-ring-resize'
-                    "
-                    label="追加"
-                    class="pr-3"
-                    @click="addItemFromURL"
-                />
-            </div> -->
-
             <div class="gap-2 flex items-center">
                 <div class="grow gap-1 flex items-center">
                     <Button
@@ -257,7 +110,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
                 <Button
                     icon="lucide:plus"
                     label="アバター・アイテムを追加"
-                    class="px-4"
+                    class="pl-4 pr-4.5 rounded-full"
                     @click="modalSearchItem = true"
                 />
             </div>
@@ -275,21 +128,7 @@ quickAvatarsOwned.value = await getOwnedAvatars();
             <p class="text-sm text-zinc-600 dark:text-zinc-400">
                 アイテムが登録されていません
             </p>
-            <div class="flex flex-wrap gap-2 items-center justify-center">
-                <Button
-                    v-for="i in quickAvatarsOwned"
-                    class="p-1 pr-2.5"
-                    @click="addItem(i.id)"
-                >
-                    <NuxtImg
-                        :src="i.thumbnail"
-                        width="40"
-                        height="40"
-                        class="rounded-lg"
-                    />
-                    <span>{{ useAvatarName(i.name) }}</span>
-                </Button>
-            </div>
+            <EditItemsOwnedAvatar @add="addItem" />
         </div>
 
         <div
@@ -330,9 +169,5 @@ quickAvatarsOwned.value = await getOwnedAvatars();
         </div>
     </div>
 
-    <ModalSearchItem
-        v-model="modalSearchItem"
-        @add="addItem"
-        @close="modalSearchItem = false"
-    />
+    <ModalEditorAddItem v-model="modalSearchItem" @add="addItem" />
 </template>

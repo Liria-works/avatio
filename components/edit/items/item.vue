@@ -126,17 +126,21 @@ const booth_url = 'https://booth.pm/ja/items/';
 
                         <template #content>
                             <div class="flex flex-col gap-0.5 text-sm min-w-32">
-                                <Button
-                                    variant="flat"
-                                    @click="unsupported = !unsupported"
+                                <PopoverClose
+                                    v-if="props.item.category !== 'avatar'"
                                 >
-                                    <Icon
-                                        name="lucide:user-x"
-                                        size="18"
-                                        class="text-zinc-400"
-                                    />
-                                    <span>アバター非対応</span>
-                                </Button>
+                                    <Button
+                                        variant="flat"
+                                        @click="unsupported = !unsupported"
+                                    >
+                                        <Icon
+                                            name="lucide:user-x"
+                                            size="18"
+                                            class="text-zinc-400"
+                                        />
+                                        <span>アバター非対応</span>
+                                    </Button>
+                                </PopoverClose>
                                 <Button variant="flat" @click="emit('remove')">
                                     <Icon
                                         name="lucide:x"

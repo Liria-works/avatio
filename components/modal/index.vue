@@ -2,9 +2,12 @@
 import { twMerge } from 'tailwind-merge';
 
 interface Props {
+    anchor?: 'center' | 'top' | 'bottom' | 'left' | 'right';
     class?: string | string[];
 }
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+    anchor: 'center',
+});
 
 const vis = defineModel<boolean>({
     default: false,
@@ -25,11 +28,17 @@ const emit = defineEmits(['update:open']);
                 class="z-30 fixed inset-0 backdrop-blur-md animate-in fade-in transition-all duration-200 ease-in-out"
             />
             <DialogContent
+                :data-anchor="props.anchor"
                 :class="
                     twMerge(
-                        'z-[100] fixed inset-0 place-self-center max-h-[85vh] w-[90vw] max-w-[450px] p-6 flex flex-col gap-5',
+                        'z-[100] fixed place-self-center max-h-[85vh] w-[90vw] max-w-[450px] p-6 flex flex-col gap-5',
                         'rounded-2xl bg-zinc-100 dark:bg-zinc-900 focus:outline-hidden border border-zinc-300 dark:border-zinc-700 shadow-xl',
                         'animate-in slide-in-from-bottom-3 fade-in ease-in-out',
+                        'data-[anchor=center]:inset-0',
+                        'data-[anchor=top]:top-0 data-[anchor=top]:left-0 data-[anchor=top]:right-0',
+                        'data-[anchor=bottom]:bottom-0 data-[anchor=bottom]:left-0 data-[anchor=bottom]:right-0',
+                        'data-[anchor=left]:left-0 data-[anchor=left]:top-0 data-[anchor=left]:bottom-0',
+                        'data-[anchor=right]:right-0 data-[anchor=right]:top-0 data-[anchor=right]:bottom-0',
                         props.class
                     )
                 "
