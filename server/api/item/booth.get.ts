@@ -59,7 +59,8 @@ const GetBoothItem = async (
         console.log('Data is old, fetching from Booth', id);
     }
 
-    const urlBase = 'https://booth.pm/ja/items/';
+    const locale = 'ja';
+    const urlBase = `https://booth.pm/${locale}/items/`;
 
     let response: Booth;
     try {
