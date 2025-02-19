@@ -147,7 +147,7 @@ onMounted(async () => {
                             <p
                                 class="pb-px text-xs leading-0 whitespace-nowrap text-zinc-700 dark:text-zinc-100"
                             >
-                                {{ item.likes }}
+                                {{ item.likes || '?' }}
                             </p>
                         </NuxtLink>
 
