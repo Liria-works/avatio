@@ -17,8 +17,6 @@ interface Errors {
         itemCheckFailed: ErrorType;
         noTitle: ErrorType;
         noAvatar: ErrorType;
-        tooManyAvatars: ErrorType;
-        sameAvatars: ErrorType;
         noItems: ErrorType;
         tooManyItems: ErrorType;
         sameItems: ErrorType;
@@ -76,18 +74,6 @@ export default (): Errors => {
                 status: 11,
                 message: 'Avatar is required.',
                 client: { title: 'アバターを登録してください。' },
-            },
-            tooManyAvatars: {
-                status: 12,
-                message: 'Too many avatars.',
-                client: { title: 'アバターは1個のみ登録可能です。' },
-            },
-            sameAvatars: {
-                status: 13,
-                message: 'Same avatars.',
-                client: {
-                    title: '同じアバターを重複して登録することはできません。',
-                },
             },
             noItems: {
                 status: 14,

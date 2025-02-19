@@ -5,20 +5,7 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
 <template>
     <Popup>
         <template #trigger>
-            <button
-                type="button"
-                class="cursor-pointer flex items-center gap-1"
-            >
-                <Icon
-                    name="lucide:info"
-                    class="text-indigo-400 dark:text-indigo-300"
-                />
-                <span
-                    class="text-xs font-medium text-zinc-600 dark:text-zinc-300"
-                >
-                    画像の添付について
-                </span>
-            </button>
+            <slot />
         </template>
 
         <template #content>
