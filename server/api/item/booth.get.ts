@@ -37,6 +37,7 @@ const GetBoothItem = async (
                 thumbnail,
                 verified
             ),
+            likes,
             nsfw,
             outdated,
             source
@@ -64,7 +65,7 @@ const GetBoothItem = async (
 
     let response: Booth;
     try {
-        response = await $fetch(`${urlBase}${id}.json`, {
+        response = await $fetch<Booth>(`${urlBase}${id}.json`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -107,6 +108,7 @@ const GetBoothItem = async (
         name: response.name.toString(),
         thumbnail: response.images[0].original.toString(),
         price: price,
+        likes: Number(response.wish_lists_count),
         category: category,
         shop: {
             name: response.shop.name.toString(),
@@ -195,6 +197,7 @@ const GetBoothItem = async (
             name: item.name,
             thumbnail: item.thumbnail,
             price: item.price,
+            likes: item.likes,
             category: item.category,
             shop_id: item.shop.id,
             nsfw: item.nsfw,
@@ -221,6 +224,7 @@ const GetBoothItem = async (
             name: insertItem.name,
             thumbnail: insertItem.thumbnail,
             price: insertItem.price,
+            likes: insertItem.likes,
             shop: {
                 name: insertShop.name,
                 id: insertShop.id,

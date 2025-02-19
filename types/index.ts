@@ -34,6 +34,7 @@ export interface Item {
     name: string;
     thumbnail: string;
     price: string | null;
+    likes: number | null;
     shop: Shop;
     nsfw: boolean;
     outdated: boolean;
