@@ -13,14 +13,15 @@ const username = defineModel<string>({
         <template #header>
             <UiTitle label="ユーザー名" icon="lucide:pencil" is="h2" />
             <p
+                v-if="username.length && username.length > 124"
                 :class="[
                     'text-sm font-medium whitespace-nowrap',
-                    !username.length || username.length > 16
+                    !username.length || username.length > 124
                         ? 'text-red-400 dark:text-red-400'
                         : 'text-zinc-700 dark:text-zinc-400',
                 ]"
             >
-                {{ username ? username.length : 0 }} / 16
+                {{ username ? username.length : 0 }} / 124
             </p>
         </template>
 
