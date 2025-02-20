@@ -85,6 +85,7 @@ const main = sanitizeHtml(
         ],
         allowedAttributes: {
             img: ['src', 'alt', 'title'],
+            a: ['href', 'name', 'target'],
         },
         allowedSchemes: ['https'],
     }
