@@ -104,7 +104,7 @@ const Submit = async () => {
                         <Icon
                             name="lucide:check"
                             size="16"
-                            class="bg-zinc-100 dark:bg-zinc-900 group-data-[state=off]:bg-transparent"
+                            class="text-zinc-100 dark:text-zinc-900 group-data-[state=off]:bg-transparent"
                         />
                     </div>
                     <span

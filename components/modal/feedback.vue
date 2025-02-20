@@ -39,6 +39,7 @@ const Submit = async () => {
         <div class="flex flex-col gap-5">
             <div class="relative">
                 <UiTextarea
+                    v-model="feedback"
                     autoresize
                     placeholder="なにかアイデアがあればお送りください！"
                 />
