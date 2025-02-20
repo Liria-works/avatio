@@ -161,7 +161,7 @@ const GetBoothItem = async (
 
         const allowed_category_id: number[] = config.value as number[];
 
-        if (!allowed_category_id.includes(Number(item.category)))
+        if (!allowed_category_id.includes(Number(response.category.id)))
             if (!item.tags.map((t: string) => t).includes('VRChat'))
                 return {
                     data: null,
