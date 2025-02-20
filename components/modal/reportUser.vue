@@ -81,12 +81,10 @@ const Submit = async () => {
             </div>
         </template>
 
-        <div
-            class="overflow-y-auto w-full flex flex-col items-center gap-2 text-md font-normal text-zinc-300"
-        >
+        <div class="overflow-y-auto w-full flex flex-col items-center gap-2">
             <Toggle
-                v-for="choice in choices"
-                :key="useId()"
+                v-for="(choice, index) in choices"
+                :key="'choice-' + index"
                 class="group w-full p-5 flex flex-col gap-1.5 rounded-xl border border-zinc-400 dark:border-zinc-600 data-[state=on]:bg-zinc-300 data-[state=on]:dark:bg-zinc-700"
                 @click="choice.value = !choice.value"
             >
@@ -97,7 +95,7 @@ const Submit = async () => {
                         <Icon
                             name="lucide:check"
                             size="16"
-                            class="bg-zinc-100 dark:bg-zinc-900 group-data-[state=off]:bg-transparent"
+                            class="text-zinc-100 dark:text-zinc-900 group-data-[state=off]:bg-transparent"
                         />
                     </div>
                     <span
