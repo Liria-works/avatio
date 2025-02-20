@@ -30,31 +30,37 @@ const dashOffset = computed(
 
 <template>
     <UiTooltip :text="`${count} / ${props.max}`">
-        <svg :width="size" :height="size" class="-rotate-90 focus:outline-none">
-            <!-- 背景の円 -->
-            <circle
-                :cx="size / 2"
-                :cy="size / 2"
-                :r="radius"
-                :stroke-width="strokeWidth"
-                class="stroke-zinc-400 dark:stroke-zinc-600 fill-transparent"
-            />
-            <!-- 進捗を示す円 -->
-            <circle
-                :data-exceeded="count > max"
-                :cx="size / 2"
-                :cy="size / 2"
-                :r="radius"
-                :stroke-width="strokeWidth"
-                stroke-linecap="round"
-                :stroke-dasharray="circumference"
-                :stroke-dashoffset="dashOffset"
-                :class="[
-                    'stroke-zinc-700 dark:stroke-zinc-300',
-                    'data-[exceeded=true]:stroke-red-500 data-[exceeded=true]:dark:stroke-red-400',
-                    'fill-transparent',
-                ]"
-            />
-        </svg>
+        <div>
+            <svg
+                :width="size"
+                :height="size"
+                class="-rotate-90 focus:outline-none"
+            >
+                <!-- 背景の円 -->
+                <circle
+                    :cx="size / 2"
+                    :cy="size / 2"
+                    :r="radius"
+                    :stroke-width="strokeWidth"
+                    class="stroke-zinc-400 dark:stroke-zinc-600 fill-transparent"
+                />
+                <!-- 進捗を示す円 -->
+                <circle
+                    :data-exceeded="count > max"
+                    :cx="size / 2"
+                    :cy="size / 2"
+                    :r="radius"
+                    :stroke-width="strokeWidth"
+                    stroke-linecap="round"
+                    :stroke-dasharray="circumference"
+                    :stroke-dashoffset="dashOffset"
+                    :class="[
+                        'stroke-zinc-700 dark:stroke-zinc-300',
+                        'data-[exceeded=true]:stroke-red-500 data-[exceeded=true]:dark:stroke-red-400',
+                        'fill-transparent',
+                    ]"
+                />
+            </svg>
+        </div>
     </UiTooltip>
 </template>

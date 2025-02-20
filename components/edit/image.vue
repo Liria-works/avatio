@@ -12,7 +12,7 @@ const { files, open, reset, onChange } = useFileDialog({
 });
 
 onChange((files) => {
-    if (files?.length) {
+    if (files?.length && files[0]) {
         const file = files[0];
         image.value = file;
 
@@ -29,8 +29,7 @@ onChange((files) => {
 });
 
 const onDrop = (files: File[] | null) => {
-    console.log(files);
-    if (files && files.length === 1) {
+    if (files && files.length === 1 && files[0]) {
         const file = files[0];
         image.value = file;
 
@@ -59,6 +58,10 @@ const { isOverDropZone } = useDropZone(dropZoneRef, {
     // whether to prevent default behavior for unhandled events
     preventDefaultForUnhandled: false,
 });
+
+defineExpose({
+    reset,
+});
 </script>
 
 <template>
@@ -66,9 +69,12 @@ const { isOverDropZone } = useDropZone(dropZoneRef, {
         <button
             v-if="!imagePreview"
             ref="dropZoneRef"
+            type="button"
             @click="open()"
             :class="[
-                'h-40 flex flex-col items-center justify-center w-full rounded-xl border-4 border-dashed border-zinc-300 dark:border-zinc-600',
+                'h-40 w-full flex flex-col items-center justify-center',
+                'rounded-xl cursor-pointer',
+                'border-4 border-dashed border-zinc-300 dark:border-zinc-600',
                 isOverDropZone
                     ? 'bg-zinc-500 dark:bg-zinc-400'
                     : 'hover:bg-zinc-200 dark:hover:bg-black/15 ',
@@ -101,12 +107,11 @@ const { isOverDropZone } = useDropZone(dropZoneRef, {
                 </button>
             </div>
             <div
-                v-if="files"
+                v-if="files && files.length && files[0]"
                 class="w-full line-clamp-1 break-all text-xs px-1 text-zinc-600 dark:text-zinc-400"
             >
                 {{ files[0].name }}
             </div>
         </div>
-        <PopupUploadImage class="w-fit" />
     </div>
 </template>

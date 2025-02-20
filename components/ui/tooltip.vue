@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
                 :side="props.side"
                 :align="props.align"
                 :class="[
-                    'm-1 p-1.5 rounded-lg text-base font-normal leading-0',
+                    'z-[250] m-1 p-1.5 rounded-lg text-base font-normal leading-0',
                     'shadow-lg shadow-black/10 ring-1 ring-zinc-300 dark:ring-zinc-700 bg-zinc-100 dark:bg-zinc-900',
                     'animate-in fade-in data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1',
                 ]"

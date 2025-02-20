@@ -15,7 +15,9 @@ export interface RequestBody {
 const returnError = (error: ErrorType) => ({ error, data: null });
 
 export default defineEventHandler(
-    async (event): Promise<ApiResponse<{ id: number }>> => {
+    async (
+        event
+    ): Promise<ApiResponse<{ id: number; image: string | null }>> => {
         const user = await serverSupabaseUser(event).catch(() => null);
         if (!user) return { error: getErrors().general.forbidden, data: null };
 
@@ -26,7 +28,6 @@ export default defineEventHandler(
             description: limitDescription,
             tags: limitTags,
             coAuthors: limitCoAuthors,
-            avatars: limitAvatars,
             items: limitItems,
         } = limits;
 
@@ -49,25 +50,9 @@ export default defineEventHandler(
         if (!itemsDB)
             return returnError(getErrors().publishSetup.itemCheckFailed);
 
-        const itemsInfo = itemsDB.reduce(
-            (acc, item) => ({ ...acc, [item.id]: item.category }),
-            {} as Record<number, 'avatar' | 'cloth' | 'accessory' | 'other'>
-        );
-
-        const avatarItems = body.items.filter(
-            (i) => itemsInfo[i.id] === 'avatar'
-        );
-        const nonAvatarItems = body.items.filter(
-            (i) => itemsInfo[i.id] !== 'avatar'
-        );
-
-        if (!avatarItems.length)
-            return returnError(getErrors().publishSetup.noAvatar);
-        if (avatarItems.length > limitAvatars)
-            return returnError(getErrors().publishSetup.tooManyAvatars);
-        if (!nonAvatarItems.length)
+        if (!body.items.length)
             return returnError(getErrors().publishSetup.noItems);
-        if (nonAvatarItems.length > limitItems)
+        if (body.items.length > limitItems)
             return returnError(getErrors().publishSetup.tooManyItems);
 
         let image: {
@@ -158,6 +143,9 @@ export default defineEventHandler(
                 return returnError(getErrors().publishSetup.insertImages);
         }
 
-        return { error: null, data: { id: setupData.id } };
+        return {
+            error: null,
+            data: { id: setupData.id, image: image ? image.path : null },
+        };
     }
 );

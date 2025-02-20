@@ -174,6 +174,7 @@ export type Database = {
                     category: Database['public']['Enums']['item_category'];
                     created_at: string;
                     id: number;
+                    likes: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated: boolean;
@@ -187,6 +188,7 @@ export type Database = {
                     category?: Database['public']['Enums']['item_category'];
                     created_at?: string;
                     id: number;
+                    likes?: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated?: boolean;
@@ -200,6 +202,7 @@ export type Database = {
                     category?: Database['public']['Enums']['item_category'];
                     created_at?: string;
                     id?: number;
+                    likes?: number | null;
                     name?: string;
                     nsfw?: boolean;
                     outdated?: boolean;
@@ -573,6 +576,7 @@ export type Database = {
                     id: string;
                     links: string[];
                     name: string | null;
+                    official: boolean;
                 };
                 Insert: {
                     avatar?: string | null;
@@ -581,6 +585,7 @@ export type Database = {
                     id: string;
                     links?: string[];
                     name?: string | null;
+                    official?: boolean;
                 };
                 Update: {
                     avatar?: string | null;
@@ -589,6 +594,7 @@ export type Database = {
                     id?: string;
                     links?: string[];
                     name?: string | null;
+                    official?: boolean;
                 };
                 Relationships: [];
             };
@@ -597,19 +603,13 @@ export type Database = {
             [_ in never]: never;
         };
         Functions: {
-            check_password: {
-                Args: {
-                    user_id: string;
-                    plain_password: string;
-                };
-                Returns: boolean;
-            };
             popular_avatars: {
                 Args: Record<PropertyKey, never>;
                 Returns: {
                     category: Database['public']['Enums']['item_category'];
                     created_at: string;
                     id: number;
+                    likes: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated: boolean;
@@ -628,34 +628,16 @@ export type Database = {
                 };
                 Returns: Json;
             };
-            search_setups:
-                | {
-                      Args: {
-                          word: string;
-                          items: number[];
-                          tags: string[];
-                      };
-                      Returns: Json;
-                  }
-                | {
-                      Args: {
-                          word: string;
-                          items: number[];
-                          tags: string[];
-                          page: number;
-                          per_page: number;
-                      };
-                      Returns: Json;
-                  }
-                | {
-                      Args: {
-                          word: string;
-                          items: number[];
-                          tags: string[];
-                          page?: number;
-                      };
-                      Returns: Json;
-                  };
+            search_setups: {
+                Args: {
+                    word: string;
+                    items: number[];
+                    tags: string[];
+                    page: number;
+                    per_page: number;
+                };
+                Returns: Json;
+            };
             search_tags: {
                 Args: {
                     keywords: string;
@@ -671,10 +653,6 @@ export type Database = {
                     keyword: string;
                     num: number;
                 };
-                Returns: Json;
-            };
-            tags_order_by_count: {
-                Args: Record<PropertyKey, never>;
                 Returns: Json;
             };
             update_item_updated_at: {

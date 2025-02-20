@@ -89,7 +89,7 @@ const Submit = async () => {
         </template>
 
         <div
-            class="w-full flex flex-col items-center gap-2 text-md font-normal text-zinc-300"
+            class="overflow-y-auto w-full flex flex-col items-center gap-2 text-md font-normal text-zinc-300"
         >
             <Toggle
                 v-for="choice in choices"
