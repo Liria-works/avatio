@@ -33,7 +33,7 @@ const openImage = ref(false);
             :placeholder="[props.width, props.height, 70, 5]"
             :class="
                 twMerge(
-                    'rounded-xl flex items-center justify-center',
+                    'shrink-0 grow-0 max-w-full max-h-full rounded-xl flex items-center justify-center',
                     props.class
                 )
             "
