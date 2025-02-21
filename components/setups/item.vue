@@ -14,6 +14,8 @@ const props = withDefaults(defineProps<Props>(), {
     noAction: false,
 });
 
+const forceUpdateItem = (await $fetch('/api/edgeConfig/forceUpdateItem')).value;
+
 const loading = ref(false);
 
 const sourceInfo = {
@@ -35,34 +37,42 @@ onMounted(async () => {
         new Date().getTime() - new Date(props.item.updated_at).getTime();
 
     // 時間の差分が1日を超えている場合、処理継続する
-    if (timeDifference > 24 * 60 * 60 * 1000) {
+    // edge config の forceUpdateItem が true の場合は強制的に処理継続する
+    if (forceUpdateItem || timeDifference > 24 * 60 * 60 * 1000) {
+        loading.value = true;
+
         const response = await $fetch('/api/item/booth', {
             query: { id: props.item.id },
         });
 
         if (response.data) item.value = response.data;
         if (!response.data) item.value.outdated = true;
-    }
 
-    loading.value = false;
+        loading.value = false;
+    }
 });
 </script>
 
 <template>
     <div
         v-if="loading"
+        :data-size="props.size"
         :class="
             twMerge(
-                'flex items-center px-6 ring-1 ring-zinc-300 dark:ring-zinc-600 rounded-lg overflow-clip',
+                'group flex items-center px-6 ring-1 ring-zinc-300 dark:ring-zinc-600 rounded-lg overflow-clip',
                 props.class
             )
         "
     >
-        <Icon
-            name="svg-spinners:ring-resize"
-            size="24"
-            :class="props.size === 'lg' ? 'h-20 sm:h-32' : 'h-20'"
-        />
+        <div
+            :data-size="props.size"
+            class="flex items-center gap-3 h-24 data-[size=lg]:h-24 data-[size=lg]:sm:h-36"
+        >
+            <Icon name="svg-spinners:ring-resize" size="24" />
+            <p class="text-sm font-bold text-zinc-600 dark:text-zinc-400">
+                アイテムの最新情報を取得中...
+            </p>
+        </div>
     </div>
 
     <div

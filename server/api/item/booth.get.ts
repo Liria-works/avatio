@@ -17,6 +17,18 @@ const GetBoothItem = async (
     event: H3Event,
     id: number
 ): Promise<ApiResponse<Item>> => {
+    const edgeConfig = await event.$fetch('/api/edgeConfig');
+    if (!edgeConfig.value)
+        return {
+            data: null,
+            error: {
+                status: 500,
+                message: 'Error in vercel edge config.',
+            },
+        };
+
+    const config = edgeConfig.value;
+
     const client = await serverSupabaseClient(event);
 
     const startTime = Date.now(); // 処理開始時刻を記録
@@ -47,18 +59,21 @@ const GetBoothItem = async (
         .maybeSingle();
 
     // データが存在し、かつ最終更新が1日以内ならそのまま返す
-    if (itemData) {
-        const timeDifference =
-            new Date().getTime() - new Date(itemData.updated_at).getTime();
+    // edge config の forceUpdateItem が true の場合は強制的に更新
+    if (!config.forceUpdateItem) {
+        if (itemData) {
+            const timeDifference =
+                new Date().getTime() - new Date(itemData.updated_at).getTime();
 
-        if (timeDifference < 24 * 60 * 60 * 1000)
-            return {
-                data: itemData,
-                error: null,
-            };
+            if (timeDifference < 24 * 60 * 60 * 1000)
+                return {
+                    data: itemData,
+                    error: null,
+                };
 
-        console.log('Data is old, fetching from Booth', id);
-    }
+            console.log('Data is old, fetching from Booth', id);
+        }
+    } else console.log('Force update is enabled, fetching from Booth', id);
 
     const locale = 'ja';
     const urlBase = `https://booth.pm/${locale}/items/`;
@@ -147,21 +162,10 @@ const GetBoothItem = async (
     //      134 - 素材（その他）
 
     try {
-        const config = await event.$fetch(
-            '/api/edgeConfig/allowed_category_id'
-        );
-        if (config.status !== 200 || !config.value)
-            return {
-                data: null,
-                error: {
-                    status: 500,
-                    message: 'Error in vercel edge config.',
-                },
-            };
+        const allowedBoothCategoryId =
+            config.allowedBoothCategoryId as number[];
 
-        const allowed_category_id: number[] = config.value as number[];
-
-        if (!allowed_category_id.includes(Number(response.category.id)))
+        if (!allowedBoothCategoryId.includes(Number(response.category.id)))
             if (!item.tags.map((t: string) => t).includes('VRChat'))
                 return {
                     data: null,

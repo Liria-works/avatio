@@ -9,7 +9,7 @@ export default defineNuxtRouteMiddleware(async (_to, _from) => {
     if (env === 'development') return;
 
     const isMaintenance = await $fetch('/api/edgeConfig');
-    if (isMaintenance.value?.is_maintenance)
+    if (isMaintenance.value?.isMaintenance)
         return showError({
             statusCode: 503,
             message: 'メンテナンス中です',
