@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     compatibilityDate: '2024-08-21',
     devtools: { enabled: true, timeline: { enabled: true } },
     modules: [
+        'nuxt-llms',
         'reka-ui/nuxt',
         '@vueuse/nuxt',
         '@nuxt/icon',
@@ -140,6 +141,24 @@ export default defineNuxtConfig({
                 },
             },
         },
+    },
+    llms: {
+        domain: 'https://avatio.me',
+        title: 'Avatio',
+        description: 'あなたのアバター改変を共有しよう',
+        sections: [
+            {
+                title: 'Section 1',
+                description: 'Section 1 Description',
+                links: [
+                    {
+                        title: 'Link 1',
+                        description: 'Link 1 Description',
+                        href: '/link-1',
+                    },
+                ],
+            },
+        ],
     },
     robots: {
         allow: ['Twitterbot', 'facebookexternalhit'],
