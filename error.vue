@@ -17,7 +17,7 @@ const props = defineProps({
             <p class="text-xl font-bold text-zinc-500 dark:text-zinc-400">
                 {{ props.error?.message || 'Unknown Error' }}
             </p>
-            <ButtonBase
+            <Button
                 to="/"
                 label="ホーム"
                 icon="lucide:arrow-left"

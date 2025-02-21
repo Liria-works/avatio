@@ -50,7 +50,7 @@ watch(vis, () => {
 </script>
 
 <template>
-    <ModalBase v-model="vis">
+    <Modal v-model="vis">
         <template #header>
             <UiTitle label="アカウント削除" icon="lucide:circle-alert" />
         </template>
@@ -86,7 +86,7 @@ watch(vis, () => {
 
         <template #footer>
             <div class="w-full flex gap-2 items-center justify-between">
-                <ButtonBase
+                <Button
                     v-if="status !== 'loading'"
                     label="キャンセル"
                     variant="flat"
@@ -96,7 +96,7 @@ watch(vis, () => {
                     "
                 />
 
-                <ButtonBase
+                <Button
                     v-if="status === 'idle'"
                     :disabled="!deletable"
                     label="削除"
@@ -105,5 +105,5 @@ watch(vis, () => {
                 />
             </div>
         </template>
-    </ModalBase>
+    </Modal>
 </template>

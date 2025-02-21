@@ -8,7 +8,7 @@ const colorMode = useColorMode();
 </script>
 
 <template>
-    <ButtonBase
+    <Button
         :tooltip="props.label ? '' : 'テーマ'"
         aria-label="テーマ"
         variant="flat"
@@ -40,5 +40,5 @@ const colorMode = useColorMode();
         </ClientOnly>
 
         <span v-if="props.label">テーマ</span>
-    </ButtonBase>
+    </Button>
 </template>

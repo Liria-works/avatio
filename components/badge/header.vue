@@ -11,7 +11,7 @@ try {
 </script>
 
 <template>
-    <ButtonBase
+    <Button
         v-if="badge"
         :to="badge.link"
         :label="badge.label"

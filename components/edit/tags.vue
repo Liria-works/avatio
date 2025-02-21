@@ -43,12 +43,10 @@ const suggest = useDebounceFn(
         const input = document.getElementById('tagInput') as HTMLInputElement;
 
         if (input?.value.length) {
-            console.log(input.value, tags.value);
             const { data, error } = await client.rpc('search_tags', {
                 keywords: input.value,
                 exclude: tags.value,
             });
-            console.log(data);
 
             if (error) {
                 suggestion.value = [];
@@ -68,7 +66,7 @@ const suggest = useDebounceFn(
     { maxWait: 1600 }
 ); // 700～1600ms デバウンス
 
-watch(tags.value, () => {
+watch(tags, () => {
     suggestion.value = [];
 });
 </script>
@@ -91,7 +89,7 @@ watch(tags.value, () => {
                 <TagsInputItemText class="text-sm pl-2" />
                 <TagsInputItemDelete
                     :class="[
-                        'p-1 rounded-full flex items-center justify-center',
+                        'cursor-pointer p-1 rounded-full flex items-center justify-center',
                         'hover:bg-zinc-300 hover:dark:bg-zinc-700',
                         'transition ease-in-out duration-100',
                     ]"
@@ -117,10 +115,10 @@ watch(tags.value, () => {
                 class="m-1.5 shrink-0"
             />
             <button
-                v-for="(i, index) in suggestion"
-                :key="'tagSuggest-' + index"
+                v-for="i in suggestion"
+                :key="useId()"
                 type="button"
-                class="gap-1.5 rounded-full px-3 py-1 text-sm border border-zinc-400 dark:border-zinc-600 hover:bg-zinc-300 hover:dark:bg-zinc-600 transition ease-in-out duration-100"
+                class="cursor-pointer gap-1.5 rounded-full px-3 py-1 text-sm border border-zinc-400 dark:border-zinc-600 hover:bg-zinc-300 hover:dark:bg-zinc-600 transition ease-in-out duration-100"
                 @click="add(i)"
             >
                 {{ i }}

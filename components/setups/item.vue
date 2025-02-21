@@ -134,7 +134,27 @@ onMounted(async () => {
                         <NuxtLink
                             :to="url"
                             target="_blank"
-                            class="text-sm font-semibold leading-none whitespace-nowrap text-zinc-700 dark:text-zinc-300"
+                            :class="[
+                                'mt-px pl-1.5 pr-[0.42rem] py-1 rounded-md flex items-center gap-1',
+                                'ring-1 ring-pink-500/60',
+                            ]"
+                        >
+                            <Icon
+                                name="lucide:heart"
+                                :size="15"
+                                class="text-zinc-700 dark:text-zinc-100"
+                            />
+                            <p
+                                class="pb-px text-xs leading-0 whitespace-nowrap text-zinc-700 dark:text-zinc-100"
+                            >
+                                {{ item.likes || '?' }}
+                            </p>
+                        </NuxtLink>
+
+                        <NuxtLink
+                            :to="url"
+                            target="_blank"
+                            class="text-sm font-semibold leading-0 whitespace-nowrap text-zinc-700 dark:text-zinc-300"
                         >
                             {{ item.price ? item.price : '価格不明' }}
                         </NuxtLink>
@@ -181,7 +201,7 @@ onMounted(async () => {
                         />
                     </UiTooltip>
 
-                    <ButtonBase
+                    <Button
                         v-if="!props.noAction"
                         :to="{ name: 'search', query: { item: props.item.id } }"
                         icon="lucide:search"

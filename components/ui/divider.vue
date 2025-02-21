@@ -10,7 +10,7 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div class="flex items-center align-center text-center">
+    <div :class="['flex items-center align-center text-center', props.class]">
         <div
             :class="
                 twMerge(

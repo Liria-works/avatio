@@ -3,22 +3,12 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
 </script>
 
 <template>
-    <PopupBase>
+    <Popup>
         <template #trigger>
-            <div class="flex items-center gap-1">
-                <Icon
-                    name="lucide:info"
-                    class="text-indigo-400 dark:text-indigo-300"
-                />
-                <span
-                    class="text-xs font-medium text-zinc-600 dark:text-zinc-300"
-                >
-                    画像の添付について
-                </span>
-            </div>
+            <slot />
         </template>
 
-        <template #panel>
+        <template #content>
             <div class="flex flex-col gap-1.5">
                 <p class="text-sm font-bold text-zinc-600 dark:text-zinc-200">
                     対応形式
@@ -39,5 +29,5 @@ const types = ['PNG', 'JPEG', 'WebP', 'AVIF', 'TIFF'];
                 </p>
             </div>
         </template>
-    </PopupBase>
+    </Popup>
 </template>

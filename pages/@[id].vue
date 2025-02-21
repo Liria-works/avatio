@@ -91,7 +91,7 @@ if (userData)
                     v-if="user && user.id === userData.id"
                     class="flex items-center gap-1"
                 >
-                    <ButtonBase
+                    <Button
                         to="/settings"
                         icon="lucide:pen-line"
                         :icon-size="19"
@@ -99,7 +99,7 @@ if (userData)
                         aria-label="プロフィールを編集"
                         variant="flat"
                     />
-                    <ButtonBase
+                    <Button
                         to="/bookmarks"
                         icon="lucide:bookmark"
                         :icon-size="19"
@@ -107,7 +107,7 @@ if (userData)
                         aria-label="ブックマーク"
                         variant="flat"
                     />
-                    <ButtonBase
+                    <Button
                         icon="lucide:log-out"
                         :icon-size="19"
                         tooltip="ログアウト"
@@ -143,7 +143,7 @@ if (userData)
                 </div>
             </div>
 
-            <ButtonBase
+            <Button
                 v-if="!user || user.id !== userData.id"
                 label="ユーザーを報告"
                 icon="lucide:flag"
@@ -157,7 +157,7 @@ if (userData)
                 "
             />
             <ModalReportUser v-model="modalReport" :id="userData.id" />
-            <ModalBase v-model="modalLogin">
+            <Modal v-model="modalLogin">
                 <UiLogin
                     :redirect="`/@${userData.id}`"
                     @login-success="
@@ -165,7 +165,7 @@ if (userData)
                         modalReport = true;
                     "
                 />
-            </ModalBase>
+            </Modal>
         </div>
 
         <div class="w-full flex flex-col gap-5 pl-2">

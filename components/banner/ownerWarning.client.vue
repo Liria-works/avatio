@@ -6,7 +6,6 @@ const storage = createStorage({
     driver: localStorageDriver({}),
 });
 
-const user = useSupabaseUser();
 const visible = ref(false);
 
 if (!(await storage.has('ownerWarningBanner'))) visible.value = true;
@@ -15,10 +14,7 @@ const save = async () => await storage.set('ownerWarningBanner', true);
 </script>
 
 <template>
-    <div
-        v-if="!user && visible"
-        class="px-2 gap-2 flex items-center justify-between"
-    >
+    <div v-if="visible" class="px-2 gap-2 flex items-center justify-between">
         <p class="text-xs break-keep text-zinc-700 dark:text-zinc-300">
             {{
                 useSentence(
@@ -35,7 +31,7 @@ const save = async () => await storage.set('ownerWarningBanner', true);
             {{ useSentence('よりご連絡をお願いします。') }}
         </p>
 
-        <ButtonBase
+        <Button
             icon="lucide:x"
             variant="flat"
             class="place-self-end rounded-full p-2"

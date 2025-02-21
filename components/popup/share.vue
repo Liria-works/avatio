@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-const props = defineProps<{
+interface Props {
     setupName: string;
     setupDescription: string;
     setupAuthor: string;
-}>();
+    copyUrlButton?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+    copyUrlButton: true,
+});
 
 const { share, isSupported } = useShare();
 
@@ -11,16 +15,19 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
 </script>
 
 <template>
-    <PopupBase>
+    <Popup>
         <template #trigger>
             <slot />
         </template>
 
-        <template #panel>
+        <template #content>
             <div class="flex flex-col gap-0.5 text-sm min-w-48">
-                <ButtonCopyUrl :url="useBrowserLocation().value.href!" />
+                <ButtonCopyUrl
+                    v-if="props.copyUrlButton"
+                    :url="useBrowserLocation().value.href!"
+                />
 
-                <ButtonBase
+                <Button
                     :to="tweet"
                     new-tab
                     icon="simple-icons:x"
@@ -28,7 +35,7 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                     label="ポスト"
                     class="w-full outline-0"
                 />
-                <ButtonBase
+                <Button
                     v-if="isSupported"
                     icon="lucide:share-2"
                     :icon-size="18"
@@ -44,5 +51,5 @@ const tweet = `http://x.com/intent/tweet?text=${encodeURIComponent(props.setupNa
                 />
             </div>
         </template>
-    </PopupBase>
+    </Popup>
 </template>

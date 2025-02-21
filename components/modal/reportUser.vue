@@ -5,22 +5,25 @@ const props = defineProps<{ id: string }>();
 
 const choices = ref({
     spam: {
-        label: 'スパム、個人情報、不適切な内容',
-        descreption:
-            'スパム目的のアカウントと予想される、プロフィールなどに自身および他者の個人情報を含んでいる、その他不適切な情報を含んでいる',
+        label: 'スパム',
+        description: 'スパムの投稿を含む',
         value: false,
     },
     hate: {
         label: '悪意のあるユーザー',
-        descreption: 'ヘイト、差別、脅迫など悪意のある内容を投稿している。',
+        description: 'ヘイト、差別、脅迫など悪意のある内容を投稿している。',
         value: false,
     },
     infringement: {
         label: '権利侵害',
-        descreption: '他者の権利を侵している、または権利侵害を助長している。',
+        description: '他者の権利を侵している、または権利侵害を助長している。',
         value: false,
     },
-    other: { label: 'その他', descreption: 'その他の理由で報告', value: false },
+    other: {
+        label: 'その他',
+        description: 'その他の理由で報告',
+        value: false,
+    },
 });
 const additional = ref<string>('');
 
@@ -62,7 +65,7 @@ const Submit = async () => {
 </script>
 
 <template>
-    <ModalBase v-model="vis">
+    <Modal v-model="vis">
         <template #header>
             <div
                 class="w-full px-10 flex flex-row gap-2 items-center justify-center"
@@ -79,7 +82,7 @@ const Submit = async () => {
         </template>
 
         <div
-            class="w-full flex flex-col items-center gap-2 text-md font-normal text-zinc-300"
+            class="overflow-y-auto w-full flex flex-col items-center gap-2 text-md font-normal text-zinc-300"
         >
             <Toggle
                 v-for="choice in choices"
@@ -107,7 +110,7 @@ const Submit = async () => {
                 <span
                     class="text-zinc-900 dark:text-zinc-100 text-sm text-left whitespace-pre-line"
                 >
-                    {{ choice.descreption }}
+                    {{ choice.description }}
                 </span>
             </Toggle>
             <p
@@ -125,13 +128,13 @@ const Submit = async () => {
 
         <template #footer>
             <div class="gap-1.5 flex items-center justify-between">
-                <ButtonBase
+                <Button
                     label="キャンセル"
                     variant="flat"
                     @click="vis = false"
                 />
-                <ButtonBase label="報告" @click="Submit" />
+                <Button label="報告" @click="Submit" />
             </div>
         </template>
-    </ModalBase>
+    </Modal>
 </template>

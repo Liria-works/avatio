@@ -6,7 +6,7 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-    <HovercardBase side="top" class="pl-3 pr-4 py-2.5">
+    <Hovercard side="top" class="pl-3 pr-4 py-2.5">
         <template #trigger>
             <slot />
         </template>
@@ -34,5 +34,5 @@ const props = defineProps<Props>();
                 </span>
             </NuxtLink>
         </template>
-    </HovercardBase>
+    </Hovercard>
 </template>

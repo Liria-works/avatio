@@ -174,6 +174,7 @@ export type Database = {
                     category: Database['public']['Enums']['item_category'];
                     created_at: string;
                     id: number;
+                    likes: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated: boolean;
@@ -187,6 +188,7 @@ export type Database = {
                     category?: Database['public']['Enums']['item_category'];
                     created_at?: string;
                     id: number;
+                    likes?: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated?: boolean;
@@ -200,6 +202,7 @@ export type Database = {
                     category?: Database['public']['Enums']['item_category'];
                     created_at?: string;
                     id?: number;
+                    likes?: number | null;
                     name?: string;
                     nsfw?: boolean;
                     outdated?: boolean;
@@ -294,17 +297,17 @@ export type Database = {
                 };
                 Relationships: [
                     {
-                        foreignKeyName: 'report_setup_id_fkey';
-                        columns: ['setup_id'];
-                        isOneToOne: false;
-                        referencedRelation: 'setups';
-                        referencedColumns: ['id'];
-                    },
-                    {
                         foreignKeyName: 'report_setup_reporter_fkey';
                         columns: ['reporter'];
                         isOneToOne: false;
                         referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'report_setup_setup_id_fkey';
+                        columns: ['setup_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'setups';
                         referencedColumns: ['id'];
                     },
                 ];
@@ -355,15 +358,51 @@ export type Database = {
                         referencedColumns: ['id'];
                     },
                     {
+                        foreignKeyName: 'report_user_reportee_fkey1';
+                        columns: ['reportee'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    },
+                    {
                         foreignKeyName: 'report_user_reporter_fkey';
                         columns: ['reporter'];
                         isOneToOne: false;
                         referencedRelation: 'users';
                         referencedColumns: ['id'];
                     },
+                ];
+            };
+            setup_coauthors: {
+                Row: {
+                    id: number;
+                    note: string;
+                    setup_id: number;
+                    user_id: string;
+                };
+                Insert: {
+                    id?: number;
+                    note?: string;
+                    setup_id: number;
+                    user_id: string;
+                };
+                Update: {
+                    id?: number;
+                    note?: string;
+                    setup_id?: number;
+                    user_id?: string;
+                };
+                Relationships: [
                     {
-                        foreignKeyName: 'report_user_user_id_fkey';
-                        columns: ['reportee'];
+                        foreignKeyName: 'setup_coauthor_setup_id_fkey';
+                        columns: ['setup_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'setups';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'setup_coauthor_user_id_fkey';
+                        columns: ['user_id'];
                         isOneToOne: false;
                         referencedRelation: 'users';
                         referencedColumns: ['id'];
@@ -537,6 +576,7 @@ export type Database = {
                     id: string;
                     links: string[];
                     name: string | null;
+                    official: boolean;
                 };
                 Insert: {
                     avatar?: string | null;
@@ -545,6 +585,7 @@ export type Database = {
                     id: string;
                     links?: string[];
                     name?: string | null;
+                    official?: boolean;
                 };
                 Update: {
                     avatar?: string | null;
@@ -553,6 +594,7 @@ export type Database = {
                     id?: string;
                     links?: string[];
                     name?: string | null;
+                    official?: boolean;
                 };
                 Relationships: [];
             };
@@ -561,19 +603,13 @@ export type Database = {
             [_ in never]: never;
         };
         Functions: {
-            check_password: {
-                Args: {
-                    user_id: string;
-                    plain_password: string;
-                };
-                Returns: boolean;
-            };
             popular_avatars: {
                 Args: Record<PropertyKey, never>;
                 Returns: {
                     category: Database['public']['Enums']['item_category'];
                     created_at: string;
                     id: number;
+                    likes: number | null;
                     name: string;
                     nsfw: boolean;
                     outdated: boolean;
@@ -592,34 +628,16 @@ export type Database = {
                 };
                 Returns: Json;
             };
-            search_setups:
-                | {
-                      Args: {
-                          word: string;
-                          items: number[];
-                          tags: string[];
-                      };
-                      Returns: Json;
-                  }
-                | {
-                      Args: {
-                          word: string;
-                          items: number[];
-                          tags: string[];
-                          page: number;
-                          per_page: number;
-                      };
-                      Returns: Json;
-                  }
-                | {
-                      Args: {
-                          word: string;
-                          items: number[];
-                          tags: string[];
-                          page?: number;
-                      };
-                      Returns: Json;
-                  };
+            search_setups: {
+                Args: {
+                    word: string;
+                    items: number[];
+                    tags: string[];
+                    page: number;
+                    per_page: number;
+                };
+                Returns: Json;
+            };
             search_tags: {
                 Args: {
                     keywords: string;
@@ -630,8 +648,11 @@ export type Database = {
                     score: number;
                 }[];
             };
-            tags_order_by_count: {
-                Args: Record<PropertyKey, never>;
+            search_users: {
+                Args: {
+                    keyword: string;
+                    num: number;
+                };
                 Returns: Json;
             };
             update_item_updated_at: {
