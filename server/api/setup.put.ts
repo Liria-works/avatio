@@ -9,6 +9,7 @@ export interface RequestBody {
     tags: string[];
     coAuthors: { id: string; note: string }[];
     image: string | null;
+    unity?: string;
     items: {
         id: number;
         category: ItemCategory;
@@ -94,6 +95,7 @@ export default defineEventHandler(
             .insert({
                 name: body.name,
                 description: body.description,
+                unity: body.unity?.length ? body.unity : null,
             })
             .select('id')
             .single();

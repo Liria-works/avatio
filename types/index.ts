@@ -69,6 +69,7 @@ export interface SetupBase {
     description: string | null;
     author: Author;
     images: SetupImages[];
+    unity: string | null;
 }
 
 export interface SetupDB extends SetupBase {

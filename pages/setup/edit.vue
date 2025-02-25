@@ -28,6 +28,7 @@ const coAuthors = ref<
         note: string;
     }[]
 >([]);
+const unity = ref<string>('');
 const image = ref<File | null>(null);
 
 const editImage = ref();
@@ -87,6 +88,7 @@ const PublishSetup = async () => {
         body: {
             name: title.value,
             description: description.value,
+            unity: unity.value.length ? unity.value : null,
             tags: tags.value,
             coAuthors: coAuthors.value.map((i) => ({
                 id: i.id,
@@ -166,6 +168,7 @@ useOGP({ title: 'セットアップ作成' });
             v-model:description="description"
             v-model:tags="tags"
             v-model:co-authors="coAuthors"
+            v-model:unity="unity"
             v-model:image="image"
             class="static lg:absolute top-0 bottom-4 left-0 lg:w-[22rem] overflow-y-auto"
             @publish="PublishSetup"

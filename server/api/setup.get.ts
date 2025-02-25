@@ -19,6 +19,7 @@ export default defineEventHandler(
                 created_at,
                 name,
                 description,
+                unity,
                 author(
                     id,
                     name,
@@ -95,6 +96,7 @@ export default defineEventHandler(
                 },
                 name: data.name,
                 description: data.description,
+                unity: data.unity,
                 tags: data.tags.map((t) => t.tag),
                 co_authors: data.co_authors.map((c) => ({
                     id: c.user_id.id,

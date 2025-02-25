@@ -14,6 +14,7 @@ const coAuthors = defineModel<
         note: string;
     }[]
 >('coAuthors', { default: [] });
+const unity = defineModel<string>('unity', { default: '' });
 const image = defineModel<File | null>('image', { default: null });
 const publishing = defineModel<boolean>('publishing', { default: false });
 
@@ -204,13 +205,13 @@ const attributesVisibility = ref({
                         </div>
 
                         <UiCount
-                            v-if="coAuthors.length"
-                            :count="coAuthors.length"
-                            :max="setupLimits().coAuthors"
+                            v-if="unity.length"
+                            :count="unity.length"
+                            :max="setupLimits().unity"
                         />
                     </div>
                     <UiTextinput
-                        v-model="title"
+                        v-model="unity"
                         placeholder="例: 2022.3.22f1"
                         class="w-full"
                     />
