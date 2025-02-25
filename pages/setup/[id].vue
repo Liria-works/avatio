@@ -41,6 +41,9 @@ if (error)
         message: 'セットアップの取得に失敗しました',
     });
 
+const categories: Record<string, { label: string; icon: string }> =
+    itemCategories(); // デフォルトカテゴリまたはオーバーライド
+
 useOGP({
     title: `${data!.name} @${data!.author.name}`,
     description: data!.description,
@@ -177,7 +180,7 @@ onMounted(async () => {
 
                 <div class="self-stretch flex xl:hidden flex-col gap-3">
                     <div
-                        v-if="data.tags && data.tags.length"
+                        v-if="data.tags?.length"
                         class="items-center gap-1.5 flex flex-row flex-wrap"
                     >
                         <Button
@@ -190,7 +193,7 @@ onMounted(async () => {
                     </div>
 
                     <div
-                        v-if="data.description"
+                        v-if="data.description?.length"
                         class="self-stretch rounded-lg flex flex-col gap-1.5"
                     >
                         <h2 class="text-zinc-500 text-sm mt-1 leading-none">
@@ -245,68 +248,40 @@ onMounted(async () => {
                             </li>
                         </ul>
                     </div>
+
+                    <div
+                        v-if="data.unity?.length"
+                        class="self-stretch rounded-lg flex flex-col gap-1.5"
+                    >
+                        <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                            Unity バージョン
+                        </h2>
+                        <p
+                            class="pl-1 text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
+                        >
+                            {{ useSentence(data.unity) }}
+                        </p>
+                    </div>
                 </div>
 
-                <div class="w-full flex flex-col gap-3">
-                    <template v-if="data.items.avatar.length">
+                <div class="w-full flex flex-col gap-5">
+                    <div
+                        v-for="(items, key) in data.items"
+                        :key="'category-' + key"
+                        class="flex flex-col gap-3"
+                    >
                         <UiTitle
-                            label="ベースアバター"
-                            icon="lucide:person-standing"
+                            :label="categories[key]?.label || key"
+                            :icon="categories[key]?.icon"
                             is="h2"
-                            class="mt-3"
                         />
                         <SetupsItem
-                            v-for="item in data.items.avatar"
-                            :key="useId()"
-                            size="lg"
+                            v-for="(item, index) in items"
+                            :key="`item-${key}-${index}`"
+                            :size="key === 'avatar' ? 'lg' : 'md'"
                             :item="item"
                         />
-                    </template>
-
-                    <template v-if="data.items.cloth.length">
-                        <UiTitle
-                            label="衣装"
-                            icon="lucide:shirt"
-                            is="h2"
-                            class="mt-3"
-                        />
-                        <SetupsItem
-                            v-for="item in data.items.cloth"
-                            :key="useId()"
-                            size="md"
-                            :item="item"
-                        />
-                    </template>
-
-                    <template v-if="data.items.accessory.length">
-                        <UiTitle
-                            label="アクセサリー"
-                            icon="lucide:star"
-                            is="h2"
-                            class="mt-3"
-                        />
-                        <SetupsItem
-                            v-for="item in data.items.accessory"
-                            :key="useId()"
-                            size="md"
-                            :item="item"
-                        />
-                    </template>
-
-                    <template v-if="data.items.other.length">
-                        <UiTitle
-                            label="その他"
-                            icon="lucide:package"
-                            is="h2"
-                            class="mt-3"
-                        />
-                        <SetupsItem
-                            v-for="item in data.items.other"
-                            :key="useId()"
-                            size="md"
-                            :item="item"
-                        />
-                    </template>
+                    </div>
                 </div>
             </div>
 
@@ -314,7 +289,7 @@ onMounted(async () => {
                 class="empty:hidden w-full xl:w-[440px] xl:pt-12 flex flex-col gap-6"
             >
                 <ul
-                    v-if="data.tags && data.tags.length"
+                    v-if="data.tags?.length"
                     class="hidden xl:flex flex-wrap items-center gap-1.5"
                 >
                     <li v-for="tag in data.tags" :key="useId()">
@@ -327,7 +302,7 @@ onMounted(async () => {
                 </ul>
 
                 <div
-                    v-if="data.description"
+                    v-if="data.description?.length"
                     class="hidden xl:flex flex-col self-stretch rounded-xl gap-1.5"
                 >
                     <h2 class="text-zinc-500 text-sm mt-1 leading-none">
@@ -337,6 +312,20 @@ onMounted(async () => {
                         class="pl-1 text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
                     >
                         {{ useSentence(data.description) }}
+                    </p>
+                </div>
+
+                <div
+                    v-if="data.unity?.length"
+                    class="self-stretch rounded-lg flex flex-col gap-1.5"
+                >
+                    <h2 class="text-zinc-500 text-sm mt-1 leading-none">
+                        Unity バージョン
+                    </h2>
+                    <p
+                        class="pl-1 text-sm/relaxed whitespace-pre-wrap break-keep [overflow-wrap:anywhere] text-zinc-900 dark:text-zinc-100"
+                    >
+                        {{ useSentence(data.unity) }}
                     </p>
                 </div>
 

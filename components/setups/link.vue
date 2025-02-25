@@ -70,7 +70,10 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     {{ props.setup.name }}
                 </span>
 
-                <div class="flex items-center gap-1">
+                <div
+                    v-if="props.setup.items.avatar?.length"
+                    class="flex items-center gap-1"
+                >
                     <Icon
                         name="lucide:person-standing"
                         size="15"
@@ -95,6 +98,7 @@ const dateLocale = date.toLocaleString('ja-JP', {
             <NuxtImg
                 v-if="
                     !props.setup.images.length &&
+                    props.setup.items.avatar?.length &&
                     !props.setup.items.avatar[0]!.outdated
                 "
                 :src="props.setup.items.avatar[0]!.thumbnail"
@@ -105,7 +109,10 @@ const dateLocale = date.toLocaleString('ja-JP', {
             />
 
             <div
-                v-else-if="props.setup.items.avatar[0]!.outdated"
+                v-else-if="
+                    !props.setup.items.avatar?.length ||
+                    props.setup.items.avatar[0]!.outdated
+                "
                 class="size-14 my-1.5 ml-1.5 rounded-lg flex shrink-0 items-center justify-center text-zinc-400 bg-zinc-300 dark:bg-zinc-600"
             >
                 ?
@@ -121,7 +128,10 @@ const dateLocale = date.toLocaleString('ja-JP', {
                     {{ useSentence(props.setup.name) }}
                 </span>
 
-                <div class="flex items-center gap-1">
+                <div
+                    v-if="props.setup.items.avatar?.length"
+                    class="flex items-center gap-1"
+                >
                     <Icon
                         name="lucide:person-standing"
                         size="15"

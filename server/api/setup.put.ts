@@ -1,5 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { ApiResponse } from '~/types';
+import type { ApiResponse, ItemCategory } from '~/types';
 import getErrors, { type ErrorType } from '~/utils/getErrors';
 import setupLimits from '~/utils/setupLimits';
 
@@ -9,7 +9,13 @@ export interface RequestBody {
     tags: string[];
     coAuthors: { id: string; note: string }[];
     image: string | null;
-    items: { id: number; note: string; unsupported: boolean }[];
+    unity?: string;
+    items: {
+        id: number;
+        category: ItemCategory;
+        note: string;
+        unsupported: boolean;
+    }[];
 }
 
 const returnError = (error: ErrorType) => ({ error, data: null });
@@ -89,13 +95,13 @@ export default defineEventHandler(
             .insert({
                 name: body.name,
                 description: body.description,
+                unity: body.unity?.length ? body.unity : null,
             })
             .select('id')
             .single();
         if (setupError)
             return returnError(getErrors().publishSetup.insertSetup);
 
-        // 複数テーブルへの挿入処理は並行実行可能
         const insertOperations = [
             supabase.from('setup_items').insert(
                 body.items.map((i) => ({
@@ -103,6 +109,7 @@ export default defineEventHandler(
                     item_id: i.id,
                     note: i.note,
                     unsupported: i.unsupported,
+                    category: i.category,
                 }))
             ),
             supabase

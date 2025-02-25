@@ -1,7 +1,8 @@
 import { serverSupabaseClient } from '#supabase/server';
 import type { H3Event } from 'h3';
-import type { Item, ApiResponse } from '~/types';
+import type { Item, ApiResponse, ItemCategory } from '~/types';
 import type { Booth } from '~/types/booth';
+import specificItemCategory from '~/utils/specificItemCategory';
 
 interface fetchedItem extends Omit<Item, 'updated_at'> {
     tags: string[];
@@ -106,37 +107,6 @@ const GetBoothItem = async (
         };
     }
 
-    let price = response.price;
-    for (const i of response.variations)
-        if (i.status === 'free_download') {
-            price = 'FREE';
-            break;
-        }
-
-    let category: 'avatar' | 'cloth' | 'accessory' | 'other' = 'other';
-    if (response.category.id === 208) category = 'avatar';
-    else if (response.category.id === 209) category = 'cloth';
-    else if (response.category.id === 217) category = 'accessory';
-
-    const item: fetchedItem = {
-        id: Number(response.id),
-        name: response.name.toString(),
-        thumbnail: response.images[0].original.toString(),
-        price: price,
-        likes: Number(response.wish_lists_count),
-        category: category,
-        shop: {
-            name: response.shop.name.toString(),
-            id: response.shop.subdomain.toString(),
-            thumbnail: response.shop.thumbnail_url.toString(),
-            verified: Boolean(response.shop.verified),
-        },
-        nsfw: Boolean(response.is_adult),
-        tags: response.tags.map((tag: { name: string }) => tag.name),
-        outdated: false,
-        source: 'booth',
-    };
-
     // カテゴリIDをチェック
 
     // 3Dモデル
@@ -166,7 +136,11 @@ const GetBoothItem = async (
             config.allowedBoothCategoryId as number[];
 
         if (!allowedBoothCategoryId.includes(Number(response.category.id)))
-            if (!item.tags.map((t: string) => t).includes('VRChat'))
+            if (
+                !response.tags
+                    .map((tag: { name: string }) => tag.name)
+                    .includes('VRChat')
+            )
                 return {
                     data: null,
                     error: { status: 400, message: 'Invalid category ID' },
@@ -181,6 +155,47 @@ const GetBoothItem = async (
             },
         };
     }
+
+    let price = response.price;
+    for (const i of response.variations)
+        if (i.status === 'free_download') {
+            price = 'FREE';
+            break;
+        }
+
+    let category: ItemCategory = 'other';
+
+    // if (response.category.id === 208) category = 'avatar';
+    // else if (response.category.id === 209) category = 'cloth';
+    // else if (response.category.id === 217) category = 'accessory';
+
+    const customCategory = specificItemCategory('booth', id);
+
+    if (customCategory) category = customCategory;
+    else {
+        if (response.category.id === 208) category = 'avatar';
+        else if (response.category.id === 209) category = 'cloth';
+        else if (response.category.id === 217) category = 'accessory';
+    }
+
+    const item: fetchedItem = {
+        id: Number(response.id),
+        name: response.name.toString(),
+        thumbnail: response.images[0].original.toString(),
+        price: price,
+        likes: Number(response.wish_lists_count),
+        category: category,
+        shop: {
+            name: response.shop.name.toString(),
+            id: response.shop.subdomain.toString(),
+            thumbnail: response.shop.thumbnail_url.toString(),
+            verified: Boolean(response.shop.verified),
+        },
+        nsfw: Boolean(response.is_adult),
+        tags: response.tags.map((tag: { name: string }) => tag.name),
+        outdated: false,
+        source: 'booth',
+    };
 
     const { data: insertShop } = await client
         .from('shops')

@@ -14,7 +14,7 @@ const { note, unsupported } = defineProps<Props>();
     >
         <div v-if="unsupported" class="gap-2 flex items-center">
             <Icon
-                name="lucide:user-x"
+                name="lucide:user-round-x"
                 :size="15"
                 class="shrink-0 mt-[0.2rem] text-zinc-400 dark:text-zinc-400"
             />

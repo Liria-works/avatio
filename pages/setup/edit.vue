@@ -5,12 +5,16 @@ const publishing = ref(false);
 const modalComplete = ref(false);
 const publishedSetupId = ref<number | null>(null);
 
-const items = ref<{
-    avatar: SetupItem[];
-    cloth: SetupItem[];
-    accessory: SetupItem[];
-    other: SetupItem[];
-}>({ avatar: [], cloth: [], accessory: [], other: [] });
+const items = ref<Record<ItemCategory, SetupItem[]>>({
+    avatar: [],
+    cloth: [],
+    accessory: [],
+    hair: [],
+    texture: [],
+    shader: [],
+    tool: [],
+    other: [],
+});
 const { undo, redo } = useRefHistory(items, { deep: true });
 
 const title = ref<string>('');
@@ -24,6 +28,7 @@ const coAuthors = ref<
         note: string;
     }[]
 >([]);
+const unity = ref<string>('');
 const image = ref<File | null>(null);
 
 const editImage = ref();
@@ -32,6 +37,10 @@ const itemsFlatten = computed(() => [
     ...items.value.avatar,
     ...items.value.cloth,
     ...items.value.accessory,
+    ...items.value.hair,
+    ...items.value.texture,
+    ...items.value.shader,
+    ...items.value.tool,
     ...items.value.other,
 ]);
 
@@ -83,6 +92,7 @@ const PublishSetup = async () => {
         body: {
             name: title.value,
             description: description.value,
+            unity: unity.value.length ? unity.value : null,
             tags: tags.value,
             coAuthors: coAuthors.value.map((i) => ({
                 id: i.id,
@@ -90,6 +100,7 @@ const PublishSetup = async () => {
             })),
             items: itemsFlatten.value.map((i) => ({
                 id: i.id,
+                category: i.category,
                 note: i.note,
                 unsupported: i.unsupported,
             })),
@@ -115,7 +126,16 @@ const reset = () => {
     description.value = '';
     tags.value = [];
     coAuthors.value = [];
-    items.value = { avatar: [], cloth: [], accessory: [], other: [] };
+    items.value = {
+        avatar: [],
+        cloth: [],
+        accessory: [],
+        hair: [],
+        texture: [],
+        shader: [],
+        tool: [],
+        other: [],
+    };
     image.value = null;
     editImage.value.reset();
     publishedSetupId.value = null;
@@ -152,6 +172,7 @@ useOGP({ title: 'セットアップ作成' });
             v-model:description="description"
             v-model:tags="tags"
             v-model:co-authors="coAuthors"
+            v-model:unity="unity"
             v-model:image="image"
             class="static lg:absolute top-0 bottom-4 left-0 lg:w-[22rem] overflow-y-auto"
             @publish="PublishSetup"
@@ -172,13 +193,13 @@ useOGP({ title: 'セットアップ作成' });
             @continue="reset"
         />
 
-        <!-- <Button
+        <Button
             tooltip="セットアップを投稿"
             :icon="!publishing ? 'lucide:upload' : 'i-svg-spinners-ring-resize'"
             :icon-size="18"
             variant="flat"
-            class="fixed bottom-3 right-1 rounded-full p-4 whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 dark:text-zinc-900 dark:bg-zinc-300 hover:dark:text-zinc-100"
+            class="fixed lg:hidden bottom-3 right-3 rounded-full p-4 whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 dark:text-zinc-900 dark:bg-zinc-300 hover:dark:text-zinc-100"
             @click="PublishSetup"
-        /> -->
+        />
     </div>
 </template>
