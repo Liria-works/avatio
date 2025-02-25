@@ -119,23 +119,24 @@ if (userData)
                 </div>
             </div>
 
-            <div class="w-full flex flex-col gap-3 pl-2">
+            <div class="empty:hidden w-full flex flex-col gap-3 pl-2">
                 <div
-                    v-if="userData.links && userData.links.length"
+                    v-if="userData.links?.length"
                     class="flex flex-wrap items-center gap-2"
                 >
-                    <ButtonLink v-for="i in userData.links" :link="i" />
+                    <ButtonLink
+                        v-for="i in userData.links"
+                        :link="i"
+                        :key="useId()"
+                    />
                 </div>
 
                 <div
+                    v-if="userData.bio?.length"
                     class="w-full rounded-xl px-4 py-3 gap-1 flex flex-col border border-zinc-400 dark:border-zinc-600"
                 >
                     <span class="text-zinc-500 text-sm mt-[-2px]">bio</span>
-                    <p v-if="!userData.bio" class="text-zinc-400">
-                        自己紹介が未設定
-                    </p>
                     <p
-                        v-if="userData.bio"
                         class="text-sm text-relaxed break-keep whitespace-break-spaces [overflow-wrap:anywhere]"
                     >
                         {{ useSentence(userData.bio) }}
