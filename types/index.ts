@@ -74,18 +74,21 @@ export interface SetupBase {
 
 export interface SetupDB extends SetupBase {
     tags: { tag: string }[];
-    co_authors: { id: string; note: string }[];
+    co_authors: {
+        user: { id: string; name: string; avatar: string };
+        note: string;
+    }[];
     items: {
         data: Item;
         note: string;
         unsupported: boolean;
+        category: ItemCategory;
     }[];
 }
 
 export interface SetupClient extends SetupBase {
     tags: string[];
     co_authors: (Author & { note: string })[];
-    // 変更: 固定キーから動的なカテゴリに変更
     items: Record<string, SetupItem[]>;
 }
 

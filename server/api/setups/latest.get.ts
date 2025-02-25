@@ -23,6 +23,7 @@ export default defineEventHandler(
                 created_at,
                 name,
                 description,
+                unity,
                 author(
                     id,
                     name,
@@ -52,9 +53,18 @@ export default defineEventHandler(
                         source
                     ),
                     note,
-                    unsupported
+                    unsupported,
+                    category
                 ),
-                tags:setup_tags(tag)
+                tags:setup_tags(tag),
+                co_authors:setup_coauthors(
+                    user:users(
+                        id,
+                        name,
+                        avatar
+                    ),
+                    note
+                )
                 `,
                 { count: 'estimated' }
             )

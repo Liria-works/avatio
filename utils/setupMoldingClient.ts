@@ -1,6 +1,15 @@
+import type { ItemCategory, SetupItem } from '#types';
+
 export default (setup: SetupDB): SetupClient => {
-    const items: Pick<SetupClient, 'items'> = {
-        items: { avatar: [], cloth: [], accessory: [], other: [] },
+    const items: Record<ItemCategory, SetupItem[]> = {
+        avatar: [],
+        cloth: [],
+        accessory: [],
+        hair: [],
+        texture: [],
+        shader: [],
+        tool: [],
+        other: [],
     };
 
     for (const i of setup.items) {
@@ -12,7 +21,7 @@ export default (setup: SetupDB): SetupClient => {
             unsupported: i.unsupported,
         };
 
-        items.items[item.category].push(item);
+        items[item.category].push(item);
     }
 
     return {
@@ -26,7 +35,14 @@ export default (setup: SetupDB): SetupClient => {
             avatar: setup.author!.avatar,
         },
         tags: setup.tags.map((t) => t.tag),
+        co_authors: setup.co_authors.map((c) => ({
+            id: c.user.id,
+            name: c.user.name,
+            avatar: c.user.avatar,
+            note: c.note,
+        })),
+        unity: setup.unity,
         images: setup.images,
-        items: items.items,
+        items: items,
     };
 };
