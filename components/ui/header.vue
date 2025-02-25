@@ -1,4 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const route = useRoute();
+const excludePath = ['/setup/edit'];
+</script>
 
 <template>
     <header class="flex items-center gap-6 justify-between w-full">
@@ -7,7 +10,7 @@
                 <LogoLiria class="w-24 sm:w-32" aria-label="Avatio" />
             </NuxtLink>
 
-            <BannerHeader />
+            <BannerHeader v-if="!excludePath.includes(route.path)" />
         </div>
         <UiHeaderMenu />
     </header>
