@@ -241,10 +241,15 @@ export default defineNuxtConfig({
         redirect: true,
         redirectOptions: {
             login: '/login',
-            callback: '/confirm',
+            callback: '/',
             include: ['/setup/edit', '/settings', '/bookmarks'],
             exclude: [],
             cookieRedirect: false,
+        },
+        clientOptions: {
+            auth: {
+                flowType: 'pkce',
+            },
         },
         types: './types/database.ts',
     },

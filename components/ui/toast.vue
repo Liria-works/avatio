@@ -15,7 +15,7 @@ const props = defineProps<Props>();
             'ring-1 ring-zinc-300 dark:ring-zinc-700 bg-zinc-50 dark:bg-zinc-950',
             'shadow-lg shadow-black/10 dark:shadow-black',
             'animate-in data-[state=open]:fade-in',
-            'data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]',
+            'data-[swipe=move]:translate-x-[var(--reka-toast-swipe-move-x)]',
         ]"
     >
         <div

@@ -1,16 +1,23 @@
 <script lang="ts" setup>
+import type { ItemCategory, SetupItem } from '#types';
 import { twMerge } from 'tailwind-merge';
 import { VueDraggable } from 'vue-draggable-plus';
 
 const { class: propClass } = defineProps<{ class?: string | string[] }>();
 const emit = defineEmits(['undo', 'redo']);
 
-const items = defineModel<{
-    avatar: SetupItem[];
-    cloth: SetupItem[];
-    accessory: SetupItem[];
-    other: SetupItem[];
-}>({ default: { avatar: [], cloth: [], accessory: [], other: [] } });
+const items = defineModel<Record<ItemCategory, SetupItem[]>>({
+    default: {
+        avatar: [],
+        cloth: [],
+        accessory: [],
+        hair: [],
+        texture: [],
+        shader: [],
+        tool: [],
+        other: [],
+    },
+});
 
 const modalSearchItem = ref(false);
 
@@ -26,7 +33,7 @@ const addItem = async (id: number) => {
             getErrors().editSetup.addItemFailed.client.description
         );
 
-    const d = { ...data, note: '', unsupported: false };
+    const d: SetupItem = { ...data, note: '', unsupported: false };
 
     const categoryKey = data.category in items.value ? data.category : 'other';
     const target = items.value[categoryKey];
@@ -42,14 +49,25 @@ const addItem = async (id: number) => {
     }
 };
 
-const removeItem = (id: number) => {
-    items.value.avatar = items.value.avatar.filter((item) => item.id !== id);
-    items.value.cloth = items.value.cloth.filter((item) => item.id !== id);
-    items.value.accessory = items.value.accessory.filter(
-        (item) => item.id !== id
+const changeCategory = (item: SetupItem, category: ItemCategory) => {
+    items.value[item.category] = items.value[item.category].filter(
+        (i) => i.id !== item.id
     );
-    items.value.other = items.value.other.filter((item) => item.id !== id);
+    item.category = category;
+    items.value[category].push(item);
 };
+
+const removeItem = (id: number) => {
+    for (const key in items.value)
+        if (Object.prototype.hasOwnProperty.call(items.value, key))
+            items.value[key as ItemCategory] = items.value[
+                key as ItemCategory
+            ].filter((item) => item.id !== id);
+};
+
+const totalItemsCount = computed(() =>
+    Object.values(items.value).reduce((total, arr) => total + arr.length, 0)
+);
 </script>
 
 <template>
@@ -73,13 +91,7 @@ const removeItem = (id: number) => {
                     />
 
                     <div
-                        :data-exceeded="
-                            useSum(
-                                items.cloth.length,
-                                items.accessory.length,
-                                items.other.length
-                            ).value > 32
-                        "
+                        :data-exceeded="totalItemsCount > 32"
                         class="ml-1 pl-2.5 pr-3 py-1 rounded-full flex gap-1.5 items-center ring-1 ring-zinc-500 data-[exceeded=true]:ring-red-500"
                     >
                         <Icon
@@ -88,23 +100,8 @@ const removeItem = (id: number) => {
                             class="shrink-0 text-zinc-600 dark:text-zinc-400"
                         />
                         <span class="text-xs leading-none whitespace-nowrap">
-                            <span>{{
-                                items.avatar.length +
-                                items.cloth.length +
-                                items.accessory.length +
-                                items.other.length
-                            }}</span>
-                            <span
-                                v-if="
-                                    useSum(
-                                        items.avatar.length,
-                                        items.cloth.length,
-                                        items.accessory.length,
-                                        items.other.length
-                                    ).value > 32
-                                "
-                                >/ 32</span
-                            >
+                            <span>{{ totalItemsCount }}</span>
+                            <span v-if="totalItemsCount > 32">/ 32</span>
                         </span>
                     </div>
                 </div>
@@ -119,12 +116,7 @@ const removeItem = (id: number) => {
         </div>
 
         <div
-            v-if="
-                !items.avatar.length &&
-                !items.cloth.length &&
-                !items.accessory.length &&
-                !items.other.length
-            "
+            v-if="!totalItemsCount"
             class="h-full flex flex-col gap-6 items-center justify-center"
         >
             <p class="text-sm text-zinc-600 dark:text-zinc-400">
@@ -139,7 +131,7 @@ const removeItem = (id: number) => {
         >
             <div
                 v-for="(value, key) in items"
-                :key="useId()"
+                :key="'category-' + key"
                 class="empty:hidden w-full flex flex-col gap-3"
             >
                 <template v-if="value.length">
@@ -163,6 +155,7 @@ const removeItem = (id: number) => {
                             :key="'item-' + item.id"
                             :size="item.category === 'avatar' ? 'lg' : 'md'"
                             :item="item"
+                            @change-category="changeCategory(item, $event)"
                             @remove="removeItem(item.id)"
                         />
                     </VueDraggable>

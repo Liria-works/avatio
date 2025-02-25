@@ -8,7 +8,7 @@ const unsupported = defineModel<boolean>('unsupported', {
     default: false,
 });
 
-const emit = defineEmits(['remove']);
+const emit = defineEmits(['remove', 'changeCategory']);
 
 interface Props {
     size?: 'md' | 'lg';
@@ -113,49 +113,15 @@ const booth_url = 'https://booth.pm/ja/items/';
                 <div
                     class="self-stretch flex flex-col gap-1 items-center justify-between"
                 >
-                    <Popup class="p-1">
-                        <template #trigger>
-                            <Button variant="flat" class="p-2">
-                                <Icon
-                                    name="lucide:menu"
-                                    size="18"
-                                    class="text-zinc-700 dark:text-zinc-300"
-                                />
-                            </Button>
-                        </template>
-
-                        <template #content>
-                            <div class="flex flex-col gap-0.5 text-sm min-w-32">
-                                <PopoverClose
-                                    v-if="props.item.category !== 'avatar'"
-                                >
-                                    <Button
-                                        variant="flat"
-                                        @click="unsupported = !unsupported"
-                                    >
-                                        <Icon
-                                            name="lucide:user-x"
-                                            size="18"
-                                            class="text-zinc-400"
-                                        />
-                                        <span>アバター非対応</span>
-                                    </Button>
-                                </PopoverClose>
-                                <Button variant="flat" @click="emit('remove')">
-                                    <Icon
-                                        name="lucide:x"
-                                        size="18"
-                                        class="text-red-400"
-                                    />
-                                    <span class="text-red-400">削除</span>
-                                </Button>
-                            </div>
-                        </template>
-                    </Popup>
+                    <EditItemsItemMenu
+                        v-model:unsupported="unsupported"
+                        @change-category="emit('changeCategory', $event)"
+                        @remove="emit('remove')"
+                    />
 
                     <UiTooltip v-if="unsupported" text="アバター非対応">
                         <Icon
-                            name="lucide:user-x"
+                            name="lucide:user-round-x"
                             size="16"
                             class="text-zinc-300"
                         />

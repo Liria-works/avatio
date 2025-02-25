@@ -4,6 +4,8 @@ const vis = defineModel<boolean>({
 });
 const emit = defineEmits(['add']);
 
+const ignoreCategories = ['hair', 'texture', 'tool'];
+
 const searchWord = ref<string>('');
 const searchItems = ref<
     {
@@ -74,27 +76,29 @@ watchEffect(() => {
             v-if="searchWord.length"
             class="p-1 shrink-0 flex items-center gap-1 overflow-x-auto overflow-y-visible"
         >
-            <Button
-                v-for="c in Object.values(itemCategories())"
-                :label="c.label"
-                :class="[
-                    'px-3 py-2 rounded-full',
-                    c.id
-                        ? categoryFilter.includes(c.id)
-                            ? 'bg-zinc-700 dark:bg-zinc-300 hover:bg-zinc-500 hover:dark:bg-zinc-400 text-zinc-100 dark:text-zinc-900'
-                            : 'bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 hover:dark:bg-zinc-600'
-                        : '',
-                ]"
-                @click="
-                    () => {
-                        if (categoryFilter.includes(c.id))
-                            categoryFilter = categoryFilter.filter(
-                                (v) => v !== c.id
-                            );
-                        else categoryFilter = [...categoryFilter, c.id];
-                    }
-                "
-            />
+            <template v-for="(value, key) in itemCategories()">
+                <Button
+                    v-if="!ignoreCategories.includes(key)"
+                    :label="value.label"
+                    :class="[
+                        'px-3 py-2 rounded-full',
+                        key
+                            ? categoryFilter.includes(key)
+                                ? 'bg-zinc-700 dark:bg-zinc-300 hover:bg-zinc-500 hover:dark:bg-zinc-400 text-zinc-100 dark:text-zinc-900'
+                                : 'bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 hover:dark:bg-zinc-600'
+                            : '',
+                    ]"
+                    @click="
+                        () => {
+                            if (categoryFilter.includes(key))
+                                categoryFilter = categoryFilter.filter(
+                                    (v) => v !== key
+                                );
+                            else categoryFilter = [...categoryFilter, key];
+                        }
+                    "
+                />
+            </template>
         </div>
 
         <ModalEditorAddItemSearchedItems
