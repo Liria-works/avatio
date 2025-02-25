@@ -5,7 +5,7 @@ import {
     TagsInputItemDelete,
     TagsInputItemText,
     TagsInputRoot,
-} from 'radix-vue';
+} from 'reka-ui';
 
 const client = useSupabaseClient();
 
