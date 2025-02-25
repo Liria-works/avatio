@@ -6,8 +6,8 @@ const unsupported = defineModel<boolean>('unsupported', {
 });
 
 const windowClass = [
-    'min-w-[220px] ring-1 ring-zinc-700 bg-zinc-900 rounded-md p-2',
-    'shadow-lg shadow-black/50',
+    'min-w-[220px] ring-1 ring-zinc-300 dark:ring-zinc-700 bg-zinc-100 dark:bg-zinc-900 rounded-md p-2',
+    'shadow-lg shadow-black/20 dark:shadow-black/50',
     'data-[side=bottom]:mx-2 data-[side=bottom]:mb-2',
 ];
 const buttonClass = [
@@ -42,7 +42,7 @@ const buttonClass = [
                         <Icon
                             name="lucide:tag"
                             size="18"
-                            class="text-zinc-400"
+                            class="text-zinc-600 dark:text-zinc-400"
                         />
                         <span class="grow">カテゴリを変更</span>
                         <Icon name="lucide:chevron-right" size="18" />
@@ -62,7 +62,7 @@ const buttonClass = [
                                 <Icon
                                     :name="value.icon"
                                     size="18"
-                                    class="text-zinc-400"
+                                    class="text-zinc-600 dark:text-zinc-400"
                                 />
                                 {{ value.label }}
                             </DropdownMenuItem>
@@ -76,7 +76,7 @@ const buttonClass = [
                     <Icon
                         name="lucide:user-round-x"
                         size="18"
-                        class="text-zinc-400"
+                        class="text-zinc-600 dark:text-zinc-400"
                     />
                     <span class="grow">アバター非対応</span>
                     <DropdownMenuItemIndicator
@@ -86,7 +86,9 @@ const buttonClass = [
                     </DropdownMenuItemIndicator>
                 </DropdownMenuCheckboxItem>
 
-                <DropdownMenuSeparator class="h-px bg-zinc-700 m-1" />
+                <DropdownMenuSeparator
+                    class="h-px bg-zinc-300 dark:bg-zinc-700 m-1"
+                />
 
                 <DropdownMenuItem :class="buttonClass" @select="emit('remove')">
                     <Icon name="lucide:x" size="18" class="text-red-400" />
