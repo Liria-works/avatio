@@ -50,7 +50,8 @@ export default defineEventHandler(
                         source
                     ),
                     note,
-                    unsupported
+                    unsupported,
+                    category
                 ),
                 tags:setup_tags(tag),
                 co_authors:setup_coauthors(
@@ -76,7 +77,8 @@ export default defineEventHandler(
         const groupedItems: Record<string, any[]> = {};
         for (const i of data.items) {
             if (!i.data) continue;
-            const category = i.data.category;
+
+            const category = i.category || i.data.category;
             if (!groupedItems[category]) groupedItems[category] = [];
             groupedItems[category].push({
                 ...i.data,

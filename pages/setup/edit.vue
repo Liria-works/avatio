@@ -37,6 +37,10 @@ const itemsFlatten = computed(() => [
     ...items.value.avatar,
     ...items.value.cloth,
     ...items.value.accessory,
+    ...items.value.hair,
+    ...items.value.texture,
+    ...items.value.shader,
+    ...items.value.tool,
     ...items.value.other,
 ]);
 
