@@ -1,9 +1,14 @@
 export default () => {
-    return {
+    const categories = {
         avatar: {
             id: 'avatar',
             label: 'ベースアバター',
             icon: 'lucide:person-standing',
+        },
+        hair: {
+            id: 'hair',
+            label: 'ヘア',
+            icon: 'mingcute:hair-line',
         },
         cloth: {
             id: 'cloth',
@@ -13,7 +18,22 @@ export default () => {
         accessory: {
             id: 'accessory',
             label: 'アクセサリー',
-            icon: 'lucide:star',
+            icon: 'mingcute:bow-tie-line',
+        },
+        texture: {
+            id: 'texture',
+            label: 'テクスチャ',
+            icon: 'lucide:image',
+        },
+        shader: {
+            id: 'shader',
+            label: 'シェーダー',
+            icon: 'mingcute:shadow-line',
+        },
+        tool: {
+            id: 'tool',
+            label: 'ツール',
+            icon: 'lucide:wrench',
         },
         other: {
             id: 'other',
@@ -21,4 +41,5 @@ export default () => {
             icon: 'lucide:package',
         },
     };
+    return categories;
 };

@@ -443,6 +443,9 @@ export type Database = {
             };
             setup_items: {
                 Row: {
+                    category:
+                        | Database['public']['Enums']['item_category']
+                        | null;
                     id: number;
                     item_id: number | null;
                     note: string;
@@ -450,6 +453,9 @@ export type Database = {
                     unsupported: boolean;
                 };
                 Insert: {
+                    category?:
+                        | Database['public']['Enums']['item_category']
+                        | null;
                     id?: number;
                     item_id?: number | null;
                     note?: string;
@@ -457,6 +463,9 @@ export type Database = {
                     unsupported?: boolean;
                 };
                 Update: {
+                    category?:
+                        | Database['public']['Enums']['item_category']
+                        | null;
                     id?: number;
                     item_id?: number | null;
                     note?: string;
@@ -513,6 +522,7 @@ export type Database = {
                     description: string;
                     id: number;
                     name: string;
+                    unity: string | null;
                     updated_at: string;
                 };
                 Insert: {
@@ -521,6 +531,7 @@ export type Database = {
                     description?: string;
                     id?: number;
                     name: string;
+                    unity?: string | null;
                     updated_at?: string;
                 };
                 Update: {
@@ -529,6 +540,7 @@ export type Database = {
                     description?: string;
                     id?: number;
                     name?: string;
+                    unity?: string | null;
                     updated_at?: string;
                 };
                 Relationships: [
@@ -663,7 +675,15 @@ export type Database = {
             };
         };
         Enums: {
-            item_category: 'avatar' | 'cloth' | 'accessory' | 'other';
+            item_category:
+                | 'avatar'
+                | 'cloth'
+                | 'accessory'
+                | 'hair'
+                | 'shader'
+                | 'texture'
+                | 'tool'
+                | 'other';
         };
         CompositeTypes: {
             setup_with_details: {

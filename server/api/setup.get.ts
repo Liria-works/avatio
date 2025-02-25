@@ -71,24 +71,17 @@ export default defineEventHandler(
                 error: { status: 404, message: 'Failed to get setup.' },
             };
 
-        const items: Pick<SetupClient, 'items'> = {
-            items: { avatar: [], cloth: [], accessory: [], other: [] },
-        };
-
+        // アイテムをカテゴリごとに動的にグループ化
+        const groupedItems: Record<string, any[]> = {};
         for (const i of data.items) {
             if (!i.data) continue;
-
-            const item = {
+            const category = i.data.category;
+            if (!groupedItems[category]) groupedItems[category] = [];
+            groupedItems[category].push({
                 ...i.data,
                 note: i.note,
                 unsupported: i.unsupported,
-            };
-
-            if (i.data.category === 'avatar') items.items.avatar.push(item);
-            else if (i.data.category === 'cloth') items.items.cloth.push(item);
-            else if (i.data.category === 'accessory')
-                items.items.accessory.push(item);
-            else items.items.other.push(item);
+            });
         }
 
         return {
@@ -110,7 +103,7 @@ export default defineEventHandler(
                     note: c.note,
                 })),
                 images: data.images,
-                items: items.items,
+                items: groupedItems,
             },
             error: null,
         };

@@ -41,6 +41,9 @@ if (error)
         message: 'セットアップの取得に失敗しました',
     });
 
+const categories: Record<string, { label: string; icon: string }> =
+    itemCategories(); // デフォルトカテゴリまたはオーバーライド
+
 useOGP({
     title: `${data!.name} @${data!.author.name}`,
     description: data!.description,
@@ -247,66 +250,24 @@ onMounted(async () => {
                     </div>
                 </div>
 
-                <div class="w-full flex flex-col gap-3">
-                    <template v-if="data.items.avatar.length">
+                <div class="w-full flex flex-col gap-5">
+                    <div
+                        v-for="(items, key) in data.items"
+                        :key="'category-' + key"
+                        class="flex flex-col gap-3"
+                    >
                         <UiTitle
-                            label="ベースアバター"
-                            icon="lucide:person-standing"
+                            :label="categories[key]?.label || key"
+                            :icon="categories[key]?.icon"
                             is="h2"
-                            class="mt-3"
                         />
                         <SetupsItem
-                            v-for="item in data.items.avatar"
-                            :key="useId()"
-                            size="lg"
+                            v-for="(item, index) in items"
+                            :key="`item-${key}-${index}`"
+                            :size="key === 'avatar' ? 'lg' : 'md'"
                             :item="item"
                         />
-                    </template>
-
-                    <template v-if="data.items.cloth.length">
-                        <UiTitle
-                            label="衣装"
-                            icon="lucide:shirt"
-                            is="h2"
-                            class="mt-3"
-                        />
-                        <SetupsItem
-                            v-for="item in data.items.cloth"
-                            :key="useId()"
-                            size="md"
-                            :item="item"
-                        />
-                    </template>
-
-                    <template v-if="data.items.accessory.length">
-                        <UiTitle
-                            label="アクセサリー"
-                            icon="lucide:star"
-                            is="h2"
-                            class="mt-3"
-                        />
-                        <SetupsItem
-                            v-for="item in data.items.accessory"
-                            :key="useId()"
-                            size="md"
-                            :item="item"
-                        />
-                    </template>
-
-                    <template v-if="data.items.other.length">
-                        <UiTitle
-                            label="その他"
-                            icon="lucide:package"
-                            is="h2"
-                            class="mt-3"
-                        />
-                        <SetupsItem
-                            v-for="item in data.items.other"
-                            :key="useId()"
-                            size="md"
-                            :item="item"
-                        />
-                    </template>
+                    </div>
                 </div>
             </div>
 

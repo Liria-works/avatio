@@ -1,12 +1,4 @@
 <script lang="ts" setup>
-import {
-    TagsInputInput,
-    TagsInputItem,
-    TagsInputItemDelete,
-    TagsInputItemText,
-    TagsInputRoot,
-} from 'reka-ui';
-
 const client = useSupabaseClient();
 
 const tags = defineModel<string[]>({

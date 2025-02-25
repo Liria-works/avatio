@@ -20,6 +20,11 @@ const publishing = defineModel<boolean>('publishing', { default: false });
 const { class: propClass } = defineProps<{ class?: string | string[] }>();
 
 const router = useRouter();
+
+const attributesVisibility = ref({
+    coAuthors: false,
+    unity: false,
+});
 </script>
 
 <template>
@@ -81,7 +86,7 @@ const router = useRouter();
             </div>
 
             <div
-                class="grid grid-flow-row sm:grid-flow-col lg:grid-flow-row gap-8"
+                class="grid grid-flow-row sm:grid-cols-2 lg:grid-cols-1 lg:grid-flow-row gap-8"
             >
                 <div class="w-full flex flex-col items-start gap-3">
                     <div class="w-full flex gap-2 items-center justify-between">
@@ -138,24 +143,137 @@ const router = useRouter();
                         </div>
                         <EditTags v-model="tags" />
                     </div>
+                </div>
 
-                    <div class="w-full flex flex-col items-start gap-3">
+                <div
+                    v-if="attributesVisibility.coAuthors"
+                    class="w-full flex flex-col items-start gap-3"
+                >
+                    <div class="w-full flex gap-2 items-center justify-between">
                         <div
-                            class="w-full flex gap-2 items-center justify-between"
+                            class="w-full flex items-center gap-1 justify-between"
                         >
                             <UiTitle
                                 label="共同作者"
                                 icon="lucide:users-round"
                             />
-                            <UiCount
-                                v-if="coAuthors.length"
-                                :count="coAuthors.length"
-                                :max="setupLimits().coAuthors"
-                            />
+                            <Button
+                                variant="flat"
+                                class="p-1.5"
+                                @click="attributesVisibility.coAuthors = false"
+                            >
+                                <Icon
+                                    name="lucide:x"
+                                    size="18"
+                                    class="text-zinc-400"
+                                />
+                            </Button>
                         </div>
-                        <EditCoAuthor v-model="coAuthors" />
+                        <UiCount
+                            v-if="coAuthors.length"
+                            :count="coAuthors.length"
+                            :max="setupLimits().coAuthors"
+                        />
                     </div>
+                    <EditCoAuthor v-model="coAuthors" />
                 </div>
+
+                <div
+                    v-if="attributesVisibility.unity"
+                    class="w-full flex flex-col items-start gap-3"
+                >
+                    <div class="w-full flex gap-2 items-center justify-between">
+                        <div
+                            class="w-full flex items-center gap-1 justify-between"
+                        >
+                            <UiTitle
+                                label="Unity バージョン"
+                                icon="simple-icons:unity"
+                            />
+                            <Button
+                                variant="flat"
+                                class="p-1.5"
+                                @click="attributesVisibility.unity = false"
+                            >
+                                <Icon
+                                    name="lucide:x"
+                                    size="18"
+                                    class="text-zinc-400"
+                                />
+                            </Button>
+                        </div>
+
+                        <UiCount
+                            v-if="coAuthors.length"
+                            :count="coAuthors.length"
+                            :max="setupLimits().coAuthors"
+                        />
+                    </div>
+                    <UiTextinput
+                        v-model="title"
+                        placeholder="例: 2022.3.22f1"
+                        class="w-full"
+                    />
+                </div>
+
+                <Popup
+                    v-if="
+                        !attributesVisibility.coAuthors ||
+                        !attributesVisibility.unity
+                    "
+                    class="p-1"
+                >
+                    <template #trigger>
+                        <Button
+                            variant="outline"
+                            class="col-span-1 sm:col-span-2 lg:col-span-1"
+                        >
+                            <Icon
+                                name="lucide:plus"
+                                size="18"
+                                class="text-zinc-400"
+                            />
+                            <span>アトリビュートを追加</span>
+                        </Button>
+                    </template>
+
+                    <template #content>
+                        <div class="flex flex-col gap-0.5 text-sm min-w-32">
+                            <PopoverClose
+                                v-if="!attributesVisibility.coAuthors"
+                            >
+                                <Button
+                                    variant="flat"
+                                    class="w-full"
+                                    @click="
+                                        attributesVisibility.coAuthors = true
+                                    "
+                                >
+                                    <Icon
+                                        name="lucide:users-round"
+                                        size="18"
+                                        class="text-zinc-400"
+                                    />
+                                    <span>共同作者</span>
+                                </Button>
+                            </PopoverClose>
+                            <PopoverClose v-if="!attributesVisibility.unity">
+                                <Button
+                                    variant="flat"
+                                    class="w-full"
+                                    @click="attributesVisibility.unity = true"
+                                >
+                                    <Icon
+                                        name="simple-icons:unity"
+                                        size="18"
+                                        class="text-zinc-400"
+                                    />
+                                    <span>Unity バージョン</span>
+                                </Button>
+                            </PopoverClose>
+                        </div>
+                    </template>
+                </Popup>
             </div>
         </div>
     </div>

@@ -27,10 +27,20 @@ export interface Shop {
     verified: boolean;
 }
 
+export type ItemCategory =
+    | 'avatar'
+    | 'cloth'
+    | 'accessory'
+    | 'other'
+    | 'hair'
+    | 'shader'
+    | 'texture'
+    | 'tool';
+
 export interface Item {
     id: number;
     updated_at: string;
-    category: 'avatar' | 'cloth' | 'accessory' | 'other';
+    category: ItemCategory;
     name: string;
     thumbnail: string;
     price: string | null;
@@ -74,12 +84,8 @@ export interface SetupDB extends SetupBase {
 export interface SetupClient extends SetupBase {
     tags: string[];
     co_authors: (Author & { note: string })[];
-    items: {
-        avatar: SetupItem[];
-        cloth: SetupItem[];
-        accessory: SetupItem[];
-        other: SetupItem[];
-    };
+    // 変更: 固定キーから動的なカテゴリに変更
+    items: Record<string, SetupItem[]>;
 }
 
 export interface CategoryAttr {
