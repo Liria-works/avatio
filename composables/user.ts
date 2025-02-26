@@ -4,7 +4,7 @@ export const userProfile = ref<{ name: string | null; avatar: string | null }>({
 });
 
 export const useSignOut = async () => {
-    const supabase = await useSupabaseClient();
+    const supabase = useSupabaseClient();
     await supabase.auth.signOut();
     navigateTo('/');
 };
@@ -28,7 +28,7 @@ export const useSignUp = async (
     password: string,
     token: string
 ) => {
-    const supabase = await useSupabaseClient();
+    const supabase = useSupabaseClient();
 
     const { error } = await supabase.auth.signUp({
         email: email,
@@ -41,7 +41,7 @@ export const useSignUp = async (
 };
 
 export const useLoginWithTwitter = async () => {
-    const supabase = await useSupabaseClient();
+    const supabase = useSupabaseClient();
 
     const { error } = await supabase.auth.signInWithOAuth({
         provider: 'twitter',
