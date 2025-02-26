@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const skip_router_hook = ref(false);
+const skipRouterHook = ref(false);
 
 const publishing = ref(false);
 const modalComplete = ref(false);
@@ -118,6 +118,7 @@ const PublishSetup = async () => {
 
     publishedSetupId.value = response.data.id;
     publishing.value = false;
+    skipRouterHook.value = true;
     modalComplete.value = true;
 };
 
@@ -140,11 +141,11 @@ const reset = () => {
     editImage.value.reset();
     publishedSetupId.value = null;
     publishing.value = false;
-    skip_router_hook.value = false;
+    skipRouterHook.value = false;
 };
 
 onBeforeRouteLeave((to, from, next) => {
-    if (skip_router_hook.value) return next(true);
+    if (skipRouterHook.value) return next(true);
 
     const hasChanges =
         title.value ||

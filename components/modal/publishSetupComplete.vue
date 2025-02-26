@@ -80,8 +80,12 @@ watch(
             </div>
 
             <div class="mt-3 flex items-center gap-1">
-                <NuxtLink class="text-sm text-zinc-400 leading-0">
-                    {{ `https://avatio.me/setup/${setup.id}` }}
+                <NuxtLink
+                    :to="link"
+                    target="_blank"
+                    class="text-sm text-zinc-400 leading-0"
+                >
+                    {{ link }}
                 </NuxtLink>
                 <Button
                     variant="flat"
