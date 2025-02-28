@@ -29,7 +29,7 @@
       },
       "devDependencies": {
         "@iconify-json/entypo-social": "^1.2.2",
-        "@iconify-json/lucide": "^1.2.26",
+        "@iconify-json/lucide": "^1.2.27",
         "@iconify-json/mingcute": "^1.2.3",
         "@iconify-json/simple-icons": "^1.2.26",
         "@iconify-json/svg-spinners": "^1.2.2",
@@ -47,7 +47,7 @@
         "@nuxtjs/supabase": "^1.4.6",
         "@nuxtjs/turnstile": "^0.9.12",
         "@tailwindcss/typography": "^0.5.16",
-        "@types/bun": "^1.2.3",
+        "@types/bun": "^1.2.4",
         "@types/canvas-confetti": "^1.9.0",
         "@types/sanitize-html": "^2.13.0",
         "@vue/eslint-config-prettier": "^10.2.0",
@@ -263,7 +263,7 @@
 
     "@iconify-json/entypo-social": ["@iconify-json/entypo-social@1.2.2", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-70dql8kxhMh2JE7pnrBC83IPt9bRxsfOVVvPuEdgi7DbB62Im+VoAWVARSf3K7lIFNYL6VDlYUXuqIB/QdtR8A=="],
 
-    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.26", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-arD/8mK0lRxFY2LgLf345NhWVWiOtV8sOxJuLnq4QRz3frMiOwVwGxEgp5Xe/bRGzxO2CxxCBok0bPRpCkYZQQ=="],
+    "@iconify-json/lucide": ["@iconify-json/lucide@1.2.27", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-Q1Msf39/6TuY3DL9vKkrAbGaK7/28E0/9oWnwcgfSQ9zJvOV1bY9OzK14vIBIqtaGyYI5st/wwNiJNi+16WEkQ=="],
 
     "@iconify-json/mingcute": ["@iconify-json/mingcute@1.2.3", "", { "dependencies": { "@iconify/types": "*" } }, "sha512-yiEQfLBF5iwyOdxuY0kEU06+8Mp6Mrp14KVXTb+5jjSVuD71C9EQrzM/mm1Efd8Nu2amJalTPisl3loC8pHBqQ=="],
 
@@ -565,7 +565,7 @@
 
     "@trysound/sax": ["@trysound/sax@0.2.0", "", {}, "sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA=="],
 
-    "@types/bun": ["@types/bun@1.2.3", "", { "dependencies": { "bun-types": "1.2.3" } }, "sha512-054h79ipETRfjtsCW9qJK8Ipof67Pw9bodFWmkfkaUaRiIQ1dIV2VTlheshlBx3mpKr0KeK8VqnMMCtgN9rQtw=="],
+    "@types/bun": ["@types/bun@1.2.4", "", { "dependencies": { "bun-types": "1.2.4" } }, "sha512-QtuV5OMR8/rdKJs213iwXDpfVvnskPXY/S0ZiFbsTjQZycuqPbMW8Gf/XhLfwE5njW8sxI2WjISURXPlHypMFA=="],
 
     "@types/canvas-confetti": ["@types/canvas-confetti@1.9.0", "", {}, "sha512-aBGj/dULrimR1XDZLtG9JwxX1b4HPRF6CX9Yfwh3NvstZEm1ZL7RBnel4keCPSqs1ANRu1u2Aoz9R+VmtjYuTg=="],
 
@@ -795,7 +795,7 @@
 
     "builtin-modules": ["builtin-modules@4.0.0", "", {}, "sha512-p1n8zyCkt1BVrKNFymOHjcDSAl7oq/gUvfgULv2EblgpPVQlQr9yHnWjg9IJ2MhfwPqiYqMMrr01OY7yQoK2yA=="],
 
-    "bun-types": ["bun-types@1.2.3", "", { "dependencies": { "@types/node": "*", "@types/ws": "~8.5.10" } }, "sha512-P7AeyTseLKAvgaZqQrvp3RqFM3yN9PlcLuSTe7SoJOfZkER73mLdT2vEQi8U64S1YvM/ldcNiQjn0Sn7H9lGgg=="],
+    "bun-types": ["bun-types@1.2.4", "", { "dependencies": { "@types/node": "*", "@types/ws": "~8.5.10" } }, "sha512-nDPymR207ZZEoWD4AavvEaa/KZe/qlrbMSchqpQwovPZCKc7pwMoENjEtHgMKaAjJhy+x6vfqSBA1QU3bJgs0Q=="],
 
     "bundle-name": ["bundle-name@4.1.0", "", { "dependencies": { "run-applescript": "^7.0.0" } }, "sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q=="],
 
