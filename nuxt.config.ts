@@ -1,11 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-    import.meta.env.SUPABASE_URL,
-    import.meta.env.SUPABASE_ANON_KEY
-);
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     future: { compatibilityVersion: 4 },
@@ -162,7 +157,12 @@ export default defineNuxtConfig({
             '/bookmarks',
         ],
         urls: async () => {
-            const permament = [
+            const supabase = createClient(
+                import.meta.env.SUPABASE_URL,
+                import.meta.env.SUPABASE_ANON_KEY
+            );
+
+            const permanent = [
                 {
                     loc: '/',
                     images: [
@@ -231,7 +231,7 @@ export default defineNuxtConfig({
                       return { loc: `/@${user.id}` };
                   });
 
-            return [...permament, ...setups, ...users];
+            return [...permanent, ...setups, ...users];
         },
     },
     supabase: {

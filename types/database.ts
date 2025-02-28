@@ -40,6 +40,7 @@ export type Database = {
                     contributor: boolean;
                     created_at: string;
                     developer: boolean;
+                    patrol: boolean;
                     shop_owner: boolean;
                     translator: boolean;
                     updated_at: string;
@@ -50,6 +51,7 @@ export type Database = {
                     contributor?: boolean;
                     created_at?: string;
                     developer?: boolean;
+                    patrol?: boolean;
                     shop_owner?: boolean;
                     translator?: boolean;
                     updated_at?: string;
@@ -60,6 +62,7 @@ export type Database = {
                     contributor?: boolean;
                     created_at?: string;
                     developer?: boolean;
+                    patrol?: boolean;
                     shop_owner?: boolean;
                     translator?: boolean;
                     updated_at?: string;
@@ -580,6 +583,35 @@ export type Database = {
                 };
                 Relationships: [];
             };
+            user_badges: {
+                Row: {
+                    created_at: string;
+                    id: number;
+                    name: Database['public']['Enums']['user_badge'];
+                    user_id: string;
+                };
+                Insert: {
+                    created_at?: string;
+                    id?: number;
+                    name: Database['public']['Enums']['user_badge'];
+                    user_id: string;
+                };
+                Update: {
+                    created_at?: string;
+                    id?: number;
+                    name?: Database['public']['Enums']['user_badge'];
+                    user_id?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'user_badges_user_id_fkey';
+                        columns: ['user_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    },
+                ];
+            };
             users: {
                 Row: {
                     avatar: string | null;
@@ -684,6 +716,14 @@ export type Database = {
                 | 'texture'
                 | 'tool'
                 | 'other';
+            user_badge:
+                | 'developer'
+                | 'contributor'
+                | 'translator'
+                | 'alpha_tester'
+                | 'shop_owner'
+                | 'patrol'
+                | 'idea_man';
         };
         CompositeTypes: {
             setup_with_details: {

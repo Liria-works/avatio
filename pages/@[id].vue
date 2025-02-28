@@ -21,7 +21,7 @@ const { data: userData } = await client
         bio,
         links,
         created_at,
-        badges(developer, contributor, translator, alpha_tester, shop_owner)
+        badges:user_badges(created_at, name)
         `
     )
     .eq('id', id)
@@ -65,11 +65,7 @@ if (userData)
                             </p>
                             <BadgeUser
                                 v-if="userData.badges"
-                                :developer="userData.badges.developer"
-                                :contributor="userData.badges.contributor"
-                                :translator="userData.badges.translator"
-                                :alpha-tester="userData.badges.alpha_tester"
-                                :shop-owner="userData.badges.shop_owner"
+                                :badges="userData.badges"
                             />
                         </div>
                         <p class="text-sm text-zinc-500">
@@ -97,14 +93,6 @@ if (userData)
                         :icon-size="19"
                         tooltip="プロフィールを編集"
                         aria-label="プロフィールを編集"
-                        variant="flat"
-                    />
-                    <Button
-                        to="/bookmarks"
-                        icon="lucide:bookmark"
-                        :icon-size="19"
-                        tooltip="ブックマーク"
-                        aria-label="ブックマーク"
                         variant="flat"
                     />
                     <Button

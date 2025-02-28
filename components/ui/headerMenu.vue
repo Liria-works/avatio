@@ -52,6 +52,16 @@ onMounted(async () => {
                 class="hidden sm:block p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
             />
 
+            <Button
+                v-if="user"
+                to="/bookmarks"
+                icon="lucide:bookmark"
+                :icon-size="19"
+                tooltip="ブックマーク"
+                aria-label="ブックマーク"
+                variant="flat"
+            />
+
             <ButtonTheme class="hidden sm:block" />
         </div>
 

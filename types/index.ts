@@ -1,22 +1,26 @@
+export interface Badge {
+    name:
+        | 'developer'
+        | 'contributor'
+        | 'translator'
+        | 'alpha_tester'
+        | 'shop_owner'
+        | 'patrol'
+        | 'idea_man';
+    created_at: string;
+}
+
 export interface Author {
     id: string;
     name: string;
     avatar?: string | null;
-}
-
-export interface Badges {
-    developer: boolean;
-    contributor: boolean;
-    translator: boolean;
-    alpha_tester: boolean;
-    shop_owner: boolean;
+    badges: Badge[];
 }
 
 export interface User extends Author {
     created_at: string;
     bio: string;
     links: string[];
-    badges: Badges;
     setups: SetupClient[];
 }
 
@@ -75,7 +79,7 @@ export interface SetupBase {
 export interface SetupDB extends SetupBase {
     tags: { tag: string }[];
     co_authors: {
-        user: { id: string; name: string; avatar: string };
+        user: Author;
         note: string;
     }[];
     items: {

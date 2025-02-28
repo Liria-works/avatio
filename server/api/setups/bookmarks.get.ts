@@ -39,7 +39,11 @@ export default defineEventHandler(
                     author(
                         id,
                         name,
-                        avatar
+                        avatar,
+                        badges:user_badges(
+                            created_at,
+                            name
+                        )
                     ),
                     images:setup_images(
                         name,
@@ -72,7 +76,11 @@ export default defineEventHandler(
                         user:users(
                             id,
                             name,
-                            avatar
+                            avatar,
+                            badges:user_badges(
+                                created_at,
+                                name
+                            )
                         ),
                         note
                     )

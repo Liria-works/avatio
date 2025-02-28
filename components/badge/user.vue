@@ -1,42 +1,81 @@
 <script lang="ts" setup>
-const props = withDefaults(
-    defineProps<{
-        developer?: boolean;
-        contributor?: boolean;
-        translator?: boolean;
-        alphaTester?: boolean;
-        shopOwner?: boolean;
-    }>(),
-    {
-        developer: false,
-        contributor: false,
-        translator: false,
-        alpha_tester: false,
-        shop_owner: false,
-    }
-);
+interface Props {
+    badges: Badge[];
+    size?: 'sm' | 'md' | 'lg';
+}
+const props = withDefaults(defineProps<Props>(), {
+    badges: () => [],
+    size: 'md',
+});
+
+const getBaseSize = () => {
+    if (props.size === 'sm') return 16;
+    if (props.size === 'lg') return 26;
+    return 22;
+};
+
+const getIconSize = (multiplier: number) =>
+    Math.round(getBaseSize() * multiplier);
 </script>
 
 <template>
-    <div class="flex gap-1.5 items-center mt-0.5">
-        <UiTooltip v-if="props.developer" text="デベロッパー">
-            <Icon name="lucide:code-xml" size="20" />
+    <div
+        v-if="props.badges?.length"
+        class="empty:hidden flex gap-1 items-center"
+    >
+        <UiTooltip
+            v-if="props.badges.find((b) => b.name === 'developer')"
+            text="デベロッパー"
+        >
+            <Icon name="fluent-color:code-block-24" :size="getIconSize(1.2)" />
         </UiTooltip>
 
-        <UiTooltip v-if="props.contributor" text="コントリビューター">
-            <Icon name="lucide:handshake" size="17" />
+        <UiTooltip
+            v-if="props.badges.find((b) => b.name === 'contributor')"
+            text="コントリビューター"
+        >
+            <Icon
+                name="fluent-color:animal-paw-print-24"
+                :size="getIconSize(1)"
+            />
         </UiTooltip>
 
-        <UiTooltip v-if="props.translator" text="翻訳者">
-            <Icon name="lucide:languages" size="19" />
+        <UiTooltip
+            v-if="props.badges.find((b) => b.name === 'translator')"
+            text="翻訳者"
+        >
+            <Icon name="fluent-color:chat-multiple-24" :size="getIconSize(1)" />
         </UiTooltip>
 
-        <UiTooltip v-if="props.alphaTester" text="アルファテスター">
-            <Icon name="lucide:flask-conical" size="19" />
+        <UiTooltip
+            v-if="props.badges.find((b) => b.name === 'alpha_tester')"
+            text="アルファテスター"
+        >
+            <Icon name="fluent-color:ribbon-star-24" :size="getIconSize(1)" />
         </UiTooltip>
 
-        <UiTooltip v-if="props.shopOwner" text="ショップオーナー">
-            <Icon name="lucide:store" size="19" />
+        <UiTooltip
+            v-if="props.badges.find((b) => b.name === 'shop_owner')"
+            text="ショップオーナー"
+        >
+            <Icon
+                name="fluent-color:building-store-24"
+                :size="getIconSize(1)"
+            />
+        </UiTooltip>
+
+        <UiTooltip
+            v-if="props.badges.find((b) => b.name === 'patrol')"
+            text="パトロール"
+        >
+            <Icon name="fluent-color:shield-24" :size="getIconSize(1)" />
+        </UiTooltip>
+
+        <UiTooltip
+            v-if="props.badges.find((b) => b.name === 'idea_man')"
+            text="アイデアマン"
+        >
+            <Icon name="fluent-color:lightbulb-24" :size="getIconSize(1)" />
         </UiTooltip>
     </div>
 </template>

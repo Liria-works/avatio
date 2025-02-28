@@ -27,11 +27,14 @@ const props = defineProps<Props>();
                     :icon-size="18"
                     class="size-10"
                 />
-                <span
-                    class="text-sm font-semibold leading-none text-zinc-700 dark:text-zinc-300"
-                >
-                    {{ props.user.name }}
-                </span>
+                <div class="flex flex-col gap-0.5">
+                    <span
+                        class="text-sm font-semibold leading-none text-zinc-700 dark:text-zinc-300"
+                    >
+                        {{ props.user.name }}
+                    </span>
+                    <BadgeUser :badges="props.user.badges" size="sm" />
+                </div>
             </NuxtLink>
         </template>
     </Hovercard>

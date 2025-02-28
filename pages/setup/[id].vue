@@ -75,7 +75,7 @@ onMounted(async () => {
                         >
                             <NuxtLink
                                 :to="`/@${data.author.id}`"
-                                class="flex flex-row gap-3 items-center"
+                                class="flex flex-row gap-1 items-center"
                             >
                                 <UiAvatar
                                     :url="
@@ -88,10 +88,14 @@ onMounted(async () => {
                                     :alt="data.author.name"
                                 />
                                 <p
-                                    class="text-black dark:text-white pb-0.5 text-left font-normal"
+                                    class="pl-2 text-black dark:text-white pb-0.5 text-left font-normal"
                                 >
                                     {{ data.author.name }}
                                 </p>
+                                <BadgeUser
+                                    :badges="data.author.badges"
+                                    size="sm"
+                                />
                             </NuxtLink>
 
                             <div class="flex items-center gap-2">
@@ -221,7 +225,7 @@ onMounted(async () => {
                             >
                                 <NuxtLink
                                     :to="`/@${coAuthor.id}`"
-                                    class="flex flex-row gap-3 items-center"
+                                    class="flex flex-row gap-2 items-center"
                                 >
                                     <UiAvatar
                                         :url="
@@ -234,10 +238,14 @@ onMounted(async () => {
                                         :alt="coAuthor.name"
                                     />
                                     <p
-                                        class="text-black dark:text-white pb-0.5 text-left font-normal"
+                                        class="pl-1 text-black dark:text-white pb-0.5 text-left font-normal"
                                     >
                                         {{ coAuthor.name }}
                                     </p>
+                                    <BadgeUser
+                                        :badges="coAuthor.badges"
+                                        size="sm"
+                                    />
                                 </NuxtLink>
                                 <p
                                     v-if="coAuthor.note.length"
@@ -344,7 +352,7 @@ onMounted(async () => {
                         >
                             <NuxtLink
                                 :to="`/@${coAuthor.id}`"
-                                class="flex flex-row gap-3 items-center"
+                                class="flex flex-row gap-2 items-center"
                             >
                                 <UiAvatar
                                     :url="
@@ -357,10 +365,14 @@ onMounted(async () => {
                                     :alt="coAuthor.name"
                                 />
                                 <p
-                                    class="text-black dark:text-white pb-0.5 text-left font-normal"
+                                    class="pl-1 text-black dark:text-white pb-0.5 text-left font-normal"
                                 >
                                     {{ coAuthor.name }}
                                 </p>
+                                <BadgeUser
+                                    :badges="coAuthor.badges"
+                                    size="sm"
+                                />
                             </NuxtLink>
                             <p
                                 v-if="coAuthor.note.length"

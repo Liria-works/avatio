@@ -1,5 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
-import type { ApiResponse, SetupClient } from '~/types';
+import type { ApiResponse, SetupClient, SetupDB } from '~/types';
 
 export interface RequestQuery {
     id: number;
@@ -23,7 +23,11 @@ export default defineEventHandler(
                 author(
                     id,
                     name,
-                    avatar
+                    avatar,
+                    badges:user_badges(
+                        created_at,
+                        name
+                    )
                 ),
                 images:setup_images(
                     name,
@@ -55,17 +59,21 @@ export default defineEventHandler(
                 ),
                 tags:setup_tags(tag),
                 co_authors:setup_coauthors(
-                    user_id(
+                    user:user_id(
                         id,
                         name,
-                        avatar
+                        avatar,
+                        badges:user_badges(
+                            created_at,
+                            name
+                        )
                     ),
                     note
                 )
                 `
             )
             .eq('id', Number(query.id))
-            .maybeSingle();
+            .maybeSingle<SetupDB>();
 
         if (!data)
             return {
@@ -95,15 +103,17 @@ export default defineEventHandler(
                     id: data.author!.id,
                     name: data.author!.name || 'Unknown',
                     avatar: data.author!.avatar,
+                    badges: data.author!.badges,
                 },
                 name: data.name,
                 description: data.description,
                 unity: data.unity,
                 tags: data.tags.map((t) => t.tag),
                 co_authors: data.co_authors.map((c) => ({
-                    id: c.user_id.id,
-                    name: c.user_id.name || 'Unknown',
-                    avatar: c.user_id.avatar,
+                    id: c.user.id,
+                    name: c.user.name || 'Unknown',
+                    avatar: c.user.avatar,
+                    badges: c.user.badges,
                     note: c.note,
                 })),
                 images: data.images,
