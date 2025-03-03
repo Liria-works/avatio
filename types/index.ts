@@ -22,6 +22,7 @@ export interface User extends Author {
     bio: string;
     links: string[];
     setups: SetupClient[];
+    shops: { shop: Shop }[];
 }
 
 export interface Shop {

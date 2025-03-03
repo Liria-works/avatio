@@ -29,12 +29,6 @@ const avatar = ref<{ oldName: string | null; new: File | null }>({
 const bio = ref<string>(old.value.bio);
 const links = ref<string[]>(old.value.links);
 
-const checkSame = () =>
-    name.value === old.value.name &&
-    bio.value === old.value.bio &&
-    avatar.value.new === null &&
-    links.value === old.value.links;
-
 const save = async () => {
     if (name.value === '')
         return useToast().add('ユーザー名を入力してください');
@@ -108,8 +102,17 @@ useOGP({ title: 'ユーザー設定' });
         <UserSettingLinks v-model="links" />
 
         <UiTitle
-            label="アカウント操作"
-            icon="lucide:user-round"
+            label="ショップ"
+            icon="lucide:store"
+            size="lg"
+            is="h1"
+            class="mt-5"
+        />
+        <UserSettingShopVerify />
+
+        <UiTitle
+            label="アカウント"
+            icon="lucide:bolt"
             size="lg"
             is="h1"
             class="mt-5"

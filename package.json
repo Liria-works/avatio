@@ -54,6 +54,7 @@
         "aws4fetch": "^1.0.20",
         "budoux": "^0.6.4",
         "canvas-confetti": "^1.9.3",
+        "cheerio": "^1.0.0",
         "date-fns": "^4.1.0",
         "marked": "^15.0.7",
         "reka-ui": "^2.0.2",

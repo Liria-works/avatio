@@ -34,50 +34,6 @@ export type Database = {
     };
     public: {
         Tables: {
-            badges: {
-                Row: {
-                    alpha_tester: boolean;
-                    contributor: boolean;
-                    created_at: string;
-                    developer: boolean;
-                    patrol: boolean;
-                    shop_owner: boolean;
-                    translator: boolean;
-                    updated_at: string;
-                    user_id: string;
-                };
-                Insert: {
-                    alpha_tester?: boolean;
-                    contributor?: boolean;
-                    created_at?: string;
-                    developer?: boolean;
-                    patrol?: boolean;
-                    shop_owner?: boolean;
-                    translator?: boolean;
-                    updated_at?: string;
-                    user_id: string;
-                };
-                Update: {
-                    alpha_tester?: boolean;
-                    contributor?: boolean;
-                    created_at?: string;
-                    developer?: boolean;
-                    patrol?: boolean;
-                    shop_owner?: boolean;
-                    translator?: boolean;
-                    updated_at?: string;
-                    user_id?: string;
-                };
-                Relationships: [
-                    {
-                        foreignKeyName: 'badges_user_id_fkey';
-                        columns: ['user_id'];
-                        isOneToOne: true;
-                        referencedRelation: 'users';
-                        referencedColumns: ['id'];
-                    },
-                ];
-            };
             bookmarks: {
                 Row: {
                     created_at: string;
@@ -556,6 +512,32 @@ export type Database = {
                     },
                 ];
             };
+            shop_verification: {
+                Row: {
+                    code: string;
+                    created_at: string;
+                    user_id: string;
+                };
+                Insert: {
+                    code: string;
+                    created_at?: string;
+                    user_id: string;
+                };
+                Update: {
+                    code?: string;
+                    created_at?: string;
+                    user_id?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'shop_verification_user_id_fkey';
+                        columns: ['user_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    },
+                ];
+            };
             shops: {
                 Row: {
                     created_at: string;
@@ -605,6 +587,42 @@ export type Database = {
                 Relationships: [
                     {
                         foreignKeyName: 'user_badges_user_id_fkey';
+                        columns: ['user_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'users';
+                        referencedColumns: ['id'];
+                    },
+                ];
+            };
+            user_shops: {
+                Row: {
+                    created_at: string;
+                    id: number;
+                    shop_id: string;
+                    user_id: string;
+                };
+                Insert: {
+                    created_at?: string;
+                    id?: number;
+                    shop_id: string;
+                    user_id: string;
+                };
+                Update: {
+                    created_at?: string;
+                    id?: number;
+                    shop_id?: string;
+                    user_id?: string;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'user_shops_shop_id_fkey';
+                        columns: ['shop_id'];
+                        isOneToOne: false;
+                        referencedRelation: 'shops';
+                        referencedColumns: ['id'];
+                    },
+                    {
+                        foreignKeyName: 'user_shops_user_id_fkey';
                         columns: ['user_id'];
                         isOneToOne: false;
                         referencedRelation: 'users';

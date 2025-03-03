@@ -62,7 +62,7 @@ onChange((files) => {
             />
             <button
                 type="button"
-                class="absolute inset-0 hover:bg-black/20 rounded-full"
+                class="absolute inset-0 hover:bg-black/20 rounded-full cursor-pointer"
                 @click="open()"
             />
         </div>
@@ -83,7 +83,7 @@ onChange((files) => {
             />
             <button
                 type="button"
-                class="absolute inset-0 hover:bg-black/20 rounded-full"
+                class="absolute inset-0 hover:bg-black/20 rounded-full cursor-pointer"
                 @click="open()"
             />
         </div>
@@ -99,7 +99,7 @@ onChange((files) => {
             />
             <button
                 type="button"
-                class="absolute inset-0 hover:bg-black/20 rounded-full"
+                class="absolute inset-0 hover:bg-black/20 rounded-full cursor-pointer"
                 @click="open()"
             />
         </div>
