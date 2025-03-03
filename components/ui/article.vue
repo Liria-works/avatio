@@ -14,8 +14,8 @@ const updatedAt = new Date(props.data.updated_at);
 
 <template>
     <article class="w-full my-3 flex flex-col gap-10">
-        <div class="markdown flex flex-col gap-4">
-            <div class="flex items-center gap-1">
+        <div class="flex flex-col gap-4">
+            <div class="-ml-4 flex items-center gap-1">
                 <template v-if="props.type === 'release'">
                     <Button
                         to="/release"
