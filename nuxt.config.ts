@@ -118,6 +118,7 @@ export default defineNuxtConfig({
     image: {
         domains: [
             'booth.pximg.net', // booth
+            's2.booth.pm', // booth
             import.meta.env.NUXT_PUBLIC_R2_DOMAIN.replace('https://', ''), // R2
         ],
         presets: {
