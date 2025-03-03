@@ -8,6 +8,17 @@ interface IconMapping {
 }
 
 const domainIconMappings: IconMapping[] = [
+    {
+        label: 'Avatio',
+        pattern: /^(www\.)?avatio\.me$/,
+        icon: 'avatio:avatio',
+    },
+    {
+        label: 'Liria',
+        pattern: /^(.*\.)?liria\.work$/,
+        icon: 'avatio:liria',
+    },
+
     // VR-SNS
     {
         label: 'VRChat',
