@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute();
-const paddingExclude = ['/', '/setup/edit'];
+const paddingExclude = ['/', '/release', '/setup/edit'];
 const footerExclude = ['/setup/edit'];
 
 const env = ref<string | undefined>(undefined);
