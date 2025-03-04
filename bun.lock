@@ -37,7 +37,7 @@
         "@iconify-json/svg-spinners": "^1.2.2",
         "@iconify-json/token": "^1.2.14",
         "@iconify-json/twemoji": "^1.2.2",
-        "@nuxt/devtools": "^2.1.1",
+        "@nuxt/devtools": "^2.1.3",
         "@nuxt/eslint": "^1.1.0",
         "@nuxt/fonts": "^0.10.3",
         "@nuxt/icon": "1.10.3",
@@ -57,7 +57,7 @@
         "discordeno": "^21.0.0",
         "eslint-plugin-prettier": "^5.2.3",
         "nuxt": "^3.15.4",
-        "prettier": "^3.5.2",
+        "prettier": "^3.5.3",
         "supabase": "^2.15.8",
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.8.2",
@@ -373,11 +373,11 @@
 
     "@nuxt/devalue": ["@nuxt/devalue@2.0.2", "", {}, "sha512-GBzP8zOc7CGWyFQS6dv1lQz8VVpz5C2yRszbXufwG/9zhStTIH50EtD87NmWbTMwXDvZLNg8GIpb1UFdH93JCA=="],
 
-    "@nuxt/devtools": ["@nuxt/devtools@2.1.1", "", { "dependencies": { "@nuxt/devtools-kit": "2.1.1", "@nuxt/devtools-wizard": "2.1.1", "@nuxt/kit": "^3.15.4", "@vue/devtools-core": "^7.7.2", "@vue/devtools-kit": "^7.7.2", "birpc": "^2.2.0", "consola": "^3.4.0", "destr": "^2.0.3", "error-stack-parser-es": "^1.0.5", "execa": "^9.5.2", "fast-npm-meta": "^0.3.1", "get-port-please": "^3.1.2", "hookable": "^5.5.3", "image-meta": "^0.2.1", "is-installed-globally": "^1.0.0", "launch-editor": "^2.10.0", "local-pkg": "^1.1.0", "magicast": "^0.3.5", "nypm": "^0.6.0", "ohash": "^2.0.5", "pathe": "^2.0.3", "perfect-debounce": "^1.0.0", "pkg-types": "^2.0.0", "semver": "^7.7.1", "simple-git": "^3.27.0", "sirv": "^3.0.1", "structured-clone-es": "^1.0.0", "tinyglobby": "^0.2.12", "vite-plugin-inspect": "^11.0.0", "vite-plugin-vue-inspector": "^5.3.1", "which": "^5.0.0", "ws": "^8.18.1" }, "peerDependencies": { "vite": ">=6.0" }, "bin": { "devtools": "cli.mjs" } }, "sha512-jR3QChDs1mcCgC9efNAgjqgPUTWizV5TkUKBLK/1bDHIEGzkQ5WQwJ+PnjrDd4hj3QxL7pUvPCPLW9y3io/Q6w=="],
+    "@nuxt/devtools": ["@nuxt/devtools@2.1.3", "", { "dependencies": { "@nuxt/devtools-kit": "2.1.3", "@nuxt/devtools-wizard": "2.1.3", "@nuxt/kit": "^3.15.4", "@vue/devtools-core": "^7.7.2", "@vue/devtools-kit": "^7.7.2", "birpc": "^2.2.0", "consola": "^3.4.0", "destr": "^2.0.3", "error-stack-parser-es": "^1.0.5", "execa": "^9.5.2", "fast-npm-meta": "^0.3.1", "get-port-please": "^3.1.2", "hookable": "^5.5.3", "image-meta": "^0.2.1", "is-installed-globally": "^1.0.0", "launch-editor": "^2.10.0", "local-pkg": "^1.1.0", "magicast": "^0.3.5", "nypm": "^0.6.0", "ohash": "^2.0.9", "pathe": "^2.0.3", "perfect-debounce": "^1.0.0", "pkg-types": "^2.0.1", "semver": "^7.7.1", "simple-git": "^3.27.0", "sirv": "^3.0.1", "structured-clone-es": "^1.0.0", "tinyglobby": "^0.2.12", "vite-plugin-inspect": "^11.0.0", "vite-plugin-vue-inspector": "^5.3.1", "which": "^5.0.0", "ws": "^8.18.1" }, "peerDependencies": { "vite": ">=6.0" }, "bin": { "devtools": "cli.mjs" } }, "sha512-LBOSFh1UEjyp0vz2e9BEW5TfrsiuSOm5AAllcl/FFs7fYU/v4sZDcqrE+GGiwTQF14n9/4dsHQ5zBbNGr1pJvA=="],
 
-    "@nuxt/devtools-kit": ["@nuxt/devtools-kit@2.1.1", "", { "dependencies": { "@nuxt/kit": "^3.15.4", "@nuxt/schema": "^3.15.4", "execa": "^9.5.2" }, "peerDependencies": { "vite": ">=6.0" } }, "sha512-N3+qI41d4vdwZ8LdpxppWQ5GS3oDtRp7yTbW91osj7helkPLdLvsXUNVI2pJ2OZG0zdY8UNE1TbJe3DbgZL7wQ=="],
+    "@nuxt/devtools-kit": ["@nuxt/devtools-kit@2.1.3", "", { "dependencies": { "@nuxt/kit": "^3.15.4", "@nuxt/schema": "^3.15.4", "execa": "^9.5.2" }, "peerDependencies": { "vite": ">=6.0" } }, "sha512-OlLo8LZTp71Wi9q0ooE1bYeS5P7P1sU3JUb+zqJRX6/jMQa2QP06hc6TOz/5AIsEOq8YPQTum4oJ9gpHx53B0g=="],
 
-    "@nuxt/devtools-wizard": ["@nuxt/devtools-wizard@2.1.1", "", { "dependencies": { "consola": "^3.4.0", "diff": "^7.0.0", "execa": "^9.5.2", "magicast": "^0.3.5", "pathe": "^2.0.3", "pkg-types": "^2.0.0", "prompts": "^2.4.2", "semver": "^7.7.1" }, "bin": { "devtools-wizard": "cli.mjs" } }, "sha512-jdKmnDJVKCRyRl+MTArSJynRrqThnvIBQqtVoMLsKHX36TMi5IfJ8MmO/NRyqubd2J+g++j7zoixk1BCJWfNEQ=="],
+    "@nuxt/devtools-wizard": ["@nuxt/devtools-wizard@2.1.3", "", { "dependencies": { "consola": "^3.4.0", "diff": "^7.0.0", "execa": "^9.5.2", "magicast": "^0.3.5", "pathe": "^2.0.3", "pkg-types": "^2.0.1", "prompts": "^2.4.2", "semver": "^7.7.1" }, "bin": { "devtools-wizard": "cli.mjs" } }, "sha512-J+EjL/4E2oLnNyw7Ar2qj/VDa9PeWIqNchZ6kQR+wAQTbWMHX/qbxEPz6Yuflj08ltIwouU6uocixTJQJjfmqQ=="],
 
     "@nuxt/eslint": ["@nuxt/eslint@1.1.0", "", { "dependencies": { "@eslint/config-inspector": "^1.0.0", "@nuxt/devtools-kit": "^2.1.0", "@nuxt/eslint-config": "1.1.0", "@nuxt/eslint-plugin": "1.1.0", "@nuxt/kit": "^3.15.4", "chokidar": "^4.0.3", "eslint-flat-config-utils": "^2.0.1", "eslint-typegen": "^1.0.0", "find-up": "^7.0.0", "get-port-please": "^3.1.2", "mlly": "^1.7.4", "pathe": "^2.0.3", "unimport": "^4.1.2" }, "peerDependencies": { "eslint": "^9.0.0", "eslint-webpack-plugin": "^4.1.0", "vite-plugin-eslint2": "^5.0.0" }, "optionalPeers": ["eslint-webpack-plugin", "vite-plugin-eslint2"] }, "sha512-T5CmWwMhJIjpPk2yTSj2aOifBug5bRA3sv8ec6FpWZV+cMBV9wnXsAxrIHjX+PZMt691It89ORunPjkoPSCDVQ=="],
 
@@ -1725,7 +1725,7 @@
 
     "prelude-ls": ["prelude-ls@1.2.1", "", {}, "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="],
 
-    "prettier": ["prettier@3.5.2", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-lc6npv5PH7hVqozBR7lkBNOGXV9vMwROAPlumdBkX0wTbbzPu/U1hk5yL8p2pt4Xoc+2mkT8t/sow2YrV/M5qg=="],
+    "prettier": ["prettier@3.5.3", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw=="],
 
     "prettier-linter-helpers": ["prettier-linter-helpers@1.0.0", "", { "dependencies": { "fast-diff": "^1.1.2" } }, "sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w=="],
 
