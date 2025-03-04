@@ -12,6 +12,7 @@ const shops = defineModel<
 
 const codeGenerating = ref(false);
 const verifying = ref(false);
+const verified = ref(false);
 const code = ref<string>('');
 const copied = ref(false);
 const shopUrl = ref<string>('');
@@ -44,17 +45,16 @@ const verify = async () => {
         return;
     }
 
-    const { verified } = await $fetch('/api/shopVerification/verify', {
+    const { verified: v } = await $fetch('/api/shopVerification/verify', {
         method: 'POST',
         body: {
             url: shopUrl.value,
         },
     });
 
-    if (verified) {
-        useToast().add('認証に成功しました');
+    if (v) {
         emit('refresh');
-        vis.value = false;
+        verified.value = true;
     } else {
         useToast().add('認証に失敗しました');
     }
@@ -78,6 +78,9 @@ watchEffect(() => {
         code.value = '';
         shopUrl.value = '';
         copied.value = false;
+        verified.value = false;
+        verifying.value = false;
+        codeGenerating.value = false;
     }
 });
 </script>
@@ -98,7 +101,7 @@ watchEffect(() => {
             />
         </template>
 
-        <template v-else>
+        <template v-else-if="!verified">
             <div class="flex flex-col gap-5">
                 <div class="flex flex-col gap-3">
                     <p class="text-sm">
@@ -120,6 +123,7 @@ watchEffect(() => {
                         v-if="!code && !codeGenerating"
                         @click="generateCode"
                     >
+                        <Icon name="lucide:code" size="16" />
                         コードを生成
                     </Button>
                     <Icon
@@ -152,25 +156,52 @@ watchEffect(() => {
             </div>
 
             <div
-                class="rounded-md p-3 flex flex-col gap-2 ring-1 ring-red-400 dark:ring-red-400/70"
+                class="rounded-md p-3 flex items-center gap-2 ring-1 ring-zinc-300 dark:ring-zinc-700"
             >
+                <Icon
+                    name="lucide:info"
+                    size="16"
+                    class="text-zinc-700 dark:text-zinc-300"
+                />
                 <p class="text-sm text-zinc-700 dark:text-zinc-300">
                     コードの有効期限は10分です。
-                </p>
-                <p class="text-sm text-zinc-700 dark:text-zinc-300">
-                    認証後、紹介文に記載したコードを忘れずに削除してください。
                 </p>
             </div>
         </template>
 
+        <template v-else>
+            <div class="w-full flex flex-col gap-5 items-center">
+                <Icon
+                    name="lucide:circle-check"
+                    size="64"
+                    class="text-zinc-700 dark:text-zinc-300"
+                />
+
+                <div
+                    class="rounded-md p-3 flex flex-col gap-2 ring-1 ring-red-400 dark:ring-red-400/70"
+                >
+                    <p class="text-sm text-zinc-700 dark:text-zinc-300">
+                        紹介文に記載したコードを忘れずに削除してください！
+                    </p>
+                </div>
+            </div>
+        </template>
+
         <template #footer>
-            <div class="gap-1.5 flex items-center justify-between">
+            <div
+                v-if="!verified"
+                class="gap-1.5 flex items-center justify-between"
+            >
                 <Button
                     label="キャンセル"
                     variant="flat"
                     @click="vis = false"
                 />
                 <Button :disabled="!check()" label="認証" @click="verify" />
+            </div>
+
+            <div v-else class="gap-1.5 flex items-center justify-end">
+                <Button label="閉じる" variant="flat" @click="vis = false" />
             </div>
         </template>
     </Modal>
