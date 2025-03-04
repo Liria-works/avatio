@@ -86,15 +86,6 @@ const updatedAt = new Date(props.data.updated_at);
             </p>
         </div>
 
-        <!-- eslint-disable vue/no-v-html -->
-        <div
-            v-html="main"
-            :class="[
-                'max-w-none',
-                'prose prose-zinc dark:prose-invert',
-                'prose-blockquote:[&_p]:not-italic prose-blockquote:[&_p]:before:content-[none] prose-blockquote:[&_p]:after:content-[none] prose-blockquote:text-zinc-500 prose-blockquote:dark:text-zinc-400',
-                'prose-img:rounded-md prose-img:first:mt-0 prose-img:last:mb-0',
-            ]"
-        ></div>
+        <UiMarkdown :content="main" />
     </article>
 </template>
