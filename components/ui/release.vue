@@ -33,9 +33,9 @@ const detail = ref(false);
                     </div>
                     <p
                         v-if="data.description?.length"
-                        class="text-sm text-zinc-400"
+                        class="text-sm text-zinc-400 break-keep [overflow-wrap:anywhere;]"
                     >
-                        {{ data.description }}
+                        {{ useSentence(data.description) }}
                     </p>
                 </div>
             </div>
