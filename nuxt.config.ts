@@ -1,5 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '#shared/types/database';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -20,7 +21,6 @@ export default defineNuxtConfig({
         '@nuxtjs/robots',
         '@nuxtjs/sitemap',
     ],
-    imports: { dirs: ['types'] },
     routeRules: {
         '/': { isr: 60 },
         '/setup/edit': { ssr: false },
@@ -160,7 +160,7 @@ export default defineNuxtConfig({
             '/bookmarks',
         ],
         urls: async () => {
-            const supabase = createClient(
+            const supabase = createClient<Database>(
                 import.meta.env.SUPABASE_URL,
                 import.meta.env.SUPABASE_ANON_KEY
             );
@@ -211,18 +211,25 @@ export default defineNuxtConfig({
 
             const setups = setupsError
                 ? []
-                : setupsData.map((setup) => {
-                      const image = setup.image;
+                : setupsData.map(
+                      (setup: {
+                          id: string;
+                          created_at: string;
+                          name: string;
+                          image: string;
+                      }) => {
+                          const image = setup.image;
 
-                      return {
-                          loc: `/setup/${setup.id}`,
-                          lastmod: setup.created_at,
-                          images: image
-                              ? [{ loc: image, title: setup.name }]
-                              : [],
-                          changefreq: 'never',
-                      };
-                  });
+                          return {
+                              loc: `/setup/${setup.id}`,
+                              lastmod: setup.created_at,
+                              images: image
+                                  ? [{ loc: image, title: setup.name }]
+                                  : [],
+                              changefreq: 'never',
+                          };
+                      }
+                  );
 
             const { data: usersData, error: usersError } = await supabase
                 .from('users')
@@ -230,7 +237,7 @@ export default defineNuxtConfig({
 
             const users = usersError
                 ? []
-                : usersData.map((user) => {
+                : usersData.map((user: { id: string }) => {
                       return { loc: `/@${user.id}` };
                   });
 
