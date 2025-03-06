@@ -1,5 +1,4 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { ApiResponse } from '~/types';
 
 export interface RequestBody {
     id: number;
@@ -12,7 +11,11 @@ export default defineEventHandler(
             if (!user) throw new Error();
         } catch {
             return {
-                error: { status: 403, message: 'Forbidden.' },
+                error: {
+                    status: 403,
+                    message: 'Forbidden.',
+                    client: { title: 'アクセス拒否' },
+                },
                 data: null,
             };
         }
@@ -29,7 +32,10 @@ export default defineEventHandler(
 
         if (!setupData)
             return {
-                error: { status: 404, message: 'Failed to get setup.' },
+                error: {
+                    status: 404,
+                    message: 'Failed to get setup.',
+                },
                 data: null,
             };
 
@@ -40,7 +46,10 @@ export default defineEventHandler(
 
         if (error)
             return {
-                error: { status: 1, message: 'Failed to delete setup.' },
+                error: {
+                    status: 1,
+                    message: 'Failed to delete setup.',
+                },
                 data: null,
             };
 

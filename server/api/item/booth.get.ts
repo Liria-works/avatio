@@ -1,8 +1,5 @@
 import { serverSupabaseClient } from '#supabase/server';
 import type { H3Event } from 'h3';
-import type { Item, ApiResponse, ItemCategory } from '~/types';
-import type { Booth } from '~/types/booth';
-import specificItemCategory from '~/utils/specificItemCategory';
 
 interface fetchedItem extends Omit<Item, 'updated_at'> {
     tags: string[];

@@ -1,5 +1,3 @@
-import type { ItemCategory } from '#types';
-
 export default (source: 'booth', id: number): ItemCategory | null => {
     if (source === 'booth') {
         const categoryMap: Record<number, ItemCategory> = {

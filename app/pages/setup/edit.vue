@@ -45,30 +45,30 @@ const itemsFlatten = computed(() => [
 ]);
 
 const errorCheck = (options: { toast?: boolean } = { toast: true }) => {
-    const returnError = (message: string) => {
+    const returnError = (message: string | undefined) => {
         publishing.value = false;
-        if (options.toast) useToast().add(message);
+        if (options.toast && message) useToast().add(message);
         return true;
     };
 
     if (!title.value?.length)
-        return returnError(getErrors().publishSetup.noTitle.client.title);
+        return returnError(getErrors().publishSetup.noTitle.client?.title);
 
     if (title.value.length > setupLimits().title)
-        return returnError(getErrors().publishSetup.tooLongTitle.client.title);
+        return returnError(getErrors().publishSetup.tooLongTitle.client?.title);
 
     if (description.value.length > setupLimits().description)
         return returnError(
-            getErrors().publishSetup.tooLongDescription.client.title
+            getErrors().publishSetup.tooLongDescription.client?.title
         );
 
     if (tags.value.length > setupLimits().tags)
-        return returnError(getErrors().publishSetup.tooManyTags.client.title);
+        return returnError(getErrors().publishSetup.tooManyTags.client?.title);
 
     if (!itemsFlatten.value.length)
-        return returnError(getErrors().publishSetup.noItems.client.title);
+        return returnError(getErrors().publishSetup.noItems.client?.title);
     if (itemsFlatten.value.length > setupLimits().items)
-        return returnError(getErrors().publishSetup.tooManyItems.client.title);
+        return returnError(getErrors().publishSetup.tooManyItems.client?.title);
 
     return false;
 };
@@ -112,7 +112,7 @@ const PublishSetup = async () => {
         publishing.value = false;
         return useToast().add(
             '投稿に失敗しました',
-            response.error!.client.title || '不明なエラー'
+            response.error!.client?.title || '不明なエラー'
         );
     }
 

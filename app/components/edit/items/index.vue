@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { ItemCategory, SetupItem } from '#types';
 import { twMerge } from 'tailwind-merge';
 import { VueDraggable } from 'vue-draggable-plus';
 
@@ -29,8 +28,8 @@ const addItem = async (id: number) => {
 
     if (!data)
         return useToast().add(
-            getErrors().editSetup.addItemFailed.client.title,
-            getErrors().editSetup.addItemFailed.client.description
+            getErrors().editSetup.addItemFailed.client!.title,
+            getErrors().editSetup.addItemFailed.client!.description
         );
 
     const d: SetupItem = { ...data, note: '', unsupported: false };
@@ -40,8 +39,8 @@ const addItem = async (id: number) => {
 
     if (target.some((i) => i.id === id))
         useToast().add(
-            getErrors().publishSetup.sameItems.client.title,
-            getErrors().publishSetup.sameItems.client.description
+            getErrors().publishSetup.sameItems.client!.title,
+            getErrors().publishSetup.sameItems.client!.description
         );
     else {
         target.push(d);

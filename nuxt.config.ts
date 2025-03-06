@@ -100,16 +100,18 @@ export default defineNuxtConfig({
     },
     fonts: { families: [{ name: 'Murecho', provider: 'google' }] },
     icon: {
-        customCollections: [{ prefix: 'avatio', dir: './public/icons/avatio' }],
-
+        customCollections: [{ prefix: 'avatio', dir: './app/assets/icons' }],
         clientBundle: {
             icons: [
                 'lucide:search',
-                'lucide:settings',
                 'lucide:plus',
                 'lucide:x',
                 'lucide:check',
                 'svg-spinners:ring-resize',
+                'lucide:bookmark',
+                'lucide:sun',
+                'lucide:moon',
+                'lucide:palette',
             ],
             scan: true,
             includeCustomCollections: true,
@@ -252,7 +254,7 @@ export default defineNuxtConfig({
                 flowType: 'pkce',
             },
         },
-        types: './types/database.ts',
+        types: './shared/types/database.d.ts',
     },
     turnstile: { siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY },
 });

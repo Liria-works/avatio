@@ -40,7 +40,12 @@ onMounted(async () => {
             query: { id: props.item.id },
         });
 
-        if (response.data) item.value = response.data;
+        if (response.data)
+            item.value = {
+                ...response.data,
+                note: '',
+                unsupported: false,
+            };
         if (!response.data) item.value.outdated = true;
     }
 

@@ -16,16 +16,16 @@ const pasteFromClipboard = async () => {
 const addItemFromURL = async () => {
     if (!inputUrl.value)
         return useToast().add(
-            getErrors().editSetup.emptyUrl.client.title,
-            getErrors().editSetup.emptyUrl.client.description
+            getErrors().editSetup.emptyUrl.client!.title,
+            getErrors().editSetup.emptyUrl.client!.description
         );
 
     try {
         new URL(inputUrl.value);
     } catch {
         return useToast().add(
-            getErrors().editSetup.invalidUrl.client.title,
-            getErrors().editSetup.invalidUrl.client.description
+            getErrors().editSetup.invalidUrl.client!.title,
+            getErrors().editSetup.invalidUrl.client!.description
         );
     }
 
@@ -33,16 +33,16 @@ const addItemFromURL = async () => {
 
     if (url.hostname.split('.').slice(-2).join('.') !== 'booth.pm')
         return useToast().add(
-            getErrors().editSetup.invalidUrl.client.title,
-            getErrors().editSetup.invalidUrl.client.description
+            getErrors().editSetup.invalidUrl.client!.title,
+            getErrors().editSetup.invalidUrl.client!.description
         );
 
     const id = url.pathname.split('/').slice(-1)[0];
 
     if (!id || !Number.isInteger(Number(id)))
         return useToast().add(
-            getErrors().editSetup.invalidUrl.client.title,
-            getErrors().editSetup.invalidUrl.client.description
+            getErrors().editSetup.invalidUrl.client!.title,
+            getErrors().editSetup.invalidUrl.client!.description
         );
 
     emit('add', Number(id));

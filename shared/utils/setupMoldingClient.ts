@@ -1,5 +1,3 @@
-import type { ItemCategory, SetupItem } from '#types';
-
 export default (setup: SetupDB): SetupClient => {
     const items: Record<ItemCategory, SetupItem[]> = {
         avatar: [],

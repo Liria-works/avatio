@@ -1,5 +1,4 @@
 import { serverSupabaseClient } from '#supabase/server';
-import type { ApiResponse, SetupClient, SetupDB } from '~/types';
 
 export interface RequestQuery {
     id: number;
@@ -78,10 +77,14 @@ export default defineEventHandler(
         if (!data)
             return {
                 data: null,
-                error: { status: 404, message: 'Failed to get setup.' },
+                error: {
+                    status: 404,
+                    message: 'Failed to get setup.',
+                },
             };
 
         // アイテムをカテゴリごとに動的にグループ化
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const groupedItems: Record<string, any[]> = {};
         for (const i of data.items) {
             if (!i.data) continue;

@@ -186,7 +186,9 @@ export type Database = {
                     content: string;
                     created_at: string;
                     description: string;
+                    emoji: string | null;
                     published: boolean;
+                    short_title: string;
                     slug: string;
                     thumbnail: string | null;
                     title: string;
@@ -196,7 +198,9 @@ export type Database = {
                     content?: string;
                     created_at?: string;
                     description?: string;
+                    emoji?: string | null;
                     published?: boolean;
+                    short_title?: string;
                     slug: string;
                     thumbnail?: string | null;
                     title: string;
@@ -206,7 +210,9 @@ export type Database = {
                     content?: string;
                     created_at?: string;
                     description?: string;
+                    emoji?: string | null;
                     published?: boolean;
+                    short_title?: string;
                     slug?: string;
                     thumbnail?: string | null;
                     title?: string;
@@ -476,7 +482,7 @@ export type Database = {
             };
             setups: {
                 Row: {
-                    author: string | null;
+                    author: string;
                     created_at: string;
                     description: string;
                     id: number;
@@ -485,7 +491,7 @@ export type Database = {
                     updated_at: string;
                 };
                 Insert: {
-                    author?: string | null;
+                    author?: string;
                     created_at?: string;
                     description?: string;
                     id?: number;
@@ -494,7 +500,7 @@ export type Database = {
                     updated_at?: string;
                 };
                 Update: {
-                    author?: string | null;
+                    author?: string;
                     created_at?: string;
                     description?: string;
                     id?: number;
@@ -637,7 +643,7 @@ export type Database = {
                     created_at: string;
                     id: string;
                     links: string[];
-                    name: string | null;
+                    name: string;
                     official: boolean;
                 };
                 Insert: {
@@ -646,7 +652,7 @@ export type Database = {
                     created_at?: string;
                     id: string;
                     links?: string[];
-                    name?: string | null;
+                    name?: string;
                     official?: boolean;
                 };
                 Update: {
@@ -655,7 +661,7 @@ export type Database = {
                     created_at?: string;
                     id?: string;
                     links?: string[];
-                    name?: string | null;
+                    name?: string;
                     official?: boolean;
                 };
                 Relationships: [];

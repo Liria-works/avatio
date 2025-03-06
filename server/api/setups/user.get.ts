@@ -1,6 +1,4 @@
 import { serverSupabaseClient } from '#supabase/server';
-import type { ApiResponse, SetupClient } from '~/types';
-import setupMoldingClient from '~/utils/setupMoldingClient';
 
 interface RequestQuery {
     userId: string;
@@ -81,7 +79,8 @@ export default defineEventHandler(
                 query.page * query.perPage,
                 query.page * query.perPage + (query.perPage - 1)
             )
-            .order('created_at', { ascending: false });
+            .order('created_at', { ascending: false })
+            .returns<SetupDB[]>();
 
         if (!data || !count)
             return {

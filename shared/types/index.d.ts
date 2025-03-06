@@ -84,10 +84,10 @@ export interface SetupDB extends SetupBase {
         note: string;
     }[];
     items: {
-        data: Item;
+        data: Item | null;
         note: string;
         unsupported: boolean;
-        category: ItemCategory;
+        category: ItemCategory | null;
     }[];
 }
 

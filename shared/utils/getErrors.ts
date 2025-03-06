@@ -1,7 +1,7 @@
 export interface ErrorType {
     status: number;
     message: string;
-    client: { title: string; description?: string };
+    client?: { title: string; description?: string };
 }
 
 interface Errors {

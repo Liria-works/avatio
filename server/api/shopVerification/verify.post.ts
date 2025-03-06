@@ -4,7 +4,6 @@ import {
     serverSupabaseUser,
 } from '#supabase/server';
 import type { H3Event } from 'h3';
-import boothSubDomain from '~/utils/boothSubDomain';
 
 // レスポンス型の定義
 interface VerificationResponse {
