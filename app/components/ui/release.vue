@@ -5,6 +5,13 @@ interface Props {
 const { data } = defineProps<Props>();
 
 const detail = ref(false);
+
+const category: Record<string, string> = {
+    news: 'ニュース',
+    update: 'アップデート',
+    event: 'イベント',
+    blog: 'ブログ',
+};
 </script>
 
 <template>
@@ -29,7 +36,9 @@ const detail = ref(false);
                         <span class="text-sm text-zinc-400 whitespace-nowrap">
                             {{ useLocaledDate(new Date(data.created_at)) }}
                         </span>
-                        <UiBadge class="text-xs"> アップデート </UiBadge>
+                        <UiBadge v-if="data.category" class="text-xs">
+                            {{ category[data.category] }}
+                        </UiBadge>
                     </div>
                     <p
                         v-if="data.description?.length"

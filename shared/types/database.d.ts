@@ -183,6 +183,7 @@ export type Database = {
             };
             releases: {
                 Row: {
+                    category: Database['public']['Enums']['release_category'];
                     content: string;
                     created_at: string;
                     description: string;
@@ -195,6 +196,7 @@ export type Database = {
                     updated_at: string;
                 };
                 Insert: {
+                    category?: Database['public']['Enums']['release_category'];
                     content?: string;
                     created_at?: string;
                     description?: string;
@@ -207,6 +209,7 @@ export type Database = {
                     updated_at?: string;
                 };
                 Update: {
+                    category?: Database['public']['Enums']['release_category'];
                     content?: string;
                     created_at?: string;
                     description?: string;
@@ -740,6 +743,7 @@ export type Database = {
                 | 'texture'
                 | 'tool'
                 | 'other';
+            release_category: 'news' | 'update' | 'event' | 'blog';
             user_badge:
                 | 'developer'
                 | 'contributor'

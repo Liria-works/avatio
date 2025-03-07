@@ -4,7 +4,7 @@ const client = useSupabaseClient();
 const { data: releases } = await client
     .from('releases')
     .select(
-        'slug, created_at, title, description, thumbnail, content, published'
+        'slug, created_at, updated_at, title, description, thumbnail, category, content, published'
     )
     .eq('published', true)
     .order('created_at', { ascending: false });
@@ -21,7 +21,7 @@ useOGP({
             <h1 class="text-4xl font-bold leading-none">お知らせ</h1>
         </div>
 
-        <div v-if="releases && releases.length" class="w-full flex flex-col">
+        <div v-if="releases?.length" class="w-full flex flex-col">
             <UiRelease
                 v-for="i in releases"
                 :key="'release-' + i.slug"

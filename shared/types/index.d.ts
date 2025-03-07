@@ -114,9 +114,11 @@ export interface DocumentData {
     slug: string;
     created_at: string;
     updated_at: string;
+    short_title?: string;
     title: string;
     description?: string;
     thumbnail?: string | null;
+    category?: 'news' | 'update' | 'event' | 'blog';
     content: string;
     published: boolean;
 }
