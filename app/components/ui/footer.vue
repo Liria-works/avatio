@@ -68,7 +68,7 @@ const modal_feedback = ref(false);
                     to="https://liria.work"
                     new-tab
                     label="Liria"
-                    icon="liria"
+                    icon="avatio:liria"
                     variant="link"
                     class="gap-1 text-sm font-[Montserrat] font-semibold"
                 />
