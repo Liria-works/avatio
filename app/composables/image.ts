@@ -7,13 +7,18 @@ const convertFileToBase64 = (file: File): Promise<string> => {
     });
 };
 
-export const useGetImage = (name: string, options?: { prefix: string }) => {
-    const runtime = useRuntimeConfig();
+export const useGetImage = (
+    name: string | null | undefined,
+    options?: { prefix: string }
+): string => {
+    if (!name?.length) return '';
 
     const img = name
         .split('/')
         .map((p) => encodeURIComponent(p))
         .join('/');
+
+    const runtime = useRuntimeConfig();
 
     return `${runtime.public.r2.domain}${options?.prefix ? `/${options.prefix}` : ''}/${img}`;
 };

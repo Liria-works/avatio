@@ -53,7 +53,7 @@ const category: Record<string, string> = {
         <div class="pb-12 pl-12 sm:pl-0 gap-4 flex flex-col">
             <NuxtImg
                 v-if="data.thumbnail?.length"
-                :src="useGetImage(data.thumbnail, { prefix: 'permanent' })"
+                :src="useGetImage(data.thumbnail, { prefix: 'release' })"
                 fit="cover"
                 class="rounded-lg"
             />

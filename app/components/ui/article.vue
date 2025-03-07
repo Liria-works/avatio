@@ -4,6 +4,7 @@ import { marked } from 'marked';
 const props = defineProps<{
     data: DocumentData;
     type?: 'release' | 'info';
+    imagePrefix?: 'release' | 'static';
 }>();
 
 const main = await marked.parse(props.data.content, { breaks: true });
@@ -44,9 +45,11 @@ const updatedAt = new Date(props.data.updated_at);
             </div>
 
             <NuxtImg
-                v-if="props.data.thumbnail && props.data.thumbnail.length"
+                v-if="props.data.thumbnail?.length"
                 :src="
-                    useGetImage(props.data.thumbnail, { prefix: 'permanent' })
+                    useGetImage(props.data.thumbnail, {
+                        prefix: imagePrefix || 'release',
+                    })
                 "
                 class="mb-2 rounded-lg"
             />

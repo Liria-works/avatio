@@ -31,9 +31,7 @@ const add = async (id: string) => {
         model.value.push({
             id: id,
             name: data.name,
-            avatar: data.avatar
-                ? useGetImage(data.avatar, { prefix: 'avatar' })
-                : '',
+            avatar: useGetImage(data.avatar, { prefix: 'avatar' }),
             note: '',
         });
         input.value = '';
@@ -102,11 +100,7 @@ watch(input, handleInputChange);
                         >
                             <UiAvatar
                                 :url="
-                                    i.avatar
-                                        ? useGetImage(i.avatar, {
-                                              prefix: 'avatar',
-                                          })
-                                        : ''
+                                    useGetImage(i.avatar, { prefix: 'avatar' })
                                 "
                                 :alt="i.name"
                             />
