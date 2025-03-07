@@ -1,5 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '#shared/types/database';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -20,7 +21,6 @@ export default defineNuxtConfig({
         '@nuxtjs/robots',
         '@nuxtjs/sitemap',
     ],
-    imports: { dirs: ['types'] },
     routeRules: {
         '/': { isr: 60 },
         '/setup/edit': { ssr: false },
@@ -100,16 +100,18 @@ export default defineNuxtConfig({
     },
     fonts: { families: [{ name: 'Murecho', provider: 'google' }] },
     icon: {
-        customCollections: [{ prefix: 'avatio', dir: './public/icons/avatio' }],
-
+        customCollections: [{ prefix: 'avatio', dir: './app/assets/icons' }],
         clientBundle: {
             icons: [
                 'lucide:search',
-                'lucide:settings',
                 'lucide:plus',
                 'lucide:x',
                 'lucide:check',
                 'svg-spinners:ring-resize',
+                'lucide:bookmark',
+                'lucide:sun',
+                'lucide:moon',
+                'lucide:palette',
             ],
             scan: true,
             includeCustomCollections: true,
@@ -118,6 +120,7 @@ export default defineNuxtConfig({
     image: {
         domains: [
             'booth.pximg.net', // booth
+            's2.booth.pm', // booth
             import.meta.env.NUXT_PUBLIC_R2_DOMAIN.replace('https://', ''), // R2
         ],
         presets: {
@@ -157,7 +160,7 @@ export default defineNuxtConfig({
             '/bookmarks',
         ],
         urls: async () => {
-            const supabase = createClient(
+            const supabase = createClient<Database>(
                 import.meta.env.SUPABASE_URL,
                 import.meta.env.SUPABASE_ANON_KEY
             );
@@ -208,18 +211,25 @@ export default defineNuxtConfig({
 
             const setups = setupsError
                 ? []
-                : setupsData.map((setup) => {
-                      const image = setup.image;
+                : setupsData.map(
+                      (setup: {
+                          id: string;
+                          created_at: string;
+                          name: string;
+                          image: string;
+                      }) => {
+                          const image = setup.image;
 
-                      return {
-                          loc: `/setup/${setup.id}`,
-                          lastmod: setup.created_at,
-                          images: image
-                              ? [{ loc: image, title: setup.name }]
-                              : [],
-                          changefreq: 'never',
-                      };
-                  });
+                          return {
+                              loc: `/setup/${setup.id}`,
+                              lastmod: setup.created_at,
+                              images: image
+                                  ? [{ loc: image, title: setup.name }]
+                                  : [],
+                              changefreq: 'never',
+                          };
+                      }
+                  );
 
             const { data: usersData, error: usersError } = await supabase
                 .from('users')
@@ -227,7 +237,7 @@ export default defineNuxtConfig({
 
             const users = usersError
                 ? []
-                : usersData.map((user) => {
+                : usersData.map((user: { id: string }) => {
                       return { loc: `/@${user.id}` };
                   });
 
@@ -251,7 +261,7 @@ export default defineNuxtConfig({
                 flowType: 'pkce',
             },
         },
-        types: './types/database.ts',
+        types: './shared/types/database.d.ts',
     },
     turnstile: { siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY },
 });

@@ -2,7 +2,6 @@ import sharp from 'sharp';
 import { createStorage } from 'unstorage';
 import s3Driver from 'unstorage/drivers/s3';
 import { serverSupabaseUser } from '#supabase/server';
-import type { ApiResponse } from '~/types';
 
 export interface RequestBody {
     image: string;

@@ -1,7 +1,4 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
-import type { ApiResponse, ItemCategory } from '~/types';
-import getErrors, { type ErrorType } from '~/utils/getErrors';
-import setupLimits from '~/utils/setupLimits';
 
 export interface RequestBody {
     name: string;
