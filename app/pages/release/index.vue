@@ -11,6 +11,7 @@ const { data: releases } = await client
 
 useOGP({
     title: 'お知らせ',
+    description: 'Avatioからのお知らせをお届けします。',
 });
 </script>
 
@@ -23,9 +24,10 @@ useOGP({
 
         <div v-if="releases?.length" class="w-full flex flex-col">
             <UiRelease
-                v-for="i in releases"
+                v-for="(i, index) in releases"
                 :key="'release-' + i.slug"
                 :data="i"
+                :index="index"
             />
         </div>
 

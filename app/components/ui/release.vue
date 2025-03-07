@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 interface Props {
     data: DocumentData;
+    index: number;
 }
-const { data } = defineProps<Props>();
+const { data, index } = defineProps<Props>();
 
 const detail = ref(false);
 
@@ -16,7 +17,10 @@ const category: Record<string, string> = {
 
 <template>
     <div class="relative grid grid-flow-row sm:grid-cols-2 gap-5">
-        <div class="absolute left-[13px] h-full w-0.5 bg-zinc-700"></div>
+        <div
+            :data-index="index"
+            class="absolute left-[13px] h-full w-0.5 bg-zinc-700 data-[index=0]:top-6"
+        />
 
         <div class="relative flex">
             <div class="sticky top-0 left-0 h-fit pt-6 pb-12 gap-4 flex">
