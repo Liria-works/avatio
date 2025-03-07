@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 interface Props {
     badges: Badge[];
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 const props = withDefaults(defineProps<Props>(), {
     badges: () => [],
@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const getBaseSize = () => {
+    if (props.size === 'xs') return 14;
     if (props.size === 'sm') return 16;
     if (props.size === 'lg') return 26;
     return 22;

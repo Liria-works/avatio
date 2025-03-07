@@ -27,13 +27,13 @@ const props = defineProps<Props>();
                     :icon-size="18"
                     class="size-10"
                 />
-                <div class="flex flex-col gap-0.5">
+                <div class="flex flex-col gap-1.5">
                     <span
                         class="text-sm font-semibold leading-none text-zinc-700 dark:text-zinc-300"
                     >
                         {{ props.user.name }}
                     </span>
-                    <BadgeUser :badges="props.user.badges" size="sm" />
+                    <BadgeUser :badges="props.user.badges" size="xs" />
                 </div>
             </NuxtLink>
         </template>

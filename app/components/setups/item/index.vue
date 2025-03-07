@@ -100,7 +100,7 @@ onMounted(async () => {
                     :height="props.size === 'lg' ? 128 : 80"
                     :data-size="props.size"
                     :data-nsfw="item.nsfw"
-                    class="rounded-lg text-xs size-20 data-[size=lg]:sm:size-32 data-[nsfw=true]:blur-md"
+                    class="object-cover rounded-lg text-xs size-20 data-[size=lg]:sm:size-32 data-[nsfw=true]:blur-md"
                 />
             </NuxtLink>
 
