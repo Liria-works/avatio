@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Analytics } from '@vercel/analytics/nuxt';
+
 const env = ref<string | undefined>(undefined);
 try {
     env.value = process?.env?.NODE_ENV;
@@ -23,6 +25,7 @@ const handleError = (error: any) => {
 
 <template>
     <NuxtErrorBoundary @error="handleError">
+        <Analytics />
         <div
             class="max-w-7xl min-h-screen mx-auto pt-6 px-6 lg:px-8 flex flex-col gap-6 md:gap-12 items-center"
         >
