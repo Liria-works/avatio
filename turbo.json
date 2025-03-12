@@ -1,0 +1,30 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "ui": "tui",
+    "globalDependencies": [".env", "tsconfig.json"],
+    "tasks": {
+        "build": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", ".env*"],
+            "outputs": [".nuxt/**", ".output/**", "dist/**"],
+            "env": [
+                "SUPABASE_URL",
+                "SUPABASE_ANON_KEY",
+                "SUPABASE_SERVICE_ROLE_KEY",
+                "EDGE_CONFIG",
+                "NUXT_PUBLIC_EDGE_CONFIG",
+                "NUXT_PUBLIC_R2_DOMAIN",
+                "NUXT_R2_ENDPOINT",
+                "NUXT_R2_ACCESS_KEY",
+                "NUXT_R2_SECRET_KEY",
+                "NUXT_TURNSTILE_SITE_KEY",
+                "NUXT_TURNSTILE_SECRET_KEY"
+            ]
+        },
+        "lint": {},
+        "dev": {
+            "cache": false,
+            "persistent": true
+        }
+    }
+}

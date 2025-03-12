@@ -1,28 +1,37 @@
-# Nuxt dev/build outputs
-.output
-.data
-.nuxt
-.nitro
-.cache
-dist
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Node dependencies
+# dependencies
 node_modules
+.pnp
+.pnp.js
 
-# Logs
-logs
-*.log
+# testing
+coverage
 
-# Misc
+# build outputs
+.nuxt/
+.output/
+out/
+build
+
+# misc
 .DS_Store
-.fleet
-.idea
+*.pem
 
-# Local env files
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
 .env
-.env.*
-!.env.example
-env.d.ts
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-.yarn
+# turbo
+.turbo
+
+# vercel
 .vercel
