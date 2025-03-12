@@ -32,6 +32,9 @@ export default defineNuxtConfig({
     nitro: {
         preset: 'vercel',
     },
+    devServer: {
+        port: 3000,
+    },
     vite: {
         plugins: [tailwindcss()],
     },
