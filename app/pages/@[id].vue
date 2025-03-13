@@ -25,7 +25,7 @@ const { data: userData } = await client
         shops:user_shops(shop:shop_id(id, name, thumbnail, verified))
         `
     )
-    .eq('id', id)
+    .eq('id', id || '')
     .maybeSingle<User>();
 
 if (userData)

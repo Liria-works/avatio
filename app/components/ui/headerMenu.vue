@@ -53,13 +53,14 @@ onMounted(async () => {
             />
 
             <Button
-                v-if="user"
+                v-if="user && route.path !== '/login'"
                 to="/bookmarks"
                 icon="lucide:bookmark"
                 :icon-size="19"
                 tooltip="ブックマーク"
                 aria-label="ブックマーク"
                 variant="flat"
+                class="hidden sm:block p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
             />
 
             <ButtonTheme class="hidden sm:block" />
@@ -102,6 +103,16 @@ onMounted(async () => {
                         to="/search"
                         label="検索"
                         icon="lucide:search"
+                        variant="flat"
+                        class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
+                    />
+
+                    <Button
+                        v-if="user && route.path !== '/login'"
+                        to="/bookmarks"
+                        icon="lucide:bookmark"
+                        label="ブックマーク"
+                        aria-label="ブックマーク"
                         variant="flat"
                         class="p-2.5 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                     />

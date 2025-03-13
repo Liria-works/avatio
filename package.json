@@ -38,7 +38,7 @@
         "eslint-plugin-prettier": "^5.2.3",
         "nuxt": "^3.16.0",
         "prettier": "^3.5.3",
-        "supabase": "^2.19.5",
+        "supabase": "^2.19.6",
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.8.2"
     },
@@ -60,6 +60,7 @@
         "tailwind-variants": "^1.0.0",
         "tailwindcss": "^4.0.13",
         "vue": "^3.5.13",
+        "vue-advanced-cropper": "^2.8.9",
         "vue-draggable-plus": "^0.6.0",
         "vue-router": "^4.5.0",
         "zod": "^3.24.2"
