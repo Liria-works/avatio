@@ -5,7 +5,7 @@ interface Props {
 }
 const { data, index } = defineProps<Props>();
 
-const detail = ref(false);
+const extended = ref(false);
 
 const category: Record<string, string> = {
     news: 'ニュース',
@@ -54,7 +54,7 @@ const category: Record<string, string> = {
             </div>
         </div>
 
-        <div class="pb-12 pl-12 sm:pl-0 gap-4 flex flex-col">
+        <div class="pb-18 pl-12 sm:pl-0 gap-8 flex flex-col">
             <NuxtImg
                 v-if="data.thumbnail?.length"
                 :src="useGetImage(data.thumbnail, { prefix: 'release' })"
@@ -62,16 +62,23 @@ const category: Record<string, string> = {
                 class="rounded-lg"
             />
 
-            <Button v-if="!detail" @click="detail = true">
+            <div class="relative first:mt-5">
+                <UiMarkdown
+                    v-if="data.content"
+                    :content="data.content"
+                    :data-extended="extended"
+                    class="prose-sm max-h-64 data-[extended=true]:max-h-full overflow-clip"
+                />
+                <div
+                    v-if="!extended"
+                    class="absolute bottom-0 h-36 left-0 right-0 bg-gradient-to-t from-zinc-900 to-transparent"
+                />
+            </div>
+
+            <Button v-if="!extended" variant="flat" @click="extended = true">
                 <Icon name="lucide:text" />
                 <span>詳細を見る</span>
             </Button>
-
-            <UiMarkdown
-                v-if="detail && data.content"
-                :content="data.content"
-                class="prose-sm"
-            />
         </div>
     </div>
 </template>
