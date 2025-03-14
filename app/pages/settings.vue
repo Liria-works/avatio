@@ -26,6 +26,15 @@ const save = async () => {
     if (name.value === '')
         return useToast().add('ユーザー名を入力してください');
 
+    if (name.value.length > 124)
+        return useToast().add('ユーザー名は124文字以内で入力してください');
+
+    if (bio.value.length > 140)
+        return useToast().add('bioは140文字以内で入力してください');
+
+    if (links.value.length > 8)
+        return useToast().add('リンクは8個以内に制限してください');
+
     saving.value = true;
 
     let avatarName = currentAvatar.value;
@@ -36,11 +45,14 @@ const save = async () => {
             size: 300,
         });
 
-        if (!uploaded)
-            return useToast().add(
+        if (!uploaded) {
+            useToast().add(
                 'ユーザー情報の保存に失敗しました',
                 'アバターのアップロードでエラーが発生しました'
             );
+            saving.value = false;
+            return;
+        }
 
         if (currentAvatar.value)
             await useDeleteImage(currentAvatar.value, { prefix: 'avatar' });
@@ -75,17 +87,23 @@ const save = async () => {
 const deleteAvatar = async () => {
     if (!currentAvatar.value) return;
 
+    saving.value = true;
+
     const { error } = await client
         .from('users')
         .update({ avatar: null })
         .eq('id', user.value!.id);
 
-    if (error) return useToast().add('アバターの削除に失敗しました');
+    if (error) {
+        saving.value = false;
+        return useToast().add('アバターの削除に失敗しました');
+    }
 
     await useDeleteImage(currentAvatar.value, { prefix: 'avatar' });
     userProfile.value.avatar = null;
     currentAvatar.value = null;
     useToast().add('アバターを削除しました');
+    saving.value = false;
 };
 
 useOGP({ title: 'ユーザー設定' });

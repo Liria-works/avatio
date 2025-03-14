@@ -27,7 +27,13 @@ watchEffect(() => {
     }
 });
 
-// cropperコンポーネントへの参照を作成
+onUnmounted(() => {
+    if (avatarObjectURL.value) {
+        URL.revokeObjectURL(avatarObjectURL.value);
+        avatarObjectURL.value = null;
+    }
+});
+
 const cropperRef = ref<InstanceType<typeof Cropper> | null>(null);
 
 const croppedImage = ref<{
@@ -39,10 +45,9 @@ const onCropChange = (data: {
     image: { src: string };
     coordinates: object;
 }) => {
-    croppedImage.value = data || null;
+    croppedImage.value = data;
 };
 
-// canvasからFileオブジェクトを生成する関数
 const canvasToFile = async (
     mimeType: string = 'image/png',
     quality: number = 0.9,
@@ -60,7 +65,6 @@ const canvasToFile = async (
             (blob) => {
                 if (!blob) return resolve(null);
 
-                // 拡張子を決定
                 const extension = mimeType.split('/')[1] || 'png';
                 const finalFilename = filename || `avatar.${extension}`;
 

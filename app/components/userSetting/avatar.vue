@@ -10,7 +10,8 @@ const currentAvatar = defineModel<string | null>('currentAvatar', {
 
 const emit = defineEmits(['deleteAvatar']);
 
-const imageCroppedPreview = ref<string | ArrayBuffer | null>(null);
+const croppingImage = ref<File | null>(null);
+const imageCroppedPreview = ref<string | null>(null);
 const modalCropAvatar = ref(false);
 const loading = ref(false);
 
@@ -22,10 +23,10 @@ const { open, onChange, reset } = useFileDialog({
 onChange((files) => {
     if (files?.length && files[0]) {
         const file = files[0];
-        avatar.value = file;
+        croppingImage.value = file;
         modalCropAvatar.value = true;
     } else {
-        avatar.value = null;
+        croppingImage.value = null;
     }
 });
 
@@ -39,7 +40,7 @@ watchEffect(() => {
         const reader = new FileReader();
         reader.onload = (e) => {
             if (!e.target) return;
-            imageCroppedPreview.value = e.target.result;
+            imageCroppedPreview.value = e.target.result as string;
         };
         reader.readAsDataURL(avatar.value);
     } else {
@@ -119,7 +120,10 @@ watchEffect(() => {
                         <Button
                             variant="flat"
                             class="w-full"
-                            @click="emit('deleteAvatar')"
+                            @click="
+                                croppingImage = null;
+                                emit('deleteAvatar');
+                            "
                         >
                             <Icon
                                 name="lucide:trash"
@@ -135,7 +139,7 @@ watchEffect(() => {
 
         <ModalCropAvatar
             v-model="modalCropAvatar"
-            :avatar="avatar"
+            :avatar="croppingImage"
             @submit="avatar = $event"
         />
     </div>
