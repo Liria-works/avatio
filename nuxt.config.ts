@@ -1,6 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '#shared/types/database';
+import type { Database } from '@/shared/types/database';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -51,48 +51,32 @@ export default defineNuxtConfig({
                     content: 'width=device-width, initial-scale=1',
                 },
                 {
-                    hid: 'description',
                     name: 'description',
                     content: 'あなたのアバター改変を共有しよう',
                 },
-                { hid: 'icon', name: 'icon', content: '/favicon.svg' },
+                { name: 'icon', content: '/favicon.svg' },
                 {
-                    hid: 'og:site_name',
+                    name: 'og:site_name',
                     property: 'og:site_name',
                     content: 'Avatio',
                 },
-                { hid: 'og:type', property: 'og:type', content: 'website' },
+                { name: 'og:type', property: 'og:type', content: 'website' },
                 {
-                    hid: 'og:url',
+                    name: 'og:url',
                     property: 'og:url',
                     content: 'https://avatio.me',
                 },
-                { hid: 'og:title', property: 'og:title', content: 'Avatio' },
+                { name: 'og:title', property: 'og:title', content: 'Avatio' },
                 {
-                    hid: 'og:description',
+                    name: 'og:description',
                     property: 'og:description',
                     content: 'あなたのアバター改変を共有しよう',
                 },
                 {
-                    hid: 'og:image',
+                    name: 'og:image',
                     property: 'og:image',
                     content: 'https://avatio.me/ogp_2.png',
                 },
-                // {
-                //     hid: 'twitter:title',
-                //     property: 'twitter:title',
-                //     content: 'Avatio',
-                // },
-                // {
-                //     hid: 'twitter:description',
-                //     property: 'twitter:description',
-                //     content: 'あなたのアバター改変を共有しよう',
-                // },
-                // {
-                //     hid: 'twitter:image',
-                //     property: 'twitter:image',
-                //     content: 'https://avatio.me/ogp_2.png',
-                // },
                 { name: 'twitter:site', content: '@liria_work' },
                 { name: 'twitter:card', content: 'summary_large_image' },
             ],
@@ -206,19 +190,19 @@ export default defineNuxtConfig({
 
             const { data: setupsData, error: setupsError } = await supabase
                 .from('setups')
-                .select('id, created_at, name, image')
+                .select('id, created_at, name, images:setup_images(name)')
                 .order('created_at', { ascending: true });
 
             const setups = setupsError
                 ? []
                 : setupsData.map(
                       (setup: {
-                          id: string;
+                          id: number;
                           created_at: string;
                           name: string;
-                          image: string;
+                          images: { name: string }[];
                       }) => {
-                          const image = setup.image;
+                          const image = setup.images[0]?.name;
 
                           return {
                               loc: `/setup/${setup.id}`,
@@ -261,7 +245,7 @@ export default defineNuxtConfig({
                 flowType: 'pkce',
             },
         },
-        types: './shared/types/database.d.ts',
+        types: '@/shared/types/database.d.ts',
     },
     turnstile: { siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY },
 });

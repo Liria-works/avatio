@@ -1,12 +1,21 @@
 <script lang="ts" setup>
-const image = defineModel<{ oldName: string | null; new: File | null }>({
+const avatar = defineModel<File | null>('avatar', {
+    required: true,
     default: null,
 });
-const imagePreview = ref<string | ArrayBuffer | null>(null);
+const currentAvatar = defineModel<string | null>('currentAvatar', {
+    required: true,
+    default: null,
+});
 
+const emit = defineEmits(['deleteAvatar']);
+
+const croppingImage = ref<File | null>(null);
+const imageCroppedPreview = ref<string | null>(null);
+const modalCropAvatar = ref(false);
 const loading = ref(false);
 
-const { open, onChange } = useFileDialog({
+const { open, onChange, reset } = useFileDialog({
     accept: 'image/png, image/jpeg, image/webp, image/avif, image/tiff',
     multiple: false,
 });
@@ -14,94 +23,124 @@ const { open, onChange } = useFileDialog({
 onChange((files) => {
     if (files?.length && files[0]) {
         const file = files[0];
-        image.value.new = file;
+        croppingImage.value = file;
+        modalCropAvatar.value = true;
+    } else {
+        croppingImage.value = null;
+    }
+});
 
+const fileSelect = () => {
+    reset();
+    open();
+};
+
+watchEffect(() => {
+    if (avatar.value) {
         const reader = new FileReader();
         reader.onload = (e) => {
             if (!e.target) return;
-            imagePreview.value = e.target.result;
+            imageCroppedPreview.value = e.target.result as string;
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(avatar.value);
     } else {
-        image.value.new = null;
-        imagePreview.value = null;
+        imageCroppedPreview.value = null;
     }
 });
 </script>
 
 <template>
-    <UiCard :divider="false" content-class="pb-4 flex justify-center">
-        <template #header>
-            <UiTitle label="アバター" icon="lucide:smile" is="h2" />
-        </template>
-
-        <div
+    <div
+        class="relative size-20 shrink-0 rounded-full overflow-hidden flex items-center justify-center bg-zinc-200 dark:bg-zinc-700"
+    >
+        <Icon
             v-if="loading"
-            class="flex items-center justify-center size-20 rounded-full shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
-        >
-            <Icon
-                name="svg-spinners:ring-resize"
-                size="36"
-                class="text-zinc-600 dark:text-zinc-300"
-            />
-        </div>
-
-        <div
-            v-else-if="imagePreview"
-            class="flex items-center justify-center size-20 rounded-full overflow-hidden shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
-        >
-            <NuxtImg
-                :src="imagePreview.toString()"
-                alt="アバター"
-                width="80"
-                height="80"
-                format="webp"
-                fit="cover"
-                loading="lazy"
-                class="shrink-0"
-            />
-            <button
-                type="button"
-                class="absolute inset-0 hover:bg-black/20 rounded-full cursor-pointer"
-                @click="open()"
-            />
-        </div>
-
-        <div
-            v-else-if="image.oldName?.length"
-            class="flex items-center justify-center size-20 rounded-full overflow-hidden shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
-        >
-            <NuxtImg
-                :src="useGetImage(image.oldName, { prefix: 'avatar' })"
-                alt="アバター"
-                width="80"
-                height="80"
-                format="webp"
-                fit="cover"
-                loading="lazy"
-                class="shrink-0"
-            />
-            <button
-                type="button"
-                class="absolute inset-0 hover:bg-black/20 rounded-full cursor-pointer"
-                @click="open()"
-            />
-        </div>
-
-        <div
+            name="svg-spinners:ring-resize"
+            size="36"
+            class="text-zinc-600 dark:text-zinc-300"
+        />
+        <NuxtImg
+            v-else-if="imageCroppedPreview"
+            :src="imageCroppedPreview.toString()"
+            alt="アバター"
+            width="80"
+            height="80"
+            format="webp"
+            fit="cover"
+            loading="lazy"
+            class="shrink-0"
+        />
+        <NuxtImg
+            v-else-if="currentAvatar?.length"
+            :src="useGetImage(currentAvatar, { prefix: 'avatar' })"
+            alt="アバター"
+            width="80"
+            height="80"
+            format="webp"
+            fit="cover"
+            loading="lazy"
+            class="shrink-0"
+        />
+        <Icon
             v-else
-            class="flex items-center justify-center size-20 rounded-full shrink-0 bg-zinc-200 dark:bg-zinc-500 relative"
-        >
-            <Icon
-                name="lucide:user-round"
-                size="36"
-                class="text-zinc-600 dark:text-zinc-300"
-            />
-            <button
-                type="button"
-                class="absolute inset-0 hover:bg-black/20 rounded-full cursor-pointer"
-                @click="open()"
-            />
-        </div>
-    </UiCard>
+            name="lucide:user-round"
+            size="36"
+            class="text-zinc-600 dark:text-zinc-300"
+        />
+
+        <Popup>
+            <template #trigger>
+                <button
+                    v-if="!loading"
+                    type="button"
+                    class="absolute inset-0 hover:bg-black/20 rounded-full cursor-pointer"
+                />
+            </template>
+
+            <template #content>
+                <div
+                    class="flex flex-col items-stretch gap-0.5 text-sm min-w-48"
+                >
+                    <PopoverClose class="w-full">
+                        <Button
+                            variant="flat"
+                            class="w-full"
+                            @click="fileSelect"
+                        >
+                            <Icon
+                                name="lucide:camera"
+                                size="18"
+                                class="text-zinc-600 dark:text-zinc-300"
+                            />
+                            <span>アイコンを変更</span>
+                        </Button>
+                    </PopoverClose>
+
+                    <PopoverClose>
+                        <Button
+                            variant="flat"
+                            class="w-full"
+                            @click="
+                                croppingImage = null;
+                                emit('deleteAvatar');
+                            "
+                        >
+                            <Icon
+                                name="lucide:trash"
+                                size="18"
+                                class="text-zinc-600 dark:text-zinc-300"
+                            />
+                            <span>アイコンを削除</span>
+                        </Button>
+                    </PopoverClose>
+                </div>
+            </template>
+        </Popup>
+
+        <ModalCropAvatar
+            v-model="modalCropAvatar"
+            :avatar="croppingImage"
+            @submit="avatar = $event"
+        />
+    </div>
 </template>

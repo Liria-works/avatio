@@ -33,16 +33,8 @@ const pasteFromClipboard = async () =>
 </script>
 
 <template>
-    <UiCard
-        :divider="false"
-        class="pb-4"
-        header-class="flex gap-4 items-center justify-between"
-    >
-        <template #header>
-            <UiTitle label="リンク" icon="lucide:link" is="h2" />
-        </template>
-
-        <div class="flex gap-1 items-center w-full mt-1">
+    <div class="w-full flex flex-col gap-2">
+        <div class="flex gap-1 items-center w-full">
             <UiTextinput
                 v-model="linkInput"
                 autocomplete="off"
@@ -78,35 +70,37 @@ const pasteFromClipboard = async () =>
         <VueDraggable
             v-model="links"
             :animation="150"
-            class="empty:hidden w-full mt-2 rounded-xl flex flex-col ring-1 ring-zinc-300 dark:ring-zinc-600 divide-y divide-zinc-300 dark:divide-zinc-600"
+            handle=".draggable"
+            class="empty:hidden w-full flex flex-wrap items-center gap-2"
         >
-            <div
-                v-for="i in links"
-                :key="useId()"
-                class="p-3.5 flex items-center gap-3 cursor-move"
+            <UiTooltip
+                v-for="(i, index) in links"
+                :key="'link-' + index"
+                :text="i"
             >
-                <Icon
-                    name="lucide:grip-vertical"
-                    size="18"
-                    class="shrink-0 text-zinc-500 dark:text-zinc-400 cursor-move"
-                />
-                <Icon
-                    :name="getLinkInfo(i).icon"
-                    size="18"
-                    class="shrink-0 text-zinc-500 dark:text-zinc-300"
-                />
-                <span
-                    class="grow text-sm break-all line-clamp-1 text-zinc-700 dark:text-zinc-300"
+                <div
+                    class="rounded-lg flex items-center ring-1 ring-zinc-400 dark:ring-zinc-600"
                 >
-                    {{ i }}
-                </span>
-                <Button
-                    icon="lucide:x"
-                    variant="flat"
-                    class="p-1"
-                    @click="removeLink(i)"
-                />
-            </div>
+                    <div class="grid px-1.5 py-2.5 draggable cursor-move">
+                        <Icon
+                            name="lucide:grip-vertical"
+                            size="18"
+                            class="shrink-0 text-zinc-500 dark:text-zinc-400"
+                        />
+                    </div>
+                    <Icon
+                        :name="getLinkInfo(i).icon"
+                        size="18"
+                        class="shrink-0 p-1 text-zinc-700 dark:text-zinc-300"
+                    />
+                    <Button
+                        icon="lucide:x"
+                        variant="flat"
+                        class="mx-1 p-1"
+                        @click="removeLink(i)"
+                    />
+                </div>
+            </UiTooltip>
         </VueDraggable>
-    </UiCard>
+    </div>
 </template>
