@@ -1,6 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '#shared/types/database';
+import type { Database } from '@/shared/types/database';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -245,7 +245,7 @@ export default defineNuxtConfig({
                 flowType: 'pkce',
             },
         },
-        types: './shared/types/database.d.ts',
+        types: '@/shared/types/database.d.ts',
     },
     turnstile: { siteKey: import.meta.env.NUXT_TURNSTILE_SITE_KEY },
 });
