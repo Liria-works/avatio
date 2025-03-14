@@ -109,7 +109,7 @@ const attributesVisibility = ref({
                             </button>
                         </PopupUploadImage>
                     </div>
-                    <EditImage ref="editImage" v-model="image" />
+                    <SetupsEditImage ref="editImage" v-model="image" />
                 </div>
 
                 <div class="flex flex-col gap-8">
@@ -142,7 +142,7 @@ const attributesVisibility = ref({
                                 :max="setupLimits().tags"
                             />
                         </div>
-                        <EditTags v-model="tags" />
+                        <SetupsEditTags v-model="tags" />
                     </div>
                 </div>
 
@@ -176,7 +176,7 @@ const attributesVisibility = ref({
                             :max="setupLimits().coAuthors"
                         />
                     </div>
-                    <EditCoAuthor v-model="coAuthors" />
+                    <SetupsEditCoAuthor v-model="coAuthors" />
                 </div>
 
                 <div

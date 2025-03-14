@@ -110,7 +110,7 @@ watch(input, handleInputChange);
                 </div>
             </template>
         </Popup>
-        <EditCoAuthorItem
+        <SetupsEditCoAuthorItem
             v-for="(i, index) in model"
             :key="`coauthor-${index}`"
             :id="i.id"

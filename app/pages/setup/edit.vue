@@ -167,7 +167,7 @@ useOGP({ title: 'セットアップ作成' });
 
 <template>
     <div class="relative size-full pb-5 lg:pl-[23rem]">
-        <EditSidebar
+        <SetupsEditSidebar
             v-model:publishing="publishing"
             v-model:title="title"
             v-model:description="description"
@@ -181,7 +181,7 @@ useOGP({ title: 'セットアップ作成' });
 
         <UiDivider class="static lg:hidden my-8" />
 
-        <EditItems
+        <SetupsEditItems
             v-model="items"
             class="w-full h-full"
             @undo="undo"

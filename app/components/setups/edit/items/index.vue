@@ -121,7 +121,7 @@ const totalItemsCount = computed(() =>
             <p class="text-sm text-zinc-600 dark:text-zinc-400">
                 アイテムが登録されていません
             </p>
-            <EditItemsOwnedAvatar @add="addItem" />
+            <SetupsEditItemsOwnedAvatar @add="addItem" />
         </div>
 
         <div
@@ -147,7 +147,7 @@ const totalItemsCount = computed(() =>
                         ghost-class="opacity-0"
                         class="flex flex-col gap-2"
                     >
-                        <EditItemsItem
+                        <SetupsEditItemsItem
                             v-for="item in value"
                             v-model:note="item.note"
                             v-model:unsupported="item.unsupported"
