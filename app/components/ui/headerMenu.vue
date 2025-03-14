@@ -4,22 +4,26 @@ const user = useSupabaseUser();
 const client = useSupabaseClient();
 
 const userRefresh = async () => {
+    console.log('userRefresh');
     if (!user.value) return (userProfile.value.avatar = null);
 
     try {
         const { data } = await client
             .from('users')
-            .select('name, avatar')
+            .select('id, name, avatar, badges:user_badges(name)')
             .eq('id', user.value.id)
             .maybeSingle();
 
+        userProfile.value.id = data?.id ?? null;
         userProfile.value.name = data?.name ?? null;
-        userProfile.value.avatar = data?.avatar?.length
-            ? useGetImage(data.avatar, { prefix: 'avatar' })
-            : null;
+        userProfile.value.avatar = data?.avatar ?? null;
+        userProfile.value.badges =
+            data?.badges.map((badge) => badge.name) ?? [];
     } catch {
+        userProfile.value.id = null;
         userProfile.value.name = null;
         userProfile.value.avatar = null;
+        userProfile.value.badges = [];
     }
 };
 
@@ -76,7 +80,11 @@ onMounted(async () => {
                         class="hidden sm:flex select-none rounded-full items-center outline-4 outline-transparent hover:outline-zinc-300 hover:dark:outline-zinc-600 transition-all ease-in-out duration-100"
                     >
                         <UiAvatar
-                            :url="userProfile.avatar ?? ''"
+                            :url="
+                                useGetImage(userProfile.avatar, {
+                                    prefix: 'avatar',
+                                })
+                            "
                             :alt="userProfile.name ?? ''"
                         />
                     </NuxtLink>

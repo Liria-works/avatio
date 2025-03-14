@@ -2,8 +2,9 @@
 const skipRouterHook = ref(false);
 
 const publishing = ref(false);
-const modalComplete = ref(false);
 const publishedSetupId = ref<number | null>(null);
+const modalComplete = ref(false);
+const modalPreview = ref(false);
 
 const items = ref<Record<ItemCategory, SetupItem[]>>({
     avatar: [],
@@ -30,6 +31,10 @@ const coAuthors = ref<
 >([]);
 const unity = ref<string>('');
 const image = ref<File | null>(null);
+const imageObjectUrl = computed(() => {
+    if (!image.value) return null;
+    return URL.createObjectURL(image.value);
+});
 
 const editImage = ref();
 
@@ -176,6 +181,7 @@ useOGP({ title: 'セットアップ作成' });
             v-model:unity="unity"
             v-model:image="image"
             class="static lg:absolute top-0 bottom-4 left-0 lg:w-[22rem] overflow-y-auto"
+            @preview="modalPreview = true"
             @publish="PublishSetup"
         />
 
@@ -202,5 +208,24 @@ useOGP({ title: 'セットアップ作成' });
             class="fixed lg:hidden bottom-3 right-3 rounded-full p-4 whitespace-nowrap hover:bg-zinc-700 hover:text-zinc-200 dark:text-zinc-900 dark:bg-zinc-300 hover:dark:text-zinc-100"
             @click="PublishSetup"
         />
+
+        <Modal v-model="modalPreview" class="max-w-4xl">
+            <SetupsViewer
+                preview
+                :title="title"
+                :description="description"
+                :tags="tags"
+                :co-authors="coAuthors"
+                :unity="unity"
+                :author="{
+                    id: userProfile.id!,
+                    name: userProfile.name!,
+                    avatar: userProfile.avatar,
+                    badges: userProfile.badges,
+                }"
+                :preview-images="imageObjectUrl ? [imageObjectUrl] : []"
+                :items="items"
+            />
+        </Modal>
     </div>
 </template>

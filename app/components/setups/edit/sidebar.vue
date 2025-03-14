@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { twMerge } from 'tailwind-merge';
 
-const emit = defineEmits(['publish']);
+const emit = defineEmits(['publish', 'preview']);
 
 const title = defineModel<string>('title', { default: '' });
 const description = defineModel<string>('description', { default: '' });
@@ -41,7 +41,7 @@ const attributesVisibility = ref({
         "
     >
         <div
-            class="hidden lg:flex z-[1] sticky top-0 left-0 right-0 p-5 gap-1 bg-zinc-100 dark:bg-zinc-800"
+            class="hidden lg:flex z-[1] sticky top-0 left-0 right-0 p-5 gap-1 flex-col bg-zinc-100 dark:bg-zinc-800"
         >
             <Button
                 :label="!publishing ? '公開' : '処理中'"
@@ -59,14 +59,24 @@ const attributesVisibility = ref({
             >
             </Button>
 
-            <Button
-                tooltip="破棄"
-                icon="lucide:trash"
-                :icon-size="18"
-                variant="flat"
-                class="rounded-full"
-                @click="router.back()"
-            />
+            <div class="grid grid-cols-2 gap-1 items-center">
+                <Button
+                    label="プレビュー"
+                    icon="lucide:scan-eye"
+                    :icon-size="18"
+                    variant="flat"
+                    class="rounded-full"
+                    @click="emit('preview')"
+                />
+                <Button
+                    label="破棄"
+                    icon="lucide:trash"
+                    :icon-size="18"
+                    variant="flat"
+                    class="rounded-full"
+                    @click="router.back()"
+                />
+            </div>
         </div>
 
         <div class="p-5 pt-2 flex flex-col gap-8">
